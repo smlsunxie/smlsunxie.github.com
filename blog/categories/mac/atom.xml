@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mac | 蹤影.smlsun]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/mac/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-10T12:09:39+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MAC APP : Better Touch tool-Free Window Snapping]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping/"/>
+    <updated>2012-12-01T09:50:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping</id>
+    <content type="html"><![CDATA[<p>相信使用過windows 7，或著最近的ubuntu都有用過 Window Snapping功能，也就是：</p>
+
+<ul>
+<li>把視窗移至四角，會自動將視窗縮放為 1/4</li>
+<li>若移至上邊會自動放大</li>
+<li>若移至左右兩邊會自動將視窗縮放為1/2</li>
+</ul>
+
+
+<p>之前再找相關的 MAC APP 時，有使用過兩款</p>
+
+<ul>
+<li><a href="https://itunes.apple.com/us/app/moom/id419330170?mt=12">moom</a></li>
+<li><a href="http://mizage.com/divvy/">divv</a></li>
+</ul>
+
+
+<p>這兩款再進行window Snapping時是需要搭配快速鍵，使用上比較不直覺，且是需要收費的，今天介紹的這一款同樣是，</p>
+
+<h3>for FREE !!</h3>
+
+<h2>Better Touch tool</h2>
+
+<p>他有什麼特別的呢？除了一開始所說的winddow sanpping 之外，預覽如下：</p>
+
+<p><img src="http://a869.phobos.apple.com/us/r1000/084/Purple/v4/b9/2e/e5/b92ee55d-f407-fff9-a01f-919771e0dc4c/mzl.bodvlkcq.800x500-75.jpg" alt="Screenshot 1" /></p>
+
+<p>他還可以定義很多自定義的觸控面板手勢，可以讓你把喜歡的手勢加入</p>
+
+<p>比如說，如下圖，圖片來源為 <a href="http://mulicia.pixnet.net/">mulicia.pixnet.net</a>：</p>
+
+<p><img src="http://pic.pimg.tw/mulicia/06fffa4bce61b70ff703d18c6790cc66.png" alt="img" /></p>
+
+<p>可以針對全域定義你常用的功能手勢</p>
+
+<p><img src="http://pic.pimg.tw/mulicia/bd1b4f661061b3677fed6f241b60a3d5.png" alt="img" /></p>
+
+<p>也可以針對特定程式進行定義</p>
+
+<p>如此一來你就能更方便操作你的mac，更加彈性的定義每個手勢！</p>
+
+<p>下面就是官方網站與載點啦：</p>
+
+<ul>
+<li><a href="http://www.boastr.de/">Better Touch tool</a></li>
+<li><a href="http://www.boastr.de/BetterTouchTool.zip">Download</a></li>
+</ul>
+
+
+<p>試試看囉！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MAC APP：XtraFinder - free tabs finder]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/11/29/mac-app-introduction-xtrafinder/"/>
+    <updated>2012-11-29T16:42:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/11/29/mac-app-introduction-xtrafinder</id>
+    <content type="html"><![CDATA[<p>來介紹與推薦一個不錯的MAC APP！</p>
+
+<p>most important is it</p>
+
+<h3>for FREE !!</h3>
+
+<p>廢話不多說先來看看原本的finder，與XtraFinder</p>
+
+<p><img src="https://lh4.googleusercontent.com/-8dcqlVP0Zec/ULgEhBOHftI/AAAAAAAALWs/m-_X8WmqOWU/s640/Xtrafinder.jpg" alt="Xtrafinder" /></p>
+
+<p><img src="https://lh6.googleusercontent.com/-jBUV6yVtmn8/ULgEgNVpQgI/AAAAAAAALWI/Z5Y_YMoZfoE/s640/finder.jpg" alt="finder" /></p>
+
+<p>很明顯的！我們可以看到幾點不同</p>
+
+<ol>
+<li>tab 支援</li>
+<li>合併 tab &lt;- 這個個人覺得很強大阿</li>
+<li>還有還有，他可以 <strong>剪下</strong>，也就是 command+x，酷吧！省 7.99 元美金喔！這網址-><a href="https://itunes.apple.com/us/app/moveaddict/id404213171?ls=1&amp;mt=12">moveAddict</a></li>
+</ol>
+
+
+<p>簡單介紹一下怎麼合併tab，只要在你要合併的tab上點兩下，他就會將下一個頁籤合併，若沒有下一個頁籤，那他就會新增一個同樣位置的tab，如果要取消合併也只要同樣的在合併頁籤點兩下即可，酷吧！就是這個簡單。</p>
+
+<h2>還有很多功能</h2>
+
+<p><img src="https://lh5.googleusercontent.com/-CgPk2ukwPZY/ULgHDjbSK-I/AAAAAAAALWg/MuSlUgU0swk/s512/Xtrafinder%2520features.jpg" alt="features" /></p>
+
+<p>就留給各位去發掘啦～</p>
+
+<p>下面是官方網站與下載點：</p>
+
+<ul>
+<li><p><a href="http://www.trankynam.com/xtrafinder/">website</a></p></li>
+<li><p><a href="http://www.trankynam.com/xtrafinder/downloads/XtraFinder.dmg">download</a></p></li>
+</ul>
+
+
+<p>如果有發現更方便得功能在與大家分享！</p>
+]]></content>
+  </entry>
+  
+</feed>

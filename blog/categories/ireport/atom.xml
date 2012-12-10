@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ireport | 蹤影.smlsun]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/ireport/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-10T12:09:39+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ireport use qrcode]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/"/>
+    <updated>2012-12-07T10:41:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode</id>
+    <content type="html"><![CDATA[<p>其實這篇才是最後的目的，讓我們回顧一下系列文章：</p>
+
+<ul>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a></p>
+
+<p>  利用gradle 快速開發java，並且包成jar，所要做的就是下一篇文章scriptlet 會用到的jar</p></li>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a></p>
+
+<p>  說明如何引入自己寫的class在ireport可以使用</p></li>
+</ul>
+
+
+<p>最後所有做的就是</p>
+
+<h2>ireport 產生 QRCode</h2>
+
+<p>So，之前兩篇文章把一些細節都說明過了，就直接進入重點吧！</p>
+
+<p>參考這篇文章</p>
+
+<p><a href="http://stackoverflow.com/questions/7626013/google-zxing-barcode-generator-in-ireport">google-zxing-barcode-generator-in-ireport</a></p>
+
+<p>把第二篇的javacode改寫後，程式碼如下：</p>
+
+<p>``` java
+package com.smlsun.ireport;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import net.sf.jasperreports.engine.JRDefaultScriptlet;
+import net.sf.jasperreports.engine.JRScriptletException;</p>
+
+<p>public class QRCodeScriptlet extends JRDefaultScriptlet {</p>
+
+<pre><code>public void afterDetailEval() throws JRScriptletException {
+    QRCodeWriter writer = new QRCodeWriter();
+    BitMatrix matrix = null;
+
+    try {
+        matrix = writer.encode(getFieldValue("ORDERID").toString(), BarcodeFormat.QR_CODE, 256, 256);
+        this.setVariableValue("BarCodeImage", MatrixToImageWriter.toBufferedImage(matrix) );
+    } catch (WriterException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>不多說了，重點如下：</p>
+
+<ul>
+<li>需要用的套件與版本，請參考 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a> 的gradle.build，其中 <code>com.google.zxing</code> 主要是要用來產生QRcode</li>
+<li>將你要轉換成QRcode 的文字傳入，此範例用的是 Field ORDERID</li>
+<li>同樣將處理結果塞到 ireport的 Variable，此範例命名為 BarCodeImage</li>
+<li>在此 Variable 的型別為 BufferedImage</li>
+</ul>
+
+
+<p>回到ireport，我們同樣要進行 <a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a> 中，ireport的設定，其中不一樣的是：</p>
+
+<ul>
+<li>Variable 的 type 要改成 java.awt.image.BufferedImage</li>
+<li>然後原本用的是text field 改成用 Image</li>
+<li>Image的type 改成 java.awt.Image</li>
+</ul>
+
+
+<p>上面都處理好，就可以來看結果了</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XWqDIn7kLFs/UMFcwQZq9MI/AAAAAAAALXg/PTyLE0dmsLk/s640/ireport%2520qrcode.jpg" alt="qrcode" /></p>
+
+<p>DONE!!如果有此需求，趕快動手做做看囉～</p>
+
+<h3>請搭配我的github project 服用～</h3>
+
+<blockquote><p><a href="https://github.com/smlsunxie/ireport-qrcode">ireport-qrcode github</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ireport use scriptlet]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/"/>
+    <updated>2012-12-06T20:00:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet</id>
+    <content type="html"><![CDATA[<p>在開始之前請容許我發洩一下：</p>
+
+<p>ireport 的文件真他媽的少阿!</p>
+
+<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
+
+<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
+
+<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
+
+<p>開始我們的正題</p>
+
+<h2>如何使用 ireport scriptlet</h2>
+
+<p>先來看看java code</p>
+
+<p>``` java
+package com.smlsun.ireport;
+import net.sf.jasperreports.engine.JRDefaultScriptlet;
+import net.sf.jasperreports.engine.JRScriptletException;</p>
+
+<p>public class TestScriptlet extends JRDefaultScriptlet {</p>
+
+<pre><code>public void afterDetailEval() throws JRScriptletException {
+   this.setVariableValue("titleAddOrderid", "test Scriptlet ORDERID:"+getFieldValue("ORDERID").toString() );
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<h3>java部分</h3>
+
+<p>重點如下：</p>
+
+<ul>
+<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
+<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
+<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
+<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
+<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
+</ul>
+
+
+<p>java部分大概就是這樣了~</p>
+
+<hr />
+
+<h3>接著回到ireport</h3>
+
+<p>需要處理的重點如下：</p>
+
+<ul>
+<li>將打包好的jar加入到ireport的classpath</li>
+<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
+<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
+<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
+</ul>
+
+
+<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
+
+<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
+
+<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
+
+<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[introduction ireport component: Map 地圖]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/06/ireport-map-component/"/>
+    <updated>2012-12-06T15:15:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/06/ireport-map-component</id>
+    <content type="html"><![CDATA[<p>今天來為大家介紹 ireport 的新元件</p>
+
+<h2>Map component</h2>
+
+<p>此Map不是java.util.Map，是google Map 的Map 不要搞錯了喔！</p>
+
+<p>不然各位還以為我在廢話，java.util.Map 哪需要我介紹～</p>
+
+<p>就在 11月底的時候 ireport release 5.0</p>
+
+<p>我就想說來看看他多了什麼功能，畢竟我從 2.0一路用上來</p>
+
+<p>到了5字頭，來看看有什麼新的玩意，查了一下 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-5.0.0/">changelog</a>，重點是下列兩項：</p>
+
+<ul>
+<li>Full support for JasperReports 5.0.0</li>
+<li>Improved map component</li>
+</ul>
+
+
+<p>試了一下，使用起來不會太難，幾個比較做要的參數可以參考官方的範例</p>
+
+<p><a href="http://jasperreports.sourceforge.net/sample.reference/map/index.html">JasperReports - Map Component Sample (version 5.0.0)</a></p>
+
+<p>其中，此元件需要輸入的是座標，可以下下列網址查你要的地址</p>
+
+<p><a href="http://www.agenciacreativa.net/coordenadas_google_maps.php">座標查詢網址</a></p>
+
+<p>接著，要記得設置zoom 的參數，讓你的地圖可以看到比較詳細的街道，可以看一下我完成的範例如下</p>
+
+<p><img src="https://lh6.googleusercontent.com/-vpj2Wl0Tqsw/UMBQ4pGbobI/AAAAAAAALXE/UJrkevqrC58/s640/ireport%2520map.jpg" alt="img" /></p>
+
+<p>不錯吧！</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ireport系列-安裝篇]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/"/>
+    <updated>2012-11-12T21:52:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/11/12/ireportxi-lie-an-zhuang-pian</id>
+    <content type="html"><![CDATA[<h1>ireport下載</h1>
+
+<p><a href="http://sourceforge.net/projects/ireport/files/iReport/">ireport 下載網址</a></p>
+
+<p>文章撰寫時，最新版本為 iReport-4.8.0</p>
+
+<p>for ubuntu 請下載 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz/download">iReport-4.8.0.tar.gz</a></p>
+
+<h1>ireport指令安裝</h1>
+
+<ul>
+<li><p>安裝java</p>
+
+<pre><code>  sudo apt-get install openjdk-7-jdk
+</code></pre></li>
+<li><p>下載ireport</p>
+
+<pre><code>  wget http://downloads.sourceforge.net/project/ireport/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz
+</code></pre></li>
+<li><p>解壓縮</p>
+
+<pre><code>  tar zxvf iReport-4.8.0.tar.gz
+</code></pre></li>
+<li><p>執行ireport</p>
+
+<pre><code>  sh ~/iReport-4.8.0/bin/./ireport
+</code></pre></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

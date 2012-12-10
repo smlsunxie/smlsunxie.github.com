@@ -11,7 +11,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>home - 蹤影.smlsun</title>
+  <title>agile java with gradle: 使用 gradle 快速開發 java - 蹤影.smlsun</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -24,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/">
+  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/">
 
 
 
@@ -129,7 +129,7 @@
 
 
       <ul class="nav">
-        	<li class="active" >
+        	<li  >
 		<a href="/">Home</a>
 	</li>
   
@@ -205,7 +205,9 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					學習新事物，分享交流的地方，歡迎～
+					 
+						Blog 
+					
 				
 
 				</h2>
@@ -227,46 +229,249 @@
 		<!--start: Container -->
     	<div id="content" class="container">
 
-    		<hr>
+    		<div class="row">
 
-<div class="row">
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/blog/"><i class="ico-blog ico-color circle-color big"></i></a>
-            <div class="title"><h3>Blog</h3></div>
-            
-            <p>
-              記錄我的所見所聞 with octpress
-            </p>
+    
+    <div class="span12"> 
+    
 
-            <div class="clear"></div>
-        </div>
-  </div>
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/archives/"><i class="ico-show-thumbnails-lines ico-color circle-color big"></i></a>
-            <div class="title"><h3>Archives</h3></div>
-            <p>
-              Blog 列表與發佈歷程
-            </p>
-            <div class="clear"></div>
-        </div>
-  </div>
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/slides/"><i class="ico-imac ico-color circle-color big"></i></a>
-            <div class="title"><h3>Slides</h3></div>
-            <p>
-              線上簡報 with Deck.js
-            </p>
-            <div class="clear"></div>
-        </div>
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+  <div>
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-6292358061841558";
+    /* 320 x 50-1 */
+    google_ad_slot = "5783905650";
+    google_ad_width = 320;
+    google_ad_height = 50;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
   </div>
 
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
 
+Agile Java With Gradle: 使用 Gradle 快速開發 Java
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
+
+<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
+
+<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
+
+<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
+
+<hr />
+
+<p>怎麼辦！？介紹大家一帖好藥</p>
+
+<h2>Gradle</h2>
+
+<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
+
+<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
+
+<p>然後編輯build.gradle，內容如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;java&#39;</span>
+</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">repositories</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">mavenCentral</span><span class="o">()</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.google.zxing&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;javase&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;2.1&#39;</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;net.sf.jasperreports&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;jasperreports&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;5.0.0&#39;</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.lowagie&#39;</span><span class="o">,</span> <span class="nl">name:</span><span class="s1">&#39;itext&#39;</span><span class="o">,</span> <span class="nl">version:</span><span class="s1">&#39;2.1.7&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
+
+<p><a href="http://search.maven.org/">maven Central Repository</a></p>
+
+<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
+
+<p>接著我們只要在Terminal鍵入下列指令：</p>
+
+<p><code>gradle build jar</code></p>
+
+<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
+
+<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
+
+<p><code>gradle eclipse</code></p>
+
+<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
+
+<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
+
+<p>如何？還不趕快試試看阿！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div>
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-6292358061841558";
+    /* 320 x 50-1 */
+    google_ad_slot = "5783905650";
+    google_ad_width = 320;
+    google_ad_height = 50;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
 
 </div>
-<hr>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-06T18:04:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/agile/'>agile</a>, <a class='category' href='/blog/categories/gradle/'>gradle</a>, <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2012/12/06/ireport-map-component/" title="Previous Post: introduction ireport component: Map 地圖"><li>&laquo; introduction ireport component: Map 地圖</li></a>
+          
+          
+            <a class="right" href="/blog/2012/12/06/ireport-use-scriptlet/" title="Next Post: ireport use scriptlet"><li>ireport use scriptlet &raquo;</li></a>
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
 
 
 
@@ -339,7 +544,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/index.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/index.html" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
     
   
   
@@ -405,7 +610,7 @@
 					<div id="footer-menu-links">
 
 						<ul id="footer-nav">
-								<li class="active" >
+								<li  >
 		<a href="/">Home</a>
 	</li>
   
@@ -483,7 +688,10 @@
 			var disqus_developer = '';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/';
+        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

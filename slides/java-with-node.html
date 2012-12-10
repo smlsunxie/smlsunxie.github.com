@@ -1,0 +1,1209 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <title>nodejs 與 java 結合運用 - 蹤影.smlsun</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsunxie.github.com/slides/java-with-node.html">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影.smlsun" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/web-2.0.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/fade.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span4">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影.smlsun</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span8">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsunxie.github.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					
+						nodejs 與 java 結合運用
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+
+    		<div>
+  <article role="article">
+    <div class="deck-container" id="deck-container" >
+      <div class='slide'><h1>nodejs+java</h1>
+
+<p>各取所長，更要迅速！</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>自我介紹</h2>
+
+<p>在業界做了6年 生產製造追蹤系統</p>
+
+<p>從專題變成產品，走過產品開發的心血歷程</p>
+
+<p>大學二年期前沒有寫過程式之後一直與java為伍</p>
+
+<p>直到最近開始接觸 node ruby 等語言</p>
+
+<p>在這裡我也是</p>
+
+<h3>菜鳥</h3>
+
+<p>我將盡我所能把我所知與大家分享，讓我們互相學習！</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>java 與 node 各有自己的舞台</h2>
+
+<p><img src="http://i.gbc.tw/gb_img/0/001/873/1873750.jpg" height="200px" width="300px" /></p>
+
+<h3>不管黑貓白貓 能捉老鼠就是好貓</h3>
+
+<h3>但是java搭node 有搞頭嘛？</h3>
+
+<h3>摻在一起做撒尿牛丸，吃了考一百分？？</h3>
+
+<h3>不只摻在一起，還要用對地方!</h3>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>java 優點</h2>
+
+<ol>
+<li>Java 平台的性能已經的到多年的驗證</li>
+<li>Java 平台上眾多的第三方產品、library 無所不有</li>
+<li>基於 JVM 的動態/函數式語言也給了 Java 平台良好的擴展性</li>
+</ol>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>node 優點</h2>
+
+<ul>
+<li>高效能</li>
+<li>低耗能</li>
+<li>入門容易</li>
+<li>社群支援強</li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>node與java結合的優點</h2>
+
+<ul>
+<li><p>前後端開發更專注</p>
+
+<p>  用 JavaScript 來render頁面，前端工程師就可以有更大的空間，後端工程師也不用和善變的頁面打交道。</p></li>
+<li><p>系統架構更清晰</p>
+
+<p>  使用 Node.js 來render前端頁面，通過 API 獲取後端資料，前後端分離通過標準的API進行互動，讓整個系統架構更加清晰。</p></li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>node與java結合的優點</h2>
+
+<ul>
+<li><p>前後端耦合度降低</p>
+
+<p>  前端想要對頁面進行重構優化的時候也不再需要打擾後端工程師，大家都可以更專注於自己的事情。</p></li>
+<li><p>提供更好的穩定性、擴展性</p>
+
+<p>  Java 只作為後端接口/中間層的實現語言，node 作為前端的呈現</p></li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>node 與 java 整合方式</h2>
+
+<ul>
+<li><p>node server side java</p>
+
+<ul>
+<li><a href="https://github.com/nearinfinity/node-java">node-java</a></li>
+</ul>
+</li>
+<li><p>Independent server side java</p>
+
+<ul>
+<li>restful</li>
+<li>thrift</li>
+<li><a href="http://www.gridshore.nl/2011/07/28/combining-java-and-node-js-through-redis-pubsub-and-a-json-remote-interface/">redis</a></li>
+<li><a href="http://blog.james-carr.org/2010/09/09/rabbitmq-nodejs-and-java-goodness/">rabbit mq</a></li>
+</ul>
+</li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>用script寫java-groovy+Gradle</h2>
+
+<h3><a href="http://groovy.codehaus.org/">groovy</a> &ndash; dynamic java</h3>
+
+<h3><a href="http://gradle.org/">Gradle</a> &ndash; Automation Evolved</h3>
+
+<ul>
+<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
+<li>Gradle：automate
+
+<ul>
+<li>building, testing, publishing, deployment</li>
+<li>generated static websites, generated documentation</li>
+<li>建構於 Ant ,Maven</li>
+</ul>
+</li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>DEMO 1：node-java</h2>
+
+<h2>真的只要兩個指令</h2>
+
+<ol>
+<li><p>gradle clean build jar deploy</p>
+
+<p> 清除>建置>打包>發佈，一路到底！</p></li>
+<li><p>node app.js 啟動</p></li>
+</ol>
+
+
+<h3>生命就該浪費在美好的事物上！</h3>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>build.gradle:How simple?</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>apply plugin: 'java'
+</span><span class='line'>apply plugin: 'groovy'
+</span><span class='line'>apply plugin: 'eclipse'
+</span><span class='line'>repositories {
+</span><span class='line'>    mavenCentral()
+</span><span class='line'>}
+</span><span class='line'>dependencies {
+</span><span class='line'>    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.7.10'
+</span><span class='line'>}
+</span><span class='line'>task deploy(type: Copy) {
+</span><span class='line'>    from 'build/libs/'
+</span><span class='line'>    into '.'
+</span><span class='line'>    include '*.jar'
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我還想要用IDE編java啦：<code>gradle eclipse</code></p>
+
+<p>幫你把 .project .classpath 建好，包括dependencies</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>nodejs:本來就很簡單</h2>
+
+<p>記得 <code>npm install node-java</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">java</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;java&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//groovy need lib</span>
+</span><span class='line'><span class="nx">java</span><span class="p">.</span><span class="nx">classpath</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;groovy-1.7.10.jar&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">java</span><span class="p">.</span><span class="nx">classpath</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;asm-3.2.jar&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">java</span><span class="p">.</span><span class="nx">classpath</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;node-java.jar&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">ArrayList</span> <span class="o">=</span> <span class="nx">java</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;java.util.ArrayList&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ArrayList</span><span class="p">();</span>
+</span><span class='line'><span class="nx">list</span><span class="p">.</span><span class="nx">addSync</span><span class="p">(</span><span class="s1">&#39;item1&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;list get 0=&quot;</span><span class="o">+</span><span class="nx">list</span><span class="p">.</span><span class="nx">getSync</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">JavaHello</span> <span class="o">=</span> <span class="nx">java</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;JavaHello&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">javaHello</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">JavaHello</span><span class="p">();</span>
+</span><span class='line'><span class="nx">javaHello</span><span class="p">.</span><span class="nx">sayHiSync</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">GroovyHello</span> <span class="o">=</span> <span class="nx">java</span><span class="p">.</span><span class="kr">import</span><span class="p">(</span><span class="s1">&#39;GroovyHello&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">groovyHello</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GroovyHello</span><span class="p">();</span>
+</span><span class='line'><span class="nx">groovyHello</span><span class="p">.</span><span class="nx">sayHiSync</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>用 script 寫java</h2>
+
+<h3><a href="http://grails.org/">Grails</a> &ndash; The search is over.</h3>
+
+<ul>
+<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
+<li>URLMappings：Don&rsquo;t Repeat Yourself</li>
+<li>約定優於配置：Convention over Configuration</li>
+<li>自動產生 CRUD 維護畫面：scaffold</li>
+</ul>
+
+
+<h3><a href="http://www.grails.org/Installation">grails install</a></h3>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>DEMO 2-grails with rest api</h2>
+
+<p>一樣很簡單，常用指令：</p>
+
+<ul>
+<li>grails create-app grails-backend：產生初始專案</li>
+<li>create-domain-class [classname]：產生domain物件(ORM)</li>
+<li>create-controller [classname]:產生 controll</li>
+<li><p>create-scaffold-controller [package.path.classname]</p>
+
+<p>  產生controll之外連editor一併建立</p></li>
+<li>run-app：啟動服務</li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>grails幾個重要的config</h2>
+
+<h3>BuildConfig</h3>
+
+<p>設定 dependencies</p>
+
+<h3>BootStrap</h3>
+
+<p>設定初始資料建置</p>
+
+<h3>UrlMappings</h3>
+
+<p>設定 route</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>跨網域 rest 呼叫-BuildConfig</h2>
+
+<p>因為node 與 grails 執行時屬於不同的 http Address，在執行rest 呼叫時會出現下列訊息，可利用grails plugin 來解決</p>
+
+<ul>
+<li>not allowed by Access-Control-Allow-Origin.
+
+<ol>
+<li>grails install-plugin cors</li>
+<li>BuildConfig.groovy: plugins { runtime &ldquo;:cors:1.0.2&rdquo; &hellip; }</li>
+</ol>
+</li>
+</ul>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>需要superuser-BootStrap</h2>
+
+<p>開發過程中，希望可以有預設的superuser，就需要使用 BootStrap</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">UserBootStrap</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">init</span> <span class="o">=</span> <span class="o">{</span> <span class="n">servletContext</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="c1">// Check whether the test data already exists.</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="k">new</span> <span class="nf">User</span><span class="o">(</span><span class="nl">account:</span> <span class="s2">&quot;admin&quot;</span><span class="o">,</span> <span class="nl">password:</span> <span class="s2">&quot;admin&quot;</span> <span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="nl">failOnError:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>      <span class="k">new</span> <span class="nf">User</span><span class="o">(</span><span class="nl">account:</span> <span class="s2">&quot;user&quot;</span><span class="o">,</span> <span class="nl">password:</span> <span class="s2">&quot;user&quot;</span> <span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="nl">failOnError:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">destroy</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>rest ruote define-UrlMappings</h2>
+
+<p>在grails裡ruote定義也是非常簡單的</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">UrlMappings</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">static</span> <span class="n">mappings</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="s2">&quot;/$controller/$action?/$id?&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="s2">&quot;/&quot;</span><span class="o">(</span><span class="nl">view:</span><span class="s2">&quot;/index&quot;</span><span class="o">)</span>
+</span><span class='line'>      <span class="s2">&quot;500&quot;</span><span class="o">(</span><span class="nl">view:</span><span class="s1">&#39;/error&#39;</span><span class="o">)</span>
+</span><span class='line'>      <span class="s2">&quot;/rest/$controller/$id?&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span> <span class="s2">&quot;show&quot;</span><span class="o">,</span> <span class="nl">PUT:</span><span class="s2">&quot;update&quot;</span><span class="o">,</span> <span class="nl">DELETE:</span><span class="s2">&quot;delete&quot;</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="s2">&quot;/rest/$controller&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span><span class="s2">&quot;listAll&quot;</span><span class="o">,</span> <span class="nl">POST:</span> <span class="s2">&quot;create&quot;</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>domain-class</h2>
+
+<p>有經歷過hibernate.cfg 嘛？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">Address</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">country</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">city</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">street</span>
+</span><span class='line'>    <span class="kd">static</span> <span class="n">constraints</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你不會想回去的⋯</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>scaffold-controller</h2>
+
+<p> 輕快很多，寫java也可以很享受</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">AddressController</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">static</span> <span class="n">scaffold</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">listAll</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">render</span> <span class="o">(</span><span class="nl">contentType:</span> <span class="s1">&#39;text/json&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="o">[</span>
+</span><span class='line'>              <span class="nl">items:</span> <span class="n">UserGroup</span><span class="o">.</span><span class="na">list</span><span class="o">(),</span>
+</span><span class='line'>              <span class="nl">totalCount:</span> <span class="n">UserGroup</span><span class="o">.</span><span class="na">count</span><span class="o">()</span>
+</span><span class='line'>          <span class="o">]</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">create</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">update</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kt">def</span> <span class="n">delete</span><span class="o">={</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>nodejs-express+extjs</h2>
+
+<p>不讓大家費心了express 拿來用!前端我使用 extjs</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.store.MN.MNM001.Store&#39;</span> <span class="p">,{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Store&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;rest&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8080/grails-backend/rest/menuGroup/&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">reader</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;items&#39;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">writer</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">write</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nx">operation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h1>real demo</h1>
+
+<p>感受一下node+java的魅力</p>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>以古為師</h2>
+
+<p>作為新時代的宅宅，也要鑑古今來</p>
+
+<p>先賢的智慧就跟優良的程式一樣</p>
+
+<h2>精簡，但語義完整</h2>
+
+<h3>君子寡欲，則不役於物，可以直道而行；</h3>
+
+<h3>小人寡欲，則能謹身節用，遠罪豐家。</h3>
+
+<h6>出處：司馬光：訓儉示康。《溫國文正司馬公文集》卷六十九。</h6>
+
+<hr />
+
+<h4>在下曰：不役於物後，就是成為大大之時，共勉之～</h4>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>工商服務 &ndash; 雲端農場</h2>
+
+<h3>農業：agri-culture</h3>
+
+<h3>雲端：cloud</h3>
+
+<h3><a href="http://agricloud.cc/">agricloud.cc</a></h3>
+
+<h3><a href="http://www.facebook.com/AgriCloud">agricloud 粉絲團</a></h3>
+
+<hr />
+
+<h3>以大賣場的價格</h3>
+
+<h3>享用有履歷的優質柳丁</h3>
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h1>謝謝指教</h1>
+
+<p><a href="https://github.com/smlsunxie">My github</a> &amp; <a href="https://github.com/smlsunxie/nodeWithJavaTest">sample code</a></p></div>
+
+
+
+
+
+      <script src="/javascripts/lib/deck.js/deck.core.js" type="text/javascript"></script>
+      
+        <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+        <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+        <script src="/javascripts/lib/deck.js/deck.navigation.js" type="text/javascript"></script>
+      
+
+      
+        <p class="deck-status">
+          <span class="deck-status-current"></span>
+          /
+          <span class="deck-status-total"></span>
+        </p>
+        <script src="/javascripts/lib/deck.js/deck.status.js" type="text/javascript"></script>
+      
+
+      
+        <form action="." method="get" class="goto-form">
+          <label for="goto-slide">Go to slide:</label>
+          <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+          <datalist id="goto-datalist"></datalist>
+          <input type="submit" value="Go">
+        </form>
+        <script src="/javascripts/lib/deck.js/deck.goto.js" type="text/javascript"></script>
+      
+
+      
+        <a href="." title="Permalink to this slide" class="deck-permalink">#</a>
+        <script src="/javascripts/lib/deck.js/deck.hash.js" type="text/javascript"></script>
+      
+
+      
+        <script src="/javascripts/lib/deck.js/deck.menu.js" type="text/javascript"></script>
+      
+
+      
+
+      <!-- Initialize the deck -->
+      <script>
+        $(function() {
+          $.deck('.slide');
+        });
+      </script>
+    </div>
+    
+      <footer>
+        <p class="meta">
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-22T21:55:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2012</time>
+
+
+</p>
+        
+          <section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/slides/java-with-node.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/slides/java-with-node.html" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+      </footer>
+    
+    &larr; Back to <a href="./index.html">Slides Index</a>
+
+  </article>
+</div>
+
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    <section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2012/12/08/about-write/">關於寫作</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/07/introduce-my-web-site/">introduce my web site</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/07/ireport-use-qrcode/">ireport use qrcode</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/06/ireport-use-scriptlet/">ireport use scriptlet</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/06/agile-java-with-gradle/">agile java with gradle: 使用 gradle 快速開發 java</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/slides/java-with-node.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/slides/java-with-node.html" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2012 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsunxie</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

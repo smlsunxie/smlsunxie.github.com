@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <title>ireport use qrcode - 蹤影.smlsun</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影.smlsun" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span4">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影.smlsun</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span8">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsunxie.github.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+  <div>
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-6292358061841558";
+    /* 320 x 50-1 */
+    google_ad_slot = "5783905650";
+    google_ad_width = 320;
+    google_ad_height = 50;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+Ireport Use Qrcode
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>其實這篇才是最後的目的，讓我們回顧一下系列文章：</p>
+
+<ul>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a></p>
+
+<p>  利用gradle 快速開發java，並且包成jar，所要做的就是下一篇文章scriptlet 會用到的jar</p></li>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a></p>
+
+<p>  說明如何引入自己寫的class在ireport可以使用</p></li>
+</ul>
+
+
+<p>最後所有做的就是</p>
+
+<h2>ireport 產生 QRCode</h2>
+
+<p>So，之前兩篇文章把一些細節都說明過了，就直接進入重點吧！</p>
+
+<p>參考這篇文章</p>
+
+<p><a href="http://stackoverflow.com/questions/7626013/google-zxing-barcode-generator-in-ireport">google-zxing-barcode-generator-in-ireport</a></p>
+
+<p>把第二篇的javacode改寫後，程式碼如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.BarcodeFormat</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.WriterException</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.common.BitMatrix</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.qrcode.QRCodeWriter</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.client.j2se.MatrixToImageWriter</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">QRCodeScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">QRCodeWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QRCodeWriter</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BitMatrix</span> <span class="n">matrix</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">matrix</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">(),</span> <span class="n">BarcodeFormat</span><span class="o">.</span><span class="na">QR_CODE</span><span class="o">,</span> <span class="mi">256</span><span class="o">,</span> <span class="mi">256</span><span class="o">);</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;BarCodeImage&quot;</span><span class="o">,</span> <span class="n">MatrixToImageWriter</span><span class="o">.</span><span class="na">toBufferedImage</span><span class="o">(</span><span class="n">matrix</span><span class="o">)</span> <span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">WriterException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不多說了，重點如下：</p>
+
+<ul>
+<li>需要用的套件與版本，請參考 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a> 的gradle.build，其中 <code>com.google.zxing</code> 主要是要用來產生QRcode</li>
+<li>將你要轉換成QRcode 的文字傳入，此範例用的是 Field ORDERID</li>
+<li>同樣將處理結果塞到 ireport的 Variable，此範例命名為 BarCodeImage</li>
+<li>在此 Variable 的型別為 BufferedImage</li>
+</ul>
+
+
+<p>回到ireport，我們同樣要進行 <a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a> 中，ireport的設定，其中不一樣的是：</p>
+
+<ul>
+<li>Variable 的 type 要改成 java.awt.image.BufferedImage</li>
+<li>然後原本用的是text field 改成用 Image</li>
+<li>Image的type 改成 java.awt.Image</li>
+</ul>
+
+
+<p>上面都處理好，就可以來看結果了</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XWqDIn7kLFs/UMFcwQZq9MI/AAAAAAAALXg/PTyLE0dmsLk/s640/ireport%2520qrcode.jpg" alt="qrcode" /></p>
+
+<p>DONE!!如果有此需求，趕快動手做做看囉～</p>
+
+<h3>請搭配我的github project 服用～</h3>
+
+<blockquote><p><a href="https://github.com/smlsunxie/ireport-qrcode">ireport-qrcode github</a></p></blockquote>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div>
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-6292358061841558";
+    /* 320 x 50-1 */
+    google_ad_slot = "5783905650";
+    google_ad_width = 320;
+    google_ad_height = 50;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-07T10:41:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2012</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/ireport/'>ireport</a>, <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2012/12/06/ireport-use-scriptlet/" title="Previous Post: ireport use scriptlet"><li>&laquo; ireport use scriptlet</li></a>
+          
+          
+            <a class="right" href="/blog/2012/12/07/introduce-my-web-site/" title="Next Post: introduce my web site"><li>introduce my web site &raquo;</li></a>
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    <section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2012/12/08/about-write/">關於寫作</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/07/introduce-my-web-site/">introduce my web site</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/07/ireport-use-qrcode/">ireport use qrcode</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/06/ireport-use-scriptlet/">ireport use scriptlet</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/06/agile-java-with-gradle/">agile java with gradle: 使用 gradle 快速開發 java</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2012 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsunxie</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/';
+        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

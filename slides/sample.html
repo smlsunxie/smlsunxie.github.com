@@ -11,7 +11,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>home - 蹤影.smlsun</title>
+  <title>sample - 蹤影.smlsun</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -24,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/">
+  <link rel="canonical" href="http://smlsunxie.github.com/slides/sample.html">
 
 
 
@@ -53,9 +53,9 @@
 
 <!-- Deck.js -->
 <!-- Style theme. Located in /themes/style/ or create your own. -->
-<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/web-2.0.css" type='text/css'>
 <!-- Transition theme. Located in /themes/transition/ or create your own. -->
-<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/fade.css" type='text/css'>
 
 <!-- Add fancyBox -->
 <link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
@@ -129,7 +129,7 @@
 
 
       <ul class="nav">
-        	<li class="active" >
+        	<li  >
 		<a href="/">Home</a>
 	</li>
   
@@ -205,7 +205,9 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					學習新事物，分享交流的地方，歡迎～
+					
+						sample
+					
 				
 
 				</h2>
@@ -227,46 +229,105 @@
 		<!--start: Container -->
     	<div id="content" class="container">
 
-    		<hr>
+    		<div>
+  <article role="article">
+    <div class="deck-container" id="deck-container" >
+      <div class='slide'><h1>Slide Sample</h1>
 
-<div class="row">
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/blog/"><i class="ico-blog ico-color circle-color big"></i></a>
-            <div class="title"><h3>Blog</h3></div>
-            
-            <p>
-              記錄我的所見所聞 with octpress
-            </p>
+<p>sub title</p>
 
-            <div class="clear"></div>
-        </div>
-  </div>
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/archives/"><i class="ico-show-thumbnails-lines ico-color circle-color big"></i></a>
-            <div class="title"><h3>Archives</h3></div>
-            <p>
-              Blog 列表與發佈歷程
-            </p>
-            <div class="clear"></div>
-        </div>
-  </div>
-  <div class="span4">
-    <div class="icons-box box">
-            <a href="/slides/"><i class="ico-imac ico-color circle-color big"></i></a>
-            <div class="title"><h3>Slides</h3></div>
-            <p>
-              線上簡報 with Deck.js
-            </p>
-            <div class="clear"></div>
-        </div>
-  </div>
+<p></div>
 
 
+<div class='slide'></p>
 
+<h2>slide 1</h2>
+
+<h3>i am slide 1</h3>
+
+<ol>
+<li>A</li>
+<li>B</li>
+<li>C</li>
+</ol>
+
+
+<p></div>
+
+
+<div class='slide'></p>
+
+<h2>slide 2</h2>
+
+<h3>code sample</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">name</span><span class="o">=</span><span class="s2">&quot;smlsun&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">setName</span><span class="p">(</span><span class="nx">_name</span><span class="p">){</span>
+</span><span class='line'>  <span class="nx">name</span><span class="o">=</span><span class="nx">_name</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 </div>
-<hr>
+
+
+
+
+
+      <script src="/javascripts/lib/deck.js/deck.core.js" type="text/javascript"></script>
+      
+        <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+        <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+        <script src="/javascripts/lib/deck.js/deck.navigation.js" type="text/javascript"></script>
+      
+
+      
+        <p class="deck-status">
+          <span class="deck-status-current"></span>
+          /
+          <span class="deck-status-total"></span>
+        </p>
+        <script src="/javascripts/lib/deck.js/deck.status.js" type="text/javascript"></script>
+      
+
+      
+        <form action="." method="get" class="goto-form">
+          <label for="goto-slide">Go to slide:</label>
+          <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+          <datalist id="goto-datalist"></datalist>
+          <input type="submit" value="Go">
+        </form>
+        <script src="/javascripts/lib/deck.js/deck.goto.js" type="text/javascript"></script>
+      
+
+      
+        <a href="." title="Permalink to this slide" class="deck-permalink">#</a>
+        <script src="/javascripts/lib/deck.js/deck.hash.js" type="text/javascript"></script>
+      
+
+      
+        <script src="/javascripts/lib/deck.js/deck.menu.js" type="text/javascript"></script>
+      
+
+      
+
+      <!-- Initialize the deck -->
+      <script>
+        $(function() {
+          $.deck('.slide');
+        });
+      </script>
+    </div>
+    
+      <footer>
+        <p class="meta">
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
 
 
 
@@ -274,6 +335,47 @@
 
 
 
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-22T21:55:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2012</time>
+
+
+</p>
+        
+          <section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/slides/sample.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/slides/sample.html" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+      </footer>
+    
+    &larr; Back to <a href="./index.html">Slides Index</a>
+
+  </article>
+</div>
 
 
    	 	</div>
@@ -339,7 +441,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/index.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/index.html" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/slides/sample.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/slides/sample.html" target="_blank" >Tweet</a>
     
   
   
@@ -405,7 +507,7 @@
 					<div id="footer-menu-links">
 
 						<ul id="footer-nav">
-								<li class="active" >
+								<li  >
 		<a href="/">Home</a>
 	</li>
   

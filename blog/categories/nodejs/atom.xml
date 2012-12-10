@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: nodejs | 蹤影.smlsun]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/nodejs/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-10T12:09:39+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Socket.io 實作聊天室]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/11/02/socket-dot-io-shi-zuo-liao-tian-shi/"/>
+    <updated>2012-11-02T12:17:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/11/02/socket-dot-io-shi-zuo-liao-tian-shi</id>
+    <content type="html"><![CDATA[<p>利用 socket.io 實作聊天室，在以前很難想像要如何控制多個使用者進行realtime的服務，透過socket.io可以很輕易的做到</p>
+
+<h2>功能說明</h2>
+
+<ul>
+<li><p>此專案base是參考下面網站介紹完成的範例:
+<a href="http://iosdevelopersnote.blogspot.tw/2012/09/socketio.html">聊天廣播 - Socket.io</a></p></li>
+<li><p>除了聊天室之外，另外實作了歷史聊天記錄自動載入功能，透過mongohg</p></li>
+<li><p>另外確認若是另一個獨立運作的網頁是否可以使用獨立的node server的服務，如下節說明。</p></li>
+<li>透過聊天室實作可以在延伸其他功能，比如說：
+
+<ul>
+<li>強制所有上線使用者登出</li>
+<li>讀取到RFID觸動網頁進行相關動作</li>
+<li>系統維修時，禁止使用者上線</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>確認即使是外部網頁也可執行socket服務</h2>
+
+<p>請參考 git 中 indepandTest.html 檔案，當app 運作時，在執行此檔案也同要有聊天室的功能</p>
+
+<p>測試即使獨立開啟html(不在server底下開啟)，也可以使用聊天室的功能
+其中只要將</p>
+
+<pre><code>&lt;script type="text/javascript" charset="utf-8" src="socket.io/socket.io.js"&gt;
+</code></pre>
+
+<p>指定為node運行中的服務</p>
+
+<pre><code>&lt;script type="text/javascript" charset="utf-8" src="http://localhost:3000/socket.io/socket.io.js"&gt;
+</code></pre>
+
+<p>就可以執行該server所定義好的功能，確認可行表示若是手機app也可以有realtime的服務，透過socket.io</p>
+
+<h2>git網址</h2>
+
+<p>相關原始碼請參考下列網址</p>
+
+<pre><code>https://github.com/SpookyHty/nodeChatRoom-test
+</code></pre>
+
+<h2>makedown寫網誌</h2>
+
+<ul>
+<li>此網誌是透過makedown完成的
+
+<ul>
+<li>語法可參考<a href="http://markdown.tw/">Markdown 語法說明</a></li>
+<li>練習可使用<a href="http://www.ctrlshift.net/project/markdowneditor/">Online Markdown Editor</a></li>
+</ul>
+
+
+<p>  對於需要寫網址，或者需要將技術文件輸出不同格式，使用markdown可以快速幫你完成</p></li>
+<li><p>此篇文章的原始碼可參考</p>
+
+<pre><code>  https://github.com/SpookyHty/nodeChatRoom-test
+</code></pre>
+
+<p>  中的 README.md</p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

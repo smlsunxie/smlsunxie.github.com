@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: chrome | 蹤影.smlsun]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/chrome/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-10T12:09:39+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[chrome 本地檔案網頁 ajax 請求失敗處理]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/"/>
+    <updated>2012-11-02T21:37:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li</id>
+    <content type="html"><![CDATA[<h1>發生問題環境</h1>
+
+<ol>
+<li><p>開啟本地檔案如：</p>
+
+<pre><code> file://localhost/Users/Spooky/git/MotoExpress-andoid/assets/        www/index.html
+</code></pre></li>
+<li><p>使用jquery之ajax請求如使用者驗證</p></li>
+<li>chrome 在送出ajax的請求後無法取得response</li>
+<li>一般的form有指定action進行submit又可以</li>
+</ol>
+
+
+<h1>需求原因</h1>
+
+<p>期望利用本地網頁驗證在手機上的運作測試，若是都在手機上運作，依次修改到測試將花費很多時間</p>
+
+<h1>解決方式</h1>
+
+<p>chrome 需開啟 --disable-web-security，利用終端機執行下列指令</p>
+
+<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
+</code></pre>
+
+<h1>其他事項</h1>
+
+<p>有一說是開啟 --allow-file-access-from-files即可，經測試ajax請求還是無法正確運作，不信邪可以試試看</p>
+
+<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
