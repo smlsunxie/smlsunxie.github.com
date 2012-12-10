@@ -4,7 +4,7 @@
   <title><![CDATA[Category: warp bootstrap | 蹤影.smlsun]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/warp-bootstrap/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-10T12:40:53+08:00</updated>
+  <updated>2012-12-10T13:36:38+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -39,6 +39,7 @@
 <li>./source/slides index.markdown 目前需自行新增連結項目</li>
 <li>在 ./source/slides 底下的markdown 皆會自動轉換為html</li>
 <li>可以參考 theme的 sample slide.markdown</li>
+<li>新增slides可使用 <code>rake new_sildes</code></li>
 </ul>
 
 

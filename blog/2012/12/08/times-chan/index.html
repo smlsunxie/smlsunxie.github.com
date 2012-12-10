@@ -11,7 +11,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>ireport use scriptlet - 蹤影.smlsun</title>
+  <title>關於陳為廷事件 - 蹤影.smlsun</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -24,7 +24,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/">
+  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/08/times-chan/">
 
 
 
@@ -267,7 +267,7 @@
     
 <h1 class="entry-title">
 
-Ireport Use Scriptlet
+關於陳為廷事件
 
 </h1>
 
@@ -278,81 +278,24 @@ Ireport Use Scriptlet
 
 
   <div class="post-description">
-    <p>在開始之前請容許我發洩一下：</p>
+    <p>最近看了清大生的新聞讓我有感而發，不論對做，但我覺得他很有勇氣，要對一個人沒禮貌，有兩種情形，一個是忍無可忍，一個是講話沒水準，我想陳同學是忍無可忍的狀況，我想現在這環境，應該也有很多忍無可忍的人，但是誰有勇氣站出來說話，試著套論改善的方式，而是得過且過，在媒體的壓力下，做這麼激烈的動作，設身處地的想一下，那需要多大的勇氣，需要怎樣的 才可以讓他做出這樣的舉動。</p>
 
-<p>ireport 的文件真他媽的少阿!</p>
+<p>我想我也是那個不出聲音的人，陳同學的勇氣是需要學習的，以前我沒有做到，但我現再要練習這麼做，表達我的意見，我的感覺，抒發也好，所以我想寫這篇文章。</p>
 
-<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
+<p>如果你也是身在這個地方的人，請停止唱衰，除非你有勇氣像陳同學一樣，不然不要在那邊說風涼話。</p>
 
-<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
+<p>另外之前有看到一篇文章，有一句話我覺得很棒！與大家分享～</p>
 
-<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
+<blockquote><p>「如果你不夠謹慎，報紙會讓你痛恨那些正在被壓迫的人們，同時愛戴那些正在施暴的壓迫者。」
+～Malcolm X</p></blockquote>
 
-<p>開始我們的正題</p>
+<p>提醒我們，做一個智者，不要被謠言左右，眼見為憑，小心求證！做一個公正的人，而不是有顏色的人。</p>
 
-<h2>如何使用 ireport scriptlet</h2>
+<p>文後附上<strong>完整的影片</strong>，至於對錯，請自行評斷～</p>
 
-<p>先來看看java code</p>
+<p><a href="http://www.youtube.com/watch?v=tHA7QEgnTbY">陳為廷轟教長！　15分鐘完整交鋒過程</a></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;titleAddOrderid&quot;</span><span class="o">,</span> <span class="s">&quot;test Scriptlet ORDERID:&quot;</span><span class="o">+</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>java部分</h3>
-
-<p>重點如下：</p>
-
-<ul>
-<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
-<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
-<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
-<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
-<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
-</ul>
-
-
-<p>java部分大概就是這樣了~</p>
-
-<hr />
-
-<h3>接著回到ireport</h3>
-
-<p>需要處理的重點如下：</p>
-
-<ul>
-<li>將打包好的jar加入到ireport的classpath</li>
-<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
-<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
-<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
-</ul>
-
-
-<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
-
-<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
-
-<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
-
-<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
+<p><a href="http://www.nexttv.com.tw/news/realtime/latest/10523520">陳為廷為「發言態度」道歉　盼勿模糊焦點</a></p>
 
   </div>
 
@@ -399,12 +342,12 @@ Ireport Use Scriptlet
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T20:00:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2012-12-08T23:35:00+08:00" pubdate data-updated="true">Dec 8<span>th</span>, 2012</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/ireport/'>ireport</a>, <a class='category' href='/blog/categories/java/'>java</a>
+    <a class='category' href='/blog/categories/時事/'>時事</a>
   
 </span></span>
 
@@ -419,7 +362,7 @@ Ireport Use Scriptlet
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/08/times-chan/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/08/times-chan/" target="_blank" >Tweet</a>
     
   
   
@@ -440,10 +383,10 @@ Ireport Use Scriptlet
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/06/agile-java-with-gradle/" title="Previous Post: agile java with gradle: 使用 gradle 快速開發 java"><li>&laquo; agile java with gradle: 使用 gradle 快速開發 java</li></a>
+            <a class="left" href="/blog/2012/12/07/ireport-use-qrcode/" title="Previous Post: ireport use qrcode"><li>&laquo; ireport use qrcode</li></a>
           
           
-            <a class="right" href="/blog/2012/12/07/ireport-use-qrcode/" title="Next Post: ireport use qrcode"><li>ireport use qrcode &raquo;</li></a>
+            <a class="right" href="/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" title="Next Post: Otcopress + warp bootstrap + deck.js"><li>Otcopress + warp bootstrap + deck.js &raquo;</li></a>
           
         </ul>
 
@@ -549,7 +492,7 @@ Ireport Use Scriptlet
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/08/times-chan/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/08/times-chan/" target="_blank" >Tweet</a>
     
   
   
@@ -694,8 +637,8 @@ Ireport Use Scriptlet
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/';
-        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/';
+        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/08/times-chan/';
+        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/08/times-chan/';
         var disqus_script = 'embed.js';
       
     (function () {
