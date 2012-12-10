@@ -1,0 +1,73 @@
+---
+layout: default
+single: true
+sidebar: false
+---
+
+<div class="row">
+
+    {% if page.sidebar == false or site.default_sidebar == false %}
+    <div class="span12">{% else %}<div class="span9">
+    {% endif %} 
+    {% include post/variables.html %}
+    <div class="post {% if linklog %}linklog{% endif %}" role="article">
+      {% include article.html %}
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          {% include post/meta.html %}
+          {% include custom/post_meta.html %}
+        </p>
+
+        {% unless page.sharing == false %}
+          {% include post/sharing.html %}
+        {% endunless %}
+        <br>
+        <ul class="pagination">
+          {% if page.previous.url %}
+            <a class="left" href="{{page.previous.url}}" title="Previous Post: {{page.previous.title}}"><li>&laquo; {{page.previous.title}}</li></a>
+          {% endif %}
+          {% if page.next.url %}
+            <a class="right" href="{{page.next.url}}" title="Next Post: {{page.next.title}}"><li>{{page.next.title}} &raquo;</li></a>
+          {% endif %}
+        </ul>
+
+        {% include custom/after_post.html %}
+
+
+      </footer>
+    </div>
+
+
+    {% if page.comments == true %}
+    <div class="widget" >
+    {% include comments.html %}
+    </div>
+    {% endif %}
+
+
+  </div>
+  {% unless page.sidebar == false %}
+  <div class="sidebar span3">       
+    {% if site.blog_index_asides.size %}
+      {% include_array blog_index_asides %}
+    {% else %}
+      {% include_array default_asides %}
+    {% endif %}
+
+  </div>
+  {% endunless %}
+
+</div>
+
+
+
+
+
+
+
+
+
+

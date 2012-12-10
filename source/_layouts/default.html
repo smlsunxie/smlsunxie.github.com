@@ -1,0 +1,161 @@
+{% capture root_url %}{{ site.root | strip_slash }}{% endcapture %}
+{% include head.html %}
+<body {% if page.body_id %} id="{{ page.body_id }}" {% endif %} {% if page.sidebar == false %} class="no-sidebar" {% endif %} {% if page.sidebar == 'collapse' or site.sidebar == 'collapse' %} class="collapse-sidebar sidebar-footer" {% endif %}>
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span4">
+					{% include header.html %}
+				</hgroup>
+
+				<nav class="span8">
+			  	{% include navigation.html %}
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				{% if page.title == 'home' %}
+					{{ site.subtitle }}
+				{% else %}
+					{% if page.single %} 
+						Blog 
+					{% else %}
+						{{ page.title }}
+					{% endif %}
+				{% endif %}
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+
+    		{{ content | expand_urls: root_url }}
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	{% if page.sidebar == false %} 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				{% if site.blog_index_asides.size %}
+				  {% include_array blog_index_asides %}
+				{% else %}
+			    {% include_array default_asides %}
+			  {% endif %}
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	{% endif %}
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+							{% include custom/navigation.html %}
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	{% include footer.html %}
+
+
+
+  {% include after_footer.html %}
+
+
+</body>
+</html>

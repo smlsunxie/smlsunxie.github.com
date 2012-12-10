@@ -8,10 +8,10 @@ ssh_user       = "user@domain.com"
 ssh_port       = "22"
 document_root  = "~/website.com/"
 rsync_delete   = false
-deploy_default = "rsync"
+deploy_default = "push"
 
 # This will be configured for you when you run config_deploy
-deploy_branch  = "gh-pages"
+deploy_branch  = "master"
 
 ## -- Misc Configs -- ##
 
@@ -25,6 +25,8 @@ themes_dir      = ".themes"   # directory for blog files
 new_post_ext    = "markdown"  # default new post file extension when using the new_post task
 new_page_ext    = "markdown"  # default new page file extension when using the new_page task
 server_port     = "4000"      # port for preview server eg. localhost:4000
+slides_dir      = "slides"    # directory for slides
+new_slides_ext  = "markdown"  # default new slides file extension when using the new_slides task
 
 
 desc "Initial setup for Octopress: copies the default theme into the path of Jekyll's generator. Rake install defaults to rake install[classic] to install a different theme run rake install[some_theme_name]"
@@ -149,6 +151,42 @@ task :new_page, :filename do |t, args|
     puts "Syntax error: #{args.filename} contains unsupported characters"
   end
 end
+
+# usage rake new_slides[my-cool-slides] or rake new_post['my cool slides'] or rake new_post (defaults to "new-slides")
+desc "Begin new slides in #{source_dir}/#{slides_dir}"
+task :new_slides, :title do |t, args|
+  if args.title
+    title = args.title
+  else
+    title = get_stdin("Enter a title for your slides: ")
+  end
+  raise "### You haven't set anything up yet. First run `rake install` to set up an Octopress theme." unless File.directory?(source_dir)
+  mkdir_p "#{source_dir}/#{slides_dir}"
+  filename = "#{source_dir}/#{slides_dir}/#{title.to_url}.#{new_post_ext}"
+  if File.exist?(filename)
+    abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
+  end
+  puts "Creating new slides: #{filename}"
+  open(filename, 'w') do |slides|
+    slides.puts "---"
+    slides.puts "layout: slides"
+    slides.puts "title: \"#{title.gsub(/&/,'&amp;')}\""
+    slides.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M')}"
+    slides.puts "sidebar: false"
+    slides.puts "deck_theme: web-2.0"
+    slides.puts "deck_transition: fade"
+    slides.puts "deck_navigation: true"
+    slides.puts "deck_status: true"
+    slides.puts "deck_goto: true"
+    slides.puts "deck_hash: true"
+    slides.puts "deck_menu: true"
+    slides.puts "deck_scale: true"
+    slides.puts "---"
+    slides.puts "{% slide first %}"
+    slides.puts "{% endslide %}"
+  end
+end
+
 
 # usage rake isolate[my-post]
 desc "Move all other posts than the one currently being worked on to a temporary stash location (stash) so regenerating the site happens much more quickly."

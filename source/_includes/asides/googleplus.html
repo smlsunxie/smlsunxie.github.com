@@ -1,0 +1,13 @@
+  {% if site.google_plus_one %}
+<section class="span3 {% if site.googleplus_hidden %} googleplus-hidden{% endif %}">
+	<h1>Google +1</h1>
+    {% if site.respectfully_social %}
+      <a rel="tooltip" class="googleplus" title="+1 on Google Plus" class="googleplus-share" href="https://plus.google.com/share?hl=en&url={{site.url}}{{page.url}}" target="_blank">+1</a>
+    {% else %}
+      <div class="g-plusone" data-size="{{ site.google_plus_one_size }}"></div>
+    {% endif %}
+
+</section>
+  {% endif %}
+
+

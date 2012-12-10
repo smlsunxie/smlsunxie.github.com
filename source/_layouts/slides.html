@@ -1,0 +1,65 @@
+---
+layout: default
+---
+<div>
+  <article role="article">
+    <div class="deck-container" id="deck-container" >
+      {{ content }}
+
+      <script src="{{ root_url }}/javascripts/lib/deck.js/deck.core.js" type="text/javascript"></script>
+      {% unless page.deck_navigation == false %}
+        <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+        <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.navigation.js" type="text/javascript"></script>
+      {% endunless %}
+
+      {% unless page.deck_status == false %}
+        <p class="deck-status">
+          <span class="deck-status-current"></span>
+          /
+          <span class="deck-status-total"></span>
+        </p>
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.status.js" type="text/javascript"></script>
+      {% endunless %}
+
+      {% unless page.deck_goto == false %}
+        <form action="." method="get" class="goto-form">
+          <label for="goto-slide">Go to slide:</label>
+          <input type="text" name="slidenum" id="goto-slide" list="goto-datalist">
+          <datalist id="goto-datalist"></datalist>
+          <input type="submit" value="Go">
+        </form>
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.goto.js" type="text/javascript"></script>
+      {% endunless %}
+
+      {% unless page.deck_hash == false %}
+        <a href="." title="Permalink to this slide" class="deck-permalink">#</a>
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.hash.js" type="text/javascript"></script>
+      {% endunless %}
+
+      {% unless page.deck_menu == false %}
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.menu.js" type="text/javascript"></script>
+      {% endunless %}
+
+      {% unless page.deck_scale == false %}
+        <script src="{{ root_url }}/javascripts/lib/deck.js/deck.scale.js" type="text/javascript"></script>
+      {% endunless %}
+
+      <!-- Initialize the deck -->
+      <script>
+        $(function() {
+          $.deck('.slide');
+        });
+      </script>
+    </div>
+    {% unless page.footer == false %}
+      <footer>
+        <p class="meta">{% include post/meta.html %}{% include custom/slides_meta.html %}</p>
+        {% unless page.sharing == false %}
+          {% include post/sharing.html %}
+        {% endunless %}
+      </footer>
+    {% endunless %}
+    {% include custom/after_slides.html %}
+  </article>
+</div>

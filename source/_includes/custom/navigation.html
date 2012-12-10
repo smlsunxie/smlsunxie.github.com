@@ -1,0 +1,16 @@
+	<li {% if page.url == '/index.html' %}class="active"{% endif %} >
+		<a href="{{ root_url }}/">Home</a>
+	</li>
+  
+  <li {% if page.url == '/blog/index.html' %}class="active"{% endif %} >
+  	<a href="{{ root_url }}/blog">Blog</a>
+  </li>
+
+  <li {% if page.url == '/archives/index.html' %}class="active"{% endif %}>
+  	<a href="{{ root_url }}/archives">Archives</a>
+  </li>
+  
+  <li {% if page.url == '/slides/index.html' %}class="active"{% endif %}>
+  	<a href="{{ root_url }}/slides">Slides</a>
+  </li>
+

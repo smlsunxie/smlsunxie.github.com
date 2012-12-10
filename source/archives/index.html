@@ -1,0 +1,47 @@
+---
+layout: default
+title: Blog Archive
+footer: false
+body_id: archive
+sidebar: false
+---
+
+
+
+
+<div class="row">
+
+    {% if page.sidebar == false or site.default_sidebar == false %}
+    <div class="span12">{% else %}<div class="span9">
+    {% endif %} 
+    
+		<div id="blog-archives" class="post">
+		{% for post in site.posts reverse %}
+		{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
+		{% unless year == this_year %}
+		  {% assign year = this_year %}
+		  <h2>{{ year }}</h2>
+		{% endunless %}
+		{% include post/variables.html %}
+		<article {% if linklog %}data-linklog{% endif %}>
+		  {% include archive_post.html %}
+		</article>
+		{% endfor %}
+		</div>    
+
+	</div>
+
+
+
+  {% unless page.sidebar == false %}
+  <div class="sidebar span3">       
+		{% if site.blog_index_asides.size %}
+		  {% include_array blog_index_asides %}
+		{% else %}
+	    {% include_array default_asides %}
+	  {% endif %}
+
+  </div>
+{% endunless %}
+
+</div>

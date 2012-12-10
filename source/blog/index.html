@@ -1,0 +1,52 @@
+---
+layout: default
+title: Blog
+sidebar: false
+---
+
+
+
+<div class="row">
+
+    {% if page.sidebar == false or site.default_sidebar == false %}
+    <div class="span12">{% else %}<div class="span9">
+    {% endif %} 
+    
+    {% for post in paginator.posts %}
+      {% include post/variables.html %}
+    <div class="post {% if linklog %}linklog{% endif %}" >
+      {% include article.html %}
+    </div>
+    {% endfor %}
+
+
+
+    <ul class="pagination">
+      {% if paginator.next_page %}
+        <a class="prev" href="{{paginator.next_page}}"><li>&larr; Older</li></a>
+      {% endif %}
+      <a href="/archives"><li>Blog Archives</li></a>
+      {% if paginator.previous_page %}
+      <a class="next" href="{{paginator.previous_page}}"><li>Newer &rarr;</li></a>
+      {% endif %}
+    </ul>
+
+
+  </div>
+
+
+
+
+  {% unless page.sidebar == false %}
+  <div class="sidebar span3">       
+        {% if site.blog_index_asides.size %}
+          {% include_array blog_index_asides %}
+        {% else %}
+          {% include_array default_asides %}
+        {% endif %}
+  </div>
+{% endunless %}
+
+</div>
+
+

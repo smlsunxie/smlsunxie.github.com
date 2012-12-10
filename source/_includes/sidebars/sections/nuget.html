@@ -1,0 +1,37 @@
+{% if site.nuget_author %}
+<section>
+  <h1>NuGet Packages</h1>
+  <ul id="nuget_pkgs">
+    <li class="loading">Status updating...</li>
+  </ul>
+  {% if site.nuget_user %}
+  <a
+    href="http://nuget.org/profiles/{{site.github_user}}">@{{site.github_user}}</a> on NuGet Gallery
+  {% endif %}
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+    $.ready(function(){
+      if (!window.jXHR){
+        var jxhr = document.createElement('script');
+        jxhr.type = 'text/javascript';
+        jxhr.src = '{{ root_url}}/javascripts/libs/jXHR.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(jxhr, s);
+      }
+    });
+
+    google.load("feeds", "1");
+
+    function initialize() {
+      nuget.showPackages({
+        author: '{{site.nuget_author}}',
+        count: {{site.nuget_package_count}},
+        target: '#nuget_pkgs'
+      });
+    }
+
+    google.setOnLoadCallback(initialize);
+  </script>
+  <script src="{{ root_url }}/javascripts/nuget.js" type="text/javascript"> </script>
+</section>
+{% endif %}
