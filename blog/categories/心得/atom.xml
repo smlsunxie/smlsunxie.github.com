@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: 心得 | 蹤影.smlsun]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/心得/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-10T18:06:29+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[關於寫作]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/10/about-write/"/>
+    <updated>2012-12-10T17:35:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/10/about-write</id>
+    <content type="html"><![CDATA[<p>最近開始有寫作的習慣，漸漸讓我思考關於寫作這件事，
+我其實不是個很有梗的人，但是我覺得寫作可以幫助我：</p>
+
+<ul>
+<li>把我的思緒整理清楚，表達我所要表達的，我想這是我們台灣人，也許是中國人所缺少的，表達自己的意見</li>
+<li>學習思考的更周詳，能夠更快理解事物，</li>
+<li>想辦法把複雜的事說明的更簡單，讓別人理解你的想法</li>
+<li>當你思考的更快，就可做更多事情，做起事來就會有效率，</li>
+<li>會表達自己的意見，才有可能改變環境</li>
+<li>還有很多好處，可參考 <a href="http://caterpillar.onlyfun.net/Gossip/StudyGossip/writing.html">寫作之用與趣</a></li>
+</ul>
+
+
+<p>我想下面是關於大家常常遇到的問題，也是我的親身體驗與轉變</p>
+
+<ul>
+<li>覺得寫作是浪費時間，之前我會這麼想</li>
+<li>覺得沒有時間寫作，之前我也是這麼想</li>
+<li>覺得寫作很麻煩，之前我還是這麼想</li>
+</ul>
+
+
+<p>但是！透過一些工具，以及練習，以前困擾我的都一一被解決，現在我喜愛寫作，因為一些阻礙我寫作的原因消失了，更加練習表達讓我的心思能夠更流暢的被表達出來，當你會思考，才有可能持續改善你周遭的環境。</p>
+
+<p>讓寫作的阻礙降到最低，下面是我認為讓寫作更流暢的方法</p>
+
+<ol>
+<li>一個好鍵盤，利其器才能善其事</li>
+<li>使用markdown，讓你可以快速寫作的而不用在乎排版，包括圖片以超連結都可以很方便使用</li>
+<li>使用octopress可以很方便可以將你的文章發佈至網路上</li>
+</ol>
+
+
+<p>上面的工具，可能不多人知道，因為對於資訊的大量讀取與處理的活動中，發展出一套非常方便得工具組，推薦給大家，寫作的興趣是需要培養的，試著寫幾篇看看，不用太長，當做在寫日記一樣，你也會喜歡上，並享受這樣的過程。</p>
+]]></content>
+  </entry>
+  
+</feed>
