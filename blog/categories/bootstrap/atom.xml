@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bootstrap | 蹤影.smlsun]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/bootstrap/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-10T18:06:29+08:00</updated>
+  <updated>2012-12-10T18:40:45+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -26,7 +26,7 @@
 
 <ul>
 <li>保留 Otcopress 特色，包括程式碼hightlight 特性</li>
-<li>支援 markdown with deck.js slide，使用方法請參考我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octpress-slide-advanced-More/">More Advanced Octpress With Slide Features</a></li>
+<li>支援 markdown with deck.js slide，使用方法請參考我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress With Slide Features</a></li>
 <li>支援bootstrap，習慣使用 bootstrap 的有福了！</li>
 <li>佈景套用 warp bootstrap，主題為magnus，若要自行更換warp bootstrap主題應該會簡單一些</li>
 </ul>

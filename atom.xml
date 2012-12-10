@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影.smlsun]]></title>
   <link href="http://smlsunxie.github.com/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-10T18:06:29+08:00</updated>
+  <updated>2012-12-10T18:40:45+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -79,7 +79,7 @@
 
 <ul>
 <li>保留 Otcopress 特色，包括程式碼hightlight 特性</li>
-<li>支援 markdown with deck.js slide，使用方法請參考我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octpress-slide-advanced-More/">More Advanced Octpress With Slide Features</a></li>
+<li>支援 markdown with deck.js slide，使用方法請參考我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress With Slide Features</a></li>
 <li>支援bootstrap，習慣使用 bootstrap 的有福了！</li>
 <li>佈景套用 warp bootstrap，主題為magnus，若要自行更換warp bootstrap主題應該會簡單一些</li>
 </ul>
@@ -644,16 +644,16 @@
 
 
 
-<title type="html"><![CDATA[More Advanced Octpress with Slide Features]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/11/29/octpress-slide-advanced-More/"/>
+<title type="html"><![CDATA[More Advanced octopress with Slide Features]]></title>
+<link href="http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More/"/>
 <updated>2012-11-29T11:44:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/11/29/octpress-slide-advanced-More</id>
+<id>http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More</id>
 
-      <content type="html"><![CDATA[<p>octpress slide 系列又來了，第三彈！不知道會不會再有續集⋯</p>
+      <content type="html"><![CDATA[<p>octopress slide 系列又來了，第三彈！不知道會不會再有續集⋯</p>
 
 <p>哈～就讓我們繼續看下去～</p>
 
-<p>前一篇：<a href="http://smlsun.com/blog/2012/11/28/octpress-slide-advanced/">Octpress Slide Advanced</a></p>
+<p>前一篇：<a href="http://smlsun.com/blog/2012/11/28/octopress-slide-advanced/">octopress Slide Advanced</a></p>
 
 <p>再上一篇的最後有說到：</p>
 
@@ -954,7 +954,7 @@
 <p>中間都用 <code>{% slide %}</code>把每個段落隔開就OK啦，是不是方便許多，也不會再有忘記關閉block的情形，so easy!</p>
 
 <h2>打完收工！</h2>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/29/octpress-slide-advanced-More/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -963,30 +963,26 @@
 
 
 
-<title type="html"><![CDATA[octpress slide Advanced]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/11/28/octpress-slide-advanced/"/>
+<title type="html"><![CDATA[octopress slide Advanced]]></title>
+<link href="http://smlsunxie.github.com/blog/2012/11/28/octopress-slide-advanced/"/>
 <updated>2012-11-28T15:46:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/11/28/octpress-slide-advanced</id>
+<id>http://smlsunxie.github.com/blog/2012/11/28/octopress-slide-advanced</id>
 
-      <content type="html"><![CDATA[<p>之前為了讓octpress可以根據layout的改變為slide寫了一篇文章</p>
-
-<p><a href="http://smlsun.com/blog/2012/11/21/slide-samble/">octpress support deck.js with markdown</a></p>
-
-<p>後續加上了nav bar，以及footer bar，可以使用share功能</p>
+      <content type="html"><![CDATA[<p>之前為了讓octopress可以根據layout的改變為slide，後續加上了nav bar，以及footer bar，可以使用share功能</p>
 
 <h3>不過！！</h3>
 
 <p>後來看到網路上的大大做了更好的實作</p>
 
 <ul>
-<li><p><a href="http://kmees.github.com/blog/2012/07/07/html-presentations-with-octopress-and-deck-dot-js/">HTML Presentations With Octopress and deck.js</a></p></li>
-<li><p><a href="http://kmees.github.com/blog/2012/07/16/html-presentations-with-octopress-and-deck-dot-js-part-ii/">HTML Presentations With Octopress and deck.js - Part II</a></p></li>
+<li><a href="http://kmees.github.com/blog/2012/07/07/html-presentations-with-octopress-and-deck-dot-js/">HTML Presentations With Octopress and deck.js</a></li>
+<li><a href="http://kmees.github.com/blog/2012/07/16/html-presentations-with-octopress-and-deck-dot-js-part-ii/">HTML Presentations With Octopress and deck.js - Part II</a></li>
 </ul>
 
 
-<p>呈現出來的結果如下：<a href="http://kmees.github.com/slides/rugsaar-octopress.html">octpress with slide advanced</a></p>
+<p>呈現出來的結果如下：<a href="http://kmees.github.com/slides/rugsaar-octopress.html">octopress with slide advanced</a></p>
 
-<p>與 octpress 整合的更好，而且分類與設定更加的完善</p>
+<p>與 octopress 整合的更好，而且分類與設定更加的完善</p>
 
 <p>於是乎，我把該位大大的<a href="https://github.com/kmees/kmees.github.com">github.com/kmees</a> clone 回來調整了一下</p>
 
@@ -1070,7 +1066,7 @@
 <p>呈現起來也不錯，剛剛好這禮拜要去講一個talk，實際完成品 <a href="http://smlsunxie.github.com/slides/java-with-node.html">nodejs+java</a>，整體更一致了！</p>
 
 <p>how about that??試試看囉！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/28/octpress-slide-advanced/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/28/octopress-slide-advanced/"></a></p>]]></content>
     </entry>
   
     <entry>
