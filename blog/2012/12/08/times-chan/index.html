@@ -358,7 +358,7 @@
         </p>
 
         
-          <section id="social-r" class="span3">
+          <section id="social-r">
   <h1>Sharing</h1>
   
     
@@ -440,7 +440,18 @@
 		<div class="container">
 	    	<div class="sidebar row">
 				
-			    <section class="span3">
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
     
@@ -479,16 +490,16 @@
 
 
 <section class="span3">
-  <h1>Latest Tweets</h1>
-  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
-  
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=3&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
 </section>
 
-<section id="social-r" class="span3">
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section><section id="social-r" class="span3">
   <h1>Sharing</h1>
   
     
@@ -509,17 +520,6 @@
 
 </section>
 
-<section class="span3">
-  <h1>On Delicious</h1>
-  <div id="delicious"></div>
-  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=3&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
-  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
-</section>
-
-<section class="span3">
-  <h1>Recent Comments</h1>
-  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
-</section>
 			  
 	   	 	</div>
    	 	</div>
