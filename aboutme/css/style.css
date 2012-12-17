@@ -794,4 +794,99 @@
 	
 
 }
+
+@media only screen and (max-width: 479px) {
+		#container {
+		width:470px;
+	}
+	/*-------------------------------------------------------*/
+		/* Top Section */
+	/*-------------------------------------------------------*/	
+	/* Logo */
+	#logo h2 {
+		font-size:25px;
+		font-weight:900;
+		color: #444;
+		line-height:30px;
+	}
+	#logo h4 {
+		color:#666;
+		line-height:15px;
+	}
+	/* Social icons */
+	.socialicons {
+		margin-top:9px;
+	}
+	.social-text {
+		display:none;
+	}
+	/*-------------------------------------------------------*/
+		/* Profile Section */
+	/*-------------------------------------------------------*/
+	/* About */
+	.about {
+		width:420px;
+		display:block;
+	}
+	.about h1 {
+		line-height:38px;
+		font-size:30px
+	}
+	.about h3 {
+		font-size:14px;
+		line-height:14px;
+	}
+	/* Personal info */
+	.personal-info {
+		margin-top:0;
+		display:block;
+		width:420px;
+		background:none;
+		border-top:1px solid #fdc62a;
+	}
+	.personal-info li span {
+		width:280px;
+	}
+	/*-------------------------------------------------------*/
+		/* Menu */
+	/*-------------------------------------------------------*/
+	.tabs {
+		padding-left:5px;
+	}
+	.timeline-section {
+		width:420px;
+		padding-right:60px;
+	}
+	/*-------------------------------------------------------*/
+		/* Resume */
+	/*-------------------------------------------------------*/
+	.skills-section {
+		width:420px;
+	}
+	.skills li h4 {
+		width:260px;
+	}
+	/*-------------------------------------------------------*/
+		/* Portfolio */
+	/*-------------------------------------------------------*/
+	#portfolio-list {
+		width:450px;
+	}
+	#portfolio-list li {
+		margin-right:40px;
+	}
+	/*-------------------------------------------------------*/
+		/* Contact */
+	/*-------------------------------------------------------*/
+	.contact-info {
+		width:420px;
+	}
+	.contact-form {
+		margin-top:20px;
+		width:420px;
+	}
+	
+
+}
+}
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
