@@ -4,7 +4,7 @@
   <title><![CDATA[Category: design | 蹤影]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/design/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-18T08:41:13+08:00</updated>
+  <updated>2012-12-18T08:46:50+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -20,7 +20,8 @@
     <id>http://smlsunxie.github.com/blog/2012/11/22/Dumb-Ways-to-Die</id>
     <content type="html"><![CDATA[<p>剛剛在查資料時，看到一個有趣的影片</p>
 
-<h2><a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=JKZ27ZPMrRo">youtube-笨笨的死法 Dumb Ways to Die</a></h2>
+<iframe width="560" height="315" src="http://www.youtube.com/embed/JKZ27ZPMrRo" frameborder="0" allowfullscreen></iframe>
+
 
 <p>配著輕快的音樂，輕鬆的把各種死法，輕輕帶過～</p>
 
