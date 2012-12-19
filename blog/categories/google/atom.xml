@@ -4,7 +4,7 @@
   <title><![CDATA[Category: google | 蹤影]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/google/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-19T13:16:42+08:00</updated>
+  <updated>2012-12-19T13:18:35+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -97,17 +97,11 @@ document.write(‘[Code provided by Picasa - Click on "Embed Slideshow" link]‘
 
 <p>效果如下：</p>
 
-<iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe>
-
-
-
-
-<iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.23806882556527853"></iframe>
-
-
-
-
-<iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.29423197102732956"></iframe>
+<ul>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.8656736903358251"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.29423197102732956"></iframe></p></li>
+</ul>
 
 
 <h3>geek最愛的自己煮版：</h3>
