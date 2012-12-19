@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>ireport use scriptlet - 蹤影</title>
+  <title>Category: api - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,6 +26,8 @@
   
   
   
+  <meta name="description" content="Category: api">
+  
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -34,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/">
+  <link rel="canonical" href="http://smlsunxie.github.comblog/categories/api/">
 
 
 
@@ -97,7 +99,7 @@
   <link href="/favicon.png" rel="icon">
 </head>
 
-<body   class="no-sidebar"  >
+<body  id="archive"   >
   
 
   <header role="banner">
@@ -219,8 +221,8 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					 
-						Blog 
+					
+						Category: api
 					
 				
 
@@ -297,235 +299,95 @@
 </div>
 
 <hr>
-    		<div class="row">
-
-    
-    <div class="span12"> 
-    
+    		<div>
+  <article role="article">
 
 
+    <div id="blog-archives" class="category">
 
 
 
-
-
-
-
-
-    <div class="post " role="article">
-      
-<div class="post-content">
-
-
-  <hr>
   
-  <div class="post-title">
-    
+  <h2>2012</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+<article >
+  
+
 <h1 class="entry-title">
 
-Ireport Use Scriptlet
+<a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid Reference</a>
 
 </h1>
 
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在開始之前請容許我發洩一下：</p>
-
-<p>ireport 的文件真他媽的少阿!</p>
-
-<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
-
-<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
-
-<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
-
-<p>開始我們的正題</p>
-
-<h2>如何使用 ireport scriptlet</h2>
-
-<p>先來看看java code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;titleAddOrderid&quot;</span><span class="o">,</span> <span class="s">&quot;test Scriptlet ORDERID:&quot;</span><span class="o">+</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>java部分</h3>
-
-<p>重點如下：</p>
-
-<ul>
-<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
-<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
-<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
-<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
-<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
-</ul>
-
-
-<p>java部分大概就是這樣了~</p>
-
-<hr />
-
-<h3>接著回到ireport</h3>
-
-<p>需要處理的重點如下：</p>
-
-<ul>
-<li>將打包好的jar加入到ireport的classpath</li>
-<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
-<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
-<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
-</ul>
-
-
-<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
-
-<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
-
-<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
-
-<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
-
-  </div>
-
-
-  
-
-
-
-</div>
-      <hr>
-      <footer>
-
-
-        <p class="meta">
-          
-  
-
-<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T20:00:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
-
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/ireport/'>ireport</a>, <a class='category' href='/blog/categories/java/'>java</a>
-  
-</span></span>
-
-
-
-          
-
-        </p>
-
-        
-          <section id="social-r">
-  <h1>Sharing</h1>
-  
-    
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
-    
+<time datetime="2012-12-19T08:59:00+08:00" pubdate><span class='month'>Dec</span> <span class='day'>19</span> <span class='year'>2012</span></time>
+<footer>
   
   
-    
-      <div class="g-plusone" data-size="medium"></div>
-    
+  
+  <span class="categories">posted in <a class='category' href='/blog/categories/jekyll/'>Jekyll</a>, <a class='category' href='/blog/categories/liquid/'>Liquid</a>, <a class='category' href='/blog/categories/api/'>api</a></span>
   
   
-    
-      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-    
-  
-  
-
-</section>
-
-        
-        <br>
-        <ul class="pagination">
-          
-            <a class="left" href="/blog/2012/12/06/agile-java-with-gradle/" title="Previous Post: agile java with gradle: 使用 gradle 快速開發 java"><li>&laquo; agile java with gradle: 使用 gradle 快速開發 java</li></a>
-          
-          
-            <a class="right" href="/blog/2012/12/07/ireport-use-qrcode/" title="Next Post: ireport use qrcode"><li>ireport use qrcode &raquo;</li></a>
-          
-        </ul>
-
-        
+</footer>
 
 
-      </footer>
-    </div>
+
+</article>
 
 
-    
-    <div class="widget" >
-    <section>
-  <h1>Comments</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+<article >
   
 
-  
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  
-</section>
+<h1 class="entry-title">
 
-    </div>
-    
+<a href="/blog/2012/12/19/google-api/">Google Api 的使用簡介-map & Picasa</a>
 
+</h1>
 
-  </div>
+<time datetime="2012-12-19T08:20:00+08:00" pubdate><span class='month'>Dec</span> <span class='day'>19</span> <span class='year'>2012</span></time>
+<footer>
   
+  
+  
+  <span class="categories">posted in <a class='category' href='/blog/categories/api/'>api</a>, <a class='category' href='/blog/categories/google/'>google</a>, <a class='category' href='/blog/categories/map/'>map</a></span>
+  
+  
+</footer>
+
+
+
+</article>
 
 </div>
 
+    
+  </article>
+  
 
-
-
-
-
-
-
-
+  
+</div>
 
 
 <hr>
@@ -559,96 +421,7 @@ Ireport Use Scriptlet
 
 
 
- 	 
-	<div id="wrapper">	
-		<div class="container">
-	    	<div class="sidebar row">
-				
-			    
-<section class="span3">
-  <h1>Latest Tweets</h1>
-  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
-  
-</section>
-
-<section class="span3">
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li>
-        <a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid reference</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/19/google-api/">google api 的使用簡介-map & picasa</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/18/london-taxi/">態度的重要-從倫敦計程車司機的專業來看</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/16/about-east-west-religion/">從東西方宗教來看東西方差異</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/13/news-15k/">關於產業會議的15K</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section class="span3">
-  <h1>On GitHub</h1>
-  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
-  
-</section>
-
-
-<section class="span3">
-  <h1>On Delicious</h1>
-  <div id="delicious"></div>
-  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=3&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
-  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
-</section>
-
-<section class="span3">
-  <h1>Recent Comments</h1>
-  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
-</section><section id="social-r" class="span3">
-  <h1>Sharing</h1>
-  
-    
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
-    
-  
-  
-    
-      <div class="g-plusone" data-size="medium"></div>
-    
-  
-  
-    
-      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-    
-  
-  
-
-</section>
-
-			  
-	   	 	</div>
-   	 	</div>
-  	</div>
-  	
+ 	
 
 <!-- 
 <div id="footer">
@@ -775,10 +548,7 @@ Ireport Use Scriptlet
 			var disqus_developer = '';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/';
-        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

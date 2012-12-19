@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Liquid | 蹤影]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/liquid/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-19T10:58:40+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Jekyll Liquid reference]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
+    <updated>2012-12-19T08:59:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference</id>
+    <content type="html"><![CDATA[<p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
+
+<p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>
+
+<ul>
+<li>官方網站：<a href="http://liquidmarkup.org/">Liquid</a></li>
+<li>wiki：<a href="https://github.com/mojombo/jekyll/wiki">Liquid wiki</a></li>
+</ul>
+
+
+<p>節錄幾個我覺得比較重要的章節</p>
+
+<ul>
+<li>markdown文檔檔頭的說明：<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter">YAML Front Matter</a></li>
+<li>各種參數讀取方式：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">Template Data</a></li>
+<li><p>設計人員參考手冊：<a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">Liquid for Designers</a></p>
+
+<p>  包含比如說replace這樣替換字元的說明，還有一些常用的tag說明</p></li>
+<li><p>開發人員參考手冊：<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers">Liquid for Programmers</a></p>
+
+<p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
+<li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
+
+<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>{% post_url 2010-07-21-name-of-post %}</code>取得文章連接。</p></li>
+</ul>
+
+
+<p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
+
+<h3>Have Fun!!</h3>
+]]></content>
+  </entry>
+  
+</feed>
