@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsunxie.github.com/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-19T10:58:40+08:00</updated>
+  <updated>2012-12-19T12:33:58+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -119,6 +119,35 @@
 
 
 <p>差就差在是用flash作的，如果你不 care iphone的用戶(沒有flash)，這應該可以幫你節省維護照片(以資料夾為單位)，以及將照片放在web site的時間(複製連接)，picasa就可以很方便管理你的照片，</p>
+
+<h3>更正：原來有人提出iphone，使用picasa slide 的解決方案了如下：</h3>
+
+<h4><a href="http://www.jaillon.com/blog/2010/06/04/how-to-make-picasa-flash-based-slideshow-iphone-friendly/">How to make Picasa flash-based slideshow iPhone-friendly</a></h4>
+
+<p>加入下面js code 就可以解決，wow～ 我不想自己煮了！哈哈</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">language</span><span class="o">=</span><span class="nx">javascript</span><span class="o">&gt;</span>
+</span><span class='line'><span class="k">if</span><span class="p">((</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPhone/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPod/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPad/i</span><span class="p">)))</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">slideshow</span> <span class="nx">link</span><span class="p">]</span><span class="err">“</span><span class="o">&gt;&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">an</span> <span class="nx">image</span> <span class="nx">from</span> <span class="nx">the</span> <span class="nx">slideshow</span><span class="p">]</span> <span class="nx">width</span><span class="o">=</span><span class="err">”</span><span class="mi">600</span><span class="err">″</span> <span class="o">/&gt;&lt;</span><span class="err">/a&gt;’);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="p">[</span><span class="nx">Code</span> <span class="nx">provided</span> <span class="nx">by</span> <span class="nx">Picasa</span> <span class="o">-</span> <span class="nx">Click</span> <span class="nx">on</span> <span class="s2">&quot;Embed Slideshow&quot;</span> <span class="nx">link</span><span class="p">]</span><span class="err">‘</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h3>geek最愛的自己煮版：</h3>
 

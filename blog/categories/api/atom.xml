@@ -4,7 +4,7 @@
   <title><![CDATA[Category: api | 蹤影]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/api/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-19T10:58:40+08:00</updated>
+  <updated>2012-12-19T12:33:58+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -108,6 +108,28 @@
 
 
 <p>差就差在是用flash作的，如果你不 care iphone的用戶(沒有flash)，這應該可以幫你節省維護照片(以資料夾為單位)，以及將照片放在web site的時間(複製連接)，picasa就可以很方便管理你的照片，</p>
+
+<h3>更正：原來有人提出iphone，使用picasa slide 的解決方案了如下：</h3>
+
+<h4><a href="http://www.jaillon.com/blog/2010/06/04/how-to-make-picasa-flash-based-slideshow-iphone-friendly/">How to make Picasa flash-based slideshow iPhone-friendly</a></h4>
+
+<p>加入下面js code 就可以解決，wow～ 我不想自己煮了！哈哈</p>
+
+<p>``` javascript</p>
+
+<script language=javascript>
+if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i)))
+{
+document.write(‘<a href=”[URL to slideshow link]“><img src=”[URL to an image from the slideshow] width=”600″ /></a>’);
+}
+else
+{
+document.write(‘[Code provided by Picasa - Click on "Embed Slideshow" link]‘);
+}
+</script>
+
+
+<p>```</p>
 
 <h3>geek最愛的自己煮版：</h3>
 
