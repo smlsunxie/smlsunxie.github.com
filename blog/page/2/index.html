@@ -325,6 +325,261 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
+
+<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
+
+<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
+
+<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
+
+<hr />
+
+<p>怎麼辦！？介紹大家一帖好藥</p>
+
+<h2>Gradle</h2>
+
+<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
+
+<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
+
+<p>然後編輯build.gradle，內容如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;java&#39;</span>
+</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">repositories</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">mavenCentral</span><span class="o">()</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.google.zxing&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;javase&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;2.1&#39;</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;net.sf.jasperreports&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;jasperreports&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;5.0.0&#39;</span>
+</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.lowagie&#39;</span><span class="o">,</span> <span class="nl">name:</span><span class="s1">&#39;itext&#39;</span><span class="o">,</span> <span class="nl">version:</span><span class="s1">&#39;2.1.7&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
+
+<p><a href="http://search.maven.org/">maven Central Repository</a></p>
+
+<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
+
+<p>接著我們只要在Terminal鍵入下列指令：</p>
+
+<p><code>gradle build jar</code></p>
+
+<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
+
+<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
+
+<p><code>gradle eclipse</code></p>
+
+<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
+
+<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
+
+<p>如何？還不趕快試試看阿！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-06T18:04:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/agile-java-with-gradle/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/agile-java-with-gradle/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2012/12/06/ireport-map-component/">Introduction Ireport Component: Map 地圖</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>今天來為大家介紹 ireport 的新元件</p>
+
+<h2>Map component</h2>
+
+<p>此Map不是java.util.Map，是google Map 的Map 不要搞錯了喔！</p>
+
+<p>不然各位還以為我在廢話，java.util.Map 哪需要我介紹～</p>
+
+<p>就在 11月底的時候 ireport release 5.0</p>
+
+<p>我就想說來看看他多了什麼功能，畢竟我從 2.0一路用上來</p>
+
+<p>到了5字頭，來看看有什麼新的玩意，查了一下 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-5.0.0/">changelog</a>，重點是下列兩項：</p>
+
+<ul>
+<li>Full support for JasperReports 5.0.0</li>
+<li>Improved map component</li>
+</ul>
+
+
+<p>試了一下，使用起來不會太難，幾個比較做要的參數可以參考官方的範例</p>
+
+<p><a href="http://jasperreports.sourceforge.net/sample.reference/map/index.html">JasperReports - Map Component Sample (version 5.0.0)</a></p>
+
+<p>其中，此元件需要輸入的是座標，可以下下列網址查你要的地址</p>
+
+<p><a href="http://www.agenciacreativa.net/coordenadas_google_maps.php">座標查詢網址</a></p>
+
+<p>接著，要記得設置zoom 的參數，讓你的地圖可以看到比較詳細的街道，可以看一下我完成的範例如下</p>
+
+<p><img src="https://lh6.googleusercontent.com/-vpj2Wl0Tqsw/UMBQ4pGbobI/AAAAAAAALXE/UJrkevqrC58/s640/ireport%2520map.jpg" alt="img" /></p>
+
+<p>不錯吧！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-06T15:15:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/ireport-map-component/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/ireport-map-component/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/12/03/reading-experience-being-geek/">Reading experience:Being Geek 晉升怪傑</a>
 
 </h1>
@@ -1499,387 +1754,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/">Chrome 本地檔案網頁 Ajax 請求失敗處理</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h1>發生問題環境</h1>
-
-<ol>
-<li><p>開啟本地檔案如：</p>
-
-<pre><code> file://localhost/Users/Spooky/git/MotoExpress-andoid/assets/        www/index.html
-</code></pre></li>
-<li><p>使用jquery之ajax請求如使用者驗證</p></li>
-<li>chrome 在送出ajax的請求後無法取得response</li>
-<li>一般的form有指定action進行submit又可以</li>
-</ol>
-
-
-<h1>需求原因</h1>
-
-<p>期望利用本地網頁驗證在手機上的運作測試，若是都在手機上運作，依次修改到測試將花費很多時間</p>
-
-<h1>解決方式</h1>
-
-<p>chrome 需開啟 &#8211;disable-web-security，利用終端機執行下列指令</p>
-
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
-</code></pre>
-
-<h1>其他事項</h1>
-
-<p>有一說是開啟 &#8211;allow-file-access-from-files即可，經測試ajax請求還是無法正確運作，不信邪可以試試看</p>
-
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files
-</code></pre>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-11-02T21:37:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/">精實創業讀後 心得重點</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h1>前言</h1>
-
-<p>本篇內容只涵蓋本書後半步，所以並不是書本的全部內容，提醒觀看的網友，作為無創業經驗的人而言是個不錯的參考書，當然實際創業狀況，永遠比想像中的複雜，這是必須要知道的，正所謂師父引進門，修行就看個人還有天份了～</p>
-
-<h1>成長引擎</h1>
-
-<ul>
-<li>付費式
-
-<ul>
-<li>顧客終身價值（LTY,lifttime value）顧客在其使用系統的生命中支付若干費用於產品中，扣除變動成本後剩下的數目就是LTY</li>
-<li>爭取成本(CPA,cost per acquisition) 假設刊登一個廣告需要100元，爭取到50個客戶，表示CPA為2元</li>
-<li>若顧客的終身價值 大於 爭取成本 2 美元，表示公司有在成長，差距大小決定公司成長的速度</li>
-<li>若成長方式屬於付費式，迫切需要業戶支援</li>
-</ul>
-</li>
-<li>病毒式
-
-<ul>
-<li>必須要能快速散布</li>
-<li>可用並病毒係數來評估，假設每10人可推薦一人表示病毒係數為0.1</li>
-<li>首要任務為想辦法增大病毒係數</li>
-<li>不直接收費，靠廣告收入</li>
-<li>怕阻礙顧客燈登記，招集朋友的磨擦力</li>
-<li>一開始收費是笨的行為，影響成長率</li>
-<li>若是採用病毒式，則應該著重於在病毒循環中改變使用者行為，而不要理會與改變行為無關的工作</li>
-</ul>
-</li>
-<li>黏著式
-
-<ul>
-<li>長期吸引顧客</li>
-<li>需注意客戶流失率</li>
-<li>新客戶獲取率大於客戶流失率表示有成長</li>
-</ul>
-</li>
-<li>建議初創事業一次只用一種成長引擎</li>
-</ul>
-
-
-<h1>重點</h1>
-
-<ul>
-<li>功能需小量生產，儘快驗證</li>
-<li>大量生產不一定效率好-裝信封事件</li>
-<li>在開始開發前必須擬好實驗假設</li>
-<li>循環機制 開發-評估-學習 為工作順序</li>
-<li>企劃的順序是相反地，需先確定學習方向</li>
-<li>要能夠及早發現事實的真相，透過小量生產</li>
-<li><strong>初創事業必須將心力放在可以獲得驗證後學習心得的重要實驗上，而成長引擎架構可協助集中注意力</strong></li>
-</ul>
-
-
-<h1>初創投入方向</h1>
-
-<ul>
-<li>廣告或行銷方向</li>
-<li>提昇產品品質或功能</li>
-<li>提高客戶轉換率或改變產品價格</li>
-</ul>
-
-
-<h1>舊客戶帶動成長有四種</h1>
-
-<ul>
-<li>口耳相傳</li>
-<li>使用產品附加價值</li>
-<li>廣告刺激</li>
-<li>重覆購買或使用</li>
-</ul>
-
-
-<h1>創新審核法(第七章)</h1>
-
-<p>待補</p>
-
-<h1>適應</h1>
-
-<ul>
-<li>如果沒有即時解決或忽略問題，造成瑕疵，將拖慢事業的發展，因為瑕疵會導致工作需要重做，打擊士氣，顧客抱怨等</li>
-<li>需要盡早把產品送交顧客，任何與學習顧客行為無關的額外工作都是浪費</li>
-<li>若在產品品質，設計或基礎上抄近路，明天可能拖慢公司的發展</li>
-<li><strong>重要也提醒自己：</strong>若沒有員工訓練課程，新進員工將容易出錯，造成其他人工作也受拖累</li>
-<li><strong>五個為什麼</strong> 主要是要將問題根源找出來，並且加以修正，進而加強基礎建設，控制發展速度，問題越多，就應該速度減慢</li>
-<li>五個為什麼若使用不當會變成五大指責，建議問題波及的每個人都要出席，經驗來看，沒出席的人會被當做箭靶，菜鳥會被換掉，若是高層就就認為不可能改變他的行為，這樣的假設指責都是不正確的</li>
-<li>當指責發生時，與會高層應要重覆下句真言：<strong>如果錯誤真的發生了我們應該為如此輕易就發生這種錯誤感到羞愧</strong></li>
-<li>不要怕改變生產環境干擾或阻礙生產過程(若是工程師都會怕這樣的事)，如果真的發生問題，要立即解決，避免下一個員工犯同樣的錯</li>
-<li>五個為什麼需要互信，與充分授權的環境</li>
-<li>五個為什麼簡易版
-
-<ul>
-<li>初次犯錯採寬容態度</li>
-<li>絕不允許同樣錯誤再次出現</li>
-</ul>
-</li>
-<li>簡化版本在長期使用後效力會減弱</li>
-<li>五個為什麼還須要負責人，進行工作指派，並且需有比例式投資方案</li>
-<li>五個為什麼有三個重要的事情不可忽略
-
-<ul>
-<li>通常包袱問題會很容易在五個為什麼會議出現，若沒有出現，表示其實並沒有那麼嚴重</li>
-<li><strong>不管有多忙</strong> 相關人員都不需參加會議，若不這樣做很不符合經濟效益</li>
-<li>每次會議開始都必須說明五個為什麼的過程與原因，以及對沒有使用過這系統可能帶來的好處</li>
-</ul>
-</li>
-<li>一個稱職的五個為什麼有兩個作用，<strong>學習與執行</strong></li>
-<li>淨宣傳評分(Net Promoter Score)追蹤調查法，評估客戶對產品的滿意度，可以得知客戶對產品的真正想法</li>
-<li>成功將瀑布式改成精實的初創事業有三個措施
-
-<ul>
-<li>所有團隊都必須參與開發新技術，與新流程新系統的工作</li>
-<li>當有絕佳構想時，成立跨功能小組負責執行</li>
-<li>每一項功能從發想開始，都必須有顧客的參與</li>
-</ul>
-</li>
-<li>必須注重團隊學習能力，而不是工作效率，讓工程師與顧客開會一般來說，會認為是浪費時間，關鍵在於溝通</li>
-</ul>
-
-
-<h1>創新</h1>
-
-<ul>
-<li>關鍵概念
-
-<ul>
-<li>貧乏確穩固的資源
-
-<ul>
-<li>資金必須絕對安全沒有變動之虞</li>
-</ul>
-</li>
-<li>發展事業的獨立自由權
-
-<ul>
-<li>充分的自主權，不需向上請示才能開始設計與實驗</li>
-<li>強烈建議初創團隊必須完全跨功能化，做出產品必須寄的出去，具有實際功能的產品，而不只是雛形產品</li>
-<li>移交工作或等待批准都會拖慢循環機制，也會抑制學習成果與責任感</li>
-<li>如此程度的自主權會造成母公司恐慌，所以用下列建議紓緩恐慌</li>
-</ul>
-</li>
-<li>在成果中分享屬於個人的戰利品
-
-<ul>
-<li>職稱上的授與</li>
-<li>獎勵必須有客觀的標準</li>
-</ul>
-</li>
-<li>創造一個實驗平台
-
-<ul>
-<li>保護母公司不受內部初創事業影響</li>
-<li>背著母公司進行創新可能帶來長期負面後果，比如說失去信任，隱瞞這麼大的事</li>
-<li>創造一個創新沙盤
-
-<ul>
-<li>必須有團隊從頭監看整個實驗</li>
-<li>實驗不可超過既定時間</li>
-<li>實驗客戶不可超過既定數目</li>
-<li>每項實驗必須依照一份5~10項的可行指標的標準報告進行評估</li>
-<li>每個沙盤內工作團隊製作出來的產品必須用相同的數據進行評估</li>
-<li>設計實驗團隊必須在實驗進行中持續監測數據與顧客反應(如客服中心來電，社群媒體)</li>
-</ul>
-</li>
-<li>沙盤一開始不要太大，如定價，要有明確的領導人</li>
-</ul>
-</li>
-<li>舊制度造成的問題大半是無形的，新制度的問題都是明確的，必須認為降低生產力是過度時期必然的現象</li>
-</ul>
-</li>
-</ul>
-
-
-<h1>結語</h1>
-
-<ul>
-<li>最傷人的概念：工人的地位只比自動化機器高一點;精實製造重新發現每位工人內藏的智慧與進取心</li>
-<li>彼得。杜拉克：用高效率工作當然沒有什麼浪費可言，問題在於這些根本是不應該做的工作</li>
-<li>減少工作數目，提昇工作品質，將低失敗的機率</li>
-<li>戴明：重點不在設定量的目標，而是在修正達成目標的方式</li>
-<li>需確認工作項目依據的基本假設可以被測試的程度，必須用嚴格的標準來看待新產品</li>
-<li>人們總是根據直覺來決定新項目的生死而不是根據事實來挑選</li>
-<li>任何時後一個團隊若藉<strong>學習</strong>之名，試著為其失敗做辯解也是偽科學，或者數據上的造假，沒有充分的證據</li>
-<li>如再一次重覆週期得到某些資訊，就應該在下次週期將資訊轉化為驗證後的學習心得。且必須模擬出一個顧客行為模式，然後證明使用我們的產品或服務可以對這模式造成改變，如此才能為願景的有效性建立起真正的事實</li>
-<li>必須時刻警惕絕不能讓成功在轉軸與最小可行性產品出現偽科學現象</li>
-<li>偽科學造就制式工作勝於創意工作，機械會勝於人性化，計畫勝於敏捷性，必須仰賴後來產生的大量管理運動進行糾正</li>
-<li>需要制定明確的方法督促團隊對驗證後的學習心得負起應盡的責任。方法：<strong>以定義明確的財務模式與成長引擎為基礎的創新審核法</strong></li>
-<li>速度與品質在追求顧客長期利益的過程中是可以並存的;對於最初的願景應該：儘快測試他，而不是捨棄他; 應該杜絕浪費，而不是製造高不可攀的品質標準;應該利用敏捷法來達成，並且在現有事業結果上做突破</li>
-<li>面對失敗與退步必須用誠實與學習的心態來看待，而不應該互相夠控訴或指責，這麼做只會讓發展速度變慢，為了防範指責</li>
-<li>最重要的是，不要浪費他人的時間</li>
-</ul>
-
-
-<h1>必讀資訊</h1>
-
-<ul>
-<li>史帝夫。布蘭克-頓悟的四個步驟</li>
-<li>大衛。麥克路爾-私人公司初創指標</li>
-</ul>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-11-02T14:46:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1957,6 +1831,14 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid reference</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/19/google-api/">google api</a>
+      </li>
+    
+      <li>
         <a href="/blog/2012/12/18/london-taxi/">態度的重要-從倫敦計程車司機的專業來看</a>
       </li>
     
@@ -1966,14 +1848,6 @@
     
       <li>
         <a href="/blog/2012/12/13/news-15k/">關於產業會議的15K</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/10/about-write/">關於寫作</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/">Otcopress + warp bootstrap + deck.js</a>
       </li>
     
   </ul>

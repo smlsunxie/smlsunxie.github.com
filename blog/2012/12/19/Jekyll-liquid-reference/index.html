@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>chrome 本地檔案網頁 ajax 請求失敗處理 - 蹤影</title>
+  <title>Jekyll Liquid reference - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,7 @@
   
   
   
-  
+  <meta name="keywords" content="Jekyll,Liquid,api,wiki">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/">
+  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/">
 
 
 
@@ -323,7 +323,7 @@
     
 <h1 class="entry-title">
 
-Chrome 本地檔案網頁 Ajax 請求失敗處理
+Jekyll Liquid Reference
 
 </h1>
 
@@ -334,36 +334,36 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
 
 
   <div class="post-description">
-    <h1>發生問題環境</h1>
+    <p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
 
-<ol>
-<li><p>開啟本地檔案如：</p>
+<p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>
 
-<pre><code> file://localhost/Users/Spooky/git/MotoExpress-andoid/assets/        www/index.html
-</code></pre></li>
-<li><p>使用jquery之ajax請求如使用者驗證</p></li>
-<li>chrome 在送出ajax的請求後無法取得response</li>
-<li>一般的form有指定action進行submit又可以</li>
-</ol>
+<ul>
+<li>官方網站：<a href="http://liquidmarkup.org/">Liquid</a></li>
+<li>wiki：<a href="https://github.com/mojombo/jekyll/wiki">Liquid wiki</a></li>
+</ul>
 
 
-<h1>需求原因</h1>
+<p>節錄幾個我覺得比較重要的章節</p>
 
-<p>期望利用本地網頁驗證在手機上的運作測試，若是都在手機上運作，依次修改到測試將花費很多時間</p>
+<ul>
+<li>markdown文檔檔頭的說明：<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter">YAML Front Matter</a></li>
+<li>各種參數讀取方式：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">Template Data</a></li>
+<li><p>設計人員參考手冊：<a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">Liquid for Designers</a></p>
 
-<h1>解決方式</h1>
+<p>  包含比如說replace這樣替換字元的說明，還有一些常用的tag說明</p></li>
+<li><p>開發人員參考手冊：<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers">Liquid for Programmers</a></p>
 
-<p>chrome 需開啟 &#8211;disable-web-security，利用終端機執行下列指令</p>
+<p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
+<li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
 
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
-</code></pre>
+<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>{% post_url 2010-07-21-name-of-post %}</code>取得文章連接。</p></li>
+</ul>
 
-<h1>其他事項</h1>
 
-<p>有一說是開啟 &#8211;allow-file-access-from-files即可，經測試ajax請求還是無法正確運作，不信邪可以試試看</p>
+<p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
 
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files
-</code></pre>
+<h3>Have Fun!!</h3>
 
   </div>
 
@@ -397,14 +397,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-11-02T21:37:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2012-12-19T08:59:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time>
 
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/chrome/'>chrome</a>
-  
-</span></span>
 
 
 
@@ -417,7 +411,7 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/" target="_blank" >Tweet</a>
     
   
   
@@ -438,10 +432,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/" title="Previous Post: 精實創業讀後 心得重點"><li>&laquo; 精實創業讀後 心得重點</li></a>
+            <a class="left" href="/blog/2012/12/19/google-api/" title="Previous Post: google api"><li>&laquo; google api</li></a>
           
-          
-            <a class="right" href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/" title="Next Post: rework 工作大解放 讀後心得"><li>rework 工作大解放 讀後心得 &raquo;</li></a>
           
         </ul>
 
@@ -582,7 +574,7 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/" target="_blank" >Tweet</a>
     
   
   
@@ -731,8 +723,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/';
-        var disqus_url = 'http://smlsunxie.github.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/';
+        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/';
+        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/';
         var disqus_script = 'embed.js';
       
     (function () {
