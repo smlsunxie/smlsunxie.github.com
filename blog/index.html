@@ -325,6 +325,89 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/12/20/jekyll-invalid-us-ascii/">Jekyll Invalid Us-ascii 處理</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>今天在用使用 <a href="http://jekyllbootstrap.com/">Jekyll + Bootstrap</a> 架站時，剛好在試文章分類 category 是否可接收中文，結果～叭叭，沒辦法，網頁出現像下面訊息</p>
+
+<h3>invalid byte sequence in US-ASCII</h3>
+
+<p>我想應該因為 Jekyll + Bootstrap 如果有定義分類 category 當他在generate 的時候資料夾就會跟 category 來分類產生的html，所以網址的部份也會變成中文。</p>
+
+<p>試了網路上的方法，也就是在.profile 中加入 utf-8 的編碼方式，還是沒有辦法解決此問題，不過正想說算了就避開使用英文，後來看到有人說上傳的github上後github自動產生的頁面就沒此問題，怪哉！姑且一試，耶～真的可以耶！至少實際上線時是沒問題的，給大家參考，如果有辦法可以解決本機編碼的問題請讓我知道，ok～</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-20T15:28:00+08:00" pubdate data-updated="true">Dec 20<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/20/jekyll-invalid-us-ascii/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid Reference</a>
 
 </h1>
@@ -531,7 +614,7 @@
 <ul>
 <li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe></p></li>
 <li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.8656736903358251"></iframe></p></li>
-<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.29423197102732956"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=0379d2806253627616f18543a1054903&amp;r=0.36253471905365586"></iframe></p></li>
 </ul>
 
 
@@ -1362,157 +1445,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在開始之前請容許我發洩一下：</p>
-
-<p>ireport 的文件真他媽的少阿!</p>
-
-<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
-
-<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
-
-<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
-
-<p>開始我們的正題</p>
-
-<h2>如何使用 ireport scriptlet</h2>
-
-<p>先來看看java code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;titleAddOrderid&quot;</span><span class="o">,</span> <span class="s">&quot;test Scriptlet ORDERID:&quot;</span><span class="o">+</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>java部分</h3>
-
-<p>重點如下：</p>
-
-<ul>
-<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
-<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
-<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
-<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
-<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
-</ul>
-
-
-<p>java部分大概就是這樣了~</p>
-
-<hr />
-
-<h3>接著回到ireport</h3>
-
-<p>需要處理的重點如下：</p>
-
-<ul>
-<li>將打包好的jar加入到ireport的classpath</li>
-<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
-<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
-<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
-</ul>
-
-
-<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
-
-<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
-
-<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
-
-<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T20:00:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/ireport-use-scriptlet/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/ireport-use-scriptlet/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1588,6 +1520,10 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2012/12/20/jekyll-invalid-us-ascii/">jekyll invalid us-ascii 處理</a>
+      </li>
+    
+      <li>
         <a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid reference</a>
       </li>
     
@@ -1601,10 +1537,6 @@
     
       <li>
         <a href="/blog/2012/12/16/about-east-west-religion/">從東西方宗教來看東西方差異</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/13/news-15k/">關於產業會議的15K</a>
       </li>
     
   </ul>

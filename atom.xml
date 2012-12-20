@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsunxie.github.com/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-19T13:18:35+08:00</updated>
+  <updated>2012-12-20T22:22:31+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,27 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[jekyll invalid us-ascii 處理]]></title>
+<link href="http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii/"/>
+<updated>2012-12-20T15:28:00+08:00</updated>
+<id>http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii</id>
+
+      <content type="html"><![CDATA[<p>今天在用使用 <a href="http://jekyllbootstrap.com/">Jekyll + Bootstrap</a> 架站時，剛好在試文章分類 category 是否可接收中文，結果～叭叭，沒辦法，網頁出現像下面訊息</p>
+
+<h3>invalid byte sequence in US-ASCII</h3>
+
+<p>我想應該因為 Jekyll + Bootstrap 如果有定義分類 category 當他在generate 的時候資料夾就會跟 category 來分類產生的html，所以網址的部份也會變成中文。</p>
+
+<p>試了網路上的方法，也就是在.profile 中加入 utf-8 的編碼方式，還是沒有辦法解決此問題，不過正想說算了就避開使用英文，後來看到有人說上傳的github上後github自動產生的頁面就沒此問題，怪哉！姑且一試，耶～真的可以耶！至少實際上線時是沒問題的，給大家參考，如果有辦法可以解決本機編碼的問題請讓我知道，ok～</p>
+<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -156,7 +177,7 @@
 <ul>
 <li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe></p></li>
 <li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.8656736903358251"></iframe></p></li>
-<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.29423197102732956"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=0379d2806253627616f18543a1054903&amp;r=0.36253471905365586"></iframe></p></li>
 </ul>
 
 
@@ -1411,26 +1432,6 @@
 </ul>
 
 <p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[rework 工作大解放 讀後心得]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/"/>
-<updated>2012-11-05T09:32:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de</id>
-
-      <content type="html"><![CDATA[<h1>其他人的心得</h1>
-
-<ul>
-<li><a href="http://woundero.wordpress.com/2012/10/30/rework/">Rework：我們從「工作大解放」學到的十件事</a></li>
-</ul>
-
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/"></a></p>]]></content>
     </entry>
   
 </feed>
