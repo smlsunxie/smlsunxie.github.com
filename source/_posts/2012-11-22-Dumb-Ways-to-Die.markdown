@@ -4,11 +4,14 @@ title: "笨笨的死法 Dumb Ways to Die"
 date: 2012-11-22 16:13
 comments: true
 categories: [movie,design]
+keywords: Dumb Ways to Die, movie,youtube
+description: "Dumb Ways to Die，有趣的影片介紹"
 ---
 
 剛剛在查資料時，看到一個有趣的影片
 
-##[youtube-笨笨的死法 Dumb Ways to Die](http://www.youtube.com/watch?feature=player_embedded&v=JKZ27ZPMrRo)
+<iframe width="560" height="315" src="http://www.youtube.com/embed/JKZ27ZPMrRo" frameborder="0" allowfullscreen></iframe>
+
 
 配著輕快的音樂，輕鬆的把各種死法，輕輕帶過～
 

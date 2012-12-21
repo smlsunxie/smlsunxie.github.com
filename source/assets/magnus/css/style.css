@@ -2798,7 +2798,7 @@ list-style: none outside;
 }
 
 
-.post-content p, .post-content div, .post-content dd, .post-content dt{
+.post-content p, .post-content > div, .post-content dd, .post-content dt{
   line-height: 1.55em;
   margin: 1.2em 0;
 }
@@ -2831,5 +2831,17 @@ h1, h2, h3, h4, h5, h6 {
 color: #0A0A0A;
 font-weight: 900;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 

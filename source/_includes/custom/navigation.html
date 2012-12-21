@@ -10,6 +10,10 @@
   	<a href="{{ root_url }}/archives">Archives</a>
   </li>
   
+  <li {% if page.url == '/aboutme/index.html' %}class="active"{% endif %}>
+    <a href="{{ root_url }}/aboutme">AboutMe</a>
+  </li>
+
   <li {% if page.url == '/slides/index.html' %}class="active"{% endif %}>
   	<a href="{{ root_url }}/slides">Slides</a>
   </li>

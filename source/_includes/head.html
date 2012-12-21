@@ -10,12 +10,23 @@
 
 <head>
   <meta charset="utf-8">
+
   <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
   <meta name="author" content="{{ site.author }}">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
-  {% capture description %}{% if page.description %}{{ page.description }}{% elsif site.description %}{{ site.description }}{% endif %}{% endcapture %}{% if description.length %}
-  <meta name="description" content="{{ description }}">{% endif %}
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  {% capture description %}{% if page.description %}{{ page.description }}{% elsif site.description %}{{ site.description }}{% endif %}{% endcapture %}
+  
+  {% if description <> '' %}
+  <meta name="description" content="{{ description }}">
+  {% endif %}
   {% if page.keywords %}<meta name="keywords" content="{{ page.keywords }}">{% endif %}
 
   <!-- http://t.co/dKP3o1e -->
