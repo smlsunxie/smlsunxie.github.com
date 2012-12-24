@@ -4,7 +4,7 @@
   <title><![CDATA[Category: api | 蹤影]]></title>
   <link href="http://smlsunxie.github.com/blog/categories/api/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-22T15:18:07+08:00</updated>
+  <updated>2012-12-24T22:54:39+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -41,7 +41,7 @@
 <p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
 <li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
 
-<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>{% post_url 2010-07-21-name-of-post %}</code>取得文章連接。</p></li>
+<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>post_url 2010-07-21-name-of-post</code>取得文章連接。</p></li>
 </ul>
 
 
