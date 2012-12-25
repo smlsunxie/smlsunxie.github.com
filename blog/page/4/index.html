@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Otcopress + warp bootstrap + deck.js - 蹤影</title>
+  <title>Blog - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,7 @@
   
   
   
-  <meta name="description" content="octopress 整合 bootstrap 並且利用 deck.js 產生 slide">
   
-  <meta name="keywords" content="octopress,warp bootstrap,bootstrap,deck.js">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/">
+  <link rel="canonical" href="http://smlsunxie.github.com/blog/page/4/">
 
 
 
@@ -221,8 +219,8 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					 
-						Blog 
+					
+						Blog
 					
 				
 
@@ -289,6 +287,8 @@
     
     <div class="span12"> 
     
+    
+      
 
 
 
@@ -299,7 +299,7 @@
 
 
 
-    <div class="post " role="article">
+    <div class="post " >
       
 <div class="post-content">
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Otcopress + Warp Bootstrap + deck.js
+<a href="/blog/2012/11/02/socket-dot-io-shi-zuo-liao-tian-shi/">Socket.io 實作聊天室</a>
 
 </h1>
 
@@ -321,159 +321,133 @@ Otcopress + Warp Bootstrap + deck.js
 
 
   <div class="post-description">
-    <p>隆重為大家推出，我所完成的 Otcopress theme</p>
+    <p>利用 socket.io 實作聊天室，在以前很難想像要如何控制多個使用者進行realtime的服務，透過socket.io可以很輕易的做到</p>
 
-<h2>Otcopress + warp bootstrap + deck.js</h2>
-
-<p>就如同大家看到的這個website，幾個特性如下：</p>
+<h2>功能說明</h2>
 
 <ul>
-<li>保留 Otcopress 特色，包括程式碼hightlight 特性</li>
-<li>支援 markdown with deck.js slide，使用方法請參考我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress With Slide Features</a></li>
-<li>支援bootstrap，習慣使用 bootstrap 的有福了！</li>
-<li>佈景套用 warp bootstrap，主題為magnus，若要自行更換warp bootstrap主題應該會簡單一些</li>
+<li><p>此專案base是參考下面網站介紹完成的範例:
+<a href="http://iosdevelopersnote.blogspot.tw/2012/09/socketio.html">聊天廣播 - Socket.io</a></p></li>
+<li><p>除了聊天室之外，另外實作了歷史聊天記錄自動載入功能，透過mongohg</p></li>
+<li><p>另外確認若是另一個獨立運作的網頁是否可以使用獨立的node server的服務，如下節說明。</p></li>
+<li>透過聊天室實作可以在延伸其他功能，比如說：
+
+<ul>
+<li>強制所有上線使用者登出</li>
+<li>讀取到RFID觸動網頁進行相關動作</li>
+<li>系統維修時，禁止使用者上線</li>
+</ul>
+</li>
 </ul>
 
 
-<h2>使用slides 注意事項</h2>
+<h2>確認即使是外部網頁也可執行socket服務</h2>
+
+<p>請參考 git 中 indepandTest.html 檔案，當app 運作時，在執行此檔案也同要有聊天室的功能</p>
+
+<p>測試即使獨立開啟html(不在server底下開啟)，也可以使用聊天室的功能
+其中只要將</p>
+
+<pre><code>&lt;script type="text/javascript" charset="utf-8" src="socket.io/socket.io.js"&gt;
+</code></pre>
+
+<p>指定為node運行中的服務</p>
+
+<pre><code>&lt;script type="text/javascript" charset="utf-8" src="http://localhost:3000/socket.io/socket.io.js"&gt;
+</code></pre>
+
+<p>就可以執行該server所定義好的功能，確認可行表示若是手機app也可以有realtime的服務，透過socket.io</p>
+
+<h2>git網址</h2>
+
+<p>相關原始碼請參考下列網址</p>
+
+<pre><code>https://github.com/SpookyHty/nodeChatRoom-test
+</code></pre>
+
+<h2>makedown寫網誌</h2>
 
 <ul>
-<li>markdown 的檔案位置為 ./source/slides</li>
-<li>./source/slides index.markdown 目前需自行新增連結項目</li>
-<li>在 ./source/slides 底下的markdown 皆會自動轉換為html</li>
-<li>可以參考 theme的 sample slide.markdown</li>
-<li>新增slides可使用 <code>rake new_sildes</code></li>
+<li>此網誌是透過makedown完成的
+
+<ul>
+<li>語法可參考<a href="http://markdown.tw/">Markdown 語法說明</a></li>
+<li>練習可使用<a href="http://www.ctrlshift.net/project/markdowneditor/">Online Markdown Editor</a></li>
 </ul>
 
 
-<h2>安裝方式</h2>
+<p>  對於需要寫網址，或者需要將技術文件輸出不同格式，使用markdown可以快速幫你完成</p></li>
+<li><p>此篇文章的原始碼可參考</p>
 
-<ul>
-<li>請參考我的 github <a href="https://github.com/smlsunxie/bootstrapDeck.js">bootstrapDeck.js</a></li>
+<pre><code>  https://github.com/SpookyHty/nodeChatRoom-test
+</code></pre>
+
+<p>  中的 README.md</p></li>
 </ul>
 
-
-<p>從這件事讓我學到，自己要用很簡單，要讓大家用很多細節不得不注意了～</p>
-
-<p>ps. 後續會在補英文說明，希望可以有外國人喜歡～</p>
-
-<h3>打完休息…</h3>
 
   </div>
 
 
   
 
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-02T12:17:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/02/socket-dot-io-shi-zuo-liao-tian-shi/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/02/socket-dot-io-shi-zuo-liao-tian-shi/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
 
 
 </div>
-      <hr>
-      <footer>
-
-
-        <p class="meta">
-          
-  
-
-<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-10T12:19:00+08:00" pubdate data-updated="true">Dec 10<span>th</span>, 2012</time>
-
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/bootstrap/'>bootstrap</a>, <a class='category' href='/blog/categories/deck-js/'>deck.js</a>, <a class='category' href='/blog/categories/warp-bootstrap/'>warp bootstrap</a>
-  
-</span></span>
-
-
-
-          
-
-        </p>
-
-        
-          <section id="social-r">
-  <h1>Sharing</h1>
-  
-    
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" target="_blank" >Tweet</a>
-    
-  
-  
-    
-      <div class="g-plusone" data-size="medium"></div>
-    
-  
-  
-    
-      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-    
-  
-  
-
-</section>
-
-        
-        <br>
-        <ul class="pagination">
-          
-            <a class="left" href="/blog/2012/12/08/times-chan/" title="Previous Post: 關於陳為廷事件"><li>&laquo; 關於陳為廷事件</li></a>
-          
-          
-            <a class="right" href="/blog/2012/12/10/about-write/" title="Next Post: 關於寫作"><li>關於寫作 &raquo;</li></a>
-          
-        </ul>
-
-        
-
-
-      </footer>
-    </div>
-
-
-    
-    <div class="widget" >
-    <section>
-  <h1>Comments</h1>
-  
-
-  
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  
-</section>
-
     </div>
     
+
+
+
+    <ul class="pagination">
+      
+      <a href="/archives"><li>Blog Archives</li></a>
+      
+      <a class="next" href="/blog/page/3/"><li>Newer &rarr;</li></a>
+      
+    </ul>
 
 
   </div>
+
+
+
+
   
 
 </div>
-
-
-
-
-
-
-
-
 
 
 
@@ -576,7 +550,7 @@ Otcopress + Warp Bootstrap + deck.js
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsunxie.github.com/blog/page/4/index.html" data-via="smlsun" data-counturl="http://smlsunxie.github.com/blog/page/4/index.html" target="_blank" >Tweet</a>
     
   
   
@@ -724,10 +698,7 @@ Otcopress + Warp Bootstrap + deck.js
 			var disqus_developer = '';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/';
-        var disqus_url = 'http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
