@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsunxie.github.com/atom.xml" rel="self"/>
   <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-24T22:54:39+08:00</updated>
+  <updated>2012-12-25T11:00:22+08:00</updated>
   <id>http://smlsunxie.github.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,138 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[快速了解 markdown]]></title>
+<link href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"/>
+<updated>2012-12-24T09:21:00+08:00</updated>
+<id>http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown</id>
+
+      <content type="html"><![CDATA[<p>markdown 是個很簡單的文章撰寫語法，無論是寫blog，或是寫文件都是很方便快速，透過幾個既定的符號可以讓你很快速的排版，不用在為了因為要寫html特別轉換，透過統一的規範產出物不同格式的文件，下面是官方的網站</p>
+
+<p><a href="http://markdown.tw/">markdown語法說明</a></p>
+
+<p>裡面有很詳盡的介紹，但對於初學者可能雜了點，下面我列出幾個常用的，一旦用熟了進階的就比較能夠理解了：</p>
+
+<ul>
+<li><p>行首插入 1 到 6 個 <code>#</code> ，對應到標題 1 到 6 階，例如：</p>
+
+<pre><code>  # 一階
+  ## 二階
+</code></pre>
+
+<p>  結果如下</p></li>
+</ul>
+
+
+<h1>一階</h1>
+
+<h2>二階</h2>
+
+<ul>
+<li><p>允許你只在段落的第一行最前面加上<code>&gt;</code>：</p>
+
+<pre><code>  &gt; This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+  consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+  Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+  &gt; Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+  id sem consectetuer libero luctus adipiscing.
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<blockquote><p>This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.</p>
+
+<p>Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+id sem consectetuer libero luctus adipiscing.</p></blockquote>
+
+<ul>
+<li><p>清單標記：</p>
+
+<pre><code>  *   Red
+  *   Green
+  *   Blue
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<ul>
+<li>項目1</li>
+<li><p>項目2</p></li>
+<li><p>數字清單則使用數字接著一個英文句點：</p>
+
+<pre><code>  1.  Bird
+  2.  McHale
+  3.  Parish
+</code></pre></li>
+<li><p>分隔線</p>
+
+<pre><code>  ---
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<hr />
+
+<p>上面是分隔線結果</p>
+
+<ul>
+<li><p>斜體</p>
+
+<pre><code>  _斜體_
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<p><em>斜體</em></p>
+
+<ul>
+<li><p>強調</p>
+
+<pre><code>  __強調__
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<p><strong>強調</strong></p>
+
+<ul>
+<li><p>連結</p>
+
+<pre><code>  [連結名稱](http://連結.網址)
+</code></pre></li>
+<li><p>圖片</p>
+
+<pre><code>  ![圖片名稱](http://圖片.網址)
+</code></pre></li>
+</ul>
+
+
+<p>大致上使用方式就是這樣子囉～</p>
+
+<p>一開始使用，感覺好像很複雜，其實習慣後文章的產出會非常的快！</p>
+
+<p>堅持一下，寫個三四篇看看，你會愛上這樣寫作的方式，像我就是！！</p>
+<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -1106,325 +1238,6 @@
 
 <p>如果有發現更方便得功能在與大家分享！</p>
 <p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/29/mac-app-introduction-xtrafinder/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[More Advanced octopress with Slide Features]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More/"/>
-<updated>2012-11-29T11:44:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More</id>
-
-      <content type="html"><![CDATA[<p>octopress slide 系列又來了，第三彈！不知道會不會再有續集⋯</p>
-
-<p>哈～就讓我們繼續看下去～</p>
-
-<p>前一篇：<a href="http://smlsun.com/blog/2012/11/28/octopress-slide-advanced/">octopress Slide Advanced</a></p>
-
-<p>再上一篇的最後有說到：</p>
-
-<blockquote><p>這部份我覺得可以在方便點改成下列樣式，實際用時常常會漏掉div tag 的開始或結束</p></blockquote>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{% slideFirst %}
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'>{% slide $}
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'>{% slide $}
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'>{% slideEnd $}</span></code></pre></td></tr></table></div></figure>
-
-
-<blockquote><p>其中 slideFirst 替換成 <code>&lt;div class='slide'&gt;</code></p>
-
-<p>slide 替換成 <code>&lt;/div&gt;&lt;div class='slide'&gt;</code></p>
-
-<p>最後 slideEnd 替換成 <code>&lt;/div&gt;</code></p></blockquote>
-
-<p>well，我將他完成了！這算是我的Ruby初體驗，進入正題：</p>
-
-<p>一開始我想說，嗯～如果要完成這樣的功能，我需要能夠自定Liquid tag</p>
-
-<p>再上一篇有提到，slide功能的實作是參考網路上的大大kmees，他有實作一個plugin <strong>slide.rb</strong>，原本的程式碼如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rdiscount&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
-</span><span class='line'>  <span class="k">class</span> <span class="nc">Slide</span> <span class="o">&lt;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Block</span>
-</span><span class='line'>    <span class="no">SlideId</span> <span class="o">=</span> <span class="sr">/(\w+)/</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">markup</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">super</span>
-</span><span class='line'>      <span class="vi">@id</span> <span class="o">=</span> <span class="kp">nil</span>
-</span><span class='line'>      <span class="k">if</span> <span class="n">markup</span><span class="o">.</span><span class="n">strip</span> <span class="o">=~</span> <span class="no">SlideId</span>
-</span><span class='line'>        <span class="vi">@id</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">id_tag</span> <span class="o">=</span> <span class="s2">&quot; id=&#39;</span><span class="si">#{</span><span class="vi">@id</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">unless</span> <span class="vi">@id</span><span class="o">.</span><span class="n">nil?</span>
-</span><span class='line'>      <span class="n">content</span> <span class="o">=</span> <span class="no">RDiscount</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="k">super</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="ss">:smart</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="o">.</span><span class="n">chop</span>
-</span><span class='line'>      <span class="s2">&quot;&lt;div class=&#39;slide&#39;</span><span class="si">#{</span><span class="n">id_tag</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">#{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="o">.</span><span class="n">strip</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">Liquid</span><span class="o">::</span><span class="no">Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;slide&#39;</span><span class="p">,</span> <span class="no">Jekyll</span><span class="o">::</span><span class="no">Slide</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到 他繼承了 Liquid::Block
-大致上的重點：</p>
-
-<ol>
-<li>因為繼承 Liquid::Block，所以有開始就必須要有結束，所以原PO必須<code>{% slide %}</code> <code>{% endslide $}</code>成對，這也造成我認為不方便的地方，有時候容易遺漏</li>
-<li>利用<code>initialize</code>取出 tag的id數值</li>
-<li>render時將 Slide Block 範圍的 content 內容透過 <code>RDiscount</code>將markdown語法轉換成html</li>
-<li>將轉換好的內容利用 div tag 包起來，並且將 第一步取得的id 填入div id屬性</li>
-<li>最後再將tag 註冊到Liquid::Template (23行)，讓 Liquid 知道遇到{ % slide %}要進行處理</li>
-</ol>
-
-
-<p>大致上運作原理如上，用下面的例子來看：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="n">slide</span> <span class="n">first</span> <span class="sx">%}</span>
-</span><span class='line'><span class="sx">  ## Title</span>
-</span><span class='line'><span class="sx">  content</span>
-</span><span class='line'><span class="sx">{% endslide $}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>轉換出來的結果為：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&#39;slide&#39;</span> <span class="na">id=</span><span class="s">&#39;first&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;h2&gt;</span>Title<span class="nt">&lt;/h2&gt;</span>
-</span><span class='line'>  content
-</span><span class='line'><span class="nt">&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>原文都有上述說明，大家可以去看，接著！為了讓文章開頭所說的，更方便進行slide的建立，中間我有做一個錯誤的版本，我天真的認為Jekyll本身就會將markdown內容進行轉換，故第一版的設計我做了一些調整，</p>
-
-<ol>
-<li>將原本 Slide改為繼承 <code>Liquid::Tag</code> 直接輸出 <code>&lt;/div&gt;&lt;div class='slide'&gt;</code></li>
-<li>新增 slideStart 輸出 <code>&lt;div class='slide' id='first'&gt;</code></li>
-<li>新增 slideEnd 輸出 <code>&lt;/div&gt;</code></li>
-</ol>
-
-
-<p>試著preview 看看：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>{% slideStart %}
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'>{% Slide $}
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'>{% SlideEnd $}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>哈哈！事情果然不是我想的那樣，輸出結果如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&#39;slide&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'><span class="nt">&lt;/div&gt;&lt;div</span> <span class="na">class=</span><span class="s">&#39;slide&#39;</span><span class="nt">&gt;</span>
-</span><span class='line'>  ## Title
-</span><span class='line'>  content
-</span><span class='line'><span class="nt">&lt;/div&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>well~沒有進行轉換，就是缺了RDiscount的處理，上網查一下他就是轉換markdown的轉譯器</p>
-
-<p>再接再厲，調整過後完整的<strong>slide.rb</strong>，如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rdiscount&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">class</span> <span class="nc">SlideBlock</span> <span class="o">&lt;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Block</span>
-</span><span class='line'>    <span class="no">SlideId</span> <span class="o">=</span> <span class="sr">/(\w+)/</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">markup</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">super</span>
-</span><span class='line'>      <span class="vi">@id</span> <span class="o">=</span> <span class="kp">nil</span>
-</span><span class='line'>      <span class="k">if</span> <span class="n">markup</span><span class="o">.</span><span class="n">strip</span> <span class="o">=~</span> <span class="no">SlideId</span>
-</span><span class='line'>        <span class="vi">@id</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">id_tag</span> <span class="o">=</span> <span class="s2">&quot; id=&#39;</span><span class="si">#{</span><span class="vi">@id</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">unless</span> <span class="vi">@id</span><span class="o">.</span><span class="n">nil?</span>
-</span><span class='line'>      <span class="n">content</span> <span class="o">=</span> <span class="no">RDiscount</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="k">super</span><span class="o">.</span><span class="n">strip</span><span class="p">,</span> <span class="ss">:smart</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="o">.</span><span class="n">chop</span>
-</span><span class='line'>      <span class="s2">&quot;&lt;div class=&#39;slide&#39;</span><span class="si">#{</span><span class="n">id_tag</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">#{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span><span class="o">.</span><span class="n">strip</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">class</span> <span class="nc">Slide</span> <span class="o">&lt;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span>
-</span><span class='line'>    <span class="no">SlideId</span> <span class="o">=</span> <span class="sr">/(\w+)/</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">markup</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">super</span>
-</span><span class='line'>      <span class="vi">@id</span> <span class="o">=</span> <span class="kp">nil</span>
-</span><span class='line'>      <span class="k">if</span> <span class="n">markup</span><span class="o">.</span><span class="n">strip</span> <span class="o">=~</span> <span class="no">SlideId</span>
-</span><span class='line'>        <span class="vi">@id</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">id_tag</span> <span class="o">=</span> <span class="s2">&quot; id=&#39;</span><span class="si">#{</span><span class="vi">@id</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">unless</span> <span class="vi">@id</span><span class="o">.</span><span class="n">nil?</span>
-</span><span class='line'>      <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&lt;/div&gt;&lt;div class=&#39;slide&#39;</span><span class="si">#{</span><span class="n">id_tag</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'><span class="no">Liquid</span><span class="o">::</span><span class="no">Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;slideBlock&#39;</span><span class="p">,</span> <span class="no">Jekyll</span><span class="o">::</span><span class="no">SlideBlock</span><span class="p">)</span>
-</span><span class='line'><span class="no">Liquid</span><span class="o">::</span><span class="no">Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;slide&#39;</span><span class="p">,</span> <span class="no">Jekyll</span><span class="o">::</span><span class="no">Slide</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>重點如下：</p>
-
-<ol>
-<li>原PO 的 <code>Slide &lt; Liquid::Block</code> 保留，還是有markdown轉換的處理，更名為 <code>SlideBlock &lt; Liquid::Block</code></li>
-<li>新增 <code>Slide &lt; Liquid::Tag</code> ，輸出 <code>&lt;/div&gt;&lt;div class='slide'#{id_tag}&gt;</code></li>
-</ol>
-
-
-<p>來看結果，範例如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="p">{</span><span class="o">%</span> <span class="n">slideBlock</span> <span class="sx">%}</span>
-</span><span class='line'><span class="sx">## title</span>
-</span><span class='line'><span class="sx">{% slide %}</span>
-</span><span class='line'><span class="c1">## title</span>
-</span><span class='line'><span class="p">{</span><span class="o">%</span> <span class="n">slide</span> <span class="sx">%}</span>
-</span><span class='line'><span class="sx">## title</span>
-</span><span class='line'><span class="sx">{% endslideBlock %}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>就可以正確轉換，只要整個slide開始結束，特別使用 <code>{% slideBlock %}</code> 與 <code>{% endslideBlock %}</code></p>
-
-<p>中間都用 <code>{% slide %}</code>把每個段落隔開就OK啦，是不是方便許多，也不會再有忘記關閉block的情形，so easy!</p>
-
-<h2>打完收工！</h2>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More/"></a></p>]]></content>
     </entry>
   
 </feed>

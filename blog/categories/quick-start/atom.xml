@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: quick start | 蹤影]]></title>
+  <link href="http://smlsunxie.github.com/blog/categories/quick-start/atom.xml" rel="self"/>
+  <link href="http://smlsunxie.github.com/"/>
+  <updated>2012-12-25T11:00:22+08:00</updated>
+  <id>http://smlsunxie.github.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[快速了解 markdown]]></title>
+    <link href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"/>
+    <updated>2012-12-24T09:21:00+08:00</updated>
+    <id>http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown</id>
+    <content type="html"><![CDATA[<p>markdown 是個很簡單的文章撰寫語法，無論是寫blog，或是寫文件都是很方便快速，透過幾個既定的符號可以讓你很快速的排版，不用在為了因為要寫html特別轉換，透過統一的規範產出物不同格式的文件，下面是官方的網站</p>
+
+<p><a href="http://markdown.tw/">markdown語法說明</a></p>
+
+<p>裡面有很詳盡的介紹，但對於初學者可能雜了點，下面我列出幾個常用的，一旦用熟了進階的就比較能夠理解了：</p>
+
+<ul>
+<li><p>行首插入 1 到 6 個 <code>#</code> ，對應到標題 1 到 6 階，例如：</p>
+
+<pre><code>  # 一階
+  ## 二階
+</code></pre>
+
+<p>  結果如下</p></li>
+</ul>
+
+
+<h1>一階</h1>
+
+<h2>二階</h2>
+
+<ul>
+<li><p>允許你只在段落的第一行最前面加上<code>&gt;</code>：</p>
+
+<pre><code>  &gt; This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+  consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+  Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+  &gt; Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+  id sem consectetuer libero luctus adipiscing.
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<blockquote><p>This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.</p>
+
+<p>Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+id sem consectetuer libero luctus adipiscing.</p></blockquote>
+
+<ul>
+<li><p>清單標記：</p>
+
+<pre><code>  *   Red
+  *   Green
+  *   Blue
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<ul>
+<li>項目1</li>
+<li><p>項目2</p></li>
+<li><p>數字清單則使用數字接著一個英文句點：</p>
+
+<pre><code>  1.  Bird
+  2.  McHale
+  3.  Parish
+</code></pre></li>
+<li><p>分隔線</p>
+
+<pre><code>  ---
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<hr />
+
+<p>上面是分隔線結果</p>
+
+<ul>
+<li><p>斜體</p>
+
+<pre><code>  _斜體_
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<p><em>斜體</em></p>
+
+<ul>
+<li><p>強調</p>
+
+<pre><code>  __強調__
+</code></pre></li>
+</ul>
+
+
+<p>結果如下</p>
+
+<p><strong>強調</strong></p>
+
+<ul>
+<li><p>連結</p>
+
+<pre><code>  [連結名稱](http://連結.網址)
+</code></pre></li>
+<li><p>圖片</p>
+
+<pre><code>  ![圖片名稱](http://圖片.網址)
+</code></pre></li>
+</ul>
+
+
+<p>大致上使用方式就是這樣子囉～</p>
+
+<p>一開始使用，感覺好像很複雜，其實習慣後文章的產出會非常的快！</p>
+
+<p>堅持一下，寫個三四篇看看，你會愛上這樣寫作的方式，像我就是！！</p>
+]]></content>
+  </entry>
+  
+</feed>
