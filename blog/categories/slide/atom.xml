@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: slide | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/slide/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/slide/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[More Advanced octopress with Slide Features]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More/"/>
+    <link href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/"/>
     <updated>2012-11-29T11:44:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/11/29/octopress-slide-advanced-More</id>
+    <id>http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More</id>
     <content type="html"><![CDATA[<p>octopress slide 系列又來了，第三彈！不知道會不會再有續集⋯</p>
 
 <p>哈～就讓我們繼續看下去～</p>
@@ -242,9 +242,9 @@ Liquid::Template.register_tag('slide', Jekyll::Slide)</p>
   
   <entry>
     <title type="html"><![CDATA[octopress slide Advanced]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/11/28/octopress-slide-advanced/"/>
+    <link href="http://smlsun.com/blog/2012/11/28/octopress-slide-advanced/"/>
     <updated>2012-11-28T15:46:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/11/28/octopress-slide-advanced</id>
+    <id>http://smlsun.com/blog/2012/11/28/octopress-slide-advanced</id>
     <content type="html"><![CDATA[<p>之前為了讓octopress可以根據layout的改變為slide，後續加上了nav bar，以及footer bar，可以使用share功能</p>
 
 <h3>不過！！</h3>

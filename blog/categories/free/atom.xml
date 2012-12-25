@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: free | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/free/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/free/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[MAC APP : Better Touch tool-Free Window Snapping]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping/"/>
+    <link href="http://smlsun.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping/"/>
     <updated>2012-12-01T09:50:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping</id>
+    <id>http://smlsun.com/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping</id>
     <content type="html"><![CDATA[<p>相信使用過windows 7，或著最近的ubuntu都有用過 Window Snapping功能，也就是：</p>
 
 <ul>
@@ -73,9 +73,9 @@
   
   <entry>
     <title type="html"><![CDATA[MAC APP：XtraFinder - free tabs finder]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/11/29/mac-app-introduction-xtrafinder/"/>
+    <link href="http://smlsun.com/blog/2012/11/29/mac-app-introduction-xtrafinder/"/>
     <updated>2012-11-29T16:42:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/11/29/mac-app-introduction-xtrafinder</id>
+    <id>http://smlsun.com/blog/2012/11/29/mac-app-introduction-xtrafinder</id>
     <content type="html"><![CDATA[<p>來介紹與推薦一個不錯的MAC APP！</p>
 
 <p>most important is it</p>

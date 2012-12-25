@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: quick start | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/quick-start/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/quick-start/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[快速了解 markdown]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"/>
+    <link href="http://smlsun.com/blog/2012/12/24/how-to-use-markdown/"/>
     <updated>2012-12-24T09:21:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown</id>
+    <id>http://smlsun.com/blog/2012/12/24/how-to-use-markdown</id>
     <content type="html"><![CDATA[<p>markdown 是個很簡單的文章撰寫語法，無論是寫blog，或是寫文件都是很方便快速，透過幾個既定的符號可以讓你很快速的排版，不用在為了因為要寫html特別轉換，透過統一的規範產出物不同格式的文件，下面是官方的網站</p>
 
 <p><a href="http://markdown.tw/">markdown語法說明</a></p>

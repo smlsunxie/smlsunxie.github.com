@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: agile | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/agile/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/agile/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[agile java with gradle: 使用 gradle 快速開發 java]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/"/>
+    <link href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/"/>
     <updated>2012-12-06T18:04:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle</id>
+    <id>http://smlsun.com/blog/2012/12/06/agile-java-with-gradle</id>
     <content type="html"><![CDATA[<p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
 
 <p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>

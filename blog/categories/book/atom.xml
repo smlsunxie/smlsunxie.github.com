@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: book | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/book/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/book/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Reading experience:Being Geek 晉升怪傑]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/03/reading-experience-being-geek/"/>
+    <link href="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/"/>
     <updated>2012-12-03T08:22:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/03/reading-experience-being-geek</id>
+    <id>http://smlsun.com/blog/2012/12/03/reading-experience-being-geek</id>
     <content type="html"><![CDATA[<p>從書名來看<strong>Being Geek 晉升怪傑</strong>，直覺會認為是如何成為一個技術高超的程式人員，但本書所要闡釋的是，怪傑不只技術高超，有很多面相的總和才叫作怪傑，基本上就是一個全能以及處變不驚的人；對於求知的慾望是無窮無境的，也要是一個很強的溝通者、危機處理者，以及決策者；既然怪傑必須處理這麼多困難得事，該如何處理也是很重要的；所以不管是否要成為怪傑只要你有下列的困擾，那我建議你來看這本書：</p>
 
 <ul>
@@ -55,9 +55,9 @@
   
   <entry>
     <title type="html"><![CDATA[rework 工作大解放 讀後心得]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/"/>
+    <link href="http://smlsun.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/"/>
     <updated>2012-11-05T09:32:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de</id>
+    <id>http://smlsun.com/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de</id>
     <content type="html"><![CDATA[<h1>其他人的心得</h1>
 
 <ul>
@@ -69,9 +69,9 @@
   
   <entry>
     <title type="html"><![CDATA[精實創業讀後 心得重點]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/"/>
+    <link href="http://smlsun.com/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/"/>
     <updated>2012-11-02T14:46:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian</id>
+    <id>http://smlsun.com/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian</id>
     <content type="html"><![CDATA[<h1>前言</h1>
 
 <p>本篇內容只涵蓋本書後半步，所以並不是書本的全部內容，提醒觀看的網友，作為無創業經驗的人而言是個不錯的參考書，當然實際創業狀況，永遠比想像中的複雜，這是必須要知道的，正所謂師父引進門，修行就看個人還有天份了～</p>

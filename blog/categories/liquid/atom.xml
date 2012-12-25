@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Liquid | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/liquid/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/liquid/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Jekyll Liquid reference]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
+    <link href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
     <updated>2012-12-19T08:59:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference</id>
+    <id>http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference</id>
     <content type="html"><![CDATA[<p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
 
 <p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>

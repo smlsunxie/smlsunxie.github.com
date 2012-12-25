@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: jekyll | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/jekyll/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/jekyll/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[jekyll invalid us-ascii 處理]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii/"/>
+    <link href="http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii/"/>
     <updated>2012-12-20T15:28:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii</id>
+    <id>http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii</id>
     <content type="html"><![CDATA[<p>今天在用使用 <a href="http://jekyllbootstrap.com/">Jekyll + Bootstrap</a> 架站時，剛好在試文章分類 category 是否可接收中文，結果～叭叭，沒辦法，網頁出現像下面訊息</p>
 
 <h3>invalid byte sequence in US-ASCII</h3>

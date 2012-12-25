@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: discovery | 蹤影]]></title>
-  <link href="http://smlsunxie.github.com/blog/categories/discovery/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/blog/categories/discovery/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[態度的重要-從倫敦計程車司機的專業來看]]></title>
-    <link href="http://smlsunxie.github.com/blog/2012/12/18/london-taxi/"/>
+    <link href="http://smlsun.com/blog/2012/12/18/london-taxi/"/>
     <updated>2012-12-18T07:52:00+08:00</updated>
-    <id>http://smlsunxie.github.com/blog/2012/12/18/london-taxi</id>
+    <id>http://smlsun.com/blog/2012/12/18/london-taxi</id>
     <content type="html"><![CDATA[<iframe width="420" height="315" src="http://www.youtube.com/embed/wkQ7wT0xWdM" frameborder="0" allowfullscreen></iframe>
 
 

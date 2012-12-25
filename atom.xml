@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title><![CDATA[蹤影]]></title>
-  <link href="http://smlsunxie.github.com/atom.xml" rel="self"/>
-  <link href="http://smlsunxie.github.com/"/>
-  <updated>2012-12-25T17:34:55+08:00</updated>
-  <id>http://smlsunxie.github.com/</id>
+  <link href="http://smlsun.com/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2012-12-25T18:30:51+08:00</updated>
+  <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
     
@@ -19,9 +19,9 @@
 
 
 <title type="html"><![CDATA[懶漢的終極型態]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/25/the-ultimate-form-of-slob/"/>
+<link href="http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob/"/>
 <updated>2012-12-25T13:19:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/25/the-ultimate-form-of-slob</id>
+<id>http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob</id>
 
       <content type="html"><![CDATA[<p>今日看了一篇中英文對照新聞，有篇有趣的報導，叫做：</p>
 
@@ -38,7 +38,7 @@
 <p>可以常上來看看，順便學習英文！</p>
 
 <blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/">《中英對照讀新聞 總覽</a></p></blockquote>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/25/the-ultimate-form-of-slob/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -48,9 +48,9 @@
 
 
 <title type="html"><![CDATA[how to use git]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/25/how-to-use-git/"/>
+<link href="http://smlsun.com/blog/2012/12/25/how-to-use-git/"/>
 <updated>2012-12-25T11:23:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/25/how-to-use-git</id>
+<id>http://smlsun.com/blog/2012/12/25/how-to-use-git</id>
 
       <content type="html"><![CDATA[<p>這篇文章將記錄關於git 使用相關文章，持續更新：</p>
 
@@ -58,7 +58,7 @@
 <li><a href="http://gogojimmy.net/2012/02/29/git-scenario/">Git 情境劇</a></li>
 </ul>
 
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/25/how-to-use-git/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/how-to-use-git/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -68,9 +68,9 @@
 
 
 <title type="html"><![CDATA[大陸韓國看台灣-我們應該更有自信]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/25/taiwan-china-Korea/"/>
+<link href="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/"/>
 <updated>2012-12-25T11:14:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/25/taiwan-china-Korea</id>
+<id>http://smlsun.com/blog/2012/12/25/taiwan-china-Korea</id>
 
       <content type="html"><![CDATA[<p>寫這篇文章不只給大家看，也給自己看，因為想創業，所以離開了我熟悉得工作內容，最近在摸索的期間，有時會焦慮，有時候覺得能力不足，看的不夠廣，或是態度還沒準備好，總覺得需要學習的還有很多，除了自身以外，相信現在台灣的年輕人對於台灣環境的憂慮我想大家都不是很看好，不管是經濟，或者是政治，有時候我們也真的不要都看自己人的說詞，也看別人怎麼看台灣，特別台灣媒體政治人物特別喜歡唱衰，應該也是因為沒自信造成的。</p>
 
@@ -103,7 +103,7 @@
 <p>當然最後還要強調自信並不是要目中無人，自信中帶著謙遜，可以看到成功並且令人尊敬的人仕都有這樣的特質，時時提醒自己：</p>
 
 <blockquote><p>自信中不要忘了謙遜</p></blockquote>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/25/taiwan-china-Korea/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -113,9 +113,9 @@
 
 
 <title type="html"><![CDATA[快速了解 markdown]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"/>
+<link href="http://smlsun.com/blog/2012/12/24/how-to-use-markdown/"/>
 <updated>2012-12-24T09:21:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown</id>
+<id>http://smlsun.com/blog/2012/12/24/how-to-use-markdown</id>
 
       <content type="html"><![CDATA[<p>markdown 是個很簡單的文章撰寫語法，無論是寫blog，或是寫文件都是很方便快速，透過幾個既定的符號可以讓你很快速的排版，不用在為了因為要寫html特別轉換，透過統一的規範產出物不同格式的文件，下面是官方的網站</p>
 
@@ -235,7 +235,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>一開始使用，感覺好像很複雜，其實習慣後文章的產出會非常的快！</p>
 
 <p>堅持一下，寫個三四篇看看，你會愛上這樣寫作的方式，像我就是！！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/24/how-to-use-markdown/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/24/how-to-use-markdown/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -245,9 +245,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[google map 取得經緯度]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/22/google-map-get-geo/"/>
+<link href="http://smlsun.com/blog/2012/12/22/google-map-get-geo/"/>
 <updated>2012-12-22T15:12:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/22/google-map-get-geo</id>
+<id>http://smlsun.com/blog/2012/12/22/google-map-get-geo</id>
 
       <content type="html"><![CDATA[<p>本篇文章說明如何在新版的google很簡單的取得經緯度，步驟如下：</p>
 
@@ -280,7 +280,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p><img src="https://lh6.googleusercontent.com/-cn0Sz00Dxs8/UNVdNAOwuhI/AAAAAAAALZ0/7keCU2zBwcM/s249/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.11.08.jpg" alt="img" /></p>
 
 <p>就這麼簡單！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/22/google-map-get-geo/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/22/google-map-get-geo/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -290,9 +290,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[如何確定你的slogan(標語)夠吸引人？利用 A/B testing]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/21/ab-testing-seo/"/>
+<link href="http://smlsun.com/blog/2012/12/21/ab-testing-seo/"/>
 <updated>2012-12-21T10:27:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/21/ab-testing-seo</id>
+<id>http://smlsun.com/blog/2012/12/21/ab-testing-seo</id>
 
       <content type="html"><![CDATA[<p>今天來介紹什麼是A/B Testing可以在下面的文章有個初步的認識</p>
 
@@ -346,7 +346,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>如何？希望可以透過這篇文章讓大家大概了解什麼是A/B Testing，以及該如何作 A/B Testing，知道概念後要實際應用應該就有個起頭了，參考看看囉！</p>
 
 <p>之後再來介紹SEO，就是所謂的Search engine optimization，搜尋引擎最佳化，對於如何讓網站能夠更容易被搜尋到的一些介紹。</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/21/ab-testing-seo/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/21/ab-testing-seo/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -356,9 +356,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[好文章推薦]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/21/good-article/"/>
+<link href="http://smlsun.com/blog/2012/12/21/good-article/"/>
 <updated>2012-12-21T08:44:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/21/good-article</id>
+<id>http://smlsun.com/blog/2012/12/21/good-article</id>
 
       <content type="html"><![CDATA[<p>今天拜讀了 <a href="http://pingyeh.blogspot.tw/">Ping不見路</a> 的文章，雖然我不認識他，不過看了幾篇有興趣的文章都很精闢，內容質量高以及邏輯清楚，實在令人佩服，再一次覺得這世界神人之多，且學無止境阿！</p>
 
@@ -411,7 +411,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <p>推薦給大家囉！增廣見聞還可以笑一笑，生活才會有趣喔！！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/21/good-article/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/21/good-article/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -421,9 +421,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[jekyll invalid us-ascii 處理]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii/"/>
+<link href="http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii/"/>
 <updated>2012-12-20T15:28:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii</id>
+<id>http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii</id>
 
       <content type="html"><![CDATA[<p>今天在用使用 <a href="http://jekyllbootstrap.com/">Jekyll + Bootstrap</a> 架站時，剛好在試文章分類 category 是否可接收中文，結果～叭叭，沒辦法，網頁出現像下面訊息</p>
 
@@ -432,7 +432,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>我想應該因為 Jekyll + Bootstrap 如果有定義分類 category 當他在generate 的時候資料夾就會跟 category 來分類產生的html，所以網址的部份也會變成中文。</p>
 
 <p>試了網路上的方法，也就是在.profile 中加入 utf-8 的編碼方式，還是沒有辦法解決此問題，不過正想說算了就避開使用英文，後來看到有人說上傳的github上後github自動產生的頁面就沒此問題，怪哉！姑且一試，耶～真的可以耶！至少實際上線時是沒問題的，給大家參考，如果有辦法可以解決本機編碼的問題請讓我知道，ok～</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -442,9 +442,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[Jekyll Liquid reference]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
+<link href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
 <updated>2012-12-19T08:59:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference</id>
+<id>http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference</id>
 
       <content type="html"><![CDATA[<p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
 
@@ -476,7 +476,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
 
 <h3>Have Fun!!</h3>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/19/Jekyll-liquid-reference/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -486,9 +486,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[google api 的使用簡介-map & picasa]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/19/google-api/"/>
+<link href="http://smlsun.com/blog/2012/12/19/google-api/"/>
 <updated>2012-12-19T08:20:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/19/google-api</id>
+<id>http://smlsun.com/blog/2012/12/19/google-api</id>
 
       <content type="html"><![CDATA[<p>最近剛好在做一個房仲網站，有用到 google map api，以及要動態嵌入picasa的圖片依據狀況改變圖片大小，找到一些參考資料，整理上來給大家參考</p>
 
@@ -597,7 +597,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>其實只要善用網路上的工具真的可以節省很多時間，使用起來也不麻煩，甚至出奇的簡單，只是不知道而已，網路的世界需要大家一起探索，如果有不錯的工具，也別忘了推薦給大家，let me know,OK!</p>
 
 <p>最後還是要感謝google，幫我節省這麼多時間，雖然我沒有像google那麼神通廣大，希望能幫助到來參觀的讀者囉！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/19/google-api/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/19/google-api/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -607,9 +607,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[態度的重要-從倫敦計程車司機的專業來看]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/18/london-taxi/"/>
+<link href="http://smlsun.com/blog/2012/12/18/london-taxi/"/>
 <updated>2012-12-18T07:52:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/18/london-taxi</id>
+<id>http://smlsun.com/blog/2012/12/18/london-taxi</id>
 
       <content type="html"><![CDATA[<iframe width="420" height="315" src="http://www.youtube.com/embed/wkQ7wT0xWdM" frameborder="0" allowfullscreen></iframe>
 
@@ -635,7 +635,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <p>ps. 台灣的官員應該要去考察一下，外國人的作事態度是需要我們學習的</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/18/london-taxi/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/18/london-taxi/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -645,9 +645,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[從東西方宗教來看東西方差異]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/16/about-east-west-religion/"/>
+<link href="http://smlsun.com/blog/2012/12/16/about-east-west-religion/"/>
 <updated>2012-12-16T00:15:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/16/about-east-west-religion</id>
+<id>http://smlsun.com/blog/2012/12/16/about-east-west-religion</id>
 
       <content type="html"><![CDATA[<p>上週因為朋友的生日，讓我有機會體驗一下基督教的教友，過程中讓我有感而發，因此有這篇文章</p>
 
@@ -660,7 +660,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>當然我還是要強調，並不是外國的月亮比較圓，我以東方人為榮，作為新時代的青年，成長就要學習各方的優點，我生在台灣，接受傳統東方教育，但慶幸我的父母給我們自由發揮的空間，雖然不是頂尖人才，但有開放心胸，只要是好的都值得我們去學習，也與大家分享我的心得～</p>
 
 <p>再一次感謝給我信心與關懷的人，即使我們才第一次見面；無論是哪種宗教，只要使人向善都是值得信仰與尊重的！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/16/about-east-west-religion/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/16/about-east-west-religion/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -670,9 +670,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[關於產業會議的15K]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/13/news-15k/"/>
+<link href="http://smlsun.com/blog/2012/12/13/news-15k/"/>
 <updated>2012-12-13T10:07:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/13/news-15k</id>
+<id>http://smlsun.com/blog/2012/12/13/news-15k</id>
 
       <content type="html"><![CDATA[<p>真的不要再模糊焦點了，大家請仔細看清楚</p>
 
@@ -689,7 +689,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>雖然我很不喜歡看新聞，要是以前我一定會算了，這社會不就這樣，但是如果知道真相，但是又不去散布真正的事實，那不就謊言滿天飛，現在資訊發達，轉發很簡單，但請不要隨便轉發，不論好壞正確的事才值得宣傳。正所謂僅言慎行，請對自己的轉發與言論要更有責任感！如果不這麼做，那就不要怨嘆現在的社會，因為那都是你我一點一滴造成的！！</p>
 
 <p>話又說回來，不然來弄個真相新聞網，專門收集不實的新聞，正確事實發生經過，內容不作評論，只整理經過與事實，哈哈～</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/13/news-15k/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/13/news-15k/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -699,9 +699,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[關於寫作]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/10/about-write/"/>
+<link href="http://smlsun.com/blog/2012/12/10/about-write/"/>
 <updated>2012-12-10T17:35:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/10/about-write</id>
+<id>http://smlsun.com/blog/2012/12/10/about-write</id>
 
       <content type="html"><![CDATA[<p>最近開始有寫作的習慣，漸漸讓我思考關於寫作這件事，
 我其實不是個很有梗的人，但是我覺得寫作可以幫助我：</p>
@@ -737,7 +737,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <p>上面的工具，可能不多人知道，因為對於資訊的大量讀取與處理的活動中，發展出一套非常方便得工具組，推薦給大家，寫作的興趣是需要培養的，試著寫幾篇看看，不用太長，當做在寫日記一樣，你也會喜歡上，並享受這樣的過程。</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/10/about-write/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/10/about-write/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -747,9 +747,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[Otcopress + warp bootstrap + deck.js]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/"/>
+<link href="http://smlsun.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/"/>
 <updated>2012-12-10T12:19:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs</id>
+<id>http://smlsun.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs</id>
 
       <content type="html"><![CDATA[<p>隆重為大家推出，我所完成的 Otcopress theme</p>
 
@@ -788,7 +788,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>ps. 後續會在補英文說明，希望可以有外國人喜歡～</p>
 
 <h3>打完休息…</h3>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -798,9 +798,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[關於陳為廷事件]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/08/times-chan/"/>
+<link href="http://smlsun.com/blog/2012/12/08/times-chan/"/>
 <updated>2012-12-08T23:35:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/08/times-chan</id>
+<id>http://smlsun.com/blog/2012/12/08/times-chan</id>
 
       <content type="html"><![CDATA[<p>最近看了清大生的新聞讓我有感而發，不論對做，但我覺得他很有勇氣，要對一個人沒禮貌，有兩種情形，一個是忍無可忍，一個是講話沒水準，我想陳同學是忍無可忍的狀況，我想現在這環境，應該也有很多忍無可忍的人，但是誰有勇氣站出來說話，試著套論改善的方式，而是得過且過，在媒體的壓力下，做這麼激烈的動作，設身處地的想一下，那需要多大的勇氣，需要怎樣的 才可以讓他做出這樣的舉動。</p>
 
@@ -820,7 +820,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p><a href="http://www.youtube.com/watch?v=tHA7QEgnTbY">陳為廷轟教長！　15分鐘完整交鋒過程</a></p>
 
 <p><a href="http://www.nexttv.com.tw/news/realtime/latest/10523520">陳為廷為「發言態度」道歉　盼勿模糊焦點</a></p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/08/times-chan/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/08/times-chan/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -830,9 +830,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[ireport use qrcode]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/"/>
+<link href="http://smlsun.com/blog/2012/12/07/ireport-use-qrcode/"/>
 <updated>2012-12-07T10:41:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode</id>
+<id>http://smlsun.com/blog/2012/12/07/ireport-use-qrcode</id>
 
       <content type="html"><![CDATA[<p>其實這篇才是最後的目的，讓我們回顧一下系列文章：</p>
 
@@ -933,7 +933,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <h3>請搭配我的github project 服用～</h3>
 
 <blockquote><p><a href="https://github.com/smlsunxie/ireport-qrcode">ireport-qrcode github</a></p></blockquote>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/07/ireport-use-qrcode/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/07/ireport-use-qrcode/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -943,9 +943,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[ireport use scriptlet]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/"/>
+<link href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/"/>
 <updated>2012-12-06T20:00:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet</id>
+<id>http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet</id>
 
       <content type="html"><![CDATA[<p>在開始之前請容許我發洩一下：</p>
 
@@ -1022,7 +1022,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
 
 <p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/06/ireport-use-scriptlet/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -1032,9 +1032,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[agile java with gradle: 使用 gradle 快速開發 java]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/"/>
+<link href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/"/>
 <updated>2012-12-06T18:04:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle</id>
+<id>http://smlsun.com/blog/2012/12/06/agile-java-with-gradle</id>
 
       <content type="html"><![CDATA[<p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
 
@@ -1106,7 +1106,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
 
 <p>如何？還不趕快試試看阿！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/06/agile-java-with-gradle/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -1116,9 +1116,9 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 
 <title type="html"><![CDATA[introduction ireport component: Map 地圖]]></title>
-<link href="http://smlsunxie.github.com/blog/2012/12/06/ireport-map-component/"/>
+<link href="http://smlsun.com/blog/2012/12/06/ireport-map-component/"/>
 <updated>2012-12-06T15:15:00+08:00</updated>
-<id>http://smlsunxie.github.com/blog/2012/12/06/ireport-map-component</id>
+<id>http://smlsun.com/blog/2012/12/06/ireport-map-component</id>
 
       <content type="html"><![CDATA[<p>今天來為大家介紹 ireport 的新元件</p>
 
@@ -1153,7 +1153,7 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 <p><img src="https://lh6.googleusercontent.com/-vpj2Wl0Tqsw/UMBQ4pGbobI/AAAAAAAALXE/UJrkevqrC58/s640/ireport%2520map.jpg" alt="img" /></p>
 
 <p>不錯吧！</p>
-<p><a rel="bookmark" href="http://smlsunxie.github.com/blog/2012/12/06/ireport-map-component/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/06/ireport-map-component/"></a></p>]]></content>
     </entry>
   
 </feed>
