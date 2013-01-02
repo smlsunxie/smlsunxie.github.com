@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-02T17:10:43+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[bug tracking system 介紹：使用 github 內建的 Issues]]></title>
+    <link href="http://smlsun.com/blog/2013/01/02/github-issues/"/>
+    <updated>2013-01-02T14:30:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/02/github-issues</id>
+    <content type="html"><![CDATA[<p>github 本身原生就支援markdown，當然其內建的 issues tracking 本身也可以用markdown進行編寫，我想這問題回報與描述上會更加的方便，使用上會更加的直覺，這邊將大致介紹一下github issues tracking的使用方式。</p>
+
+<p>首先可以進到下列範例網址：</p>
+
+<p><a href="https://github.com/elimbook/erp/issues">問題追蹤網址</a></p>
+
+<h2>新增/編輯issues</h2>
+
+<p>一開始有說到github是用markdown來進行編輯，如果對於markdown語法有不清楚的可參考下列網址：</p>
+
+<p><a href="http://smlsun.com/blog/2012/12/24/how-to-use-markdown/">快速了解 Markdown</a></p>
+
+<p>也可以在github中的編輯畫面輸入<code>m</code>你將看到下面圖片的markdown的簡單說明：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-cQkMQSAS7hc/UOPzSnAMXoI/AAAAAAAALcQ/FuIGeRI02mY/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.31.36.jpg" alt="img" /></p>
+
+<p>另外如果有圖片的話也可以直接拖拉github將會直接將圖片上傳且自動插入markdown的圖片語法，很方便呢！</p>
+
+<p>若要參照到另一個issue或commit可參考下列語法</p>
+
+<pre><code>* SHA: be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* User@SHA ref: mojombo@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* User/Project@SHA: mojombo/god@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
+* \#Num: #1
+* User/#Num: mojombo#1
+* User/Project#Num: mojombo/god#1
+</code></pre>
+
+<p>結果可參考github的<a href="http://github.github.com/github-flavored-markdown/">GitHub Flavored Markdown</a>，裡面有更多說明。</p>
+
+<p>在issue登打部分建議如下：</p>
+
+<ul>
+<li>title 需明確說明標示問題發生的作業以及問題點</li>
+<li>內容部分需有詳細的內容，包括操作步驟與結果，最好可以搭配圖片</li>
+</ul>
+
+
+<p>範例可參考下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-9fuY5CrkDWg/UOPzTRPmdTI/AAAAAAAALcY/s_JDdfJBjwI/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.42.42.jpg" alt="img" /></p>
+
+<p>最後呈現結果如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-9l4xBRFTY6k/UOPzT8MaZQI/AAAAAAAALcc/MAtgsAGu4rE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.43.06.jpg" alt="img" /></p>
+
+<p>新增編輯issue 說明完後再來將針對各種不同的追蹤項目進行說明，在開始追蹤問題時需要事先定義的內容有如下</p>
+
+<ol>
+<li>負責人員 Assignee 定義：每個階段皆有負責人負責將該階段排除故需要定義相關的負責人員</li>
+<li>標籤 Labels 定義：每個階段的項目定義，比如新問題，開發修改中，測試完成等</li>
+<li>里程碑 Milestones 定義：定義每個階段需要完成的項目類容</li>
+<li>流程 flow 定義：上面三個定義好後就是跟據不同狀況給予不同流程</li>
+</ol>
+
+
+<h2>負責人員 Assignee 定義</h2>
+
+<ol>
+<li>開發者：產品的開發維護人員</li>
+<li>測試者：產品測試人員</li>
+<li>使用者代表：實際使用系統的人員代表</li>
+<li>指派者：當每個段落結束時需要由指派人員定義由誰接續下面的流程，並且在指派前需確認下個狀態進行</li>
+</ol>
+
+
+<p>至於要如何指派人員可參考下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-rzlm418XajA/UOPzRUzl1MI/AAAAAAAALcA/D7nUb5b2E1I/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.14.00.jpg" alt="img" /></p>
+
+<p>點選 Assignee 選擇要指派的人員即可</p>
+
+<h2>標籤 Labels 定義</h2>
+
+<p>除了內建的標籤之外，github也允許你使用自定的標籤，來區分每個bug目前的狀態，以便追蹤處理狀況，可以看到如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-BMNP4URajKY/UOPzO6u6LzI/AAAAAAAALbk/giLoFjLIdJQ/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.02.59.jpg" alt="img" /></p>
+
+<p>若是既有的標籤，可以點標籤的前方的顏色方塊進行編輯，若是新增可點選 <strong>Manage Labels</strong> 新增，在New label name定義標籤名稱，接著定義標籤顏色，在這裡我們可以簡單定義幾個常用得標籤說明如下：</p>
+
+<ul>
+<li>新問題：新增issue需定義問題的狀態，需在內容詳細說明操作步驟，與問題發生的環境貨資料狀況</li>
+<li>新功能：如果是新增功能，且需在內容詳細說明功能需求</li>
+</ul>
+
+
+<blockquote><p>請記得上面兩點在建立時若確定為很重要的issue皆需要定義完工里程碑</p></blockquote>
+
+<ul>
+<li>修正中：一旦問題確認後，一旦進入開發中，需要變更狀態以便了解目前程式人員已在處理</li>
+</ul>
+
+
+<blockquote><p>修正中需要求開發人員回報預計修正完成時間</p></blockquote>
+
+<ul>
+<li>修正完成待測試：一旦修正完成，則指派當初建立issue的人員進行測試，需回報測試內容步驟，與測試解果</li>
+<li>測試退回：一旦經由測試結果不如預期，怎必須退回重修，同樣需說明測試內容步驟，與結果</li>
+<li>嚴重度高：如果會影響日常運作則需標上嚴重度，以便辨識要優先處理</li>
+<li>嚴重度低：不影響日常運作，則標上嚴重度低</li>
+</ul>
+
+
+<p>如果普通則不需標上嚴重度，當然可依據不同狀況進行調整。</p>
+
+<p>一旦標籤定義完畢，要將issue打上標籤標記，可參考下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-UpAWej-TnB0/UOPzNx2cbSI/AAAAAAAALbc/vc30JQDjp0o/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.01.15.jpg" alt="img" /></p>
+
+<p>可以看到，可以打上多個標記，只要選取你要的標籤即可。</p>
+
+<h2>里程碑 Milestones 定義</h2>
+
+<p>用來記錄哪幾個問題的預計完成時間，藉此可以控制問題的解決進度，以及完成該里程碑涵蓋的修正與對應的版本皆可在這進行記錄，需要記錄的內容如下：</p>
+
+<ol>
+<li>預計版號</li>
+<li>首要目的</li>
+<li>issue修正範圍</li>
+</ol>
+
+
+<p>往後可以作為change log 的依據，當然軟體本身也要有明確的版號規則，至於如何新增 Milestones 可參考下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-01PZsgoK8eg/UOPzQA0YgfI/AAAAAAAALbw/fEeTF0IZfdk/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.05.45.jpg" alt="img" /></p>
+
+<p>點選Create a new milestone 則會進入到下列畫面：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-2p5kYzjPlFw/UOPzQyPNtxI/AAAAAAAALb4/zEY1ck69NJ8/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.06.55.jpg" alt="img" /></p>
+
+<p>定義好Title 還有敘述 Description 以及里程碑日期就可完成新增，如果要將issue 指派到特定的 milestone 可參考下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-oIElFfXXIW0/UOPzSA9vz4I/AAAAAAAALcI/ckxUv0RKcn4/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.15.44.jpg" alt="img" /></p>
+
+<p>點選上方的 milestone 按鈕將show出目前有定義的 milestone，點選項目即可進行指定</p>
+
+<h2>流程 flow 定義</h2>
+
+<p>在此假設我們的追蹤流程如下，將分為幾種狀況，以及每個狀態負責人員：</p>
+
+<pre><code>新問題(使用者代表) &gt; 問題已確認(開發者) &gt; 問題修正中(開發者) &gt; 修正完成待測試(使用者代表)       
+</code></pre>
+
+<p>一旦修正完畢，需交由指派者確認問題修正結果是否確定已在測試環境可進行測試，一旦確認，將進入測試階段，如果測試異常則必須標上測試退回</p>
+
+<pre><code>修正完成待測試(使用者代表)&gt;測試退回(開發者)
+</code></pre>
+
+<p>上述循環會一直持續直到修正完成為止，過程中每次退回皆需說明問題發生原因與步驟</p>
+
+<p>最後一旦問題確認已被正確測試正常，怎進行結案，可參考下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-BMNP4URajKY/UOPzO6u6LzI/AAAAAAAALbk/giLoFjLIdJQ/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.02.59.jpg" alt="img" /></p>
+
+<p>勾選要結案的issues 在點選上方的 Close按鈕就可完成結案，如果結案後又發生問題則可以在點選上方的 closed issues，同樣的可在勾選你要在追蹤的issue 在點選Reopen 即可。</p>
+
+<p>上述就是整個github所提供免費的線上issues track的簡介，是不是簡單又好用，如果你還沒有使用過 bug tracking System，那趕快開始吧，如果你是產品擁有者，在bug滿天飛的情形，更應該好好掌握每隻bug的情形，除了當下問題之外，在久遠的未來發生了問題也可以翻閱過去的紀錄找到一些端倪，總之別怕麻煩，不去記錄才是真正麻煩，因為你將完全沒有根據可以進行問題追蹤…</p>
+]]></content>
+  </entry>
+  
+</feed>

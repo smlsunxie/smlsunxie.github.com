@@ -310,6 +310,295 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid Reference</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
+
+<p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>
+
+<ul>
+<li>官方網站：<a href="http://liquidmarkup.org/">Liquid</a></li>
+<li>wiki：<a href="https://github.com/mojombo/jekyll/wiki">Liquid wiki</a></li>
+</ul>
+
+
+<p>節錄幾個我覺得比較重要的章節</p>
+
+<ul>
+<li>markdown文檔檔頭的說明：<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter">YAML Front Matter</a></li>
+<li>各種參數讀取方式：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">Template Data</a></li>
+<li><p>設計人員參考手冊：<a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">Liquid for Designers</a></p>
+
+<p>  包含比如說replace這樣替換字元的說明，還有一些常用的tag說明</p></li>
+<li><p>開發人員參考手冊：<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers">Liquid for Programmers</a></p>
+
+<p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
+<li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
+
+<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>post_url 2010-07-21-name-of-post</code>取得文章連接。</p></li>
+</ul>
+
+
+<p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
+
+<h3>Have Fun!!</h3>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-19T08:59:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/19/Jekyll-liquid-reference/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/19/Jekyll-liquid-reference/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2012/12/19/google-api/">Google Api 的使用簡介-map & Picasa</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近剛好在做一個房仲網站，有用到 google map api，以及要動態嵌入picasa的圖片依據狀況改變圖片大小，找到一些參考資料，整理上來給大家參考</p>
+
+<h2>google map</h2>
+
+<h3>大家愛吃的泡麵版:</h3>
+
+<ul>
+<li><p>如果你要嵌入map地圖請參考下列網址</p>
+
+<p>  <a href="http://support.google.com/maps/bin/answer.py?hl=zh-Hant&amp;answer=72644">在網站或網誌中嵌入地圖</a></p></li>
+</ul>
+
+
+<p>效果如下：</p>
+
+<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com.tw/maps?f=q&amp;source=s_q&amp;hl=zh-TW&amp;geocode=&amp;q=%E5%8F%B0%E5%8C%97%E5%B8%82%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;aq=&amp;sll=23.48575,119.49965&amp;sspn=8.347012,9.876709&amp;t=m&amp;brcurrent=3,0x3442a9b1907a9407:0x10fa075eccd0dd7c,0,0x3442ac6b61dbbd9d:0xc0c243da98cba64b&amp;ie=UTF8&amp;hq=&amp;hnear=100%E5%8F%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E6%AD%A3%E5%8D%80%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;ll=25.026428,121.512823&amp;spn=0.037331,0.054932&amp;z=14&amp;iwloc=A&amp;output=embed"></iframe>
+
+
+<br /><small><a href="https://maps.google.com.tw/maps?f=q&amp;source=embed&amp;hl=zh-TW&amp;geocode=&amp;q=%E5%8F%B0%E5%8C%97%E5%B8%82%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;aq=&amp;sll=23.48575,119.49965&amp;sspn=8.347012,9.876709&amp;t=m&amp;brcurrent=3,0x3442a9b1907a9407:0x10fa075eccd0dd7c,0,0x3442ac6b61dbbd9d:0xc0c243da98cba64b&amp;ie=UTF8&amp;hq=&amp;hnear=100%E5%8F%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E6%AD%A3%E5%8D%80%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;ll=25.026428,121.512823&amp;spn=0.037331,0.054932&amp;z=14&amp;iwloc=A" style="color:#0000FF;text-align:left">檢視較大的地圖</a></small>
+
+
+<p>簡單吧！感謝google大神～</p>
+
+<h3>下面是給愛自己煮的geek:</h3>
+
+<ul>
+<li><a href="http://my-web-design.blogspot.tw/2007/09/google-maps-api.html">基本的使用介紹</a></li>
+<li><p>如果你要嵌入地圖資訊可用下列網站產生</p>
+
+<p>  <a href="http://www.solvium.de/static-map/">google map 嵌入網站程式碼產生器</a></p></li>
+<li><p>如果要查詢所在位置的坐標可使用下列網址，之前在<a href="http://smlsun.com/blog/2012/12/06/ireport-map-component/">Introduction Ireport Component: Map 地圖</a>有介紹過</p>
+
+<p>  <a href="http://www.agenciacreativa.net/coordenadas_google_maps.php">座標查詢網址</a></p></li>
+<li><p>更詳細的使用說明可以參考官方文件說明</p>
+
+<p>  <a href="https://developers.google.com/maps/documentation/javascript/?hl=zh-TW">官方google map api 文件</a></p></li>
+</ul>
+
+
+<h2>google picasa</h2>
+
+<h3>大家愛吃的泡麵版：</h3>
+
+<p>如果你要分享picasa上面的影像可以參考下列網址操作</p>
+
+<ul>
+<li><a href="https://support.google.com/picasa/answer/66969/?hl=zh-Hant&amp;">內嵌相簿、圖片和投影播放</a>，效果如下
+<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="800" height="533" flashvars="host=picasaweb.google.com&hl=zh_TW&feat=flashalbum&RGB=0x000000&feed=https%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2F114562460176368030377%2Falbumid%2F5810278785625170577%3Falt%3Drss%26kind%3Dphoto%26authkey%3DGv1sRgCIqtvMXakpDcSw%26hl%3Dzh_TW" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed></li>
+</ul>
+
+
+<p>差就差在是用flash作的，如果你不 care iphone的用戶(沒有flash)，這應該可以幫你節省維護照片(以資料夾為單位)，以及將照片放在web site的時間(複製連接)，picasa就可以很方便管理你的照片，</p>
+
+<h3>更正：原來有人提出iphone，使用picasa slide 的解決方案了如下：</h3>
+
+<h4><a href="http://www.jaillon.com/blog/2010/06/04/how-to-make-picasa-flash-based-slideshow-iphone-friendly/">How to make Picasa flash-based slideshow iPhone-friendly</a></h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">language</span><span class="o">=</span><span class="nx">javascript</span><span class="o">&gt;</span>
+</span><span class='line'><span class="k">if</span><span class="p">((</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPhone/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPod/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPad/i</span><span class="p">)))</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">slideshow</span> <span class="nx">link</span><span class="p">]</span><span class="err">“</span><span class="o">&gt;&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">an</span> <span class="nx">image</span> <span class="nx">from</span> <span class="nx">the</span> <span class="nx">slideshow</span><span class="p">]</span> <span class="nx">width</span><span class="o">=</span><span class="err">”</span><span class="mi">600</span><span class="err">″</span> <span class="o">/&gt;&lt;</span><span class="err">/a&gt;’);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="p">[</span><span class="nx">Code</span> <span class="nx">provided</span> <span class="nx">by</span> <span class="nx">Picasa</span> <span class="o">-</span> <span class="nx">Click</span> <span class="nx">on</span> <span class="s2">&quot;Embed Slideshow&quot;</span> <span class="nx">link</span><span class="p">]</span><span class="err">‘</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在介紹一個好工具，很簡單使用</p>
+
+<p><a href="http://www.slidemypics.com/">Free HTML5 Slideshows</a></p>
+
+<p>效果如下：</p>
+
+<ul>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.8656736903358251"></iframe></p></li>
+<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=0379d2806253627616f18543a1054903&amp;r=0.36253471905365586"></iframe></p></li>
+</ul>
+
+
+<h3>geek最愛的自己煮版：</h3>
+
+<ul>
+<li><p>用restful的方式來操作圖片的產生，如果你是要用html5 image slide 這就很好用，你不會想要原始大小跟縮圖都自己重覆貼連結的</p>
+
+<p>  <a href="http://akr.tw/2012/04/picasa-url-parameters/">Picasa（Google+）圖片外連的 URL 參數整理</a></p></li>
+</ul>
+
+
+<hr />
+
+<p>其實只要善用網路上的工具真的可以節省很多時間，使用起來也不麻煩，甚至出奇的簡單，只是不知道而已，網路的世界需要大家一起探索，如果有不錯的工具，也別忘了推薦給大家，let me know,OK!</p>
+
+<p>最後還是要感謝google，幫我節省這麼多時間，雖然我沒有像google那麼神通廣大，希望能幫助到來參觀的讀者囉！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-19T08:20:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/19/google-api/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/19/google-api/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/12/18/london-taxi/">態度的重要-從倫敦計程車司機的專業來看</a>
 
 </h1>
@@ -1209,261 +1498,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
-
-<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
-
-<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
-
-<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
-
-<hr />
-
-<p>怎麼辦！？介紹大家一帖好藥</p>
-
-<h2>Gradle</h2>
-
-<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
-
-<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
-
-<p>然後編輯build.gradle，內容如下</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;java&#39;</span>
-</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">repositories</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">mavenCentral</span><span class="o">()</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.google.zxing&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;javase&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;2.1&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;net.sf.jasperreports&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;jasperreports&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;5.0.0&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.lowagie&#39;</span><span class="o">,</span> <span class="nl">name:</span><span class="s1">&#39;itext&#39;</span><span class="o">,</span> <span class="nl">version:</span><span class="s1">&#39;2.1.7&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
-
-<p><a href="http://search.maven.org/">maven Central Repository</a></p>
-
-<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
-
-<p>接著我們只要在Terminal鍵入下列指令：</p>
-
-<p><code>gradle build jar</code></p>
-
-<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
-
-<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
-
-<p><code>gradle eclipse</code></p>
-
-<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
-
-<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
-
-<p>如何？還不趕快試試看阿！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T18:04:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/agile-java-with-gradle/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/agile-java-with-gradle/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/06/ireport-map-component/">Introduction Ireport Component: Map 地圖</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>今天來為大家介紹 ireport 的新元件</p>
-
-<h2>Map component</h2>
-
-<p>此Map不是java.util.Map，是google Map 的Map 不要搞錯了喔！</p>
-
-<p>不然各位還以為我在廢話，java.util.Map 哪需要我介紹～</p>
-
-<p>就在 11月底的時候 ireport release 5.0</p>
-
-<p>我就想說來看看他多了什麼功能，畢竟我從 2.0一路用上來</p>
-
-<p>到了5字頭，來看看有什麼新的玩意，查了一下 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-5.0.0/">changelog</a>，重點是下列兩項：</p>
-
-<ul>
-<li>Full support for JasperReports 5.0.0</li>
-<li>Improved map component</li>
-</ul>
-
-
-<p>試了一下，使用起來不會太難，幾個比較做要的參數可以參考官方的範例</p>
-
-<p><a href="http://jasperreports.sourceforge.net/sample.reference/map/index.html">JasperReports - Map Component Sample (version 5.0.0)</a></p>
-
-<p>其中，此元件需要輸入的是座標，可以下下列網址查你要的地址</p>
-
-<p><a href="http://www.agenciacreativa.net/coordenadas_google_maps.php">座標查詢網址</a></p>
-
-<p>接著，要記得設置zoom 的參數，讓你的地圖可以看到比較詳細的街道，可以看一下我完成的範例如下</p>
-
-<p><img src="https://lh6.googleusercontent.com/-vpj2Wl0Tqsw/UMBQ4pGbobI/AAAAAAAALXE/UJrkevqrC58/s640/ireport%2520map.jpg" alt="img" /></p>
-
-<p>不錯吧！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T15:15:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/ireport-map-component/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/ireport-map-component/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1541,6 +1575,14 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/01/02/github-issues/">bug tracking system 介紹：使用 github 內建的 Issues</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/26/agile/">Agile</a>
+      </li>
+    
+      <li>
         <a href="/blog/2012/12/25/the-ultimate-form-of-slob/">懶漢的終極型態</a>
       </li>
     
@@ -1550,14 +1592,6 @@
     
       <li>
         <a href="/blog/2012/12/25/taiwan-china-Korea/">大陸韓國看台灣-我們應該更有自信</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/24/how-to-use-markdown/">快速了解 markdown</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2012/12/22/google-map-get-geo/">google map 取得經緯度</a>
       </li>
     
   </ul>
@@ -1717,7 +1751,7 @@
 	
 		<div class="sixteen columns">
 			<p>
-			  © 2012 - smlsun 
+			  © 2013 - smlsun 
 			  <br>
 			  Powered by <a href="http://octopress.org">Octopress</a>
 			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
