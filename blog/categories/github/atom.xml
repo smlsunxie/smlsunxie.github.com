@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-02T17:12:31+08:00</updated>
+  <updated>2013-01-02T17:43:20+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -69,8 +69,8 @@
 <ol>
 <li>負責人員 Assignee 定義：每個階段皆有負責人負責將該階段排除故需要定義相關的負責人員</li>
 <li>標籤 Labels 定義：每個階段的項目定義，比如新問題，開發修改中，測試完成等</li>
-<li>里程碑 Milestones 定義：定義每個階段需要完成的項目類容</li>
-<li>流程 flow 定義：上面三個定義好後就是跟據不同狀況給予不同流程</li>
+<li>里程碑 Milestones 定義：定義每個階段需要完成的項目內容</li>
+<li>流程 flow 定義：根據不同狀況定義追蹤流程</li>
 </ol>
 
 
@@ -80,7 +80,6 @@
 <li>開發者：產品的開發維護人員</li>
 <li>測試者：產品測試人員</li>
 <li>使用者代表：實際使用系統的人員代表</li>
-<li>指派者：當每個段落結束時需要由指派人員定義由誰接續下面的流程，並且在指派前需確認下個狀態進行</li>
 </ol>
 
 
