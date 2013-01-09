@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nodejs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/nodejs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-09T10:03:05+08:00</updated>
+  <updated>2013-01-09T10:04:17+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -66,7 +66,7 @@ exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   motoexp
 <p>pre-start script</p>
 
 <pre><code># Date format same as (new Date()).toISOString() for consistency
-echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         motoexpress-node.sys.log
+echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         yourapp.sys.log
 </code></pre>
 
 <p>end script</p>
@@ -74,7 +74,7 @@ echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         m
 <p>pre-stop script</p>
 
 <pre><code>#rm /var/run/yourprogram.pid
-echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/         motoexpress-node.sys.log
+echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/         yourapp.sys.log
 </code></pre>
 
 <p>end script
