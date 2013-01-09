@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-09T10:05:04+08:00</updated>
+  <updated>2013-01-09T10:06:36+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -88,17 +88,17 @@
 </span><span class='line'>script
 </span><span class='line'>    export HOME="/root"
 </span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
-</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   yourapp.sys.log 2&gt;&1
+</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
 </span><span class='line'>end script
 </span><span class='line'>
 </span><span class='line'>pre-start script
 </span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         yourapp.sys.log
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
 </span><span class='line'>end script
 </span><span class='line'>
 </span><span class='line'>pre-stop script
 </span><span class='line'>    #rm /var/run/yourprogram.pid
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/         yourapp.sys.log
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
 </span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
 
 
