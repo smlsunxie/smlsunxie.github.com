@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>agile java with gradle: 使用 gradle 快速開發 java - 蹤影</title>
+  <title>this guy is my bro!這傢伙是我哥～ - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,9 @@
   
   
   
+  <meta name="description" content="介紹我那怪咖哥哥的壯遊之旅">
   
+  <meta name="keywords" content="環遊世界, 西藏, 澳洲, 摩托車, 金旺">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -34,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/">
 
 
 
@@ -308,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Agile Java With Gradle: 使用 Gradle 快速開發 Java
+This Guy Is My Bro!這傢伙是我哥～
 
 </h1>
 
@@ -319,76 +321,59 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
 
 
   <div class="post-description">
-    <p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
+    <p><img src="http://4.bp.blogspot.com/-qkBOxhKvsu4/UGqp2TSiLSI/AAAAAAAAAC8/EWBp1UoXzaw/s1600/P1000578.jpg" alt="img" /></p>
 
-<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
+<p>這傢伙是我哥，認識我的人都知道我是的很穩定的人，但我哥卻是個浪子，一個非常有勇氣去追逐夢想的人，曾幾何時我還年輕時，總覺得我哥很不務正業，每天都在想東想西，做著一些不算工作的工作，常常讓爸媽擔心，十足是家裡的問題份子，但隨著年歲的增長，看東西的角度不一樣後，現在卻覺得我哥很了不起，能夠有勇氣去追逐他的夢想，並且用他異於常人的方式去完成，有多異於常人？可以看看他寫的網誌，那些艱苦的旅程，真的很難想像，也非常的有趣！</p>
 
-<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
+<p>有哪些旅程呢？</p>
 
-<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
+<p>從一開始的<a href="http://www.wretch.cc/blog/rz250xr/11556922">複習曲之金旺環島之大雨伴我行</a></p>
 
-<hr />
+<p><img src="http://f12.wretch.yimg.com/rz250xr/1/1961773358.jpg?lYZJuE1DdxOmbqZAVEAuQVTK0ta6M1rTYyLkt.QZLDHl_bwplAbJzw--" alt="img" /></p>
 
-<p>怎麼辦！？介紹大家一帖好藥</p>
+<p>然後是<a href="http://www.wretch.cc/blog/rz250xr/11889412">流浪漢與男子漢的新春萬榮丹大貫通協奏曲</a>，重點是…騎腳踏車…過程都在不是路的路</p>
 
-<h2>Gradle</h2>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/57/1404992859.jpg?CP0r4A9DdxOyFWOyNUUPEP_7r2gAYB8XtsrsCwWId8EpiA8PGXY7u.I-" alt="img" /></p>
 
-<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
+<p>接著<a href="http://www.wretch.cc/blog/rz250xr/12147238">北京到西藏越野車之旅</a>&#8230;重點是騎摩托車，在遇到車禍，在火車上修引擎->因為我家是摩托車店，別懷疑！</p>
 
-<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/84/1283332842.jpg?aPyLjUNDdxM6S7KyHnheVSN.EL_.TJ5AEEiDTisEkYgH5QzwwMGSbSs-" alt="img" /></p>
 
-<p>然後編輯build.gradle，內容如下</p>
+<p>對了！還有這篇很有趣，<a href="http://www.wretch.cc/blog/rz250xr/12214139">睡</a></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;java&#39;</span>
-</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">repositories</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">mavenCentral</span><span class="o">()</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.google.zxing&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;javase&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;2.1&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;net.sf.jasperreports&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;jasperreports&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;5.0.0&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.lowagie&#39;</span><span class="o">,</span> <span class="nl">name:</span><span class="s1">&#39;itext&#39;</span><span class="o">,</span> <span class="nl">version:</span><span class="s1">&#39;2.1.7&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/88/1492851339.jpg?YaVYar1DdxNa.2ajUxzIAIZ3tcEB1wMdTs2svFpdcwObfhua3qFJpyE-" alt="img" /></p>
 
+<p>西藏之旅得到一個很屌的獎狀！</p>
 
-<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/32764/1281824619.jpg?OyEgEnBDdxM59QvQzbMp6R0eOaueUQE4paaLATi.WB5cPZaz1B4hBWmxgKI-" alt="img" /></p>
 
-<p><a href="http://search.maven.org/">maven Central Repository</a></p>
+<p>然後我老哥展開他的澳洲兩年的打工旅遊之旅，他又騎著他在當地買的金旺開始他的環澳洲之旅</p>
 
-<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
+<p><img src="http://i.imgur.com/hUm2A.jpg" alt="img" /></p>
 
-<p>接著我們只要在Terminal鍵入下列指令：</p>
+<p><a href="http://www.wretch.cc/blog/rz250xr/12373657">單騎金旺深入澳洲中心</a></p>
 
-<p><code>gradle build jar</code></p>
+<p>又是一個令人傻眼的環澳洲島之旅</p>
 
-<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/104/1444736974.jpg?hSxHZa5DdxN2XNlxeBtK3FXbAq3OYJphGYAFSFmwQw8Vn5CvGZBrB7z0" alt="img" /></p>
 
-<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
+<p>呼～是不是好像跟著文章走過很多不同的地方，接著在他回來台灣以後，本想他應該就這樣定了下來沒想到兩個禮拜後…</p>
 
-<p><code>gradle eclipse</code></p>
+<p><a href="http://www.wretch.cc/blog/rz250xr/12408306">流浪漢即將前進印度!!</a></p>
 
-<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
+<p><img src="http://f12.wretch.yimg.com/rz250xr/32764/1281824624.jpg?4QW5gNxDdxNlqihm3ktRQBG4TINovLQXqjMjbrexEewasyJc9ZBzRvqDSh4-" alt="img" /></p>
 
-<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
+<p><a href="http://613tin.blogspot.tw/2012/11/blog-post_27.html">印度旅行近況報告</a></p>
 
-<p>如何？還不趕快試試看阿！</p>
+<p><img src="http://1.bp.blogspot.com/-dyJSlFINbig/ULIau1otqGI/AAAAAAAAAF0/O9UKgenS8Rg/s320/P1010098.JPG" alt="img" /></p>
+
+<p>我想旅行是會令人上癮的，雖然他號稱他回來後就不會這樣趴趴走，但我覺得應該要持保留態度，哈哈～不管如何，我老哥就是一個屌字可以形容，誰說一定要會念書，進大公司才是最好的選擇，傳統觀念總是給我們太多枷鎖，如果我哥回來有段時間不再亂跑，我一定鼓勵他出本書，我想那內容應該是很吸引人才對，希望我有機會可以為大家介紹囉！最後附上我老哥的網誌：</p>
+
+<p><a href="http://www.wretch.cc/blog/rz250xr">流浪漢越野生活</a></p>
+
+<p><a href="http://613tin.blogspot.tw/">新流浪漢越野生活</a></p>
+
+<p>來隨著流浪漢環遊世界吧！</p>
 
   </div>
 
@@ -422,12 +407,12 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T18:04:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-01-09T10:27:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/agile/'>agile</a>, <a class='category' href='/blog/categories/gradle/'>gradle</a>, <a class='category' href='/blog/categories/java/'>java</a>
+    <a class='category' href='/blog/categories/家人/'>家人</a>, <a class='category' href='/blog/categories/心得/'>心得</a>, <a class='category' href='/blog/categories/旅遊/'>旅遊</a>
   
 </span></span>
 
@@ -442,7 +427,7 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/" target="_blank" >Tweet</a>
     
   
   
@@ -463,10 +448,8 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/06/ireport-map-component/" title="Previous Post: introduction ireport component: Map 地圖"><li>&laquo; introduction ireport component: Map 地圖</li></a>
+            <a class="left" href="/blog/2013/01/09/node-start/" title="Previous Post: 快速了解 node 以及 mongodb，mail的使用"><li>&laquo; 快速了解 node 以及 mongodb，mail的使用</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/06/ireport-use-scriptlet/" title="Next Post: ireport use scriptlet"><li>ireport use scriptlet &raquo;</li></a>
           
         </ul>
 
@@ -610,7 +593,7 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/" target="_blank" >Tweet</a>
     
   
   
@@ -762,8 +745,8 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/';
+        var disqus_url = 'http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/';
         var disqus_script = 'embed.js';
       
     (function () {
