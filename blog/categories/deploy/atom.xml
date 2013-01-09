@@ -4,7 +4,7 @@
   <title><![CDATA[Category: deploy | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/deploy/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-09T10:04:17+08:00</updated>
+  <updated>2013-01-09T10:05:04+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -39,7 +39,7 @@ stop on shutdown</p>
 
 <pre><code>export HOME="/root"
 #echo $$ &gt; /var/run/yourprogram.pid
-exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   motoexpress-node.sys.log 2&gt;&amp;1
+exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   yourapp.sys.log 2&gt;&amp;1
 </code></pre>
 
 <p>end script</p>
