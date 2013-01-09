@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-09T09:37:52+08:00</updated>
+  <updated>2013-01-09T10:03:05+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[快速了解 node 以及 mongodb，mail的使用]]></title>
+<link href="http://smlsun.com/blog/2013/01/09/node-start/"/>
+<updated>2013-01-09T09:40:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/01/09/node-start</id>
+
+      <content type="html"><![CDATA[<p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
+
+<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
+
+<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
+
+<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
+
+<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
+
+<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/09/node-start/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -1139,119 +1164,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 <p><a href="http://www.nexttv.com.tw/news/realtime/latest/10523520">陳為廷為「發言態度」道歉　盼勿模糊焦點</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/08/times-chan/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[ireport use qrcode]]></title>
-<link href="http://smlsun.com/blog/2012/12/07/ireport-use-qrcode/"/>
-<updated>2012-12-07T10:41:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/07/ireport-use-qrcode</id>
-
-      <content type="html"><![CDATA[<p>其實這篇才是最後的目的，讓我們回顧一下系列文章：</p>
-
-<ul>
-<li><p><a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a></p>
-
-<p>  利用gradle 快速開發java，並且包成jar，所要做的就是下一篇文章scriptlet 會用到的jar</p></li>
-<li><p><a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a></p>
-
-<p>  說明如何引入自己寫的class在ireport可以使用</p></li>
-</ul>
-
-
-<p>最後所有做的就是</p>
-
-<h2>ireport 產生 QRCode</h2>
-
-<p>So，之前兩篇文章把一些細節都說明過了，就直接進入重點吧！</p>
-
-<p>參考這篇文章</p>
-
-<p><a href="http://stackoverflow.com/questions/7626013/google-zxing-barcode-generator-in-ireport">google-zxing-barcode-generator-in-ireport</a></p>
-
-<p>把第二篇的javacode改寫後，程式碼如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.BarcodeFormat</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.WriterException</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.common.BitMatrix</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.qrcode.QRCodeWriter</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.client.j2se.MatrixToImageWriter</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">QRCodeScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">QRCodeWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QRCodeWriter</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">BitMatrix</span> <span class="n">matrix</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">matrix</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">(),</span> <span class="n">BarcodeFormat</span><span class="o">.</span><span class="na">QR_CODE</span><span class="o">,</span> <span class="mi">256</span><span class="o">,</span> <span class="mi">256</span><span class="o">);</span>
-</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;BarCodeImage&quot;</span><span class="o">,</span> <span class="n">MatrixToImageWriter</span><span class="o">.</span><span class="na">toBufferedImage</span><span class="o">(</span><span class="n">matrix</span><span class="o">)</span> <span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">WriterException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不多說了，重點如下：</p>
-
-<ul>
-<li>需要用的套件與版本，請參考 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a> 的gradle.build，其中 <code>com.google.zxing</code> 主要是要用來產生QRcode</li>
-<li>將你要轉換成QRcode 的文字傳入，此範例用的是 Field ORDERID</li>
-<li>同樣將處理結果塞到 ireport的 Variable，此範例命名為 BarCodeImage</li>
-<li>在此 Variable 的型別為 BufferedImage</li>
-</ul>
-
-
-<p>回到ireport，我們同樣要進行 <a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a> 中，ireport的設定，其中不一樣的是：</p>
-
-<ul>
-<li>Variable 的 type 要改成 java.awt.image.BufferedImage</li>
-<li>然後原本用的是text field 改成用 Image</li>
-<li>Image的type 改成 java.awt.Image</li>
-</ul>
-
-
-<p>上面都處理好，就可以來看結果了</p>
-
-<p><img src="https://lh5.googleusercontent.com/-XWqDIn7kLFs/UMFcwQZq9MI/AAAAAAAALXg/PTyLE0dmsLk/s640/ireport%2520qrcode.jpg" alt="qrcode" /></p>
-
-<p>DONE!!如果有此需求，趕快動手做做看囉～</p>
-
-<h3>請搭配我的github project 服用～</h3>
-
-<blockquote><p><a href="https://github.com/smlsunxie/ireport-qrcode">ireport-qrcode github</a></p></blockquote>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/07/ireport-use-qrcode/"></a></p>]]></content>
     </entry>
   
 </feed>

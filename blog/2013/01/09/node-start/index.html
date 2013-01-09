@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Reading experience:Being Geek 晉升怪傑 - 蹤影</title>
+  <title>快速了解 node 以及 mongodb，mail的使用 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,9 @@
   
   
   
+  <meta name="description" content="透過介紹一個簡單的範例來快速了解nodejs 的運作">
   
+  <meta name="keywords" content="nodejs, mongodb, mail">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -34,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/01/09/node-start/">
 
 
 
@@ -308,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Reading experience:Being Geek 晉升怪傑
+快速了解 Node 以及 Mongodb，mail的使用
 
 </h1>
 
@@ -319,38 +321,17 @@ Reading experience:Being Geek 晉升怪傑
 
 
   <div class="post-description">
-    <p>從書名來看<strong>Being Geek 晉升怪傑</strong>，直覺會認為是如何成為一個技術高超的程式人員，但本書所要闡釋的是，怪傑不只技術高超，有很多面相的總和才叫作怪傑，基本上就是一個全能以及處變不驚的人；對於求知的慾望是無窮無境的，也要是一個很強的溝通者、危機處理者，以及決策者；既然怪傑必須處理這麼多困難得事，該如何處理也是很重要的；所以不管是否要成為怪傑只要你有下列的困擾，那我建議你來看這本書：</p>
+    <p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
 
-<ul>
-<li>如果最近你有離職的打算，該如何評估你的決定是不是對的</li>
-<li>既然有離職，書中也有說明如何面試，面對不同類型面試者的應對方式</li>
-<li>對於你的新職涯，如何注意該爭取的福利</li>
-<li>若你有在團隊管理，如何讓兩個不對盤的人可以互相理解，並且培養默契</li>
-<li>若你是被管理者，如何向上管理你的主管，還有你應該從主管身上學到什麼</li>
-<li>對於敵人的應對方式</li>
-<li>如何面對不可能的任務</li>
-<li>面對危機時應該如何處理</li>
-<li>如何找到與辨識你的貴人</li>
-<li>如何聘請人員</li>
-<li>如何管理在家工作的人</li>
-<li>對於生產活動，有哪些推薦的軟體</li>
-<li>如果你有另一半，該如何讓他了解身為怪胎的行為，並且能夠有心理準備。(個人覺得很棒的章節，我已經有給我老婆看了，哈)</li>
-<li>當你身為管理職時，如何在<strong>處理危機</strong>與<strong>創造</strong>之間平衡</li>
-<li>該如何進行簡報</li>
-<li>剛要從工程師轉換為管理職的人；一些建議以及心理建設，告訴你如何看待與觀察這樣的轉變，並且當你身處這樣的過程時，如何察覺，以及該如何適應與處理管理職的工作（以我個人而言，可以說是相見恨晚阿！)</li>
-<li>如何正確的進行決策</li>
-<li>若你想落實一些你想學習或想做的事的方法：<strong>涓滴清單</strong></li>
-<li>如何評估你的下一個事業</li>
-</ul>
+<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
 
+<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
 
-<p>如何？是否也切中你的要害，或者你正有這些困惱？那趕快去買來看吧！</p>
+<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
 
-<p>以Geek為目標並且加上lean的思維，避免不不必要的浪費才能更快達到目標</p>
+<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
 
-<p>看書，也是增長知識的方式，透過正確的的讀物與內容，可以幫你節省很多不必要的麻煩與浪費的時間</p>
-
-<p>現在，就讓我們開始，並且持續下去～</p>
+<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
 
   </div>
 
@@ -384,12 +365,12 @@ Reading experience:Being Geek 晉升怪傑
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-03T08:22:00+08:00" pubdate data-updated="true">Dec 3<span>rd</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-01-09T09:40:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/book/'>book</a>
+    <a class='category' href='/blog/categories/mail/'>mail</a>, <a class='category' href='/blog/categories/mongodb/'>mongodb</a>, <a class='category' href='/blog/categories/nodejs/'>nodejs</a>
   
 </span></span>
 
@@ -404,7 +385,7 @@ Reading experience:Being Geek 晉升怪傑
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/node-start/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/node-start/" target="_blank" >Tweet</a>
     
   
   
@@ -425,10 +406,8 @@ Reading experience:Being Geek 晉升怪傑
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/01/mac-app-better-touch-tool-free-window-snapping/" title="Previous Post: MAC APP : Better Touch tool-Free Window Snapping"><li>&laquo; MAC APP : Better Touch tool-Free Window Snapping</li></a>
+            <a class="left" href="/blog/2013/01/09/node-production-setting/" title="Previous Post: 讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy"><li>&laquo; 讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/06/ireport-map-component/" title="Next Post: introduction ireport component: Map 地圖"><li>introduction ireport component: Map 地圖 &raquo;</li></a>
           
         </ul>
 
@@ -572,7 +551,7 @@ Reading experience:Being Geek 晉升怪傑
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/node-start/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/node-start/" target="_blank" >Tweet</a>
     
   
   
@@ -724,8 +703,8 @@ Reading experience:Being Geek 晉升怪傑
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/03/reading-experience-being-geek/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/01/09/node-start/';
+        var disqus_url = 'http://smlsun.com/blog/2013/01/09/node-start/';
         var disqus_script = 'embed.js';
       
     (function () {

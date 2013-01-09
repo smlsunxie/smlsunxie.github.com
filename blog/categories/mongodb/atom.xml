@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mongodb | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/mongodb/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-09T09:37:52+08:00</updated>
+  <updated>2013-01-09T10:03:05+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[快速了解 node 以及 mongodb，mail的使用]]></title>
+    <link href="http://smlsun.com/blog/2013/01/09/node-start/"/>
+    <updated>2013-01-09T09:40:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/09/node-start</id>
+    <content type="html"><![CDATA[<p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
+
+<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
+
+<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
+
+<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
+
+<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
+
+<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command]]></title>
