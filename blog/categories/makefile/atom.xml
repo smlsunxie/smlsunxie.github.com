@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: makefile | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/makefile/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-09T09:37:52+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy]]></title>
+    <link href="http://smlsun.com/blog/2013/01/09/node-production-setting/"/>
+    <updated>2013-01-09T08:36:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/09/node-production-setting</id>
+    <content type="html"><![CDATA[<p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
+
+<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
+
+<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
+
+<p><code>/etc/init/yourapp.conf</code></p>
+
+<p>範例如下：</p>
+
+<p>```
+description "start yourapp"
+author "user"</p>
+
+<p>start on startup
+stop on shutdown</p>
+
+<p>script</p>
+
+<pre><code>export HOME="/root"
+#echo $$ &gt; /var/run/yourprogram.pid
+exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   motoexpress-node.sys.log 2&gt;&amp;1
+</code></pre>
+
+<p>end script</p>
+
+<p>pre-start script</p>
+
+<pre><code># Date format same as (new Date()).toISOString() for consistency
+echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         motoexpress-node.sys.log
+</code></pre>
+
+<p>end script</p>
+
+<p>pre-stop script</p>
+
+<pre><code>#rm /var/run/yourprogram.pid
+echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/         motoexpress-node.sys.log
+</code></pre>
+
+<p>end script
+```</p>
+
+<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
+
+<p><code>initctl list | grep node</code></p>
+
+<p>會看到下列輸出：</p>
+
+<p><code>yourapp stop/waiting</code></p>
+
+<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
+
+<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
+
+<p>```
+all: restart</p>
+
+<p>restart: rsync</p>
+
+<pre><code>ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
+</code></pre>
+
+<p>rsync:</p>
+
+<pre><code>rsync -av ~/projects/yourapp root@yourhost:projects
+</code></pre>
+
+<p>```</p>
+
+<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
+
+<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
+]]></content>
+  </entry>
+  
+</feed>

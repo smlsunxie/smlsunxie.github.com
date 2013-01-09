@@ -1,0 +1,839 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  <meta name="description" content="nodejs透過 Upstart 作為service 啟動，並且搭配makefile 來進行 deploy 並且重新啟動 service">
+  
+  <meta name="keywords" content="nodejs, service, makefile, deploy, Upstart">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2013/01/09/node-production-setting/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+<hr>
+
+<div class="row">
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+<hr>
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile Deploy
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
+
+<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
+
+<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
+
+<p><code>/etc/init/yourapp.conf</code></p>
+
+<p>範例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
+</span><span class='line'>author "user"                                                              
+</span><span class='line'>
+</span><span class='line'>start on startup
+</span><span class='line'>stop on shutdown
+</span><span class='line'>
+</span><span class='line'>script
+</span><span class='line'>    export HOME="/root"
+</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
+</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/   motoexpress-node.sys.log 2&gt;&1
+</span><span class='line'>end script
+</span><span class='line'>
+</span><span class='line'>pre-start script
+</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/         motoexpress-node.sys.log
+</span><span class='line'>end script
+</span><span class='line'>
+</span><span class='line'>pre-stop script
+</span><span class='line'>    #rm /var/run/yourprogram.pid
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/         motoexpress-node.sys.log
+</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
+
+<p><code>initctl list | grep node</code></p>
+
+<p>會看到下列輸出：</p>
+
+<p><code>yourapp stop/waiting</code></p>
+
+<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
+
+<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
+</span><span class='line'>
+</span><span class='line'>restart: rsync
+</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
+</span><span class='line'>
+</span><span class='line'>rsync: 
+</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
+
+
+<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
+
+<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-09T08:36:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/upstart/'>Upstart</a>, <a class='category' href='/blog/categories/deploy/'>deploy</a>, <a class='category' href='/blog/categories/makefile/'>makefile</a>, <a class='category' href='/blog/categories/nodejs/'>nodejs</a>, <a class='category' href='/blog/categories/service/'>service</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/node-production-setting/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/node-production-setting/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/01/05/mongodb-import-csv/" title="Previous Post: mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command"><li>&laquo; mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+  <div class="span12">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/05/mongodb-import-csv/">mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/02/github-issues/">bug tracking system 介紹：使用 github 內建的 Issues</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/25/the-ultimate-form-of-slob/">懶漢的終極型態</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2012/12/25/how-to-use-git/">how to use git</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/09/node-production-setting/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/09/node-production-setting/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2013 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/01/09/node-production-setting/';
+        var disqus_url = 'http://smlsun.com/blog/2013/01/09/node-production-setting/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>
