@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubunutu 12.04 | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/ubunutu-12-04/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-14T11:55:00+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ubunutu 12.10 install gnome(no effects) and button layout change]]></title>
+    <link href="http://smlsun.com/blog/2013/01/14/ubunutu1210-button-layout-change/"/>
+    <updated>2013-01-14T11:32:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/14/ubunutu1210-button-layout-change</id>
+    <content type="html"><![CDATA[<p>對於常常使用 windows 的 user 剛換到使用 ubuntu 時，一定很不習慣視窗按鈕放大縮小的位置，特別剛要開始熟悉 ubuntu，會先從 VM 安裝 ubuntu 來體驗一下，不過，很不幸的，在目前最新的 ubuntu 12.10 不支援 2D unity，也無從安裝，所以在 vm 下使用 ubuntu 因為效能的關係，使用者體驗不是很好，如果要能夠使用 2D 的環境，目前只剩下 gnome (no effects) 可以選擇，至於安裝方式如下：</p>
+
+<pre><code>sudo apt-get install gnome-session-fallback
+</code></pre>
+
+<p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
+
+<pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+</code></pre>
+
+<p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
+]]></content>
+  </entry>
+  
+</feed>
