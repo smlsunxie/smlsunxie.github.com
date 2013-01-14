@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Category: ubunutu 12.04 - 蹤影</title>
+  <title>ubuntu 12.10 install gnome(no effects) and button layout change - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,9 @@
   
   
   
-  <meta name="description" content="Category: ubunutu 12.04">
+  <meta name="description" content="說明如何在 ubunutu 12.10 安裝 gnome(no effects)，並且介紹如何改變 button layout">
   
-  
+  <meta name="keywords" content="ubuntu, 12.10 , install, config, genome, button layout">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.comblog/categories/ubunutu-12-04/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/">
 
 
 
@@ -99,7 +99,7 @@
   <link href="/favicon.png" rel="icon">
 </head>
 
-<body  id="archive"   >
+<body   class="no-sidebar"  >
   
 
   <header role="banner">
@@ -221,8 +221,8 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					
-						Category: ubunutu 12.04
+					 
+						Blog 
 					
 				
 
@@ -284,59 +284,169 @@
 </div>
 
 <hr>
-    		<div>
-  <article role="article">
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
 
 
-    <div id="blog-archives" class="category">
 
 
 
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
   
-  <h2>2013</h2>
-
-
-
-
-
-
-
-
-
-
-
-
-<article >
-  
-
+  <div class="post-title">
+    
 <h1 class="entry-title">
 
-<a href="/blog/2013/01/14/ubunutu1210-button-layout-change/">Ubunutu 12.10 Install Gnome(no Effects) and Button Layout Change</a>
+Ubuntu 12.10 Install Gnome(no Effects) and Button Layout Change
 
 </h1>
 
-<time datetime="2013-01-14T11:32:00+08:00" pubdate><span class='month'>Jan</span> <span class='day'>14</span> <span class='year'>2013</span></time>
-<footer>
+  </div>
   
-  
-  
-  <span class="categories">posted in <a class='category' href='/blog/categories/config/'>config</a>, <a class='category' href='/blog/categories/genome/'>genome</a>, <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/ubunutu-12-04/'>ubunutu 12.04</a></span>
-  
-  
-</footer>
+
+  <hr>
 
 
+  <div class="post-description">
+    <p>對於常常使用 windows 的 user 剛換到使用 ubuntu 時，一定很不習慣視窗按鈕放大縮小的位置，特別剛要開始熟悉 ubuntu，會先從 VM 安裝 ubuntu 來體驗一下，不過，很不幸的，在目前最新的 ubuntu 12.10 不支援 2D unity，也無從安裝，所以在 vm 下使用 ubuntu 因為效能的關係，使用者體驗不是很好，如果要能夠使用 2D 的環境，目前只剩下 gnome (no effects) 可以選擇，至於安裝方式如下：</p>
 
-</article>
+<pre><code>sudo apt-get install gnome-session-fallback
+</code></pre>
+
+<p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
+
+<pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+</code></pre>
+
+<p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
+
+  </div>
+
+
+  
+
+
 
 </div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-14T11:32:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/config/'>config</a>, <a class='category' href='/blog/categories/genome/'>genome</a>, <a class='category' href='/blog/categories/install/'>install</a>, <a class='category' href='/blog/categories/ubuntu-12-04/'>ubuntu 12.04</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/01/13/google-spreadsheets-connect/" title="Previous Post: google spreadsheets connect"><li>&laquo; google spreadsheets connect</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
 
     
-  </article>
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
   
 
   
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
 
 
 <hr>
@@ -370,7 +480,102 @@
 
 
 
- 	
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">ubuntu 12.10 install gnome(no effects) and button layout change</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/13/google-spreadsheets-connect/">google spreadsheets connect</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/09/this-guy-is-my-bro/">this guy is my bro!這傢伙是我哥～</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/09/node-start/">快速了解 node 以及 mongodb，mail的使用</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
 
 <!-- 
 <div id="footer">
@@ -497,7 +702,10 @@
 			var disqus_developer = '';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/';
+        var disqus_url = 'http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
