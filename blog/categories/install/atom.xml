@@ -4,7 +4,7 @@
   <title><![CDATA[Category: install | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-14T12:03:25+08:00</updated>
+  <updated>2013-01-14T12:03:48+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -28,7 +28,7 @@
 <pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 </code></pre>
 
-<p>不過就是因為尚未所有的第三方都有將參數讀取改至新的設定方式，故保險起見，舊ㄏ有的設定方式也請服用：</p>
+<p>不過就是因為尚未所有的第三方軟體都有將參數讀取改至新的設定方式，故保險起見，舊有的設定方式也請服用：</p>
 
 <pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
 </code></pre>
