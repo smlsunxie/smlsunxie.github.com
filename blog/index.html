@@ -331,6 +331,11 @@
 <pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
 </code></pre>
 
+<p>不過就是因為尚未所有的第三方都有將參數讀取改至新的設定方式，故保險起見，舊ㄏ有的設定方式也請服用：</p>
+
+<pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
+</code></pre>
+
 <p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
 
   </div>

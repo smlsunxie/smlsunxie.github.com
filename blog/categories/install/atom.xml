@@ -4,7 +4,7 @@
   <title><![CDATA[Category: install | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/install/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-14T11:55:50+08:00</updated>
+  <updated>2013-01-14T12:03:25+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -26,6 +26,11 @@
 <p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
 
 <pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+</code></pre>
+
+<p>不過就是因為尚未所有的第三方都有將參數讀取改至新的設定方式，故保險起見，舊ㄏ有的設定方式也請服用：</p>
+
+<pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
 </code></pre>
 
 <p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
