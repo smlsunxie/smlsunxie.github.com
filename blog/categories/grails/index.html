@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command - 蹤影</title>
+  <title>Category: grails - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,9 @@
   
   
   
-  <meta name="description" content="介紹如何將cvs資料匯入mongodb，透過gui以及command">
+  <meta name="description" content="Category: grails">
   
-  <meta name="keywords" content="mongodb ,mongohub ,mongoimport">
+  
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/">
+  <link rel="canonical" href="http://smlsun.comblog/categories/grails/">
 
 
 
@@ -99,7 +99,7 @@
   <link href="/favicon.png" rel="icon">
 </head>
 
-<body   class="no-sidebar"  >
+<body  id="archive"   >
   
 
   <header role="banner">
@@ -221,8 +221,8 @@
 
 				<h2><i class="ico-pencil"></i>
 				
-					 
-						Blog 
+					
+						Category: grails
 					
 				
 
@@ -284,195 +284,59 @@
 </div>
 
 <hr>
-    		<div class="row">
-
-    
-    <div class="span12"> 
-    
+    		<div>
+  <article role="article">
 
 
+    <div id="blog-archives" class="category">
 
 
 
-
-
-
-
-
-    <div class="post " role="article">
-      
-<div class="post-content">
-
-
-  <hr>
   
-  <div class="post-title">
-    
+  <h2>2013</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+<article >
+  
+
 <h1 class="entry-title">
 
-Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command
+<a href="/blog/2013/01/15/intrduction-grails/">Intrduction Grails: 特性以及各種不同約定放置程式的用途介紹</a>
 
 </h1>
 
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在使用database 要進行初始資料insert，相信大家在使用時不會想要一筆筆資料慢慢打，最快的方式就是使用大家熟悉的excel，或者csv進行初始資料的建立，之後在用db提供的dataimport工具，將整理好的資料進行匯入，網路上關於ms sqlserver，或是mysql相關資料已經很多，今天要介紹的是如何將cvs的文字資料匯入到mongodb。</p>
-
-<p>首先在開始時我們可以先申請一個免費的mongodb來玩玩，介紹大家一個免費空間又大的線上mongodb網站</p>
-
-<p><a href="https://mongolab.com/welcome/">mongolab</a></p>
-
-<p>提供免費的 500 mb空間，比<a href="https://www.mongohq.com/home">mongohq</a> 大上十倍，非常的夠用了。</p>
-
-<p>接著如果如果要進行CVS匯入我們可以有兩種方式，一種是透過mongodb提供的指令進行匯入，安裝方式可參考下列網址:<a href="http://docs.mongodb.org/manual/installation/">Installing MongoDB</a></p>
-
-<p>範例指令</p>
-
-<div><script src='https://gist.github.com/4452313.js?file='></script>
-<noscript><pre><code>mongoimport --host mongolab.com --port 40000 --username user --password db --collection store --db dbname --type csv --file ~/gdata.csv --headerline</code></pre></noscript></div>
-
-
-<p>可以參考下面網址的個參數說明：<a href="http://docs.mongodb.org/manual/administration/import-export/">Importing and Exporting MongoDB Data</a></p>
-
-<p>另外一個就是使用gui介面進行資料匯入，在這邊使用 <a href="http://mongohub.todayclose.com/">mongohub</a>，介紹可參考 <a href="http://blog.lyhdev.com/2012/03/mongohub-mongodb-mac.html">MongoHub 簡單易用的 MongoDB 圖形化管理工具</a></p>
-
-<p>再來就要介紹如何使用gui進行mongodb的批次cvs資料匯入，可以點選mongohub中你要匯入的collection就是類是一般sql的table，這邊選取的是motostore這個collection，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-jg9hJXlb5Ig/UOesHMhFQGI/AAAAAAAALc0/4pAZgjilePU/s739/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.17.20.jpg" alt="img" /></p>
-
-<p>選取之後在點選上方放大鏡，query那個圖示，會開啟下面的畫面：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9YnPsJEa2Yk/UOesIOm6_YI/AAAAAAAALc4/EKUPvTuAIyw/s562/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.19.10.jpg" alt="img" /></p>
-
-<p>點選新開啟的視窗上面的import按鈕，接著選取你要匯入的檔案，type選取cvs，下方Headerline需打勾，表示資料的第一行為欄位邊號，接著點選import按鈕就完成資料的匯入了，是不是很簡單，至少不用去記很多的指令，不過有一個重點！</p>
-
-<blockquote><p>cvs 的檔案編碼請記得要用utf-8</p></blockquote>
-
-<p>如果沒有用utf-8編碼會造成mongohub會跟你說資料匯入成功，但是實際上卻是失敗，我在嘗試匯入時，先用mongohub，結果就一直搞不定，後來改用command的方式才知道原來是檔案編碼錯誤造成無法匯入，後來編碼正確後，再一次使用mongohub就可以正常匯入啦！</p>
-
-<p>匯入cvs的檔案編碼方式要注意阿！</p>
-
-  </div>
-
-
-  
-
-
-
-</div>
-      <hr>
-      <footer>
-
-
-        <p class="meta">
-          
-  
-
-<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-05T11:55:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2013</time>
-
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/mongodb/'>mongodb</a>, <a class='category' href='/blog/categories/mongohub/'>mongohub</a>, <a class='category' href='/blog/categories/mongoimport/'>mongoimport</a>
-  
-</span></span>
-
-
-
-          
-
-        </p>
-
-        
-          <section id="social-r">
-  <h1>Sharing</h1>
-  
-    
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/" target="_blank" >Tweet</a>
-    
+<time datetime="2013-01-15T20:17:00+08:00" pubdate><span class='month'>Jan</span> <span class='day'>15</span> <span class='year'>2013</span></time>
+<footer>
   
   
-    
-      <div class="g-plusone" data-size="medium"></div>
-    
+  
+  <span class="categories">posted in <a class='category' href='/blog/categories/grails/'>grails</a>, <a class='category' href='/blog/categories/java/'>java</a></span>
   
   
-    
-      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-    
-  
-  
-
-</section>
-
-        
-        <br>
-        <ul class="pagination">
-          
-            <a class="left" href="/blog/2013/01/02/github-issues/" title="Previous Post: bug tracking system 介紹：使用 github 內建的 Issues"><li>&laquo; bug tracking system 介紹：使用 github 內建的 Issues</li></a>
-          
-          
-            <a class="right" href="/blog/2013/01/09/node-production-setting/" title="Next Post: 讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy"><li>讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy &raquo;</li></a>
-          
-        </ul>
-
-        
+</footer>
 
 
-      </footer>
-    </div>
 
-
-    
-    <div class="widget" >
-    <section>
-  <h1>Comments</h1>
-  
-
-  
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-  
-</section>
-
-    </div>
-    
-
-
-  </div>
-  
+</article>
 
 </div>
 
+    
+  </article>
+  
 
-
-
-
-
-
-
-
+  
+</div>
 
 
 <hr>
@@ -506,102 +370,7 @@ Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command
 
 
 
- 	 
-	<div id="wrapper">	
-		<div class="container">
-	    	<div class="sidebar row">
-				
-			    
-<section class="span3">
-  <h1>Latest Tweets</h1>
-  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
-  
-</section>
-
-<section class="span3">
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li>
-        <a href="/blog/2013/01/15/intrduction-grails/">intrduction grails: 特性以及各種不同約定放置程式的用途介紹</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/14/video-man/">video man - 『尊重』的重要，與『沒關係』的可怕</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">ubuntu 12.10 install gnome(no effects) and button layout change</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/13/google-spreadsheets-connect/">google spreadsheets connect</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/09/this-guy-is-my-bro/">this guy is my bro!這傢伙是我哥～</a>
-      </li>
-    
-  </ul>
-</section>
-
-<section class="span3">
-  <h1>On GitHub</h1>
-  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
-    <li class="loading">Status updating...</li>
-  </ul>
-  
-  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
-  
-</section>
-
-
-<section class="span3">
-  <h1>On Delicious</h1>
-  <div id="delicious"></div>
-  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
-  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
-</section>
-
-<section class="span3">
-  <h1>Recent Comments</h1>
-  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
-</section>			  <section class="span3">
-				  <h1>QR CODE</h1>
-				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
-				</section><section id="social-r" class="span3">
-  <h1>Sharing</h1>
-  
-    
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/" target="_blank" >Tweet</a>
-    
-  
-  
-    
-      <div class="g-plusone" data-size="medium"></div>
-    
-  
-  
-    
-      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
-    
-  
-  
-
-</section>
-
-			  
-
-
-
-	   	 	</div>
-   	 	</div>
-  	</div>
-  	
+ 	
 
 <!-- 
 <div id="footer">
@@ -728,10 +497,7 @@ Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command
 			var disqus_developer = '';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2013/01/05/mongodb-import-csv/';
-        var disqus_url = 'http://smlsun.com/blog/2013/01/05/mongodb-import-csv/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
