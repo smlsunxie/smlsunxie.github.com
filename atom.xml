@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-15T21:45:15+08:00</updated>
+  <updated>2013-01-15T21:45:49+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -23,7 +23,7 @@
 <updated>2013-01-15T20:17:00+08:00</updated>
 <id>http://smlsun.com/blog/2013/01/15/intrduction-grails</id>
 
-      <content type="html"><![CDATA[<p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，還有複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
+      <content type="html"><![CDATA[<p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，以及複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
 
 <p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
 
