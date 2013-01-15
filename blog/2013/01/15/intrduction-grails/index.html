@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>chrome 本地檔案網頁 ajax 請求失敗處理 - 蹤影</title>
+  <title>intrduction grails: 各種不同用途的 Class(groovy) 介紹 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/01/15/intrduction-grails/">
 
 
 
@@ -308,7 +308,7 @@
     
 <h1 class="entry-title">
 
-Chrome 本地檔案網頁 Ajax 請求失敗處理
+Intrduction Grails: 各種不同用途的 Class(groovy) 介紹
 
 </h1>
 
@@ -319,36 +319,60 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
 
 
   <div class="post-description">
-    <h1>發生問題環境</h1>
+    <p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，還有複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
 
-<ol>
-<li><p>開啟本地檔案如：</p>
+<p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
 
-<pre><code> file://localhost/Users/Spooky/git/MotoExpress-andoid/assets/        www/index.html
-</code></pre></li>
-<li><p>使用jquery之ajax請求如使用者驗證</p></li>
-<li>chrome 在送出ajax的請求後無法取得response</li>
-<li>一般的form有指定action進行submit又可以</li>
-</ol>
+<ul>
+<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
+<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
+<li>URLMappings：Don’t Repeat Yourself</li>
+<li>約定優於配置：Convention over Configuration</li>
+<li>自動產生 CRUD 維護畫面：scaffold</li>
+</ul>
 
 
-<h1>需求原因</h1>
+<p>使用 Groovy，做為 grails 開發的基礎，其特性就是大量簡化 java 語言繁瑣的程式指令步驟。</p>
 
-<p>期望利用本地網頁驗證在手機上的運作測試，若是都在手機上運作，依次修改到測試將花費很多時間</p>
+<p>可以看到 Grails 算是集目前 java 世界許多成熟的套件，這些原本單獨使用很繁瑣的套件，在 Grails 上都有某種程度的簡化，簡單到一開始很難直覺想像，往後會會在詳細介紹，這邊不多談。</p>
 
-<h1>解決方式</h1>
+<p>接著就是設定的部份，在傳統的 java 開發我們常常需要設定像是 jdbc config 、 spring aop 設定的位置等，在 Grails 中，是基於「約定優於配置」的精神，也就是只要放對位置，設定就會生效。</p>
 
-<p>chrome 需開啟 &#8211;disable-web-security，利用終端機執行下列指令</p>
+<p>以及 Don’t Repeat Yourself 的精神，在網路應用程式的開發，假設有用到 restful 的技術，在傳統的 JAVA 開發，總要為每個 class 設定 url 規則，如果一多是很繁瑣的。</p>
 
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
-</code></pre>
+<p>最後就是自動產生 CRUD 維護畫面，在開發初期，常常需要快速的建立測試資料，以往要是前端與後端程式開發是分開的，總是需要等到後端工程師將 API 開出來後才能開始進行資料庫操作，在 grails 效法 ruby rails 也提供了快速產生維護畫面的功能。</p>
 
-<h1>其他事項</h1>
+<p>以上是 grails 的特性簡介，不過！絕對不只如此其他還有很多特性，往後會在一一介紹，完全改變對於 Java 開發的習慣。</p>
 
-<p>有一說是開啟 &#8211;allow-file-access-from-files即可，經測試ajax請求還是無法正確運作，不信邪可以試試看</p>
+<p>再來就要在簡單介紹，在 grails 各種不同用途的 Class(groovy) 介紹：</p>
 
-<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files
-</code></pre>
+<p><img src="https://lh6.googleusercontent.com/-qgBQ7bBJaDg/UPVP_UtqoxI/AAAAAAAALfQ/rPBPRd5iLXk/s223/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-15+%E4%B8%8B%E5%8D%888.46.39.jpg" alt="img" /></p>
+
+<p>在「約定優於配置」的精神下，grails 本身就針對不同責任的程式進行分類，可以看到如上圖幾種，這邊將簡單介紹各個項目所有處理的事情：</p>
+
+<ul>
+<li>domain: 簡單來講就是原本 hibernate 的 DAO 物件，如果沒有用過類似 O/R MAPPING 的技術可以以把它想像成每個不同的 table 的定義，屬於 MVC 架構中的 Model</li>
+<li>controllers: 也就是 MVC 架構中的 control，用來操作 Model，以及將運算結果呈現給 view</li>
+<li>view: MVC 架構中的 view，在 grails 的世界，是用 gsp ，可以想像成 jsp</li>
+<li>taglib: 可以在 view 中使用一些已經定義好的 tag ，原本在傳統的 j2ee 是非常繁瑣的技術，在 grails 可以很方便使用。</li>
+<li>services: 商業邏輯放置的位置，這部份的程式可任意在 domain、controllers、taglib中直接宣告，將利用 spring 進行注入，有 scope 以及 transaction 交易安全的屬性可以進行操作</li>
+<li>utils: 檢查數值或資料是否符合特定的規格運算程式放置的地方，比如說 email</li>
+<li>scripts: 可以撰寫在 terminal 或是 command line 下可以執行的程式，搭配 <code>grails create-script execute-report</code> 使用。</li>
+<li>i18n: 也就是多語系啦，可以搭配 taglib 在 view 層進行語系的轉換</li>
+<li>src/java: 在 grails 如果你要寫傳統 java 也是 ok 的只要放在這個資料夾，就會編譯成 class</li>
+<li>src/groovy: 上述分類中無法歸屬，或著原本有寫過純 groovy 的程式碼就放在這</li>
+<li>test/utils: 單元測試，只要放在這資料夾的測試程式，都會被執行</li>
+<li>test/integration: 整合測試，也就是會將上述所有的不同功能都載入進行測試。</li>
+</ul>
+
+
+<p>大致上上面所說的就是 grails 中一開始需要習慣的地方，與以往的 free style 的開發雖然多了些限制，但有了約定，基本上程式也不會亂放導致東一塊西一塊，並且透過了解上面的結構，對於程式初學也可以較清楚知道一個完整的程式，必須包含哪些不同責任的元件。</p>
+
+<p>也許有些專案成員沒有辦法立即現有的工作換到新的開發框架，不過！找時間玩玩看，相信可以更了解程式的責任釐清，像我就是！陸續會在根據不同責任的程式使用的方式個別進行詳細說明，文章就到這啦！</p>
+
+<p>這篇花了我一小時的時間，寫文章還是不夠快速，要在加油…</p>
+
+<p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
 
   </div>
 
@@ -382,14 +406,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-11-02T21:37:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-01-15T20:17:00+08:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
 
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/chrome/'>chrome</a>
-  
-</span></span>
 
 
 
@@ -402,7 +420,7 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/15/intrduction-grails/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/15/intrduction-grails/" target="_blank" >Tweet</a>
     
   
   
@@ -423,10 +441,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/" title="Previous Post: 精實創業讀後 心得重點"><li>&laquo; 精實創業讀後 心得重點</li></a>
+            <a class="left" href="/blog/2013/01/14/video-man/" title="Previous Post: video man - 『尊重』的重要，與『沒關係』的可怕"><li>&laquo; video man - 『尊重』的重要，與『沒關係』的可怕</li></a>
           
-          
-            <a class="right" href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/" title="Next Post: rework 工作大解放 讀後心得"><li>rework 工作大解放 讀後心得 &raquo;</li></a>
           
         </ul>
 
@@ -570,7 +586,7 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/15/intrduction-grails/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/15/intrduction-grails/" target="_blank" >Tweet</a>
     
   
   
@@ -722,8 +738,8 @@ Chrome 本地檔案網頁 Ajax 請求失敗處理
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/';
-        var disqus_url = 'http://smlsun.com/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/01/15/intrduction-grails/';
+        var disqus_url = 'http://smlsun.com/blog/2013/01/15/intrduction-grails/';
         var disqus_script = 'embed.js';
       
     (function () {
