@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-15T22:19:11+08:00</updated>
+  <updated>2013-01-17T11:54:57+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[java OCP 題目解析：關於 java 指標的運作觀念]]></title>
+<link href="http://smlsun.com/blog/2013/01/17/java-pointer/"/>
+<updated>2013-01-17T11:44:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/01/17/java-pointer</id>
+
+      <content type="html"><![CDATA[<p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
+
+<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
+
+<p>Given:</p>
+
+<pre><code>class Foo {
+    private int x;
+
+    public Foo(int x) {
+        this.x = x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
+    }
+}
+
+public class Gamma {
+    static Foo fooBar(Foo foo) {
+        foo = new Foo(100);
+        return foo;
+    }
+
+    public static void main(String[] args) {
+        Foo foo = new Foo(300);
+        System.out.print(foo.getX() + "-");
+
+        Foo fooFoo = fooBar(foo);
+        System.out.print(foo.getX() + "-");
+        System.out.print(fooFoo.getX() + "-");
+
+        foo = fooBar(fooFoo);
+        System.out.print(foo.getX() + "-");
+        System.out.print(fooFoo.getX());
+    }
+}
+</code></pre>
+
+<p>What is the output?</p>
+
+<pre><code>A. 300-100-100-100-100
+B. 300-300-100-100-100
+C. 300-300-300-100-100
+D. 300-300-300-300-100
+</code></pre>
+
+<p>解析：</p>
+
+<pre><code>做這題頭腦不夠清楚可能會被搞混喔
+這題是考JAVA 隱藏的指標觀念，其實規則很容易：
+1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
+2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
+    2.1. 等號處理基本資料型態時是傳值
+    2.2. 等號處理物件時是傳位址
+</code></pre>
+
+<p>依照題目的情況來模擬一下：</p>
+
+<pre><code>Foo foo = new Foo(300);
+Foo fooFoo = fooBar(foo);
+</code></pre>
+
+<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+<pre><code>    static Foo fooBar(Foo foo) {
+        foo = new Foo(100);
+        return foo;
+    }
+</code></pre>
+
+<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
+
+<p>方法第三行回傳了fooBar: foo指標</p>
+
+<p>後來在主方法執行了這一行</p>
+
+<pre><code>foo = fooBar(fooFoo);
+</code></pre>
+
+<p>之後記憶體狀況會變成</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td></td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
+
+<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
+
+<p>Given:</p>
+
+<pre><code>public class KungFu {
+    public static void main(String[] args) {
+        Integer x = 400;
+        Integer y = x;
+        x++;
+        StringBuilder sb1 = new StringBuilder("123");
+        StringBuilder sb2 = sb1;
+        sb1.append("5");
+        System.out.println((x == y) + " " + (sb1 == sb2));
+    }
+}
+</code></pre>
+
+<p>What is the result?</p>
+
+<pre><code>A. true true
+B. false true
+C. true false
+D. false false
+E. Compilation fails.
+F. An exception is thrown at runtime.
+</code></pre>
+
+<p>解析：</p>
+
+<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
+
+<p>一般物件的話當然做等於運算就是傳指標了</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/17/java-pointer/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[android vm]]></title>
+<link href="http://smlsun.com/blog/2013/01/16/android-vm/"/>
+<updated>2013-01-16T21:24:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/01/16/android-vm</id>
+
+      <content type="html"><![CDATA[<p>在隨處亂逛時，看到一價有趣的東西，那就是android VM!</p>
+
+<p><a href="http://androvm.org/blog/download/">androVM</a></p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/16/android-vm/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -1081,165 +1312,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 <h3>Have Fun!!</h3>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[google api 的使用簡介-map & picasa]]></title>
-<link href="http://smlsun.com/blog/2012/12/19/google-api/"/>
-<updated>2012-12-19T08:20:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/19/google-api</id>
-
-      <content type="html"><![CDATA[<p>最近剛好在做一個房仲網站，有用到 google map api，以及要動態嵌入picasa的圖片依據狀況改變圖片大小，找到一些參考資料，整理上來給大家參考</p>
-
-<h2>google map</h2>
-
-<h3>大家愛吃的泡麵版:</h3>
-
-<ul>
-<li><p>如果你要嵌入map地圖請參考下列網址</p>
-
-<p>  <a href="http://support.google.com/maps/bin/answer.py?hl=zh-Hant&amp;answer=72644">在網站或網誌中嵌入地圖</a></p></li>
-</ul>
-
-
-<p>效果如下：</p>
-
-<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com.tw/maps?f=q&amp;source=s_q&amp;hl=zh-TW&amp;geocode=&amp;q=%E5%8F%B0%E5%8C%97%E5%B8%82%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;aq=&amp;sll=23.48575,119.49965&amp;sspn=8.347012,9.876709&amp;t=m&amp;brcurrent=3,0x3442a9b1907a9407:0x10fa075eccd0dd7c,0,0x3442ac6b61dbbd9d:0xc0c243da98cba64b&amp;ie=UTF8&amp;hq=&amp;hnear=100%E5%8F%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E6%AD%A3%E5%8D%80%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;ll=25.026428,121.512823&amp;spn=0.037331,0.054932&amp;z=14&amp;iwloc=A&amp;output=embed"></iframe>
-
-
-<br /><small><a href="https://maps.google.com.tw/maps?f=q&amp;source=embed&amp;hl=zh-TW&amp;geocode=&amp;q=%E5%8F%B0%E5%8C%97%E5%B8%82%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;aq=&amp;sll=23.48575,119.49965&amp;sspn=8.347012,9.876709&amp;t=m&amp;brcurrent=3,0x3442a9b1907a9407:0x10fa075eccd0dd7c,0,0x3442ac6b61dbbd9d:0xc0c243da98cba64b&amp;ie=UTF8&amp;hq=&amp;hnear=100%E5%8F%B0%E5%8C%97%E5%B8%82%E4%B8%AD%E6%AD%A3%E5%8D%80%E6%B1%80%E5%B7%9E%E8%B7%AF%E4%B8%80%E6%AE%B5354%E8%99%9F&amp;ll=25.026428,121.512823&amp;spn=0.037331,0.054932&amp;z=14&amp;iwloc=A" style="color:#0000FF;text-align:left">檢視較大的地圖</a></small>
-
-
-<p>簡單吧！感謝google大神～</p>
-
-<h3>下面是給愛自己煮的geek:</h3>
-
-<ul>
-<li><a href="http://my-web-design.blogspot.tw/2007/09/google-maps-api.html">基本的使用介紹</a></li>
-<li><p>如果你要嵌入地圖資訊可用下列網站產生</p>
-
-<p>  <a href="http://www.solvium.de/static-map/">google map 嵌入網站程式碼產生器</a></p></li>
-<li><p>如果要查詢所在位置的坐標可使用下列網址，之前在<a href="http://smlsun.com/blog/2012/12/06/ireport-map-component/">Introduction Ireport Component: Map 地圖</a>有介紹過</p>
-
-<p>  <a href="http://www.agenciacreativa.net/coordenadas_google_maps.php">座標查詢網址</a></p></li>
-<li><p>更詳細的使用說明可以參考官方文件說明</p>
-
-<p>  <a href="https://developers.google.com/maps/documentation/javascript/?hl=zh-TW">官方google map api 文件</a></p></li>
-</ul>
-
-
-<h2>google picasa</h2>
-
-<h3>大家愛吃的泡麵版：</h3>
-
-<p>如果你要分享picasa上面的影像可以參考下列網址操作</p>
-
-<ul>
-<li><a href="https://support.google.com/picasa/answer/66969/?hl=zh-Hant&amp;">內嵌相簿、圖片和投影播放</a>，效果如下
-<embed type="application/x-shockwave-flash" src="https://picasaweb.google.com/s/c/bin/slideshow.swf" width="800" height="533" flashvars="host=picasaweb.google.com&hl=zh_TW&feat=flashalbum&RGB=0x000000&feed=https%3A%2F%2Fpicasaweb.google.com%2Fdata%2Ffeed%2Fapi%2Fuser%2F114562460176368030377%2Falbumid%2F5810278785625170577%3Falt%3Drss%26kind%3Dphoto%26authkey%3DGv1sRgCIqtvMXakpDcSw%26hl%3Dzh_TW" pluginspage="http://www.macromedia.com/go/getflashplayer"></embed></li>
-</ul>
-
-
-<p>差就差在是用flash作的，如果你不 care iphone的用戶(沒有flash)，這應該可以幫你節省維護照片(以資料夾為單位)，以及將照片放在web site的時間(複製連接)，picasa就可以很方便管理你的照片，</p>
-
-<h3>更正：原來有人提出iphone，使用picasa slide 的解決方案了如下：</h3>
-
-<h4><a href="http://www.jaillon.com/blog/2010/06/04/how-to-make-picasa-flash-based-slideshow-iphone-friendly/">How to make Picasa flash-based slideshow iPhone-friendly</a></h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">language</span><span class="o">=</span><span class="nx">javascript</span><span class="o">&gt;</span>
-</span><span class='line'><span class="k">if</span><span class="p">((</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPhone/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPod/i</span><span class="p">))</span> <span class="o">||</span> <span class="p">(</span><span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/iPad/i</span><span class="p">)))</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">slideshow</span> <span class="nx">link</span><span class="p">]</span><span class="err">“</span><span class="o">&gt;&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="err">”</span><span class="p">[</span><span class="nx">URL</span> <span class="nx">to</span> <span class="nx">an</span> <span class="nx">image</span> <span class="nx">from</span> <span class="nx">the</span> <span class="nx">slideshow</span><span class="p">]</span> <span class="nx">width</span><span class="o">=</span><span class="err">”</span><span class="mi">600</span><span class="err">″</span> <span class="o">/&gt;&lt;</span><span class="err">/a&gt;’);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">else</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="err">‘</span><span class="p">[</span><span class="nx">Code</span> <span class="nx">provided</span> <span class="nx">by</span> <span class="nx">Picasa</span> <span class="o">-</span> <span class="nx">Click</span> <span class="nx">on</span> <span class="s2">&quot;Embed Slideshow&quot;</span> <span class="nx">link</span><span class="p">]</span><span class="err">‘</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在介紹一個好工具，很簡單使用</p>
-
-<p><a href="http://www.slidemypics.com/">Free HTML5 Slideshows</a></p>
-
-<p>效果如下：</p>
-
-<ul>
-<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=a75a4cce696c1840e0ee1b5ba1054593&amp;r=0.5629955572076142"></iframe></p></li>
-<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=9a4b9dcfe243bf7c123dcde7a1054638&amp;r=0.8656736903358251"></iframe></p></li>
-<li><p><iframe width="526" height="352" frameborder="0" src="http://files.slidemypics.com/app/js/iframe.html?bg_color=1f1f1f&amp;hash=0379d2806253627616f18543a1054903&amp;r=0.36253471905365586"></iframe></p></li>
-</ul>
-
-
-<h3>geek最愛的自己煮版：</h3>
-
-<ul>
-<li><p>用restful的方式來操作圖片的產生，如果你是要用html5 image slide 這就很好用，你不會想要原始大小跟縮圖都自己重覆貼連結的</p>
-
-<p>  <a href="http://akr.tw/2012/04/picasa-url-parameters/">Picasa（Google+）圖片外連的 URL 參數整理</a></p></li>
-</ul>
-
-
-<hr />
-
-<p>其實只要善用網路上的工具真的可以節省很多時間，使用起來也不麻煩，甚至出奇的簡單，只是不知道而已，網路的世界需要大家一起探索，如果有不錯的工具，也別忘了推薦給大家，let me know,OK!</p>
-
-<p>最後還是要感謝google，幫我節省這麼多時間，雖然我沒有像google那麼神通廣大，希望能幫助到來參觀的讀者囉！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/19/google-api/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[態度的重要-從倫敦計程車司機的專業來看]]></title>
-<link href="http://smlsun.com/blog/2012/12/18/london-taxi/"/>
-<updated>2012-12-18T07:52:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/18/london-taxi</id>
-
-      <content type="html"><![CDATA[<iframe width="420" height="315" src="http://www.youtube.com/embed/wkQ7wT0xWdM" frameborder="0" allowfullscreen></iframe>
-
-
-<p>今天看了discovery的生活大解密，講的是倫敦計程車，在台灣我們會認為計程車有什麼好了解的，印象中，台灣的計程車運將，橫衝直撞，為了載客，可以從外線直接切內線，常常讓人覺得驚險萬分，甚至可能為了多賺點錢，帶你繞遠路，當然也不是每個計程車司機都是這樣，但確實也還有改善空間。與台灣計程車司機滿街跑，執照很好拿的情況，倫敦的考照難度可能比大學考試或公職考試難上許多。</p>
-
-<p>怎麼說呢，簡單來講，倫敦的計程車司機是必須成為google地圖，你就知道有多難了！首先必須要知道都市裡的每條道路，甚至是小徑，在倫敦就有兩萬五千多條路，還要知道可能載客的地點，意思是他要知道所有的酒館，以及飯店位置，聽到這有沒有覺得頭昏眼花了，這是多麼寵大的資料，在台灣很難想像可以這樣要求計程車司機，在倫敦的司機卻有這樣的超能力，實在讓人敬畏三分！</p>
-
-<p>當然不只是記路名，要通過考試，拿到執照，在作為人體google地圖的倫敦計程車司機，還要具備更smart的功能，那就是人體導航！到目的地還不夠，還要是最短路徑，如果不是就無法通過，必須將資料處理過後進而成為有用得知識，又再一次讓我佩服的五體投地。</p>
-
-<p>除了專業知識，倫敦的計程車也被要求需要有禮貌，如果沒有禮貌同樣的也無法通過拿到執照，從這件事也讓我體悟到，外國人對於計程車這樣我們認為比較低階的工作都能要求這樣的專業度，也因此在倫敦，他們的計程車司機是那麼的值得尊敬，實在值得我們學習。</p>
-
-<p>最後，從這個節目我所體悟到的心得與大家分享</p>
-
-<ul>
-<li>先尊重自己專業，別人才會尊重你</li>
-<li>要改變別人的看法，需要先改變自己</li>
-<li>工作沒有貴賤，只要認真看待你的工作，每個工作都是高尚的</li>
-<li>作事應該是更加俐落，計程車司機能，還有什麼不能</li>
-<li>有些時候一些不必要但是極度專業的堅持，會讓你成就不一樣的事業</li>
-<li>態度真的會決定你的高度</li>
-</ul>
-
-
-<p>ps. 台灣的官員應該要去考察一下，外國人的作事態度是需要我們學習的</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/18/london-taxi/"></a></p>]]></content>
     </entry>
   
 </feed>

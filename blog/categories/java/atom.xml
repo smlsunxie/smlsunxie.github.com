@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-15T22:19:11+08:00</updated>
+  <updated>2013-01-17T11:54:57+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,214 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[java OCP 題目解析：關於 java 指標的運作觀念]]></title>
+    <link href="http://smlsun.com/blog/2013/01/17/java-pointer/"/>
+    <updated>2013-01-17T11:44:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/17/java-pointer</id>
+    <content type="html"><![CDATA[<p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
+
+<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
+
+<p>Given:</p>
+
+<pre><code>class Foo {
+    private int x;
+
+    public Foo(int x) {
+        this.x = x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
+    }
+}
+
+public class Gamma {
+    static Foo fooBar(Foo foo) {
+        foo = new Foo(100);
+        return foo;
+    }
+
+    public static void main(String[] args) {
+        Foo foo = new Foo(300);
+        System.out.print(foo.getX() + "-");
+
+        Foo fooFoo = fooBar(foo);
+        System.out.print(foo.getX() + "-");
+        System.out.print(fooFoo.getX() + "-");
+
+        foo = fooBar(fooFoo);
+        System.out.print(foo.getX() + "-");
+        System.out.print(fooFoo.getX());
+    }
+}
+</code></pre>
+
+<p>What is the output?</p>
+
+<pre><code>A. 300-100-100-100-100
+B. 300-300-100-100-100
+C. 300-300-300-100-100
+D. 300-300-300-300-100
+</code></pre>
+
+<p>解析：</p>
+
+<pre><code>做這題頭腦不夠清楚可能會被搞混喔
+這題是考JAVA 隱藏的指標觀念，其實規則很容易：
+1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
+2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
+    2.1. 等號處理基本資料型態時是傳值
+    2.2. 等號處理物件時是傳位址
+</code></pre>
+
+<p>依照題目的情況來模擬一下：</p>
+
+<pre><code>Foo foo = new Foo(300);
+Foo fooFoo = fooBar(foo);
+</code></pre>
+
+<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+<pre><code>    static Foo fooBar(Foo foo) {
+        foo = new Foo(100);
+        return foo;
+    }
+</code></pre>
+
+<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
+
+<p>方法第三行回傳了fooBar: foo指標</p>
+
+<p>後來在主方法執行了這一行</p>
+
+<pre><code>foo = fooBar(fooFoo);
+</code></pre>
+
+<p>之後記憶體狀況會變成</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td></td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
+
+<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
+
+<p>Given:</p>
+
+<pre><code>public class KungFu {
+    public static void main(String[] args) {
+        Integer x = 400;
+        Integer y = x;
+        x++;
+        StringBuilder sb1 = new StringBuilder("123");
+        StringBuilder sb2 = sb1;
+        sb1.append("5");
+        System.out.println((x == y) + " " + (sb1 == sb2));
+    }
+}
+</code></pre>
+
+<p>What is the result?</p>
+
+<pre><code>A. true true
+B. false true
+C. true false
+D. false false
+E. Compilation fails.
+F. An exception is thrown at runtime.
+</code></pre>
+
+<p>解析：</p>
+
+<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
+
+<p>一般物件的話當然做等於運算就是傳指標了</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹]]></title>
