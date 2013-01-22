@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-17T13:55:19+08:00</updated>
+  <updated>2013-01-22T10:01:41+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[HOWTO: Apple Keyboard mapping for Ubuntu]]></title>
+<link href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"/>
+<updated>2013-01-22T09:49:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config</id>
+
+      <content type="html"><![CDATA[<p>不曉得各位使用 macbook 的阿宅有沒有ㄍ跟我一樣的困擾，那就是雖然使用 Mac os 但是還是需要連到遠端的不同 os 比如說 ubuntu 或者 windows 之類的，當你在同時操作這些系統時，讓人不習慣的不是 os 本身提供的功能，或者是介面的 layout，其實最令我困擾的是 <strong>Win and ubuntu 的 ctrl</strong> 以及 <strong>Mac 的 command</strong>，真的讓我非常的錯亂，甚至會手抽筋！</p>
+
+<p>人總是在受不了或看不慣時會尋找解法，所以我受不了了！上網找了一下，總算讓我找到設定方式，其實步驟很簡單：</p>
+
+<ol>
+<li><p>Go into System -> Preferences -> Keyboard</p></li>
+<li><p>Click on the &#8220;Layouts&#8221; tab and then click the &#8220;Layout Options&#8221; button.</p></li>
+<li><p>Click on &#8220;Alt/Win key behavior&#8221;</p></li>
+</ol>
+
+
+<p>就這樣，不要再忍受令人錯亂的 ctrl 與 command 鍵，讓複製、剪下、貼上行雲流水吧！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -1415,50 +1441,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 
 <p>試了網路上的方法，也就是在.profile 中加入 utf-8 的編碼方式，還是沒有辦法解決此問題，不過正想說算了就避開使用英文，後來看到有人說上傳的github上後github自動產生的頁面就沒此問題，怪哉！姑且一試，耶～真的可以耶！至少實際上線時是沒問題的，給大家參考，如果有辦法可以解決本機編碼的問題請讓我知道，ok～</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[Jekyll Liquid reference]]></title>
-<link href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"/>
-<updated>2012-12-19T08:59:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference</id>
-
-      <content type="html"><![CDATA[<p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
-
-<p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>
-
-<ul>
-<li>官方網站：<a href="http://liquidmarkup.org/">Liquid</a></li>
-<li>wiki：<a href="https://github.com/mojombo/jekyll/wiki">Liquid wiki</a></li>
-</ul>
-
-
-<p>節錄幾個我覺得比較重要的章節</p>
-
-<ul>
-<li>markdown文檔檔頭的說明：<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter">YAML Front Matter</a></li>
-<li>各種參數讀取方式：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">Template Data</a></li>
-<li><p>設計人員參考手冊：<a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">Liquid for Designers</a></p>
-
-<p>  包含比如說replace這樣替換字元的說明，還有一些常用的tag說明</p></li>
-<li><p>開發人員參考手冊：<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers">Liquid for Programmers</a></p>
-
-<p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
-<li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
-
-<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>post_url 2010-07-21-name-of-post</code>取得文章連接。</p></li>
-</ul>
-
-
-<p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
-
-<h3>Have Fun!!</h3>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/19/Jekyll-liquid-reference/"></a></p>]]></content>
     </entry>
   
 </feed>

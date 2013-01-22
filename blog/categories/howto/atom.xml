@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: howto | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/howto/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-22T10:01:41+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HOWTO: Apple Keyboard mapping for Ubuntu]]></title>
+    <link href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"/>
+    <updated>2013-01-22T09:49:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config</id>
+    <content type="html"><![CDATA[<p>不曉得各位使用 macbook 的阿宅有沒有ㄍ跟我一樣的困擾，那就是雖然使用 Mac os 但是還是需要連到遠端的不同 os 比如說 ubuntu 或者 windows 之類的，當你在同時操作這些系統時，讓人不習慣的不是 os 本身提供的功能，或者是介面的 layout，其實最令我困擾的是 <strong>Win and ubuntu 的 ctrl</strong> 以及 <strong>Mac 的 command</strong>，真的讓我非常的錯亂，甚至會手抽筋！</p>
+
+<p>人總是在受不了或看不慣時會尋找解法，所以我受不了了！上網找了一下，總算讓我找到設定方式，其實步驟很簡單：</p>
+
+<ol>
+<li><p>Go into System -> Preferences -> Keyboard</p></li>
+<li><p>Click on the "Layouts" tab and then click the "Layout Options" button.</p></li>
+<li><p>Click on "Alt/Win key behavior"</p></li>
+</ol>
+
+
+<p>就這樣，不要再忍受令人錯亂的 ctrl 與 command 鍵，讓複製、剪下、貼上行雲流水吧！</p>
+]]></content>
+  </entry>
+  
+</feed>

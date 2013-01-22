@@ -310,6 +310,117 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/05/mongodb-import-csv/">Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在使用database 要進行初始資料insert，相信大家在使用時不會想要一筆筆資料慢慢打，最快的方式就是使用大家熟悉的excel，或者csv進行初始資料的建立，之後在用db提供的dataimport工具，將整理好的資料進行匯入，網路上關於ms sqlserver，或是mysql相關資料已經很多，今天要介紹的是如何將cvs的文字資料匯入到mongodb。</p>
+
+<p>首先在開始時我們可以先申請一個免費的mongodb來玩玩，介紹大家一個免費空間又大的線上mongodb網站</p>
+
+<p><a href="https://mongolab.com/welcome/">mongolab</a></p>
+
+<p>提供免費的 500 mb空間，比<a href="https://www.mongohq.com/home">mongohq</a> 大上十倍，非常的夠用了。</p>
+
+<p>接著如果如果要進行CVS匯入我們可以有兩種方式，一種是透過mongodb提供的指令進行匯入，安裝方式可參考下列網址:<a href="http://docs.mongodb.org/manual/installation/">Installing MongoDB</a></p>
+
+<p>範例指令</p>
+
+<div><script src='https://gist.github.com/4452313.js?file='></script>
+<noscript><pre><code>mongoimport --host mongolab.com --port 40000 --username user --password db --collection store --db dbname --type csv --file ~/gdata.csv --headerline</code></pre></noscript></div>
+
+
+<p>可以參考下面網址的個參數說明：<a href="http://docs.mongodb.org/manual/administration/import-export/">Importing and Exporting MongoDB Data</a></p>
+
+<p>另外一個就是使用gui介面進行資料匯入，在這邊使用 <a href="http://mongohub.todayclose.com/">mongohub</a>，介紹可參考 <a href="http://blog.lyhdev.com/2012/03/mongohub-mongodb-mac.html">MongoHub 簡單易用的 MongoDB 圖形化管理工具</a></p>
+
+<p>再來就要介紹如何使用gui進行mongodb的批次cvs資料匯入，可以點選mongohub中你要匯入的collection就是類是一般sql的table，這邊選取的是motostore這個collection，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-jg9hJXlb5Ig/UOesHMhFQGI/AAAAAAAALc0/4pAZgjilePU/s739/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.17.20.jpg" alt="img" /></p>
+
+<p>選取之後在點選上方放大鏡，query那個圖示，會開啟下面的畫面：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-9YnPsJEa2Yk/UOesIOm6_YI/AAAAAAAALc4/EKUPvTuAIyw/s562/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.19.10.jpg" alt="img" /></p>
+
+<p>點選新開啟的視窗上面的import按鈕，接著選取你要匯入的檔案，type選取cvs，下方Headerline需打勾，表示資料的第一行為欄位邊號，接著點選import按鈕就完成資料的匯入了，是不是很簡單，至少不用去記很多的指令，不過有一個重點！</p>
+
+<blockquote><p>cvs 的檔案編碼請記得要用utf-8</p></blockquote>
+
+<p>如果沒有用utf-8編碼會造成mongohub會跟你說資料匯入成功，但是實際上卻是失敗，我在嘗試匯入時，先用mongohub，結果就一直搞不定，後來改用command的方式才知道原來是檔案編碼錯誤造成無法匯入，後來編碼正確後，再一次使用mongohub就可以正常匯入啦！</p>
+
+<p>匯入cvs的檔案編碼方式要注意阿！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-05T11:55:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/05/mongodb-import-csv/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/05/mongodb-import-csv/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/02/github-issues/">Bug Tracking System 介紹：使用 Github 內建的 Issues</a>
 
 </h1>
@@ -1452,112 +1563,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/19/Jekyll-liquid-reference/">Jekyll Liquid Reference</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在用Jekyll為base的作一些靜態網站，他算是一個很輕省，並且可以快速完成網站的好工具，可以看看友站的介紹<a href="http://blog.lyhdev.com/2012/02/jekyll-github-pages.html">使用 Jekyll 與 GitHub Pages 架站</a>，幾個步驟並且使用免費的github就可以讓你有個網站的雛形，當然只有這樣還不夠，當你需要客製時，就必須要知道如何操作該工具運作，所以整理這篇，給大家參考，至少是個起頭方向。</p>
-
-<p>為了避免浪費太多摸索時間，如果你有興趣想要使用這工具，建議大家先大概瀏覽一下下面的文件，有個印象後在去操作，整個才會比較速西(台語)～</p>
-
-<ul>
-<li>官方網站：<a href="http://liquidmarkup.org/">Liquid</a></li>
-<li>wiki：<a href="https://github.com/mojombo/jekyll/wiki">Liquid wiki</a></li>
-</ul>
-
-
-<p>節錄幾個我覺得比較重要的章節</p>
-
-<ul>
-<li>markdown文檔檔頭的說明：<a href="https://github.com/mojombo/jekyll/wiki/YAML-Front-Matter">YAML Front Matter</a></li>
-<li>各種參數讀取方式：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">Template Data</a></li>
-<li><p>設計人員參考手冊：<a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">Liquid for Designers</a></p>
-
-<p>  包含比如說replace這樣替換字元的說明，還有一些常用的tag說明</p></li>
-<li><p>開發人員參考手冊：<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Programmers">Liquid for Programmers</a></p>
-
-<p>  如果你有看我另一篇文章<a href="http://smlsun.com/blog/2012/11/29/octopress-slide-advanced-More/">More Advanced octopress with Slide Features</a>，裡面自定tag 與 block 的作法在這邊有詳細說明</p></li>
-<li><p>Jekyll <a href="https://github.com/mojombo/jekyll/wiki/liquid-extensions">Liquid Extensions</a></p>
-
-<p>  Jekyll 使用 Liquid 來處理 templates，這裡列出一些除了標準 Liquid 有提供的功能外，延伸的部份，比如說裡面有提到的 Post Url，可以用 <code>post_url 2010-07-21-name-of-post</code>取得文章連接。</p></li>
-</ul>
-
-
-<p>試試看，Jekyll Liquid 使用起來真的很方便，如果你要快速架站，這個工具可以幫上你的忙</p>
-
-<h3>Have Fun!!</h3>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-19T08:59:00+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/19/Jekyll-liquid-reference/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/19/Jekyll-liquid-reference/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1635,6 +1640,10 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/01/22/ubuntu-mac-keyboard-config/">HOWTO: Apple Keyboard mapping for Ubuntu</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/01/17/java-pointer/">java OCP 題目解析：關於 java 指標的運作觀念</a>
       </li>
     
@@ -1648,10 +1657,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
     
       <li>
         <a href="/blog/2013/01/14/video-man/">video man - 『尊重』的重要，與『沒關係』的可怕</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">ubuntu 12.10 install gnome(no effects) and button layout change</a>
       </li>
     
   </ul>
