@@ -310,6 +310,167 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile Deploy</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
+
+<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
+
+<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
+
+<p><code>/etc/init/yourapp.conf</code></p>
+
+<p>範例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
+</span><span class='line'>author "user"                                                              
+</span><span class='line'>
+</span><span class='line'>start on startup
+</span><span class='line'>stop on shutdown
+</span><span class='line'>
+</span><span class='line'>script
+</span><span class='line'>    export HOME="/root"
+</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
+</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
+</span><span class='line'>end script
+</span><span class='line'>
+</span><span class='line'>pre-start script
+</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
+</span><span class='line'>end script
+</span><span class='line'>
+</span><span class='line'>pre-stop script
+</span><span class='line'>    #rm /var/run/yourprogram.pid
+</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
+</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
+
+<p><code>initctl list | grep node</code></p>
+
+<p>會看到下列輸出：</p>
+
+<p><code>yourapp stop/waiting</code></p>
+
+<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
+
+<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
+</span><span class='line'>
+</span><span class='line'>restart: rsync
+</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
+</span><span class='line'>
+</span><span class='line'>rsync: 
+</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
+
+
+<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
+
+<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-09T08:36:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-production-setting/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-production-setting/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/05/mongodb-import-csv/">Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command</a>
 
 </h1>
@@ -1480,89 +1641,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/20/jekyll-invalid-us-ascii/">Jekyll Invalid Us-ascii 處理</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>今天在用使用 <a href="http://jekyllbootstrap.com/">Jekyll + Bootstrap</a> 架站時，剛好在試文章分類 category 是否可接收中文，結果～叭叭，沒辦法，網頁出現像下面訊息</p>
-
-<h3>invalid byte sequence in US-ASCII</h3>
-
-<p>我想應該因為 Jekyll + Bootstrap 如果有定義分類 category 當他在generate 的時候資料夾就會跟 category 來分類產生的html，所以網址的部份也會變成中文。</p>
-
-<p>試了網路上的方法，也就是在.profile 中加入 utf-8 的編碼方式，還是沒有辦法解決此問題，不過正想說算了就避開使用英文，後來看到有人說上傳的github上後github自動產生的頁面就沒此問題，怪哉！姑且一試，耶～真的可以耶！至少實際上線時是沒問題的，給大家參考，如果有辦法可以解決本機編碼的問題請讓我知道，ok～</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-20T15:28:00+08:00" pubdate data-updated="true">Dec 20<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/20/jekyll-invalid-us-ascii/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/20/jekyll-invalid-us-ascii/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1640,6 +1718,10 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/01/24/qemu/">Lightweight and portable virtual machine: qemu</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/01/22/ubuntu-mac-keyboard-config/">HOWTO: Apple Keyboard mapping for Ubuntu</a>
       </li>
     
@@ -1653,10 +1735,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
     
       <li>
         <a href="/blog/2013/01/15/intrduction-grails/">Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/14/video-man/">video man - 『尊重』的重要，與『沒關係』的可怕</a>
       </li>
     
   </ul>

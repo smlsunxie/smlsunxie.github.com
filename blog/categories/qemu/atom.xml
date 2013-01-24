@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: qemu | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/qemu/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-24T10:42:12+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Lightweight and portable virtual machine: qemu]]></title>
+    <link href="http://smlsun.com/blog/2013/01/24/qemu/"/>
+    <updated>2013-01-24T09:52:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/24/qemu</id>
+    <content type="html"><![CDATA[<p>最近在研究 qemu 虛擬機器的應用，期望能夠在 windows 下能夠將事先製作好的 Live CD 將其放在 usb，當使用者需要使用時，只要插入 usb 隨即可以在 windows 底下開啟製作好的 Live CD，透過這樣的結合，可以很方便的讓你客製的 os 被使用者所使用，且不用安裝一堆軟體，檔案也很小，只要 6 mb 左右就可以啦，下面就來說明相關資源。</p>
+
+<p>在使用 qemu 時，如果單獨使用 qemu，他本身啟動速度很慢，必須加裝加速器才算堪用，所以除了 qemu 還需要 kqemu，相關網站如下:</p>
+
+<p><a href="http://homepage3.nifty.com/takeda-toshiya/">qemu for windows</a></p>
+
+<p><a href="http://www.h6.dion.ne.jp/~kazuw/qemu-win/Kqemu-1.3.0pre11-install.exe">kqemu</a></p>
+
+<p>使用步驟可以參考下列網站：</p>
+
+<p><a href="http://milky.manishsinha.net/2008/07/10/using-qemu-on-windows/">Using qemu on Windows</a></p>
+
+<p>在研究過程中，我只能說非常撞牆，原本在 linux 很理所當然的運行，在 windows 下一切都不是那樣，搞了很久不是視訊有問題，不然就是滑鼠不能動，最後總算找到懶人包，其中包括了 kqemu portable 加速，算是非常方便了，連結如下：</p>
+
+<p><a href="http://code.google.com/p/kqemu-portable-win/">kqemu-portable-win</a></p>
+
+<p>使用方式非常簡單，將你製作好的 iso 或者 img 放到解開的資料夾，然後開啟 <code>qemu-win.bat</code> 在底下就可以定義你要開啟檔案的路徑，以及要開啟的方式，範例如下：</p>
+
+<p><code>
+kqemu\USB-Kqemu.exe
+qemu.exe -L . -cdrom *.iso -localtime -m 512 -boot d -kernel-kqemu -std-vga
+kqemu\USB-Kqemu-Halt.exe
+</code></p>
+
+<p>可以看到開始時執行開啟 Kqemu，接著就是要啟動 qemu，我這邊啟動的是 *.iso，也就是只要偵測到有 iso 檔就會執行開啟， <code>-m 512</code> 表示使用記憶體為 512 mb， <code>-kernel-kqemu</code> 則表示啟動 kqemu 加速器，接著我們只要點兩下 <code>qemu-win.bat</code> 就可以啟動虛擬機器了，執行畫面如下：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-ZFEChwFRwVA/UQCd1AtcqxI/AAAAAAAALg4/xd03fBbDwjU/s721/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.13.jpg" alt="image" /></p>
+
+<p>並且可以確認一下加速器是否有正確被啟動，在 qemu 啟動視窗輸入 <code>ctrl + alt + 2</code>，輸入 <code>info kqemu</code> 可以看到下列畫面：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-ca81YlxugiY/UQCd1srHU8I/AAAAAAAALg8/1KQb3V9KpS0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.48.jpg" alt="image" /></p>
+
+<p>就表示加速器已經正確被啟動了！</p>
+
+<p>希望這篇文章可以幫助有需要的人，不要像我一樣花很多時間在撞牆了～</p>
+]]></content>
+  </entry>
+  
+</feed>
