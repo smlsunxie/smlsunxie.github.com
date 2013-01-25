@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Ubuntu | 蹤影]]></title>
+  <title><![CDATA[Category: ubuntu | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-24T10:42:12+08:00</updated>
+  <updated>2013-01-25T11:25:19+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,22 +14,35 @@
 
   
   <entry>
-    <title type="html"><![CDATA[HOWTO: Apple Keyboard mapping for Ubuntu]]></title>
-    <link href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"/>
-    <updated>2013-01-22T09:49:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config</id>
-    <content type="html"><![CDATA[<p>不曉得各位使用 macbook 的阿宅有沒有ㄍ跟我一樣的困擾，那就是雖然使用 Mac os 但是還是需要連到遠端的不同 os 比如說 ubuntu 或者 windows 之類的，當你在同時操作這些系統時，讓人不習慣的不是 os 本身提供的功能，或者是介面的 layout，其實最令我困擾的是 <strong>Win and ubuntu 的 ctrl</strong> 以及 <strong>Mac 的 command</strong>，真的讓我非常的錯亂，甚至會手抽筋！</p>
+    <title type="html"><![CDATA[tips: customize live cd]]></title>
+    <link href="http://smlsun.com/blog/2013/01/25/customize-live-cd/"/>
+    <updated>2013-01-25T10:29:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/25/customize-live-cd</id>
+    <content type="html"><![CDATA[<p>最近在研究如何製作 live cd 也因為這項研究，讓我更熟悉 linux 的架構，發現一些有用的知識，與 linux 運作的設定，這篇算是筆記，陸續在新增</p>
 
-<p>人總是在受不了或看不慣時會尋找解法，所以我受不了了！上網找了一下，總算讓我找到設定方式，其實步驟很簡單：</p>
+<ul>
+<li><p><code>/etc/skel</code></p>
 
-<ol>
-<li><p>Go into System -> Preferences -> Keyboard</p></li>
-<li><p>Click on the "Layouts" tab and then click the "Layout Options" button.</p></li>
-<li><p>Click on "Alt/Win key behavior"</p></li>
-</ol>
+<p>  在這資料夾下面的檔案，只要當新增使用者時，就會複製一份給新增使用者，當你需要有一些預設設定時很好用，比如說：chrome 要有預設的首頁以及捷徑，還有輸入法預設有哪些等。</p></li>
+<li><p><code>/etc/xdg/autostart/</code></p>
+
+<p>  global 自動執行，放在底下的 *.desktop 將會自動執行</p></li>
+<li><p><code>~/.config/autostart/</code></p>
+
+<p>  local 自動執行，同 <code>/etc/xdg/autostart/</code>，可搭配 <code>/etc/skel</code> 服用，如果你有每個使用者登入就要執行某些程式的需求</p></li>
+<li><p><code>/etc/rc.local</code></p>
+
+<p>  當你登入系統時，希望要執行任何 command 可以在這編輯，比如說：製作 livecd 一開始時是在 command 模式，你想要讓他直接進到 xwindow 通常需要下 startx，此時就可以在這檔案裡編寫指令，讓他自動執行，比如說我要讓使用者 ubuntu 自動執行則下 <code>su ubuntu -c startx</code></p></li>
+<li><p><code>locale-gen zh_TW.UTF-8</code></p>
+
+<p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
+<li><p><code>apt-get --yes autoremove</code></p>
+
+<p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+</ul>
 
 
-<p>就這樣，不要再忍受令人錯亂的 ctrl 與 command 鍵，讓複製、剪下、貼上行雲流水吧！</p>
+<p>話說：最近越來越 linux 了～</p>
 ]]></content>
   </entry>
   
