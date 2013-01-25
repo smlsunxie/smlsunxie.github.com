@@ -349,18 +349,23 @@ Tips: Customize Live Cd
 
 <p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
 
-<p>  加入下列語法；</p>
+<p>  加入下列語法；</p></li>
+</ul>
 
-<p>  &#8220;` shell</p>
 
-<pre><code>  if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then
-      startx
-  fi
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$DISPLAY&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$(</span>tty<span class="k">)</span> <span class="o">==</span> /dev/tty1 <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>startx
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>相關說明可以看這：[bash 環境設定檔](http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc)
 </code></pre>
 
-<p>  &#8220;`</p>
-
-<p>  相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p></li>
+<ul>
 <li><p><code>locale-gen zh_TW.UTF-8</code></p>
 
 <p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
