@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T13:42:49+08:00</updated>
+  <updated>2013-01-25T13:43:35+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -70,20 +70,20 @@
 
 <p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
 
-<p>  加入下列語法；</p>
-
-<p>  ``` bash
-  if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then</p>
-
-<pre><code>  startx
-</code></pre>
-
-<p>  fi
-  ```</p>
-
-<p>  相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p></li>
+<p>  加入下列語法；</p></li>
 </ul>
 
+
+<p>``` bash
+if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then</p>
+
+<pre><code>startx
+</code></pre>
+
+<p>fi
+```</p>
+
+<p>相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p>
 
 <hr />
 
