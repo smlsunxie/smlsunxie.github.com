@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T13:33:35+08:00</updated>
+  <updated>2013-01-25T13:36:29+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -53,7 +53,7 @@
 
 <p>  加入下列語法；</p>
 
-<p>  &#8220;` bash</p>
+<p>  &#8220;`</p>
 
 <pre><code>  if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then
       startx
