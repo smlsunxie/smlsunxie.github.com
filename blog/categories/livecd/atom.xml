@@ -4,7 +4,7 @@
   <title><![CDATA[Category: livecd | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/livecd/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T15:07:38+08:00</updated>
+  <updated>2013-01-25T15:21:28+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -136,7 +136,7 @@ sudo apt-get install squashfs-tools dchroot
 - mkdir ${LIVECD_TMP}
 - sudo mount -o loop ${ORG_ISO_NAME} ${LIVECD_TMP}
 - mkdir -p ${LIVECD_HOME}/cd
-rsync --exclude=/casper/filesystem.squashfs -a ${LIVECD_TMP} ${LIVECD_HOME}/cd
+rsync --exclude=/casper/filesystem.squashfs -a ${LIVECD_TMP}/ ${LIVECD_HOME}/cd
 - mkdir ${LIVECD_HOME}/squashfs  ${LIVECD_HOME}/custom
 sudo modprobe squashfs
 - sudo mount -t squashfs -o loop ${LIVECD_TMP}/casper/filesystem.squashfs ${LIVECD_HOME}/squashfs/
