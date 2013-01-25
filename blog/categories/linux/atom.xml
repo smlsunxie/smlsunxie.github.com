@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T13:39:39+08:00</updated>
+  <updated>2013-01-25T13:40:53+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -46,23 +46,16 @@
 
 <p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
 
-<p>  加入下列語法；</p></li>
-</ul>
+<p>  加入下列語法；</p>
 
-
-<p>``` bash
-if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then</p>
-
-<pre><code>startx
+<pre><code>  ``` bash
+  if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then
+      startx
+  fi
+  ```
 </code></pre>
 
-<p>fi
-```</p>
-
-<pre><code>相關說明可以看這：[bash 環境設定檔](http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc)
-</code></pre>
-
-<ul>
+<p>  相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p></li>
 <li><p><code>locale-gen zh_TW.UTF-8</code></p>
 
 <p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
