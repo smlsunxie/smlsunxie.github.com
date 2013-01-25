@@ -4,7 +4,7 @@
   <title><![CDATA[Category: linux | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T13:43:35+08:00</updated>
+  <updated>2013-01-25T15:07:38+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -100,8 +100,128 @@ if [ -z "$DISPLAY" ] &amp;&amp; [ $(tty) == /dev/tty1 ]; then</p>
 <li><p><code>apt-get --yes autoremove</code></p>
 
 <p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+<li><p>產生 live cd 範例 makefile</p>
+
+<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
 </ul>
 
+
+<p>``` bash
+LIVECD_HOME=~/livecd
+LIVECD_TMP=/tmp/livecd</p>
+
+<p>ORG_ISO_URL=http://www.ubuntu-mini-remix.org/download/12.10
+ORG_ISO_NAME=ubuntu-mini-remix-12.10-i386.iso</p>
+
+<p>CREATE_ISO_NAME=Ubuntu-cusmize-livecd.iso</p>
+
+<p>DEPLOY_LOC=~/
+DEPLOY_REMOTE=user@ip:~/</p>
+
+<p>all: clean</p>
+
+<p>clean:</p>
+
+<pre><code>- sudo umount ${ORG_ISO_NAME}
+- sudo umount ${LIVECD_TMP}/casper/filesystem.squashfs
+- sudo umount ${LIVECD_HOME}/custom/proc/
+- sudo umount ${LIVECD_HOME}/custom/sys/
+sudo rm -rf ${LIVECD_HOME}
+</code></pre>
+
+<p>init: clean</p>
+
+<pre><code>wget -nc ${ORG_ISO_URL}/${ORG_ISO_NAME}
+sudo apt-get install squashfs-tools dchroot
+- mkdir ${LIVECD_TMP}
+- sudo mount -o loop ${ORG_ISO_NAME} ${LIVECD_TMP}
+- mkdir -p ${LIVECD_HOME}/cd
+rsync --exclude=/casper/filesystem.squashfs -a ${LIVECD_TMP} ${LIVECD_HOME}/cd
+- mkdir ${LIVECD_HOME}/squashfs  ${LIVECD_HOME}/custom
+sudo modprobe squashfs
+- sudo mount -t squashfs -o loop ${LIVECD_TMP}/casper/filesystem.squashfs ${LIVECD_HOME}/squashfs/
+sudo cp -a ${LIVECD_HOME}/squashfs/* ${LIVECD_HOME}/custom
+sudo cp /etc/resolv.conf /etc/hosts ${LIVECD_HOME}/custom/etc/  
+</code></pre>
+
+<p>install: init</p>
+
+<pre><code># copy install script 在 install.sh 寫入你需要安裝的套件
+sudo chmod +x install.sh
+sudo cp install.sh ${LIVECD_HOME}/custom/home/
+
+sudo chroot ${LIVECD_HOME}/custom /home/./install.sh
+</code></pre>
+
+<p>build: install</p>
+
+<pre><code>chmod +w ${LIVECD_HOME}/cd/casper/filesystem.manifest
+sudo chroot ${LIVECD_HOME}/custom dpkg-query -W --showformat='${Package} ${Version}\n' &gt; ${LIVECD_HOME}/cd/casper/filesystem.manifest
+sudo cp ${LIVECD_HOME}/cd/casper/filesystem.manifest ${LIVECD_HOME}/cd/casper/filesystem.manifest-desktop
+sudo mksquashfs ${LIVECD_HOME}/custom ${LIVECD_HOME}/cd/casper/filesystem.squashfs
+cd ${LIVECD_HOME}/cd ;sudo mkisofs -r -V "Ubuntu-cusmize-livecd" -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/${CREATE_ISO_NAME} .
+</code></pre>
+
+<p>deploy: build</p>
+
+<pre><code>scp ~/${CREATE_ISO_NAME} ${DEPLOY_REMOTE}
+</code></pre>
+
+<p>deploy_loc: build</p>
+
+<pre><code>cp ~/${CREATE_ISO_NAME} ${DEPLOY_LOC}
+</code></pre>
+
+<p>test:</p>
+
+<pre><code>qemu-system-i386 -cdrom ~/${CREATE_ISO_NAME} -boot d -m 512
+</code></pre>
+
+<p>```</p>
+
+<p>其中 install.sh：</p>
+
+<p>``` bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>mount -t proc none /proc/
+mount -t sysfs none /sys/
+export HOME=/root</p>
+
+<p>locale-gen zh_TW.UTF-8
+update-locale LANG=zh_TW.UTF-8</p>
+
+<p>sudo apt-get update</p>
+
+<p>sudo apt-get --yes install lxde
+sudo apt-get --yes install language-support-zh language-pack-gnome-zh<em> ttf-arphic-</em></p>
+
+<p>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb</p>
+
+<p>sudo dpkg -i ./google-chrome*.deb
+sudo apt-get --yes -f install</p>
+
+<p>rm google-chrome-stable_current_i386.deb</p>
+
+<p>sudo apt-get --yes install Leafpad
+sudo apt-get --yes install xinit
+sudo apt-get --yes install ibus
+sudo apt-get --yes install ibus-chewing
+sudo apt-get --yes install lxterminal
+sudo apt-get --yes install ttf-arphic-uming</p>
+
+<p>sudo apt-get --yes purge xscreensaver</p>
+
+<p>apt-get --yes autoremove
+apt-get clean
+rm -rf /tmp/*
+rm -f /etc/hosts /etc/resolv.conf
+umount /proc/
+umount /sys/
+exit</p>
+
+<p>```</p>
 
 <p>話說：最近越來越 linux 了～</p>
 ]]></content>

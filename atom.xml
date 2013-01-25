@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-25T13:43:35+08:00</updated>
+  <updated>2013-01-25T15:07:38+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -105,7 +105,208 @@
 <li><p><code>apt-get --yes autoremove</code></p>
 
 <p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+<li><p>產生 live cd 範例 makefile</p>
+
+<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
 </ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LIVECD_HOME</span><span class="o">=</span>~/livecd
+</span><span class='line'><span class="nv">LIVECD_TMP</span><span class="o">=</span>/tmp/livecd
+</span><span class='line'>
+</span><span class='line'><span class="nv">ORG_ISO_URL</span><span class="o">=</span>http://www.ubuntu-mini-remix.org/download/12.10
+</span><span class='line'><span class="nv">ORG_ISO_NAME</span><span class="o">=</span>ubuntu-mini-remix-12.10-i386.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">CREATE_ISO_NAME</span><span class="o">=</span>Ubuntu-cusmize-livecd.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">DEPLOY_LOC</span><span class="o">=</span>~/
+</span><span class='line'><span class="nv">DEPLOY_REMOTE</span><span class="o">=</span>user@ip:~/
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>all: clean
+</span><span class='line'>
+</span><span class='line'>clean:
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/proc/
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/sys/
+</span><span class='line'>  sudo rm -rf <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>
+</span><span class='line'>init: clean
+</span><span class='line'>  wget -nc <span class="k">${</span><span class="nv">ORG_ISO_URL</span><span class="k">}</span>/<span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  sudo apt-get install squashfs-tools dchroot
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - sudo mount -o loop <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - mkdir -p <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  rsync --exclude<span class="o">=</span>/casper/filesystem.squashfs -a <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs  <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo modprobe squashfs
+</span><span class='line'>  - sudo mount -t squashfs -o loop <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/
+</span><span class='line'>  sudo cp -a <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/* <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo cp /etc/resolv.conf /etc/hosts <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/etc/    
+</span><span class='line'>
+</span><span class='line'>  
+</span><span class='line'>install: init
+</span><span class='line'>  
+</span><span class='line'>  <span class="c"># copy install script 在 install.sh 寫入你需要安裝的套件</span>
+</span><span class='line'>  sudo chmod +x install.sh
+</span><span class='line'>  sudo cp install.sh <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/home/
+</span><span class='line'>  
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom /home/./install.sh
+</span><span class='line'>
+</span><span class='line'>build: install
+</span><span class='line'>  chmod +w <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom dpkg-query -W --showformat<span class="o">=</span><span class="s1">&#39;${Package} ${Version}\n&#39;</span> &gt; <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo cp <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest-desktop
+</span><span class='line'>  sudo mksquashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.squashfs
+</span><span class='line'>  <span class="nb">cd</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd ;sudo mkisofs -r -V <span class="s2">&quot;Ubuntu-cusmize-livecd&quot;</span> -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> .
+</span><span class='line'>
+</span><span class='line'>deploy: build
+</span><span class='line'>  scp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_REMOTE</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'>deploy_loc: build
+</span><span class='line'>  cp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_LOC</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">test</span>:
+</span><span class='line'>  qemu-system-i386 -cdrom ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> -boot d -m 512
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 install.sh：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'>mount -t proc none /proc/
+</span><span class='line'>mount -t sysfs none /sys/
+</span><span class='line'><span class="nb">export </span><span class="nv">HOME</span><span class="o">=</span>/root
+</span><span class='line'>
+</span><span class='line'>locale-gen zh_TW.UTF-8
+</span><span class='line'>update-locale <span class="nv">LANG</span><span class="o">=</span>zh_TW.UTF-8
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install lxde
+</span><span class='line'>sudo apt-get --yes install language-support-zh language-pack-gnome-zh* ttf-arphic-*
+</span><span class='line'>
+</span><span class='line'>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo dpkg -i ./google-chrome*.deb
+</span><span class='line'>sudo apt-get --yes -f install
+</span><span class='line'>
+</span><span class='line'>rm google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install Leafpad
+</span><span class='line'>sudo apt-get --yes install xinit
+</span><span class='line'>sudo apt-get --yes install ibus
+</span><span class='line'>sudo apt-get --yes install ibus-chewing
+</span><span class='line'>sudo apt-get --yes install lxterminal
+</span><span class='line'>sudo apt-get --yes install ttf-arphic-uming
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes purge xscreensaver
+</span><span class='line'>
+</span><span class='line'>apt-get --yes autoremove
+</span><span class='line'>apt-get clean
+</span><span class='line'>rm -rf /tmp/*
+</span><span class='line'>rm -f /etc/hosts /etc/resolv.conf
+</span><span class='line'>umount /proc/
+</span><span class='line'>umount /sys/
+</span><span class='line'><span class="nb">exit</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>話說：最近越來越 linux 了～</p>
