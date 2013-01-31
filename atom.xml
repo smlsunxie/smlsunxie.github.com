@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:24:30+08:00</updated>
+  <updated>2013-01-31T13:28:47+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -53,20 +53,18 @@
 <ol>
 <li><p>button.onclick =  demo ：</p>
 
-<p> &#8220;`javascript</p>
-
-<pre><code> &lt;input type="button" id="aButton" value="demo" /&gt; 
- &lt;script  type="text/javascript"&gt; 
+<pre><code>     ```javascript
+     &lt;input type="button" id="aButton" value="demo" /&gt; 
+     &lt;script  type="text/javascript"&gt; 
      var button = document.getElementById("aButton"); 
      function demo()  {
          this.value = Math.random(); 
      }
      button.onclick =  demo; 
      alert(button.onclick);
- &lt;/script&gt;
+     &lt;/script&gt;
+     ```
 </code></pre>
-
-<p> &#8220;`</p>
 
 <p> 得到的輸出是：</p>
 
@@ -145,22 +143,20 @@ call() 和 apply()。</p>
 
 <p>  以下面這段程式碼為例：</p>
 
-<p>  &#8220;`javascript</p>
-
-<pre><code>  var foo = function(x) {
+<pre><code>  ```javascript
+  var foo = function(x) {
       alert(x);
       alert(this);
   }
   foo('abc');
+  ```
 </code></pre>
-
-<p>  &#8220;`</p>
 
 <p>  你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
 
-<p>  &#8220;`javascript</p>
+<pre><code>  ```javascript
 
-<pre><code>  var foo = function() {
+  var foo = function() {
       alert(arguments[0]);
       alert(this.name);
   }
@@ -168,7 +164,7 @@ call() 和 apply()。</p>
   foo.apply(bar, ['abc','def']);
 </code></pre>
 
-<p>  &#8220;`</p>
+<p>&#8220;`</p>
 
 <p>  在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p></li>
 </ul>
