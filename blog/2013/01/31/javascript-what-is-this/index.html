@@ -348,9 +348,9 @@ Javascript: What Is This?
 
 <p>更進一步的來看簡單的例子：</p>
 
-<ol>
+<ul>
 <li>button.onclick =  demo ：</li>
-</ol>
+</ul>
 
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -374,8 +374,7 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>得到的輸出是：
-</code></pre>
+<p>得到的輸出是：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -386,9 +385,9 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<ol>
+<ul>
 <li>onclick =&#8221;demo()&#8221;</li>
-</ol>
+</ul>
 
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -412,8 +411,7 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>得到的輸出是：
-</code></pre>
+<p>得到的輸出是：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -463,8 +461,7 @@ call() 和 apply()。</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world
-</code></pre>
+<p>myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p>
 
 <ul>
 <li><p>apply()</p>
@@ -486,8 +483,7 @@ call() 和 apply()。</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？
-</code></pre>
+<p>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -504,8 +500,7 @@ call() 和 apply()。</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。
-</code></pre>
+<p>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p>
 
 <p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
 
