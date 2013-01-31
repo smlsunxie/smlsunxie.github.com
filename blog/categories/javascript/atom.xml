@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:19:50+08:00</updated>
+  <updated>2013-01-31T13:20:43+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -26,15 +26,17 @@
 
 <p>這樣講可能有點抽象，大家來看個實際的例子：</p>
 
-<pre><code>```javascript
-&lt;input type ="button"  id ="aButton"  value ="demo" onclick="" /&gt; 
+<p>```javascript</p>
+
+<pre><code>&lt;input type ="button"  id ="aButton"  value ="demo" onclick="" /&gt; 
 &lt;script type ="text/javascript" &gt; 
     function  demo()  { 
         this .value  =  Math.random(); 
     }
 &lt;/script&gt;
-```
 </code></pre>
+
+<p>```</p>
 
 <p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
 

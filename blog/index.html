@@ -329,15 +329,20 @@
 
 <p>這樣講可能有點抽象，大家來看個實際的例子：</p>
 
-<pre><code>```javascript
-&lt;input type ="button"  id ="aButton"  value ="demo" onclick="" /&gt; 
-&lt;script type ="text/javascript" &gt; 
-    function  demo()  { 
-        this .value  =  Math.random(); 
-    }
-&lt;/script&gt;
-```
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;button&quot;</span>  <span class="nx">id</span> <span class="o">=</span><span class="s2">&quot;aButton&quot;</span>  <span class="nx">value</span> <span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">function</span>  <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span> <span class="p">.</span><span class="nx">value</span>  <span class="o">=</span>  <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
 
