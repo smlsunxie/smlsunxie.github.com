@@ -349,25 +349,39 @@ Javascript: What Is This?
 <p>更進一步的來看簡單的例子：</p>
 
 <ol>
-<li><p>button.onclick =  demo ：</p>
+<li>button.onclick =  demo ：</li>
+</ol>
 
-<pre><code> &lt;input type="button" id="aButton" value="demo" /&gt; 
- &lt;script  type="text/javascript"&gt; 
-     var button = document.getElementById("aButton"); 
-     function demo()  {
-         this.value = Math.random(); 
-     }
-     button.onclick =  demo; 
-     alert(button.onclick);
- &lt;/script&gt;
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>    <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="nx">script</span>  <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span>  <span class="nx">demo</span><span class="p">;</span>
+</span><span class='line'>        <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>得到的輸出是：
+
+    function demo() { 
+        this.value = Math.random(); 
+    }
 </code></pre>
 
-<p> 得到的輸出是：</p>
-
-<pre><code> function demo() { 
-     this.value = Math.random(); 
- }
-</code></pre></li>
+<ol>
 <li><p>onclick =&#8221;demo()&#8221;</p>
 
 <pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 

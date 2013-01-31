@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:20:43+08:00</updated>
+  <updated>2013-01-31T13:21:47+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -43,25 +43,33 @@
 <p>更進一步的來看簡單的例子：</p>
 
 <ol>
-<li><p>button.onclick =  demo ：</p>
+<li>button.onclick =  demo ：</li>
+</ol>
 
-<pre><code> &lt;input type="button" id="aButton" value="demo" /&gt; 
- &lt;script  type="text/javascript"&gt; 
-     var button = document.getElementById("aButton"); 
-     function demo()  {
-         this.value = Math.random(); 
-     }
-     button.onclick =  demo; 
-     alert(button.onclick);
- &lt;/script&gt;
+
+<p>```javascript</p>
+
+<pre><code>    &lt;input type="button" id="aButton" value="demo" /&gt; 
+    &lt;script  type="text/javascript"&gt; 
+        var button = document.getElementById("aButton"); 
+        function demo()  {
+            this.value = Math.random(); 
+        }
+        button.onclick =  demo; 
+        alert(button.onclick);
+    &lt;/script&gt;
 </code></pre>
 
-<p> 得到的輸出是：</p>
+<p>```</p>
 
-<pre><code> function demo() { 
-     this.value = Math.random(); 
- }
-</code></pre></li>
+<pre><code>得到的輸出是：
+
+    function demo() { 
+        this.value = Math.random(); 
+    }
+</code></pre>
+
+<ol>
 <li><p>onclick ="demo()"</p>
 
 <pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 
