@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:21:47+08:00</updated>
+  <updated>2013-01-31T13:24:30+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -43,34 +43,36 @@
 <p>更進一步的來看簡單的例子：</p>
 
 <ol>
-<li>button.onclick =  demo ：</li>
-</ol>
+<li><p>button.onclick =  demo ：</p>
 
+<p> ```javascript</p>
 
-<p>```javascript</p>
-
-<pre><code>    &lt;input type="button" id="aButton" value="demo" /&gt; 
-    &lt;script  type="text/javascript"&gt; 
-        var button = document.getElementById("aButton"); 
-        function demo()  {
-            this.value = Math.random(); 
-        }
-        button.onclick =  demo; 
-        alert(button.onclick);
-    &lt;/script&gt;
+<pre><code> &lt;input type="button" id="aButton" value="demo" /&gt; 
+ &lt;script  type="text/javascript"&gt; 
+     var button = document.getElementById("aButton"); 
+     function demo()  {
+         this.value = Math.random(); 
+     }
+     button.onclick =  demo; 
+     alert(button.onclick);
+ &lt;/script&gt;
 </code></pre>
 
-<p>```</p>
+<p> ```</p>
 
-<pre><code>得到的輸出是：
+<p> 得到的輸出是：</p>
 
-    function demo() { 
-        this.value = Math.random(); 
-    }
+<p> ```javascript</p>
+
+<pre><code> function demo() { 
+     this.value = Math.random(); 
+ }
 </code></pre>
 
-<ol>
+<p> ```</p></li>
 <li><p>onclick ="demo()"</p>
+
+<p> ```javascript</p>
 
 <pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 
  &lt;script type ="text/javascript" &gt; 
@@ -83,12 +85,18 @@
  &lt;/script&gt;
 </code></pre>
 
+<p> ```</p>
+
 <p> 得到的輸出是：</p>
+
+<p> ```javascript</p>
 
 <pre><code> function onclick() {
      demo(); 
  }
-</code></pre></li>
+</code></pre>
+
+<p> ```</p></li>
 </ol>
 
 
@@ -110,6 +118,8 @@ call() 和 apply()。</p>
 <ul>
 <li><p>call()</p>
 
+<p>  ```javascript</p>
+
 <pre><code>  function myFunc() {
       window.alert(this.toString());
   }
@@ -120,10 +130,14 @@ call() 和 apply()。</p>
   myFunc.call(hello);
 </code></pre>
 
+<p>  ```</p>
+
 <p>  myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p></li>
 <li><p>apply()</p>
 
 <p>  以下面這段程式碼為例：</p>
+
+<p>  ```javascript</p>
 
 <pre><code>  var foo = function(x) {
       alert(x);
@@ -132,7 +146,11 @@ call() 和 apply()。</p>
   foo('abc');
 </code></pre>
 
+<p>  ```</p>
+
 <p>  你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
+
+<p>  ```javascript</p>
 
 <pre><code>  var foo = function() {
       alert(arguments[0]);
@@ -141,6 +159,8 @@ call() 和 apply()。</p>
   var bar = { name: 'bar' };
   foo.apply(bar, ['abc','def']);
 </code></pre>
+
+<p>  ```</p>
 
 <p>  在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p></li>
 </ul>
