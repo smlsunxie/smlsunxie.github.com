@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-01-31T13:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[javascript: what is this?]]></title>
+    <link href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/"/>
+    <updated>2013-01-31T13:12:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/01/31/javascript-what-is-this</id>
+    <content type="html"><![CDATA[<h2>到底 this 是誰？</h2>
+
+<p>JavaScript 的 code 寫多了，你一定會碰到 this 這個關鍵字，是某個 object 下的 method 也好，或是 callback function 也好，關於 this 的用法常常會讓人搞混。</p>
+
+<p>以一句簡單的話來說：在 function 裡，this 所代表的就是呼叫這個 function 的東西。</p>
+
+<p>這樣講可能有點抽象，大家來看個實際的例子：</p>
+
+<pre><code>&lt;input type ="button"  id ="aButton"  value ="demo" onclick="" /&gt; 
+&lt;script type ="text/javascript" &gt; 
+    function  demo()  { 
+        this .value  =  Math.random(); 
+    }
+&lt;/script&gt;
+</code></pre>
+
+<p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
+
+<p>更進一步的來看簡單的例子：</p>
+
+<ol>
+<li><p>button.onclick =  demo ：</p>
+
+<pre><code> &lt;input type="button" id="aButton" value="demo" /&gt; 
+ &lt;script  type="text/javascript"&gt; 
+     var button = document.getElementById("aButton"); 
+     function demo()  {
+         this.value = Math.random(); 
+     }
+     button.onclick =  demo; 
+     alert(button.onclick);
+ &lt;/script&gt;
+</code></pre>
+
+<p> 得到的輸出是：</p>
+
+<pre><code> function demo() { 
+     this.value = Math.random(); 
+ }
+</code></pre></li>
+<li><p>onclick ="demo()"</p>
+
+<pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 
+ &lt;script type ="text/javascript" &gt; 
+     var button = document.getElementById("aButton"); 
+     function demo ()  { 
+         this.value = Math.random(); 
+     }
+
+     alert(button.onclick);
+ &lt;/script&gt;
+</code></pre>
+
+<p> 得到的輸出是：</p>
+
+<pre><code> function onclick() {
+     demo(); 
+ }
+</code></pre></li>
+</ol>
+
+
+<p>onclick ="demo()" 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
+
+<p>至於一般的 function，「沒指定的話」都是 window，注意我這裡強調是「沒指定」，所以這也就代表了「可以指定」，就可以透過
+call() 和 apply()。</p>
+
+<h2>call() 和 apply()</h2>
+
+<p>call() 和 apply() 的差別主要在於 call() 只接受一個參數，即 call(thisArg) ；而 apply() 接受兩個參數，即 apply(thisArg, argArray) 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 call() 和 apply() 可以改變 this 名稱所指涉的對象。</p>
+
+<p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
+
+<blockquote><p>If thisArg is null or undefined, the called function is passed the global object as the this value. Otherwise, the called function is passed ToObject(thisArg) as the this value.</p></blockquote>
+
+<p>接著我們分別透過 call() 和 apply() 來驗證一下</p>
+
+<ul>
+<li><p>call()</p>
+
+<pre><code>  function myFunc() {
+      window.alert(this.toString());
+  }
+
+  myFunc();
+
+  var hello = 'hello world';
+  myFunc.call(hello);
+</code></pre>
+
+<p>  myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p></li>
+<li><p>apply()</p>
+
+<p>  以下面這段程式碼為例：</p>
+
+<pre><code>  var foo = function(x) {
+      alert(x);
+      alert(this);
+  }
+  foo('abc');
+</code></pre>
+
+<p>  你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
+
+<pre><code>  var foo = function() {
+      alert(arguments[0]);
+      alert(this.name);
+  }
+  var bar = { name: 'bar' };
+  foo.apply(bar, ['abc','def']);
+</code></pre>
+
+<p>  在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p></li>
+</ul>
+
+
+<p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
+
+<p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
+
+<ul>
+<li><p>call 呼叫的話會變成；myFunc.call(hello,"abc","def");</p></li>
+<li><p>apply 的好處是可以先把陣列準備好，如 foo.apply(bar, ['abc','def'])，然後重覆使用。</p></li>
+</ul>
+
+
+<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.roodo.com/rocksaying/archives/2532303.html">石頭閒語</a></li>
+<li><a href="http://www.cnblogs.com/ruxpinsp1/archive/2008/04/20/1162463.html">棕熊@Think Fast</a></li>
+<li><a href="http://blog.ericsk.org/archives/1360">ericsk.net</a></li>
+</ul>
+
+
+<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，希望可以幫助對於 this 不是很清楚的人。</p>
+]]></content>
+  </entry>
+  
+</feed>
