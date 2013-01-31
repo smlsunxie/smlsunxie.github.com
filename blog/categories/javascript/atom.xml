@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:34:39+08:00</updated>
+  <updated>2013-01-31T13:35:31+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -117,7 +117,7 @@ call() 和 apply()。</p>
 
 <blockquote><p>If thisArg is null or undefined, the called function is passed the global object as the this value. Otherwise, the called function is passed ToObject(thisArg) as the this value.</p></blockquote>
 
-<p>接著我們分別透過 call() 和 apply() 來驗證一下</p>
+<p>接著我們分別透過 <code>call()</code> 和 <code>apply()</code> 來驗證一下</p>
 
 <ul>
 <li>call()</li>
@@ -138,7 +138,7 @@ function myFunc() {</p>
 myFunc.call(hello);
 ```</p>
 
-<p>myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p>
+<p><code>myFunc();</code>未指定的情狀下，this 輸出的是 window， <code>myFunc.call(hello);</code>則輸出 hello world</p>
 
 <ul>
 <li><p>apply()</p>
@@ -180,8 +180,8 @@ foo.apply(bar, ['abc','def']);
 <p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
 
 <ul>
-<li>call 呼叫的話會變成；myFunc.call(hello,"abc","def");</li>
-<li>apply 的好處是可以先把陣列準備好，如 foo.apply(bar, ['abc','def'])，然後重覆使用。</li>
+<li>call 呼叫的話會變成；<code>myFunc.call(hello,"abc","def");</code></li>
+<li>apply 的好處是可以先把陣列準備好，如 <code>foo.apply(bar, ['abc','def']);</code>，然後重覆使用。</li>
 </ul>
 
 
