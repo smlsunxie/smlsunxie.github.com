@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:33:12+08:00</updated>
+  <updated>2013-01-31T13:34:39+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -180,8 +180,8 @@ foo.apply(bar, ['abc','def']);
 <p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
 
 <ul>
-<li><p>call 呼叫的話會變成；myFunc.call(hello,"abc","def");</p></li>
-<li><p>apply 的好處是可以先把陣列準備好，如 foo.apply(bar, ['abc','def'])，然後重覆使用。</p></li>
+<li>call 呼叫的話會變成；myFunc.call(hello,"abc","def");</li>
+<li>apply 的好處是可以先把陣列準備好，如 foo.apply(bar, ['abc','def'])，然後重覆使用。</li>
 </ul>
 
 
