@@ -349,59 +349,79 @@
 <p>更進一步的來看簡單的例子：</p>
 
 <ol>
-<li><p>button.onclick =  demo ：</p>
-
-<pre><code>     ```javascript
-     &lt;input type="button" id="aButton" value="demo" /&gt; 
-     &lt;script  type="text/javascript"&gt; 
-     var button = document.getElementById("aButton"); 
-     function demo()  {
-         this.value = Math.random(); 
-     }
-     button.onclick =  demo; 
-     alert(button.onclick);
-     &lt;/script&gt;
-     ```
-</code></pre>
-
-<p> 得到的輸出是：</p>
-
-<p> &#8220;`javascript</p>
-
-<pre><code> function demo() { 
-     this.value = Math.random(); 
- }
-</code></pre>
-
-<p> &#8220;`</p></li>
-<li><p>onclick =&#8221;demo()&#8221;</p>
-
-<p> &#8220;`javascript</p>
-
-<pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 
- &lt;script type ="text/javascript" &gt; 
-     var button = document.getElementById("aButton"); 
-     function demo ()  { 
-         this.value = Math.random(); 
-     }
-
-     alert(button.onclick);
- &lt;/script&gt;
-</code></pre>
-
-<p> &#8220;`</p>
-
-<p> 得到的輸出是：</p>
-
-<p> &#8220;`javascript</p>
-
-<pre><code> function onclick() {
-     demo(); 
- }
-</code></pre>
-
-<p> &#8220;`</p></li>
+<li>button.onclick =  demo ：</li>
 </ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span>  <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span>  <span class="nx">demo</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>得到的輸出是：
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>onclick =&#8221;demo()&#8221;</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;demo()&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">demo</span> <span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>得到的輸出是：
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">onclick</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">demo</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
@@ -420,53 +440,72 @@ call() 和 apply()。</p>
 <p>接著我們分別透過 call() 和 apply() 來驗證一下</p>
 
 <ul>
-<li><p>call()</p>
-
-<p>  &#8220;`javascript</p>
-
-<pre><code>  function myFunc() {
-      window.alert(this.toString());
-  }
-
-  myFunc();
-
-  var hello = 'hello world';
-  myFunc.call(hello);
-</code></pre>
-
-<p>  &#8220;`</p>
-
-<p>  myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p></li>
-<li><p>apply()</p>
-
-<p>  以下面這段程式碼為例：</p>
-
-<pre><code>  ```javascript
-  var foo = function(x) {
-      alert(x);
-      alert(this);
-  }
-  foo('abc');
-  ```
-</code></pre>
-
-<p>  你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
-
-<pre><code>  ```javascript
-
-  var foo = function() {
-      alert(arguments[0]);
-      alert(this.name);
-  }
-  var bar = { name: 'bar' };
-  foo.apply(bar, ['abc','def']);
-</code></pre>
-
-<p>&#8220;`</p>
-
-<p>  在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p></li>
+<li>call()</li>
 </ul>
 
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">myFunc</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">hello</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world
+</code></pre>
+
+<ul>
+<li><p>apply()</p>
+
+<p>  以下面這段程式碼為例：</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span> <span class="p">};</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">bar</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span><span class="s1">&#39;def&#39;</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。
+</code></pre>
 
 <p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
 

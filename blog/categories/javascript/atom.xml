@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-01-31T13:28:47+08:00</updated>
+  <updated>2013-01-31T13:31:19+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -43,60 +43,68 @@
 <p>更進一步的來看簡單的例子：</p>
 
 <ol>
-<li><p>button.onclick =  demo ：</p>
-
-<pre><code>     ```javascript
-     &lt;input type="button" id="aButton" value="demo" /&gt; 
-     &lt;script  type="text/javascript"&gt; 
-     var button = document.getElementById("aButton"); 
-     function demo()  {
-         this.value = Math.random(); 
-     }
-     button.onclick =  demo; 
-     alert(button.onclick);
-     &lt;/script&gt;
-     ```
-</code></pre>
-
-<p> 得到的輸出是：</p>
-
-<p> ```javascript</p>
-
-<pre><code> function demo() { 
-     this.value = Math.random(); 
- }
-</code></pre>
-
-<p> ```</p></li>
-<li><p>onclick ="demo()"</p>
-
-<p> ```javascript</p>
-
-<pre><code> &lt;input type="button" id="aButton" value="demo" onclick="demo()" /&gt; 
- &lt;script type ="text/javascript" &gt; 
-     var button = document.getElementById("aButton"); 
-     function demo ()  { 
-         this.value = Math.random(); 
-     }
-
-     alert(button.onclick);
- &lt;/script&gt;
-</code></pre>
-
-<p> ```</p>
-
-<p> 得到的輸出是：</p>
-
-<p> ```javascript</p>
-
-<pre><code> function onclick() {
-     demo(); 
- }
-</code></pre>
-
-<p> ```</p></li>
+<li>button.onclick =  demo ：</li>
 </ol>
 
+
+<p>```javascript
+<input type="button" id="aButton" value="demo" /></p>
+
+<script  type="text/javascript"> 
+    var button = document.getElementById("aButton"); 
+    function demo()  {
+      this.value = Math.random(); 
+    }
+    button.onclick =  demo; 
+    alert(button.onclick);
+</script>
+
+
+<p>```</p>
+
+<pre><code>得到的輸出是：
+</code></pre>
+
+<p>```javascript
+  function demo() {</p>
+
+<pre><code>  this.value = Math.random(); 
+</code></pre>
+
+<p>  }
+```</p>
+
+<ol>
+<li>onclick ="demo()"</li>
+</ol>
+
+
+<p>```javascript
+<input type="button" id="aButton" value="demo" onclick="demo()" /></p>
+
+<script type ="text/javascript" > 
+    var button = document.getElementById("aButton"); 
+    function demo ()  { 
+        this.value = Math.random(); 
+    }
+    
+    alert(button.onclick);
+</script>
+
+
+<p>```</p>
+
+<pre><code>得到的輸出是：
+</code></pre>
+
+<p>```javascript
+function onclick() {</p>
+
+<pre><code>demo(); 
+</code></pre>
+
+<p>}
+```</p>
 
 <p>onclick ="demo()" 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
 
@@ -114,53 +122,63 @@ call() 和 apply()。</p>
 <p>接著我們分別透過 call() 和 apply() 來驗證一下</p>
 
 <ul>
-<li><p>call()</p>
-
-<p>  ```javascript</p>
-
-<pre><code>  function myFunc() {
-      window.alert(this.toString());
-  }
-
-  myFunc();
-
-  var hello = 'hello world';
-  myFunc.call(hello);
-</code></pre>
-
-<p>  ```</p>
-
-<p>  myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world</p></li>
-<li><p>apply()</p>
-
-<p>  以下面這段程式碼為例：</p>
-
-<pre><code>  ```javascript
-  var foo = function(x) {
-      alert(x);
-      alert(this);
-  }
-  foo('abc');
-  ```
-</code></pre>
-
-<p>  你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
-
-<pre><code>  ```javascript
-
-  var foo = function() {
-      alert(arguments[0]);
-      alert(this.name);
-  }
-  var bar = { name: 'bar' };
-  foo.apply(bar, ['abc','def']);
-</code></pre>
-
-<p>```</p>
-
-<p>  在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p></li>
+<li>call()</li>
 </ul>
 
+
+<p>```javascript
+function myFunc() {</p>
+
+<pre><code>window.alert(this.toString());
+</code></pre>
+
+<p>}</p>
+
+<p>myFunc();</p>
+
+<p>var hello = 'hello world';
+myFunc.call(hello);
+```</p>
+
+<pre><code>myFunc();未指定的情狀下，this 輸出的是 window， myFunc.call(hello);則輸出 hello world
+</code></pre>
+
+<ul>
+<li><p>apply()</p>
+
+<p>  以下面這段程式碼為例：</p></li>
+</ul>
+
+
+<p>```javascript
+var foo = function(x) {</p>
+
+<pre><code>alert(x);
+alert(this);
+</code></pre>
+
+<p>}
+foo('abc');
+```</p>
+
+<pre><code>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？
+</code></pre>
+
+<p>```javascript</p>
+
+<p>var foo = function() {</p>
+
+<pre><code>alert(arguments[0]);
+alert(this.name);
+</code></pre>
+
+<p>}
+var bar = { name: 'bar' };
+foo.apply(bar, ['abc','def']);
+```</p>
+
+<pre><code>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。
+</code></pre>
 
 <p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
 
