@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T13:55:31+08:00</updated>
+  <updated>2013-02-01T13:55:56+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -195,7 +195,7 @@
 <ol>
 <li><p>了解變數 scope 以及初始化</p>
 
-<p> 可參考我的另外一篇文章：[javascript: about scope][1]</p></li>
+<p> 可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p></li>
 <li><p>避免寫與 HTML 混在一起(inline)的 JavaScript</p>
 
 <ul>
@@ -239,7 +239,7 @@
 
 <p> 盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
 
-<p> 如同一開始提到的 [javascript: about scope][1] 文章中有介紹到的範例。</p></li>
+<p> 如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p></li>
 <li><p>等值檢查與真值</p>
 
 <p> JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
@@ -288,9 +288,7 @@
 
 <p> 關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
 
-<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote>
-
-<p> [1]: http://smlsun.com/blog/2013/02/01/javascript-about-scope/</p></li>
+<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote></li>
 </ol>
 
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/01/javascript-performance/"></a></p>]]></content>
