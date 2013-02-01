@@ -310,6 +310,414 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>參考來源</h4>
+
+<ul>
+<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
+<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
+</ul>
+
+
+<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
+
+<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
+
+<h2>函式是如何被初始化</h2>
+
+<ol>
+<li>先宣告函式參數，並設定參數的值</li>
+<li>所有函式內部的函式被宣告</li>
+<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
+<li>賦予變數值</li>
+</ol>
+
+
+<p>接著來看 scope</p>
+
+<h2>了解變數 scope 以及初始化</h2>
+
+<ol>
+<li>唯一的變數 scope 就是你所在的函式。</li>
+<li>還有全域的 scope，但並沒有區塊的 scope。</li>
+<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
+<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
+<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
+</ol>
+
+
+<h2>scope 的運作原理</h2>
+
+<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
+
+<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
+
+<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
+
+<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
+
+<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
+
+<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
+
+<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
+
+<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
+
+<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
+
+<h2>scope management</h2>
+
+<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
+
+<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
+
+<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
+
+<h2>效能改善相關</h2>
+
+<ol>
+<li>對那些常常會存取的變數，盡量把它放在 local</li>
+<li>避免使用 with</li>
+<li>小心使用 try / catch</li>
+<li>沒有必要的話不要用 closure</li>
+<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
+</ol>
+
+
+<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>javascript2-html)</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T12:07:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-about-scope/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-about-scope/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>介紹幾篇關於效能的文章：</p>
+
+<ul>
+<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
+<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
+</ul>
+
+
+<p>節錄幾個重要的觀念：</p>
+
+<ol>
+<li><p>了解變數 scope 以及初始化</p>
+
+<p> 可參考我的另外一篇文章：<a href="">javascript: about scope</a></p></li>
+<li><p>避免寫與 HTML 混在一起(inline)的 JavaScript</p>
+
+<ul>
+<li><p>錯誤示範：</p>
+
+<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
+</code></pre>
+
+<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
+<li><p>正確：</p>
+
+<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
+
+  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
+  initializePage();
+      // pretend that these functions are in /s/init.js
+      function initializePage() {
+          document.getElementById("my_btn")
+              .addEventListener("click", doThis);
+      }
+      function doThis(e) {
+          // do cool stuff here
+      }
+  // ]]&gt;&lt;/script&gt;
+</code></pre></li>
+</ul>
+
+
+<p> 另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p></li>
+<li><p>找到對的 Event 去做 binding</p>
+
+<p> 比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p></li>
+<li><p>使用快速的 selectors</p>
+
+<p> 如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
+
+<p> 如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p></li>
+<li><p>非必要的時候不要去動 document</p>
+
+<p> 這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
+
+<p> 盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
+
+<p> 如同一開始提到的 <a href="">javascript: about scope</a> 文章中有介紹到的範例。</p></li>
+<li><p>等值檢查與真值</p>
+
+<p> JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
+
+<ul>
+<li>“5″ == 5 but “5″ !== 5</li>
+<li>0 == false but 0 !== false</li>
+<li>null == undefined but null !== undefined</li>
+</ul>
+
+
+<p> 換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p></li>
+<li><p>資料存取方式</p>
+
+<p> 有四種存取資料的方式分別是：</p>
+
+<ul>
+<li>數值或字串  (literal value)</li>
+<li>變數</li>
+<li>物件屬性</li>
+<li>陣列</li>
+</ul>
+
+
+<p> 在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
+
+<p> 物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
+
+<p> 在資料存取的建議是：</p>
+
+<ul>
+<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
+<li>盡量減低物件或是陣列存取的深度。</li>
+</ul>
+</li>
+<li><p>迴圈</p>
+
+<p> 不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p></li>
+<li><p>DOM</p>
+
+<p> 在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
+
+<p> 透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
+
+<p> 關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
+
+<p> 關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
+
+<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote></li>
+</ol>
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>
 
 </h1>
@@ -1869,175 +2277,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">Ubuntu 12.10 Install Gnome(no Effects) and Button Layout Change</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>對於常常使用 windows 的 user 剛換到使用 ubuntu 時，一定很不習慣視窗按鈕放大縮小的位置，特別剛要開始熟悉 ubuntu，會先從 VM 安裝 ubuntu 來體驗一下，不過，很不幸的，在目前最新的 ubuntu 12.10 不支援 2D unity，也無從安裝，所以在 vm 下使用 ubuntu 因為效能的關係，使用者體驗不是很好，如果要能夠使用 2D 的環境，目前只剩下 gnome (no effects) 可以選擇，至於安裝方式如下：</p>
-
-<pre><code>sudo apt-get install gnome-session-fallback
-</code></pre>
-
-<p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
-
-<pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-</code></pre>
-
-<p>不過就是因為尚未所有的第三方軟體都有將參數讀取改至新的設定方式，故保險起見，舊有的設定方式也請服用：</p>
-
-<pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
-</code></pre>
-
-<p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-14T11:32:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/14/ubuntu1210-button-layout-change/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/14/ubuntu1210-button-layout-change/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/13/google-spreadsheets-connect/">Google Spreadsheets Connect</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-13T16:34:00+08:00" pubdate data-updated="true">Jan 13<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/13/google-spreadsheets-connect/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/13/google-spreadsheets-connect/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2113,6 +2352,14 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/01/javascript-performance/">javascript: performance</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/01/31/javascript-what-is-this/">javascript: what is this?</a>
       </li>
     
@@ -2122,14 +2369,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/01/24/qemu/">Lightweight and portable virtual machine: qemu</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/22/ubuntu-mac-keyboard-config/">HOWTO: Apple Keyboard mapping for Ubuntu</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/17/java-pointer/">java OCP 題目解析：關於 java 指標的運作觀念</a>
       </li>
     
   </ul>
