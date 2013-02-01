@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T21:06:34+08:00</updated>
+  <updated>2013-02-01T21:21:45+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[javascript: setTimeout]]></title>
+<link href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/"/>
+<updated>2013-02-01T21:09:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/01/javascript-settimeout</id>
+
+      <content type="html"><![CDATA[<p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
+
+<p>  for (var i = 0; i &lt; 4; i++)
+  {</p>
+
+<pre><code>  console.log("A="+i);
+  function A(){
+      console.log("B="+i);
+  }
+  window.setTimeout(A, 0);
+</code></pre>
+
+<p>  }</p>
+
+<p>一般常理判斷結果應該是：</p>
+
+<p>  A=0
+  B=0
+  A=1
+  B=1
+  A=2
+  B=2
+  A=3
+  B=3
+  A=4
+  B=4</p>
+
+<p>實際結果如下：</p>
+
+<p>  A=0
+  A=1
+  A=2
+  A=3
+  B=4
+  B=4
+  B=4
+  B=4</p>
+
+<p>有沒有覺得很奇怪?</p>
+
+<p>這是因為 javascript 屬於單執行序，看起來 <code>window.setTimeout(A, 0);</code> 似乎是馬上執行，但是實際上， for 迴圈裡的 setTimeout 會先放在代執行的堆疊裡，直到 for 迴圈結束，但如此一來到結束時，i 即為 4，所以結果就是堆疊裡的每個待執行任務中的 i 都為 4。</p>
+
+<p>所以比較好的寫法應該是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -674,9 +756,6 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -685,15 +764,12 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">TT</span><span class="p">();</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 會無作用</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; ok</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -740,13 +816,13 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT(&#8220;the message&#8221;); 變成 d 之後 this 變成了 window，但是在 new TT(&#8220;the message&#8221;); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
 
 <p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
 
 <h2>call() 和 apply()</h2>
 
-<p>call() 和 apply() 的差別主要在於 call() 只接受一個參數，即 call(thisArg) ；而 apply() 接受兩個參數，即 apply(thisArg, argArray) 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 call() 和 apply() 可以改變 this 名稱所指涉的對象。</p>
+<p><code>call()</code> 和 <code>apply()</code> 的差別主要在於 <code>call()</code> 只接受一個參數，即 <code>call(thisArg);</code>而 apply() 接受兩個參數，即 <code>apply(thisArg, argArray)</code> 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 <code>call()</code> 和 <code>apply()</code> 可以改變 this 名稱所指涉的對象。</p>
 
 <p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
 
@@ -2216,39 +2292,6 @@ F. An exception is thrown at runtime.
 
 <blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/">《中英對照讀新聞 總覽</a></p></blockquote>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[how to use git]]></title>
-<link href="http://smlsun.com/blog/2012/12/25/how-to-use-git/"/>
-<updated>2012-12-25T11:23:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/25/how-to-use-git</id>
-
-      <content type="html"><![CDATA[<p>這篇文章將記錄關於git 使用相關文章，持續更新：</p>
-
-<ul>
-<li><a href="http://gogojimmy.net/2012/02/29/git-scenario/">Git 情境劇</a></li>
-</ul>
-
-
-<h2>submodule</h2>
-
-<p>新增 submodule</p>
-
-<pre><code>git submodule add git://github.com/dchelimsky/rspec.git vendor\plugins\rspec
-</code></pre>
-
-<p>初始 submodule</p>
-
-<pre><code>git submodule init
-git submodule update
-</code></pre>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/how-to-use-git/"></a></p>]]></content>
     </entry>
   
 </feed>

@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>關於陳為廷事件 - 蹤影</title>
+  <title>javascript: setTimeout - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,9 @@
   
   
   
-  <meta name="description" content="陳為廷為「發言態度」道歉　盼勿模糊焦點">
+  <meta name="description" content="說明 javascript 中 setTimeout 的特性，以及正確的使用方式">
   
-  <meta name="keywords" content="陳為廷, 教長,態度,模糊焦點">
+  <meta name="keywords" content="setTimeout, javascript">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/08/times-chan/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">
 
 
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-關於陳為廷事件
+Javascript: setTimeout
 
 </h1>
 
@@ -321,24 +321,74 @@
 
 
   <div class="post-description">
-    <p>最近看了清大生的新聞讓我有感而發，不論對做，但我覺得他很有勇氣，要對一個人沒禮貌，有兩種情形，一個是忍無可忍，一個是講話沒水準，我想陳同學是忍無可忍的狀況，我想現在這環境，應該也有很多忍無可忍的人，但是誰有勇氣站出來說話，試著套論改善的方式，而是得過且過，在媒體的壓力下，做這麼激烈的動作，設身處地的想一下，那需要多大的勇氣，需要怎樣的 才可以讓他做出這樣的舉動。</p>
+    <p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
 
-<p>我想我也是那個不出聲音的人，陳同學的勇氣是需要學習的，以前我沒有做到，但我現再要練習這麼做，表達我的意見，我的感覺，抒發也好，所以我想寫這篇文章。</p>
+<p>  for (var i = 0; i &lt; 4; i++)
+  {</p>
 
-<p>如果你也是身在這個地方的人，請停止唱衰，除非你有勇氣像陳同學一樣，不然不要在那邊說風涼話。</p>
+<pre><code>  console.log("A="+i);
+  function A(){
+      console.log("B="+i);
+  }
+  window.setTimeout(A, 0);
+</code></pre>
 
-<p>另外之前有看到一篇文章，有一句話我覺得很棒！與大家分享～</p>
+<p>  }</p>
 
-<blockquote><p>「如果你不夠謹慎，報紙會讓你痛恨那些正在被壓迫的人們，同時愛戴那些正在施暴的壓迫者。」
-～Malcolm X</p></blockquote>
+<p>一般常理判斷結果應該是：</p>
 
-<p>提醒我們，做一個智者，不要被謠言左右，眼見為憑，小心求證！做一個公正的人，而不是有顏色的人。</p>
+<p>  A=0
+  B=0
+  A=1
+  B=1
+  A=2
+  B=2
+  A=3
+  B=3
+  A=4
+  B=4</p>
 
-<p>文後附上<strong>完整的影片</strong>，至於對錯，請自行評斷～</p>
+<p>實際結果如下：</p>
 
-<p><a href="http://www.youtube.com/watch?v=tHA7QEgnTbY">陳為廷轟教長！　15分鐘完整交鋒過程</a></p>
+<p>  A=0
+  A=1
+  A=2
+  A=3
+  B=4
+  B=4
+  B=4
+  B=4</p>
 
-<p><a href="http://www.nexttv.com.tw/news/realtime/latest/10523520">陳為廷為「發言態度」道歉　盼勿模糊焦點</a></p>
+<p>有沒有覺得很奇怪?</p>
+
+<p>這是因為 javascript 屬於單執行序，看起來 <code>window.setTimeout(A, 0);</code> 似乎是馬上執行，但是實際上， for 迴圈裡的 setTimeout 會先放在代執行的堆疊裡，直到 for 迴圈結束，但如此一來到結束時，i 即為 4，所以結果就是堆疊裡的每個待執行任務中的 i 都為 4。</p>
+
+<p>所以比較好的寫法應該是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
 
   </div>
 
@@ -372,12 +422,12 @@
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-08T23:35:00+08:00" pubdate data-updated="true">Dec 8<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T21:09:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/時事/'>時事</a>
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
 </span></span>
 
@@ -392,7 +442,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/08/times-chan/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/08/times-chan/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/01/javascript-settimeout/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/01/javascript-settimeout/" target="_blank" >Tweet</a>
     
   
   
@@ -413,10 +463,8 @@
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/07/ireport-use-qrcode/" title="Previous Post: ireport use qrcode"><li>&laquo; ireport use qrcode</li></a>
+            <a class="left" href="/blog/2013/02/01/javascript-closure/" title="Previous Post: javascript: closure"><li>&laquo; javascript: closure</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" title="Next Post: Otcopress + warp bootstrap + deck.js"><li>Otcopress + warp bootstrap + deck.js &raquo;</li></a>
           
         </ul>
 
@@ -560,7 +608,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/08/times-chan/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/08/times-chan/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/01/javascript-settimeout/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/01/javascript-settimeout/" target="_blank" >Tweet</a>
     
   
   
@@ -712,8 +760,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/08/times-chan/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/08/times-chan/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/01/javascript-settimeout/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/01/javascript-settimeout/';
         var disqus_script = 'embed.js';
       
     (function () {

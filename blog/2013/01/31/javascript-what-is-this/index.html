@@ -443,9 +443,6 @@ Javascript: What Is This?
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
 </span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
@@ -454,15 +451,12 @@ Javascript: What Is This?
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">TT</span><span class="p">();</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 會無作用</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; ok</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
-</span><span class='line'>
 </span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -509,13 +503,13 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT(&#8220;the message&#8221;); 變成 d 之後 this 變成了 window，但是在 new TT(&#8220;the message&#8221;); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
 
 <p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
 
 <h2>call() 和 apply()</h2>
 
-<p>call() 和 apply() 的差別主要在於 call() 只接受一個參數，即 call(thisArg) ；而 apply() 接受兩個參數，即 apply(thisArg, argArray) 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 call() 和 apply() 可以改變 this 名稱所指涉的對象。</p>
+<p><code>call()</code> 和 <code>apply()</code> 的差別主要在於 <code>call()</code> 只接受一個參數，即 <code>call(thisArg);</code>而 apply() 接受兩個參數，即 <code>apply(thisArg, argArray)</code> 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 <code>call()</code> 和 <code>apply()</code> 可以改變 this 名稱所指涉的對象。</p>
 
 <p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
 
@@ -779,6 +773,10 @@ Javascript: What Is This?
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/01/javascript-settimeout/">javascript: setTimeout</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/01/javascript-closure/">javascript: closure</a>
       </li>
     
@@ -792,10 +790,6 @@ Javascript: What Is This?
     
       <li>
         <a href="/blog/2013/01/31/javascript-what-is-this/">javascript: what is this?</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/25/customize-live-cd/">tips: customize live cd</a>
       </li>
     
   </ul>
