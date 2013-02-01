@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T21:05:09+08:00</updated>
+  <updated>2013-02-01T21:06:34+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -545,6 +545,8 @@ function onclick() {</p>
 
 <h2>closure 中的 this 又又是 window 的情況</h2>
 
+<p>```javascript</p>
+
 <pre><code>function TT() {
     this.lm = "the message";
     this.startT = function() {
@@ -564,6 +566,8 @@ d.startT();
 
 // d 在 window 底下，this 是 window。why??
 </code></pre>
+
+<p>```</p>
 
 <p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT("the message") 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
 
@@ -586,6 +590,8 @@ d.startT();
 
 <h2>closure 中的 this 變成不是 window 的情況</h2>
 
+<p>```javascript</p>
+
 <pre><code>function TT() {
     this.lm = "the message";
     var that = this; // 重點！
@@ -596,6 +602,8 @@ d.startT();
 var d = new TT("the message");
 d.startT();
 </code></pre>
+
+<p>```</p>
 
 <p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT("the message"); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT("the message"); 變成 d 之後 this 變成了 window，但是在 new TT("the message"); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
 

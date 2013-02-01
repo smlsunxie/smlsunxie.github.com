@@ -1143,25 +1143,44 @@
 
 <h2>closure 中的 this 又又是 window 的情況</h2>
 
-<pre><code>function TT() {
-    this.lm = "the message";
-    this.startT = function() {
-        setTimeout(function(){alert(this.lm);},500);
-    }
-}
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">TT</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 會無作用</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; ok</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
+</span></code></pre></td></tr></table></div></figure>
 
-TT(); 
-
-// this 則為 window 所以 this.lm = "the message"; 會無作用
-
-var d = new TT("the message"); 
-
-// this 是 Object 所以 this.lm = "the message"; ok
-
-d.startT();
-
-// d 在 window 底下，this 是 window。why??
-</code></pre>
 
 <p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT(&#8220;the message&#8221;) 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
 
@@ -1184,16 +1203,26 @@ d.startT();
 
 <h2>closure 中的 this 變成不是 window 的情況</h2>
 
-<pre><code>function TT() {
-    this.lm = "the message";
-    var that = this; // 重點！
-    this.startT = function() {
-        setTimeout(function(){alert(that.lm);},500);
-    }
-}
-var d = new TT("the message");
-d.startT();
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// 重點！</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT(&#8220;the message&#8221;); 變成 d 之後 this 變成了 window，但是在 new TT(&#8220;the message&#8221;); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
 
