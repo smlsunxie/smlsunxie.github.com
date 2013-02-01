@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T13:55:56+08:00</updated>
+  <updated>2013-02-01T21:05:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[javascript: closure]]></title>
+    <link href="http://smlsun.com/blog/2013/02/01/javascript-closure/"/>
+    <updated>2013-02-01T14:46:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/01/javascript-closure</id>
+    <content type="html"><![CDATA[<h4>資料來源</h4>
+
+<ul>
+<li><a href="http://caterpillar.onlyfun.net/Gossip/JavaScript/Closure.html">Gossip@caterpillar</a></li>
+<li><a href="http://hi.baidu.com/jz1108/item/e549ca105c4c6bf89c778ab6">一句話說 JavaScript 中的 Closure</a></li>
+<li><a href="http://blog.ithome.com.tw/index.php?op=ViewArticle&amp;articleId=19392&amp;blogId=257">搞清楚lexical scope與closure</a></li>
+</ul>
+
+
+<h2>什麼是 closure</h2>
+
+<p>JavaScript 中的 closure 是初學者比較難理解的觀念，下面是幾個來源關於 closure 的解釋：</p>
+
+<ul>
+<li>A <code>closure</code> is created when a function <code>keeps a link to its parent's scope</code> even after the parent has returned.
+
+<blockquote><p>Object-Oriented JavaScript</p></blockquote></li>
+<li>A closure is a protected variable space, created by using nested functions.
+
+<blockquote><p>Pro JavaScript Design Patterns</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>Closures are means through which inner functions can refer to the variables present in their outer enclosing function after their parent functions have already terminated.
+
+<blockquote><p>Pro JavaScript Techniques</p></blockquote></li>
+<li>A closure is a special kind of object that combines two things: a function, and the environment in which that function was created.
+
+<blockquote><p>MDC</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>A "closure" is an expression (typically a function) that can have free variables together with an environment that binds those variables (that "closes" the expression).
+
+<blockquote><p>jibbering.com</p></blockquote></li>
+</ul>
+
+
+<p>本來想將上面的解釋翻譯成中文，發現中文對特定名詞無法很精準的表達，只好讓大家練練英文，有時間在慢慢品嚐，在這直接舉一個實際的例子來看會更容易理解</p>
+
+<p>``` javascript
+  function doSome() {</p>
+
+<pre><code>var x = 10;
+function f(y) {
+  return x + y;
+}
+return f;
+</code></pre>
+
+<p>  }</p>
+
+<p>  var foo = doSome();</p>
+
+<p>  foo(20); //輸出結果為 30
+  foo(30); //輸出結果為 40
+```</p>
+
+<p>上面 doSome 的例子中，f 建立了一個 closure，如果你單看：</p>
+
+<p>``` javascript
+  function f(y) {</p>
+
+<pre><code>  return x + y;
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>看來起 x 似乎沒有定義。實際上，x 是從外部函式捕捉而來。closure 是個捕捉了外部函式變數（或使之繼續存活）的函式。在上例中，函式 f 建立了 closure，因為它將變數x關入（close）自己的範圍。如果形式 closure 的函式物件持續存活，被關閉的變數 x 也會繼續存活。就像是延續了變數x的生命週期。</p>
+
+<p>由於 doSome 傳回了函式物件並指定給 foo，就 doSome 而言已經執行完畢。單看 x 的話，理應 x 已結束其生命週期，但由於 doSome 中建立了closure並傳回，x 被關閉在 closure 中，所以 x 的生命週期就與 closure 的生命週期相同了。如上例所示， 呼叫 foo(20) 結果就是 10+20（因為被閉關的 x 值是 10 ），呼叫 foo(30) 結果就是 10+30。</p>
+
+<p>更精簡的說明 Closure 就是擁有閒置變數（Free variable）的運算式，上面提到的例子中 x 就是所謂的 Free variable，什麼是 Free variable ？</p>
+
+<p>參考這篇：<a href="http://stackoverflow.com/questions/12934929/what-are-free-variables"></a></p>
+
+<blockquote><p>Free variables are simply the variables that are neither locally declared nor passed as parameter.</p></blockquote>
+
+<p>聽起來很玄，翻譯起來就是 Free variable 代表不是 function 的參數，x 之所以稱為 Free variable 也就是因為在 f 這個 function 外面被宣告，也沒有透過 function 的參數傳入，但是在 f 裡面卻可以存取。</p>
+
+<p>另外 Closure 有 lexical scope 的特性，所謂的 lexical scope 就是讓我們可以用區域變數的方式，把變數當作一個 function 物件的 private member，但是又可以用一個 function 當作 getter/setter 來存取他，如同：</p>
+
+<p>``` javascript
+  function Bean() {</p>
+
+<pre><code>var X;
+var Y;
+this.setX = function(x) {
+  X=x;
+}
+this.getX = function() {
+  return X;
+}
+this.setY = function(y) {
+  Y = y;
+}
+this.getY = function() {
+  return Y;
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  var a = new Bean();
+  a.setX(3);
+  a.setY(3);
+  alert(a.getX()+""+a.getY());
+```</p>
+
+<h2>closure 關閉的對象</h2>
+
+<p>closure 關閉(包起來)的是變數，而不是變數所參考的值。下面這個範例可以證明：</p>
+
+<p>``` javascript
+  function doOther() {</p>
+
+<pre><code>var x = 10;
+function f(y) {
+  return x + y;
+}
+x = 100;
+return f;
+</code></pre>
+
+<p>  }</p>
+
+<p>  var foo = doOther();
+  foo(20); //結果為 120
+  foo(30); //結果為 130
+```</p>
+
+<p>直覺來看應該是 10+20，以及 10+30，實際上卻不是，因為在 建立closure時綁定的是 x 變數，而不是數值 10（x變數的值），也因此 doOther 之後改變了 x 變數的值，因此此時 x 的值已變為 100，而後執行 foo 就是用 x=100 在做運算，範例顯示的結果分別是 100+20 與 100+30。</p>
+
+<p>並且由於 closure 綁定的是變數，所以你也可以在 closure 中改變變數的值：</p>
+
+<p>``` javascript
+  var sum = 0;
+  [1, 2, 3, 4, 5].forEach(function(element) {</p>
+
+<pre><code>   sum += element;
+</code></pre>
+
+<p>   });</p>
+
+<p>  sum; //變數內容為 15
+```</p>
+
+<p>如果closure關閉了某個變數，使得該變數的生命週期得以延長，那麼這個會怎麼樣？</p>
+
+<p>``` javascript
+  function doOther() {</p>
+
+<pre><code>var x = 10;
+function f() {
+  x--;
+  return x;
+}
+return f;
+</code></pre>
+
+<p>  }</p>
+
+<p>  var f1 = doOther();
+  var f2 = doOther();</p>
+
+<p>  f1();// 結果是 9
+  f2();// 結果還是 9
+```</p>
+
+<p>在這個範例中，doOther被呼叫了兩次（或更多次），doOther中的closure關閉了x，並對其執行了遞減。呼叫了f1時，x會被遞減1，所以顯示9，這沒有問題，那麼呼叫f2()後，結果是9？</p>
+
+<p>像這類的例子，其實結果是一致的，關閉的是建立closure時外部範圍下的變數。以上例來說，第一次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。第二次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。所以f1與f2關閉的根本是不同作用範圍的 x 變數（也就是該次呼叫 doOther 時所建立的 x 變數）。所以上例中，呼叫f2之後顯示的值仍是9。</p>
+
+<h2>Closure 使用上需注意</h2>
+
+<ul>
+<li>Closure 有可能會造成記憶體洩漏，主要是因為被參考的變數無法被垃圾收集機制處理，造成佔用的資源無法釋放，所以使用上必須考慮清楚，不要造成意外的記憶體洩漏。（在上面的例子中，如果 f1 一直未執行，使用到的記憶體 x 就不會被釋放）</li>
+<li>跟透過函數的參數把變數傳給函數比較起來，Javascript Engine 會比較難對 Closure 進行最佳化。如果有效能上的考量，這一點也需要注意。</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[javascript: about scope]]></title>
@@ -272,6 +461,8 @@
 
 <p>這樣講可能有點抽象，大家來看個實際的例子：</p>
 
+<h2>this 是 window 的情況</h2>
+
 <p>```javascript</p>
 
 <pre><code>&lt;input type ="button"  id ="aButton"  value ="demo" onclick="" /&gt; 
@@ -288,10 +479,7 @@
 
 <p>更進一步的來看簡單的例子：</p>
 
-<ul>
-<li>button.onclick =  demo ：</li>
-</ul>
-
+<h2>this 不是 window 的情況</h2>
 
 <p>```javascript
 <input type="button" id="aButton" value="demo" /></p>
@@ -308,7 +496,9 @@
 
 <p>```</p>
 
-<p>得到的輸出是：</p>
+<p>在此例中 this 代表的是 button，因為是透過函數指定的方式 button.onclick =  demo 來呼叫 demo()，他的上層是 button，所以也就有 value 的屬性</p>
+
+<p>對於 button.onclick 輸出得到的是：</p>
 
 <p>```javascript
   function demo() {</p>
@@ -319,10 +509,9 @@
 <p>  }
 ```</p>
 
-<ul>
-<li>onclick ="demo()"</li>
-</ul>
+<p>也就代表 demo() 屬於 button 的</p>
 
+<h2>this 又是 window 的情況</h2>
 
 <p>```javascript
 <input type="button" id="aButton" value="demo" onclick="demo()" /></p>
@@ -352,8 +541,65 @@ function onclick() {</p>
 
 <p>onclick ="demo()" 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
 
-<p>至於一般的 function，「沒指定的話」都是 window，注意我這裡強調是「沒指定」，所以這也就代表了「可以指定」，就可以透過
-call() 和 apply()。</p>
+<p>下面的兩個例子，請務必先有 closure 的概念，不然一定會一頭霧水，腦筋打結，邏輯說不通，建議可以 google 了解一下，或者看我寫的另外一篇 <a href="">javascript: clossure</a></p>
+
+<h2>closure 中的 this 又又是 window 的情況</h2>
+
+<pre><code>function TT() {
+    this.lm = "the message";
+    this.startT = function() {
+        setTimeout(function(){alert(this.lm);},500);
+    }
+}
+
+TT(); 
+
+// this 則為 window 所以 this.lm = "the message"; 會無作用
+
+var d = new TT("the message"); 
+
+// this 是 Object 所以 this.lm = "the message"; ok
+
+d.startT();
+
+// d 在 window 底下，this 是 window。why??
+</code></pre>
+
+<p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT("the message") 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
+
+<p>但是很不幸的 d.startT(); 執行時在 d.startT();裡面的 this.lm 會是 undefind…</p>
+
+<p>Why!!!…… 我死的不明不白阿！</p>
+
+<p>因為：</p>
+
+<ol>
+<li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
+<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為 d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
+<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() 底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
+</ol>
+
+
+<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
+
+<p>既然如此我們要怎麼解決此問題？？？讓…</p>
+
+<h2>closure 中的 this 變成不是 window 的情況</h2>
+
+<pre><code>function TT() {
+    this.lm = "the message";
+    var that = this; // 重點！
+    this.startT = function() {
+        setTimeout(function(){alert(that.lm);},500);
+    }
+}
+var d = new TT("the message");
+d.startT();
+</code></pre>
+
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT("the message"); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT("the message"); 變成 d 之後 this 變成了 window，但是在 new TT("the message"); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
+
+<p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過...</p>
 
 <h2>call() 和 apply()</h2>
 
@@ -440,7 +686,7 @@ foo.apply(bar, ['abc','def']);
 </ul>
 
 
-<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，希望可以幫助對於 this 不是很清楚的人。</p>
+<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
 ]]></content>
   </entry>
   

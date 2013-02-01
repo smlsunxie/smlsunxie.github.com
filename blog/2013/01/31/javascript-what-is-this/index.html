@@ -329,6 +329,8 @@ Javascript: What Is This?
 
 <p>這樣講可能有點抽象，大家來看個實際的例子：</p>
 
+<h2>this 是 window 的情況</h2>
+
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -348,10 +350,7 @@ Javascript: What Is This?
 
 <p>更進一步的來看簡單的例子：</p>
 
-<ul>
-<li>button.onclick =  demo ：</li>
-</ul>
-
+<h2>this 不是 window 的情況</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -374,7 +373,9 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>得到的輸出是：</p>
+<p>在此例中 this 代表的是 button，因為是透過函數指定的方式 button.onclick =  demo 來呼叫 demo()，他的上層是 button，所以也就有 value 的屬性</p>
+
+<p>對於 button.onclick 輸出得到的是：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -385,10 +386,9 @@ Javascript: What Is This?
 </span></code></pre></td></tr></table></div></figure>
 
 
-<ul>
-<li>onclick =&#8221;demo()&#8221;</li>
-</ul>
+<p>也就代表 demo() 屬於 button 的</p>
 
+<h2>this 又是 window 的情況</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -424,8 +424,65 @@ Javascript: What Is This?
 
 <p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
 
-<p>至於一般的 function，「沒指定的話」都是 window，注意我這裡強調是「沒指定」，所以這也就代表了「可以指定」，就可以透過
-call() 和 apply()。</p>
+<p>下面的兩個例子，請務必先有 closure 的概念，不然一定會一頭霧水，腦筋打結，邏輯說不通，建議可以 google 了解一下，或者看我寫的另外一篇 <a href="">javascript: clossure</a></p>
+
+<h2>closure 中的 this 又又是 window 的情況</h2>
+
+<pre><code>function TT() {
+    this.lm = "the message";
+    this.startT = function() {
+        setTimeout(function(){alert(this.lm);},500);
+    }
+}
+
+TT(); 
+
+// this 則為 window 所以 this.lm = "the message"; 會無作用
+
+var d = new TT("the message"); 
+
+// this 是 Object 所以 this.lm = "the message"; ok
+
+d.startT();
+
+// d 在 window 底下，this 是 window。why??
+</code></pre>
+
+<p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT(&#8220;the message&#8221;) 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
+
+<p>但是很不幸的 d.startT(); 執行時在 d.startT();裡面的 this.lm 會是 undefind…</p>
+
+<p>Why!!!…… 我死的不明不白阿！</p>
+
+<p>因為：</p>
+
+<ol>
+<li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
+<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為 d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
+<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() 底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
+</ol>
+
+
+<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
+
+<p>既然如此我們要怎麼解決此問題？？？讓…</p>
+
+<h2>closure 中的 this 變成不是 window 的情況</h2>
+
+<pre><code>function TT() {
+    this.lm = "the message";
+    var that = this; // 重點！
+    this.startT = function() {
+        setTimeout(function(){alert(that.lm);},500);
+    }
+}
+var d = new TT("the message");
+d.startT();
+</code></pre>
+
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 new TT(&#8220;the message&#8221;); 變成 d 之後 this 變成了 window，但是在 new TT(&#8220;the message&#8221;); 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
+
+<p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
 
 <h2>call() 和 apply()</h2>
 
@@ -521,7 +578,7 @@ call() 和 apply()。</p>
 </ul>
 
 
-<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，希望可以幫助對於 this 不是很清楚的人。</p>
+<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
 
   </div>
 
@@ -693,6 +750,10 @@ call() 和 apply()。</p>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/01/javascript-closure/">javascript: closure</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a>
       </li>
     
@@ -706,10 +767,6 @@ call() 和 apply()。</p>
     
       <li>
         <a href="/blog/2013/01/25/customize-live-cd/">tips: customize live cd</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/01/24/qemu/">Lightweight and portable virtual machine: qemu</a>
       </li>
     
   </ul>
