@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T21:21:45+08:00</updated>
+  <updated>2013-02-01T21:24:03+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -20,7 +20,8 @@
     <id>http://smlsun.com/blog/2013/02/01/javascript-settimeout</id>
     <content type="html"><![CDATA[<p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
 
-<p>  for (var i = 0; i &lt; 4; i++)
+<p>```javascript
+  for (var i = 0; i &lt; 4; i++)
   {</p>
 
 <pre><code>  console.log("A="+i);
@@ -30,31 +31,32 @@
   window.setTimeout(A, 0);
 </code></pre>
 
-<p>  }</p>
+<p>  }
+```</p>
 
 <p>一般常理判斷結果應該是：</p>
 
-<p>  A=0
-  B=0
-  A=1
-  B=1
-  A=2
-  B=2
-  A=3
-  B=3
-  A=4
-  B=4</p>
+<pre><code>A=0
+B=0
+A=1
+B=1
+A=2
+B=2
+A=3
+B=3
+</code></pre>
 
 <p>實際結果如下：</p>
 
-<p>  A=0
-  A=1
-  A=2
-  A=3
-  B=4
-  B=4
-  B=4
-  B=4</p>
+<pre><code>A=0
+A=1
+A=2
+A=3
+B=4
+B=4
+B=4
+B=4 
+</code></pre>
 
 <p>有沒有覺得很奇怪?</p>
 

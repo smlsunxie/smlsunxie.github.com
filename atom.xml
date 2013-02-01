@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T21:21:45+08:00</updated>
+  <updated>2013-02-01T21:24:03+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -25,41 +25,52 @@
 
       <content type="html"><![CDATA[<p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
 
-<p>  for (var i = 0; i &lt; 4; i++)
-  {</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">function</span> <span class="nx">A</span><span class="p">(){</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>  console.log("A="+i);
-  function A(){
-      console.log("B="+i);
-  }
-  window.setTimeout(A, 0);
-</code></pre>
 
-<p>  }</p>
+<p></p>
 
 <p>一般常理判斷結果應該是：</p>
 
-<p>  A=0
-  B=0
-  A=1
-  B=1
-  A=2
-  B=2
-  A=3
-  B=3
-  A=4
-  B=4</p>
+<pre><code>A=0
+B=0
+A=1
+B=1
+A=2
+B=2
+A=3
+B=3
+</code></pre>
 
 <p>實際結果如下：</p>
 
-<p>  A=0
-  A=1
-  A=2
-  A=3
-  B=4
-  B=4
-  B=4
-  B=4</p>
+<pre><code>A=0
+A=1
+A=2
+A=3
+B=4
+B=4
+B=4
+B=4 
+</code></pre>
 
 <p>有沒有覺得很奇怪?</p>
 
