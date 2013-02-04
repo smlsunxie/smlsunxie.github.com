@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-04T11:09:21+08:00</updated>
+  <updated>2013-02-04T23:55:29+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,97 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[javascript: callback]]></title>
+<link href="http://smlsun.com/blog/2013/02/04/javascript-callback/"/>
+<updated>2013-02-04T22:27:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/04/javascript-callback</id>
+
+      <content type="html"><![CDATA[<h4>資料來源</h4>
+
+<p><a href="http://mao.li/javascript/javascript-callback-function/">JavaScript callback function 理解</a></p>
+
+<h2>定義</h2>
+
+<ul>
+<li><p>維基的Callback_(computer_programming):</p>
+
+<blockquote><p>In computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.</p></blockquote></li>
+<li><p>jQuery文檔How jQuery Works#Callback_and_Functio…：</p>
+
+<blockquote><p>A callback is a function that is passed as an argument to another function and is <strong>executed after its parent function has completed</strong>. The special thing about a callback is that functions that appear after the &#8220;parent&#8221; can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.</p></blockquote></li>
+<li><p>百科： callback 函數</p>
+
+<blockquote><p>callback 函數就是一個通過函數指針調用的函數。如果你把函數的指針（地址）作為參數傳遞給另一個函數，當這個指針被用為調用它所指向的函數時，我們就說這是 callback 函數。</p>
+
+<p>callback 函數不是由該函數的實現方直接調用，而是在特定的事件或條件發生時由另外的一方調用的，用於對該事件或條件進行響應。</p></blockquote></li>
+</ul>
+
+
+<p>因此， callback 本質上是一種設計模式，並且jQuery(包括其他框架)的設計原則遵循了這個模式。</p>
+
+<p>在JavaScript中，callback 函數具體的定義為：函數A作為參數(函數引用)傳遞到另一個函數B中，並且這個函數B執行函數A。我們就說函數A叫做 callback 函數。如果沒有名稱(函數表達式)，就叫做匿名 callback 函數。</p>
+
+<p>因此 callback 不一定用於非同步的狀況，一般同步(blocking)的場景下也經常用到 callback ，比如要求執行某些操作後執行 callback 函數。</p>
+
+<h2>範例</h2>
+
+<p>一個同步(blocking)中使用 callback 的例子，目的是在func1代碼執行完成後執行func2。</p>
+
+<pre><code>var func1=function(callback){
+    //do something.
+    (callback &amp;&amp; typeof(callback) === "function") &amp;&amp; callback();
+}
+
+func1(func2);
+
+var func2=function(){
+    alert("func2 run!");
+}
+</code></pre>
+
+<p>非同步 callback 的例子：</p>
+
+<pre><code>$(document).ready(callback);
+
+$.ajax({
+  url: "test.html",
+  context: document.body
+})
+.done(function() { 
+  $(this).addClass("done");
+})
+.fail(function() { alert("error");
+})
+.always(function() { alert("complete"); 
+});
+</code></pre>
+
+<p>上述例子為非同步 ajax 請求，當request 有 response 時,如果先前已定義 callback ,將會觸動相關的函數進行執行。</p>
+
+<h2>callback 什麼時候執行</h2>
+
+<p> callback 函數，一般在同步情境下是最後執行的，而在非同步情境下有可能不執行，因為事件沒有被觸發或者條件不滿足。</p>
+
+<h2>callback 函數的使用場合</h2>
+
+<ul>
+<li>函數需要同步處理時</li>
+<li>setTimeout的延遲時間為0，這經常被用到，settimeout 呼叫的函數其實就是一個callback 的實作，類似範例可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a></li>
+<li>method chain：可參考：<a href="http://ithelp.ithome.com.tw/question/10090856">jQuery method chain review</a></li>
+</ul>
+
+
+<p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
+(callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/04/javascript-callback/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -247,6 +338,10 @@ B=4
 
 
 <p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
+
+<p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
+
+<p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/"></a></p>]]></content>
     </entry>
   
@@ -2404,35 +2499,6 @@ F. An exception is thrown at runtime.
 
 <p>上述就是整個github所提供免費的線上issues track的簡介，是不是簡單又好用，如果你還沒有使用過 bug tracking System，那趕快開始吧，如果你是產品擁有者，在bug滿天飛的情形，更應該好好掌握每隻bug的情形，除了當下問題之外，在久遠的未來發生了問題也可以翻閱過去的紀錄找到一些端倪，總之別怕麻煩，不去記錄才是真正麻煩，因為你將完全沒有根據可以進行問題追蹤…</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/02/github-issues/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[懶漢的終極型態]]></title>
-<link href="http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob/"/>
-<updated>2012-12-25T13:19:00+08:00</updated>
-<id>http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob</id>
-
-      <content type="html"><![CDATA[<p>今日看了一篇中英文對照新聞，有篇有趣的報導，叫做：</p>
-
-<blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/english.php?engno=640137&amp;day=2012-12-22">日本女性穿成人紙尿褲成新潮流</a></p></blockquote>
-
-<p>也算是世界奇觀了，一般得觀念會穿紙尿褲都是因沒辦法控制才需要，但在日本得女性，卻是因為懶惰去穿紙尿褲，只為了節省時間與去洗手間得麻煩，實在是太神了！</p>
-
-<p>應該會想說工作就算了，那跟男朋友出去應該不會穿了吧，錯了～即使是跟男朋友出去也會穿，但是要穿裙子才不會被發現，我的天！</p>
-
-<p>不過這也帶動了另一種經濟，在日本尿布應該賣的比別的國家來的好，因為他們的適用年齡比較廣，實在是太特別了～</p>
-
-<p>難怪文章下了一個標題叫做 『懶漢的終極型態』 這世界真是無奇不有，更何況這狀況是出現在日本。</p>
-
-<p>可以常上來看看，順便學習英文！</p>
-
-<blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/">《中英對照讀新聞 總覽</a></p></blockquote>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2012/12/25/the-ultimate-form-of-slob/"></a></p>]]></content>
     </entry>
   
 </feed>

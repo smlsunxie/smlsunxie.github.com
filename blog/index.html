@@ -310,6 +310,159 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/04/javascript-callback/">Javascript: Callback</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>資料來源</h4>
+
+<p><a href="http://mao.li/javascript/javascript-callback-function/">JavaScript callback function 理解</a></p>
+
+<h2>定義</h2>
+
+<ul>
+<li><p>維基的Callback_(computer_programming):</p>
+
+<blockquote><p>In computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.</p></blockquote></li>
+<li><p>jQuery文檔How jQuery Works#Callback_and_Functio…：</p>
+
+<blockquote><p>A callback is a function that is passed as an argument to another function and is <strong>executed after its parent function has completed</strong>. The special thing about a callback is that functions that appear after the &#8220;parent&#8221; can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.</p></blockquote></li>
+<li><p>百科： callback 函數</p>
+
+<blockquote><p>callback 函數就是一個通過函數指針調用的函數。如果你把函數的指針（地址）作為參數傳遞給另一個函數，當這個指針被用為調用它所指向的函數時，我們就說這是 callback 函數。</p>
+
+<p>callback 函數不是由該函數的實現方直接調用，而是在特定的事件或條件發生時由另外的一方調用的，用於對該事件或條件進行響應。</p></blockquote></li>
+</ul>
+
+
+<p>因此， callback 本質上是一種設計模式，並且jQuery(包括其他框架)的設計原則遵循了這個模式。</p>
+
+<p>在JavaScript中，callback 函數具體的定義為：函數A作為參數(函數引用)傳遞到另一個函數B中，並且這個函數B執行函數A。我們就說函數A叫做 callback 函數。如果沒有名稱(函數表達式)，就叫做匿名 callback 函數。</p>
+
+<p>因此 callback 不一定用於非同步的狀況，一般同步(blocking)的場景下也經常用到 callback ，比如要求執行某些操作後執行 callback 函數。</p>
+
+<h2>範例</h2>
+
+<p>一個同步(blocking)中使用 callback 的例子，目的是在func1代碼執行完成後執行func2。</p>
+
+<pre><code>var func1=function(callback){
+    //do something.
+    (callback &amp;&amp; typeof(callback) === "function") &amp;&amp; callback();
+}
+
+func1(func2);
+
+var func2=function(){
+    alert("func2 run!");
+}
+</code></pre>
+
+<p>非同步 callback 的例子：</p>
+
+<pre><code>$(document).ready(callback);
+
+$.ajax({
+  url: "test.html",
+  context: document.body
+})
+.done(function() { 
+  $(this).addClass("done");
+})
+.fail(function() { alert("error");
+})
+.always(function() { alert("complete"); 
+});
+</code></pre>
+
+<p>上述例子為非同步 ajax 請求，當request 有 response 時,如果先前已定義 callback ,將會觸動相關的函數進行執行。</p>
+
+<h2>callback 什麼時候執行</h2>
+
+<p> callback 函數，一般在同步情境下是最後執行的，而在非同步情境下有可能不執行，因為事件沒有被觸發或者條件不滿足。</p>
+
+<h2>callback 函數的使用場合</h2>
+
+<ul>
+<li>函數需要同步處理時</li>
+<li>setTimeout的延遲時間為0，這經常被用到，settimeout 呼叫的函數其實就是一個callback 的實作，類似範例可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a></li>
+<li>method chain：可參考：<a href="http://ithelp.ithome.com.tw/question/10090856">jQuery method chain review</a></li>
+</ul>
+
+
+<p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
+(callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-04T22:27:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/04/javascript-callback/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/04/javascript-callback/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/04/google-spreadsheets-connect/">JavaScript 存取 Google Spreadsheets 試算表</a>
 
 </h1>
@@ -607,6 +760,10 @@ B=4
 
 
 <p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
+
+<p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
+
+<p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
 
   </div>
 
@@ -2286,350 +2443,6 @@ B=4
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/17/java-pointer/">Java OCP 題目解析：關於 Java 指標的運作觀念</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
-
-<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setX</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Gamma</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the output?</p>
-
-<pre><code>A. 300-100-100-100-100
-B. 300-300-100-100-100
-C. 300-300-300-100-100
-D. 300-300-300-300-100
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<pre><code>做這題頭腦不夠清楚可能會被搞混喔
-這題是考JAVA 隱藏的指標觀念，其實規則很容易：
-1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
-2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
-    2.1. 等號處理基本資料型態時是傳值
-    2.2. 等號處理物件時是傳位址
-</code></pre>
-
-<p>依照題目的情況來模擬一下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'><span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-
-    </tr>
-
-  </tbody>
-</table>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
-
-<p>方法第三行回傳了fooBar: foo指標</p>
-
-<p>後來在主方法執行了這一行</p>
-
-<pre><code>foo = fooBar(fooFoo);
-</code></pre>
-
-<p>之後記憶體狀況會變成</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td></td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
-
-<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KungFu</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">400</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">x</span><span class="o">++;</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb2</span> <span class="o">=</span> <span class="n">sb1</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">sb1</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;5&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">sb1</span> <span class="o">==</span> <span class="n">sb2</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the result?</p>
-
-<pre><code>A. true true
-B. false true
-C. true false
-D. false false
-E. Compilation fails.
-F. An exception is thrown at runtime.
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
-
-<p>一般物件的話當然做等於運算就是傳指標了</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-17T11:44:00+08:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/17/java-pointer/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/17/java-pointer/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2705,6 +2518,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/04/google-spreadsheets-connect/">JavaScript 存取 google spreadsheets 試算表</a>
       </li>
     
@@ -2718,10 +2535,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/01/javascript-performance/">javascript: performance</a>
       </li>
     
   </ul>
