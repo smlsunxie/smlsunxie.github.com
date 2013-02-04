@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-01T21:24:03+08:00</updated>
+  <updated>2013-02-04T11:09:21+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,151 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[JavaScript 存取 google spreadsheets 試算表]]></title>
+<link href="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/"/>
+<updated>2013-02-04T16:34:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect</id>
+
+      <content type="html"><![CDATA[<p>google spreadsheets，也就是 google doc 裡面的 excel，對於 excel 的操作相信大家一定不陌生，如果有寫過一些程式，或許有寫過將 excel 當做 database 進行增修改查的動作。</p>
+
+<p>這篇所要介紹的也就是如何存取 google spreadsheets 進行資料的操作，如果你需要一個快速且容易維護的資料庫，那 google spreadsheets 非常適合，將透過 google 所提供的 Visualization API 進行，下面將對幾個重點部分進行介紹</p>
+
+<h2>query Language</h2>
+
+<ul>
+<li><p><a href="https://developers.google.com/chart/interactive/docs/querylanguage?hl=zh-TW#Setting_the_Query_in_the_Data_Source_URL">Query Language Reference</a></p>
+
+<p>  google 官方 query api 裡面有關於查詢語法的說明，基本上就像在下查詢 sql 一樣，如果有操作過 sql 語法，非常好理解。</p></li>
+</ul>
+
+
+<h2>publish spreadsheets</h2>
+
+<ul>
+<li><p><a href="http://blog.ericsk.org/archives/1417">JavaScript 存取 Google 試算表的資料</a></p>
+
+<p>  這篇有介紹存取方式，以及如何將你的 spreadsheets Publish 以便讓 Visualization API 能夠存取</p></li>
+</ul>
+
+
+<h2>新增 spreadsheets Records</h2>
+
+<p>google Visualization API 無法讓你進行 <strong>新增</strong> 所以如果你需要新增資料，建議使用:</p>
+
+<p><a href="http://support.google.com/drive/bin/answer.py?hl=zh-Hant&amp;answer=87809">Google 表單
+</a></p>
+
+<h2>查詢 spreadsheets</h2>
+
+<p>查詢的部份就是重頭戲啦，從範例來看會比較快一點理解：</p>
+
+<p>sample data:</p>
+
+<p><img src="https://lh3.googleusercontent.com/-v-fjMIfNUpU/UQ8hUW60DcI/AAAAAAAALhQ/TjlxGqTLGt0/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-04+%E4%B8%8A%E5%8D%8810.46.55.jpg" alt="image" /></p>
+
+<p>範例程式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// 讀取店家資訊以及地理位置，並且透過 createMarker 將位址加入到 map 裡</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 載入 Visualization API</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span><span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// key 是假的，請使用你的 key</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">URL</span> <span class="o">=</span> <span class="s1">&#39;http://spreadsheets.google.com/tq?key=0AsXj_vRMyOYyk5OXdKRlJXdGZ1FZU3FXRjl6E#gid=0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">google</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">{</span><span class="s1">&#39;packages&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]});</span>
+</span><span class='line'>  <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">visualization</span><span class="p">.</span><span class="nx">Query</span><span class="p">(</span><span class="nx">URL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">queryData</span><span class="p">(</span><span class="nx">queryStr</span><span class="p">,</span><span class="nx">createMarker</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">setQuery</span><span class="p">(</span><span class="s2">&quot;select B,C,D,E,F where H=&#39;Y&#39; &quot;</span><span class="o">+</span><span class="nx">queryStr</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">resp</span><span class="p">.</span><span class="nx">isError</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">dataTable</span> <span class="o">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">getDataTable</span><span class="p">();</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">dataTable</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">markConfig</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">latitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">longitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">address</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">description</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              
+</span><span class='line'>              <span class="nx">createMarker</span><span class="p">(</span><span class="nx">markConfig</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>非常簡單，應該也淺顯易懂，幾個重點：</p>
+
+<ol>
+<li>在 query 部分，沒辦法使用 column Name，只能使用如 samle 圖片中的 A、B、C…</li>
+<li>相同查詢條件下，無法連續查詢，甚至也不會 response records，舉例來說，<code>select B,C,D,E,F where H='Y'</code> 這查詢下第一次 ok，但第二次就會沒有反應，所以在處理上，需檢查查詢條件是否與上次相同，如相同則不需再查，當然也許是可行的，但以我目前測試的結果是這樣</li>
+</ol>
+
+
+<p>如果你要做一個簡單問卷，或是購買清單之類的應用，相信 google spreadsheets 是個不錯的選擇，夠簡單，且輔助 google 表單，可以很快速的完成資料輸入的頁面，查詢上也不複雜，就是幾個實用上要注意的額外處裡一下，希望可以幫有需要的人解省一些時間囉！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -1827,21 +1972,6 @@ F. An exception is thrown at runtime.
 
 <p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/14/ubuntu1210-button-layout-change/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[google spreadsheets connect]]></title>
-<link href="http://smlsun.com/blog/2013/01/13/google-spreadsheets-connect/"/>
-<updated>2013-01-13T16:34:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/13/google-spreadsheets-connect</id>
-
-      <content type="html"><![CDATA[
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/13/google-spreadsheets-connect/"></a></p>]]></content>
     </entry>
   
     <entry>

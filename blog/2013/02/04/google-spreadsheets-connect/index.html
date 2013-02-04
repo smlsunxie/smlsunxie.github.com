@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>bug tracking system 介紹：使用 github 內建的 Issues - 蹤影</title>
+  <title>JavaScript 存取 google spreadsheets 試算表 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,9 @@
   
   
   
-  <meta name="description" content="說明如何利用github 內建的 Issues 進行bug追蹤 ">
+  <meta name="description" content="說明如何透過 google 提供的 api 存取 spreadsheets 試算表，透過 JavaScript 操作">
   
-  <meta name="keywords" content="gitgithubbug tracking systemmantis">
+  <meta name="keywords" content="javascript, google, api, spreadsheets, excel, 試算表">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2013/01/02/github-issues/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/">
 
 
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Bug Tracking System 介紹：使用 Github 內建的 Issues
+JavaScript 存取 Google Spreadsheets 試算表
 
 </h1>
 
@@ -321,162 +321,137 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
 
 
   <div class="post-description">
-    <p>github 本身原生就支援markdown，當然其內建的 issues tracking 本身也可以用markdown進行編寫，我想這問題回報與描述上會更加的方便，使用上會更加的直覺，這邊將大致介紹一下github issues tracking的使用方式。</p>
+    <p>google spreadsheets，也就是 google doc 裡面的 excel，對於 excel 的操作相信大家一定不陌生，如果有寫過一些程式，或許有寫過將 excel 當做 database 進行增修改查的動作。</p>
 
-<p>首先可以進到下列範例網址：</p>
+<p>這篇所要介紹的也就是如何存取 google spreadsheets 進行資料的操作，如果你需要一個快速且容易維護的資料庫，那 google spreadsheets 非常適合，將透過 google 所提供的 Visualization API 進行，下面將對幾個重點部分進行介紹</p>
 
-<p><a href="https://github.com/elimbook/erp/issues">問題追蹤網址</a></p>
-
-<h2>新增/編輯issues</h2>
-
-<p>一開始有說到github是用markdown來進行編輯，如果對於markdown語法有不清楚的可參考下列網址：</p>
-
-<p><a href="http://smlsun.com/blog/2012/12/24/how-to-use-markdown/">快速了解 Markdown</a></p>
-
-<p>也可以在github中的編輯畫面輸入<code>m</code>你將看到下面圖片的markdown的簡單說明：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-cQkMQSAS7hc/UOPzSnAMXoI/AAAAAAAALcQ/FuIGeRI02mY/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.31.36.jpg" alt="img" /></p>
-
-<p>另外如果有圖片的話也可以直接拖拉github將會直接將圖片上傳且自動插入markdown的圖片語法，很方便呢！</p>
-
-<p>若要參照到另一個issue或commit可參考下列語法</p>
-
-<pre><code>* SHA: be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* User@SHA ref: mojombo@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* User/Project@SHA: mojombo/god@be6a8cc1c1ecfe9489fb51e4869af15a13fc2cd2
-* \#Num: #1
-* User/#Num: mojombo#1
-* User/Project#Num: mojombo/god#1
-</code></pre>
-
-<p>結果可參考github的<a href="http://github.github.com/github-flavored-markdown/">GitHub Flavored Markdown</a>，裡面有更多說明。</p>
-
-<p>在issue登打部分建議如下：</p>
+<h2>query Language</h2>
 
 <ul>
-<li>title 需明確說明標示問題發生的作業以及問題點</li>
-<li>內容部分需有詳細的內容，包括操作步驟與結果，最好可以搭配圖片</li>
+<li><p><a href="https://developers.google.com/chart/interactive/docs/querylanguage?hl=zh-TW#Setting_the_Query_in_the_Data_Source_URL">Query Language Reference</a></p>
+
+<p>  google 官方 query api 裡面有關於查詢語法的說明，基本上就像在下查詢 sql 一樣，如果有操作過 sql 語法，非常好理解。</p></li>
 </ul>
 
 
-<p>範例可參考下圖：</p>
+<h2>publish spreadsheets</h2>
 
-<p><img src="https://lh3.googleusercontent.com/-9fuY5CrkDWg/UOPzTRPmdTI/AAAAAAAALcY/s_JDdfJBjwI/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.42.42.jpg" alt="img" /></p>
+<ul>
+<li><p><a href="http://blog.ericsk.org/archives/1417">JavaScript 存取 Google 試算表的資料</a></p>
 
-<p>最後呈現結果如下：</p>
+<p>  這篇有介紹存取方式，以及如何將你的 spreadsheets Publish 以便讓 Visualization API 能夠存取</p></li>
+</ul>
 
-<p><img src="https://lh5.googleusercontent.com/-9l4xBRFTY6k/UOPzT8MaZQI/AAAAAAAALcc/MAtgsAGu4rE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.43.06.jpg" alt="img" /></p>
 
-<p>新增編輯issue 說明完後再來將針對各種不同的追蹤項目進行說明，在開始追蹤問題時需要事先定義的內容有如下</p>
+<h2>新增 spreadsheets Records</h2>
+
+<p>google Visualization API 無法讓你進行 <strong>新增</strong> 所以如果你需要新增資料，建議使用:</p>
+
+<p><a href="http://support.google.com/drive/bin/answer.py?hl=zh-Hant&amp;answer=87809">Google 表單
+</a></p>
+
+<h2>查詢 spreadsheets</h2>
+
+<p>查詢的部份就是重頭戲啦，從範例來看會比較快一點理解：</p>
+
+<p>sample data:</p>
+
+<p><img src="https://lh3.googleusercontent.com/-v-fjMIfNUpU/UQ8hUW60DcI/AAAAAAAALhQ/TjlxGqTLGt0/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-04+%E4%B8%8A%E5%8D%8810.46.55.jpg" alt="image" /></p>
+
+<p>範例程式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// 讀取店家資訊以及地理位置，並且透過 createMarker 將位址加入到 map 裡</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 載入 Visualization API</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span><span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// key 是假的，請使用你的 key</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">URL</span> <span class="o">=</span> <span class="s1">&#39;http://spreadsheets.google.com/tq?key=0AsXj_vRMyOYyk5OXdKRlJXdGZ1FZU3FXRjl6E#gid=0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">google</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">{</span><span class="s1">&#39;packages&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]});</span>
+</span><span class='line'>  <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">visualization</span><span class="p">.</span><span class="nx">Query</span><span class="p">(</span><span class="nx">URL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">queryData</span><span class="p">(</span><span class="nx">queryStr</span><span class="p">,</span><span class="nx">createMarker</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">setQuery</span><span class="p">(</span><span class="s2">&quot;select B,C,D,E,F where H=&#39;Y&#39; &quot;</span><span class="o">+</span><span class="nx">queryStr</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">resp</span><span class="p">.</span><span class="nx">isError</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">dataTable</span> <span class="o">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">getDataTable</span><span class="p">();</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">dataTable</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">markConfig</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">latitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">longitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">address</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">description</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              
+</span><span class='line'>              <span class="nx">createMarker</span><span class="p">(</span><span class="nx">markConfig</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>非常簡單，應該也淺顯易懂，幾個重點：</p>
 
 <ol>
-<li>負責人員 Assignee 定義：每個階段皆有負責人負責將該階段排除故需要定義相關的負責人員</li>
-<li>標籤 Labels 定義：每個階段的項目定義，比如新問題，開發修改中，測試完成等</li>
-<li>里程碑 Milestones 定義：定義每個階段需要完成的項目內容</li>
-<li>流程 flow 定義：根據不同狀況定義追蹤流程</li>
+<li>在 query 部分，沒辦法使用 column Name，只能使用如 samle 圖片中的 A、B、C…</li>
+<li>相同查詢條件下，無法連續查詢，甚至也不會 response records，舉例來說，<code>select B,C,D,E,F where H='Y'</code> 這查詢下第一次 ok，但第二次就會沒有反應，所以在處理上，需檢查查詢條件是否與上次相同，如相同則不需再查，當然也許是可行的，但以我目前測試的結果是這樣</li>
 </ol>
 
 
-<h2>負責人員 Assignee 定義</h2>
-
-<ol>
-<li>開發者：產品的開發維護人員</li>
-<li>測試者：產品測試人員</li>
-<li>使用者代表：實際使用系統的人員代表</li>
-</ol>
-
-
-<p>至於要如何指派人員可參考下圖：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-rzlm418XajA/UOPzRUzl1MI/AAAAAAAALcA/D7nUb5b2E1I/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.14.00.jpg" alt="img" /></p>
-
-<p>點選 Assignee 選擇要指派的人員即可</p>
-
-<h2>標籤 Labels 定義</h2>
-
-<p>除了內建的標籤之外，github也允許你使用自定的標籤，來區分每個bug目前的狀態，以便追蹤處理狀況，可以看到如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-BMNP4URajKY/UOPzO6u6LzI/AAAAAAAALbk/giLoFjLIdJQ/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.02.59.jpg" alt="img" /></p>
-
-<p>若是既有的標籤，可以點標籤的前方的顏色方塊進行編輯，若是新增可點選 <strong>Manage Labels</strong> 新增，在New label name定義標籤名稱，接著定義標籤顏色，在這裡我們可以簡單定義幾個常用得標籤說明如下：</p>
-
-<ul>
-<li>新問題：新增issue需定義問題的狀態，需在內容詳細說明操作步驟，與問題發生的環境貨資料狀況</li>
-<li>新功能：如果是新增功能，且需在內容詳細說明功能需求</li>
-</ul>
-
-
-<blockquote><p>請記得上面兩點在建立時若確定為很重要的issue皆需要定義完工里程碑</p></blockquote>
-
-<ul>
-<li>修正中：一旦問題確認後，一旦進入開發中，需要變更狀態以便了解目前程式人員已在處理</li>
-</ul>
-
-
-<blockquote><p>修正中需要求開發人員回報預計修正完成時間</p></blockquote>
-
-<ul>
-<li>修正完成待測試：一旦修正完成，則指派當初建立issue的人員進行測試，需回報測試內容步驟，與測試解果</li>
-<li>測試退回：一旦經由測試結果不如預期，怎必須退回重修，同樣需說明測試內容步驟，與結果</li>
-<li>嚴重度高：如果會影響日常運作則需標上嚴重度，以便辨識要優先處理</li>
-<li>嚴重度低：不影響日常運作，則標上嚴重度低</li>
-</ul>
-
-
-<p>如果普通則不需標上嚴重度，當然可依據不同狀況進行調整。</p>
-
-<p>一旦標籤定義完畢，要將issue打上標籤標記，可參考下圖：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-UpAWej-TnB0/UOPzNx2cbSI/AAAAAAAALbc/vc30JQDjp0o/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.01.15.jpg" alt="img" /></p>
-
-<p>可以看到，可以打上多個標記，只要選取你要的標籤即可。</p>
-
-<h2>里程碑 Milestones 定義</h2>
-
-<p>用來記錄哪幾個問題的預計完成時間，藉此可以控制問題的解決進度，以及完成該里程碑涵蓋的修正與對應的版本皆可在這進行記錄，需要記錄的內容如下：</p>
-
-<ol>
-<li>預計版號</li>
-<li>首要目的</li>
-<li>issue修正範圍</li>
-</ol>
-
-
-<p>往後可以作為change log 的依據，當然軟體本身也要有明確的版號規則，至於如何新增 Milestones 可參考下圖：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-01PZsgoK8eg/UOPzQA0YgfI/AAAAAAAALbw/fEeTF0IZfdk/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.05.45.jpg" alt="img" /></p>
-
-<p>點選Create a new milestone 則會進入到下列畫面：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-2p5kYzjPlFw/UOPzQyPNtxI/AAAAAAAALb4/zEY1ck69NJ8/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.06.55.jpg" alt="img" /></p>
-
-<p>定義好Title 還有敘述 Description 以及里程碑日期就可完成新增，如果要將issue 指派到特定的 milestone 可參考下圖：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-oIElFfXXIW0/UOPzSA9vz4I/AAAAAAAALcI/ckxUv0RKcn4/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.15.44.jpg" alt="img" /></p>
-
-<p>點選上方的 milestone 按鈕將show出目前有定義的 milestone，點選項目即可進行指定</p>
-
-<h2>流程 flow 定義</h2>
-
-<p>在此假設我們的追蹤流程如下，將分為幾種狀況，以及每個狀態負責人員：</p>
-
-<pre><code>新問題(使用者代表) &gt; 問題已確認(開發者) &gt; 問題修正中(開發者) &gt; 修正完成待測試(使用者代表)       
-</code></pre>
-
-<p>一旦修正完畢，需交由指派者確認問題修正結果是否確定已在測試環境可進行測試，一旦確認，將進入測試階段，如果測試異常則必須標上測試退回</p>
-
-<pre><code>修正完成待測試(使用者代表)&gt;測試退回(開發者)
-</code></pre>
-
-<p>上述循環會一直持續直到修正完成為止，過程中每次退回皆需說明問題發生原因與步驟</p>
-
-<p>最後一旦問題確認已被正確測試正常，怎進行結案，可參考下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-BMNP4URajKY/UOPzO6u6LzI/AAAAAAAALbk/giLoFjLIdJQ/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-02+%E4%B8%8B%E5%8D%884.02.59.jpg" alt="img" /></p>
-
-<p>勾選要結案的issues 在點選上方的 Close按鈕就可完成結案，如果結案後又發生問題則可以在點選上方的 closed issues，同樣的可在勾選你要在追蹤的issue 在點選Reopen 即可。</p>
-
-<p>上述就是整個github所提供免費的線上issues track的簡介，是不是簡單又好用，如果你還沒有使用過 bug tracking System，那趕快開始吧，如果你是產品擁有者，在bug滿天飛的情形，更應該好好掌握每隻bug的情形，除了當下問題之外，在久遠的未來發生了問題也可以翻閱過去的紀錄找到一些端倪，總之別怕麻煩，不去記錄才是真正麻煩，因為你將完全沒有根據可以進行問題追蹤…</p>
+<p>如果你要做一個簡單問卷，或是購買清單之類的應用，相信 google spreadsheets 是個不錯的選擇，夠簡單，且輔助 google 表單，可以很快速的完成資料輸入的頁面，查詢上也不複雜，就是幾個實用上要注意的額外處裡一下，希望可以幫有需要的人解省一些時間囉！</p>
 
   </div>
 
@@ -510,12 +485,12 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2013-01-02T14:30:00+08:00" pubdate data-updated="true">Jan 2<span>nd</span>, 2013</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-04T16:34:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/bug-tracking-system/'>bug tracking system</a>, <a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/github/'>github</a>
+    <a class='category' href='/blog/categories/google-api/'>google api</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
 </span></span>
 
@@ -530,7 +505,7 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/02/github-issues/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/02/github-issues/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/" target="_blank" >Tweet</a>
     
   
   
@@ -551,10 +526,8 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/25/the-ultimate-form-of-slob/" title="Previous Post: 懶漢的終極型態"><li>&laquo; 懶漢的終極型態</li></a>
+            <a class="left" href="/blog/2013/02/01/javascript-settimeout/" title="Previous Post: javascript: setTimeout"><li>&laquo; javascript: setTimeout</li></a>
           
-          
-            <a class="right" href="/blog/2013/01/05/mongodb-import-csv/" title="Next Post: mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command"><li>mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command &raquo;</li></a>
           
         </ul>
 
@@ -698,7 +671,7 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/01/02/github-issues/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/01/02/github-issues/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/" target="_blank" >Tweet</a>
     
   
   
@@ -850,8 +823,8 @@ Bug Tracking System 介紹：使用 Github 內建的 Issues
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2013/01/02/github-issues/';
-        var disqus_url = 'http://smlsun.com/blog/2013/01/02/github-issues/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/04/google-spreadsheets-connect/';
         var disqus_script = 'embed.js';
       
     (function () {
