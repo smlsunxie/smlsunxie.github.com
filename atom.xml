@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-05T10:24:56+08:00</updated>
+  <updated>2013-02-05T11:37:22+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -27,9 +27,38 @@
 
 <p>作者:徐會生、何啟偉、康愛媛</p>
 
-<h2>Ext之事件模型</h2>
+<h2>Extjs 事件</h2>
 
-<p>所有繼承自 Ext.util.observable 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
+<p>ExtJs對事件的管理非常強大，主要定義在Ext.EventManager對象(單例模式)中。先看註冊事件監聽方式，ExtJs提供了幾種方式來註冊元素監聽函數</p>
+
+<ul>
+<li>透過 <code>Ext.EventManager.addListener/on</code> 函數來為指定元素的某種事件註冊監聽函數。例如：<code>Ext.EventManager.on('test1','click',clickMe,this);</code></li>
+<li>透過ExtJs元素的on函數來為自身註冊某種事件的監聽處理函數。例如：
+<code>Ext.get('test1').on('click', clickMe,this,{preventDefault:true});</code></li>
+</ul>
+
+
+<p>其中 options參數是事件配置項，各項說明如下：</p>
+
+<ul>
+<li>scope ：可指定執行上下文</li>
+<li>delegate ：事件代理</li>
+<li>stopEvent ：阻止冒泡和默認行為</li>
+<li>preventDefault ：阻止默認行為</li>
+<li>stopPropagation ：停止事件冒泡</li>
+<li>normalized ：僅傳原生事件對象</li>
+<li>delay ：延遲執行</li>
+<li>single :僅執行一次</li>
+<li>buffer ：延遲執行，多次時最後一次覆蓋前一次</li>
+<li>target :指定在父元素上執行</li>
+</ul>
+
+
+<p>要知道更詳細的解說可以查看 extjs api: <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.EventManager-method-addListener">Ext.EventManager-method-addListener</a></p>
+
+<h2>Extjs 之事件模型</h2>
+
+<p>所有繼承自 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.util.Observable">Ext.util.observable</a> 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
 
 <p>下面是個簡單的例子</p>
 
@@ -178,6 +207,15 @@
 
 
 <blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
+
+<h2>事件延遲處理，事件處理緩存</h2>
+
+<p>Ext.onReady( function (){</p>
+
+<pre><code>Ext.get( "btnAlert" ).on( "click" ,a, this ,{delay:2000});   
+</code></pre>
+
+<p>});</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/05/extjs-events/"></a></p>]]></content>
     </entry>
   
