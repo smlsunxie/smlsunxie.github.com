@@ -325,11 +325,15 @@
 
 <p>下面將說明查詢父類以及子類的方式</p>
 
-<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a></h2>
+<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a> hierarchy (階層)</h2>
 
 <ul>
-<li>subclass :Ext.BoxComponent</li>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a> subclass: Ext.Container</li>
+<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a></p>
+
+<ul>
+<li>Ext.Container</li>
+</ul>
+</li>
 </ul>
 
 
@@ -342,8 +346,12 @@
 
 <h2>取得 parent component</h2>
 
+<p>因為 extjs 所有的元件皆繼承於 component，且 Ext.Container 擁有 component，故通常透過下列方式取得的 parent Component 都屬於 Ext.Container，雖然如此，parent 物件還是擁有當初創建 Component 的屬性或方法。</p>
+
 <ul>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></li>
+<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></p>
+
+<p>  ownerCt 為 Component 的 properties，因此可直接取得，詳細可查找 extjs api</p></li>
 </ul>
 
 
@@ -373,6 +381,8 @@
 </ul>
 
 
+<p>主要透過 findParentBy 實作，找出最接近且符合傳入 xtype</p>
+
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -382,11 +392,7 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">主要透過</span> <span class="nx">findParentBy</span> <span class="err">實作</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>  <span class="k">return</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="o">?</span>
 </span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">){</span>
 </span><span class='line'>        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nx">xtype</span><span class="p">;</span>
@@ -433,8 +439,12 @@
 
 
 <ul>
-<li>findBy</li>
-<li>findByType</li>
+<li><p>findBy</p>
+
+<p>  使用方式同 findParentBy</p></li>
+<li><p>findByType</p>
+
+<p>  使用方式同 findParentByType</p></li>
 </ul>
 
 
