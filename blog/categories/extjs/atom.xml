@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-05T11:40:56+08:00</updated>
+  <updated>2013-02-05T14:52:04+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,115 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: component 的使用，找尋 praent & child]]></title>
+    <link href="http://smlsun.com/blog/2013/02/05/extjs-component/"/>
+    <updated>2013-02-05T14:47:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/05/extjs-component</id>
+    <content type="html"><![CDATA[<p>了解 component 的運作將有助於在操作 extjs 時，能夠更靈活操作在一個頁面中各個元件的運作，有了 component 查詢父類以及子類的方法可以更方便存取各階層的元件，特別在 single page 的頁面設計下更顯重要，並且在前端程式架構與分工上我們將可以很輕易的將 view 與事件獨立開來，避免重覆設計元件，造成維護上的困擾。</p>
+
+<p>下面將說明查詢父類以及子類的方式</p>
+
+<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a></h2>
+
+<ul>
+<li>subclass :Ext.BoxComponent</li>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a> subclass: Ext.Container</li>
+<li>component 之 parent 必定是 Ext.BoxContainer</li>
+</ul>
+
+
+<h2>取得特定 component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext-method-getCmp">getCmp</a></li>
+</ul>
+
+
+<h2>取得 parent component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></li>
+</ul>
+
+
+<p><code>javascript
+parent = child.ownerCt;
+</code></p>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentBy">findParentBy</a></li>
+</ul>
+
+
+<p>``` javascript   <br/>
+var form=this.findParentBy(function(p) {
+  //定義你要索引的 parent 的條件式，若回傳為 true 將會回傳該 container parent</p>
+
+<pre><code>return p.getForm;
+</code></pre>
+
+<p>});
+```</p>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentByType">findParentByType</a> (  String/Class xtype ) : Container</li>
+</ul>
+
+
+<p>``` javascript <br/>
+主要透過 findParentBy 實作</p>
+
+<p>function (xtype) {
+  return Ext.isFunction(xtype) ?</p>
+
+<pre><code>this.findParentBy(function(p){
+    return p.constructor === xtype;
+}) :
+this.findParentBy(function(p){
+    return p.constructor.xtype === xtype;
+});
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>取得 child component</h2>
+
+<ul>
+<li>getComponent</li>
+</ul>
+
+
+<p><code>javascript
+var childPanel = Ext.getCmp('parentPanel').getComponent('childPanel09');
+if (childPanel) {
+  alert('yes. child exists');
+}
+</code></p>
+
+<ul>
+<li>find</li>
+</ul>
+
+
+<p><code>javascript
+var childPanel = Ext.getCmp('parentPanel').find('id', 'childPanel09')[0]; // [0] because find returns array
+if (childPanel) {
+  alert('yes. child exists');
+}
+</code></p>
+
+<ul>
+<li>findBy</li>
+<li>findByType</li>
+</ul>
+
+
+<p>父子都搞定了，再來就看你自己了～XD</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: events]]></title>

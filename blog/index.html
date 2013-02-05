@@ -310,6 +310,201 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Praent & Child</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>了解 component 的運作將有助於在操作 extjs 時，能夠更靈活操作在一個頁面中各個元件的運作，有了 component 查詢父類以及子類的方法可以更方便存取各階層的元件，特別在 single page 的頁面設計下更顯重要，並且在前端程式架構與分工上我們將可以很輕易的將 view 與事件獨立開來，避免重覆設計元件，造成維護上的困擾。</p>
+
+<p>下面將說明查詢父類以及子類的方式</p>
+
+<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a></h2>
+
+<ul>
+<li>subclass :Ext.BoxComponent</li>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a> subclass: Ext.Container</li>
+<li>component 之 parent 必定是 Ext.BoxContainer</li>
+</ul>
+
+
+<h2>取得特定 component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext-method-getCmp">getCmp</a></li>
+</ul>
+
+
+<h2>取得 parent component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">parent</span> <span class="o">=</span> <span class="nx">child</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentBy">findParentBy</a></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">form</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//定義你要索引的 parent 的條件式，若回傳為 true 將會回傳該 container parent</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">getForm</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentByType">findParentByType</a> (  String/Class xtype ) : Container</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">主要透過</span> <span class="nx">findParentBy</span> <span class="err">實作</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="o">?</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nx">xtype</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">})</span> <span class="o">:</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">===</span> <span class="nx">xtype</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>取得 child component</h2>
+
+<ul>
+<li>getComponent</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">childPanel</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;parentPanel&#39;</span><span class="p">).</span><span class="nx">getComponent</span><span class="p">(</span><span class="s1">&#39;childPanel09&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">childPanel</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;yes. child exists&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>find</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">childPanel</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;parentPanel&#39;</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;childPanel09&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// [0] because find returns array</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">childPanel</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;yes. child exists&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>findBy</li>
+<li>findByType</li>
+</ul>
+
+
+<p>父子都搞定了，再來就看你自己了～XD</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-05T14:47:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/05/extjs-component/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/05/extjs-component/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/05/extjs-events/">Extjs: Events</a>
 
 </h1>
@@ -2538,119 +2733,6 @@ B=4
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/24/qemu/">Lightweight and Portable Virtual Machine: Qemu</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在研究 qemu 虛擬機器的應用，期望能夠在 windows 下能夠將事先製作好的 Live CD 將其放在 usb，當使用者需要使用時，只要插入 usb 隨即可以在 windows 底下開啟製作好的 Live CD，透過這樣的結合，可以很方便的讓你客製的 os 被使用者所使用，且不用安裝一堆軟體，檔案也很小，只要 6 mb 左右就可以啦，下面就來說明相關資源。</p>
-
-<p>在使用 qemu 時，如果單獨使用 qemu，他本身啟動速度很慢，必須加裝加速器才算堪用，所以除了 qemu 還需要 kqemu，相關網站如下:</p>
-
-<p><a href="http://homepage3.nifty.com/takeda-toshiya/">qemu for windows</a></p>
-
-<p><a href="http://www.h6.dion.ne.jp/~kazuw/qemu-win/Kqemu-1.3.0pre11-install.exe">kqemu</a></p>
-
-<p>使用步驟可以參考下列網站：</p>
-
-<p><a href="http://milky.manishsinha.net/2008/07/10/using-qemu-on-windows/">Using qemu on Windows</a></p>
-
-<p>在研究過程中，我只能說非常撞牆，原本在 linux 很理所當然的運行，在 windows 下一切都不是那樣，搞了很久不是視訊有問題，不然就是滑鼠不能動，最後總算找到懶人包，其中包括了 kqemu portable 加速，算是非常方便了，連結如下：</p>
-
-<p><a href="http://code.google.com/p/kqemu-portable-win/">kqemu-portable-win</a></p>
-
-<p>使用方式非常簡單，將你製作好的 iso 或者 img 放到解開的資料夾，然後開啟 <code>qemu-win.bat</code> 在底下就可以定義你要開啟檔案的路徑，以及要開啟的方式，範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>kqemu\USB-Kqemu.exe
-</span><span class='line'>qemu.exe -L . -cdrom *.iso -localtime -m 512 -boot d -kernel-kqemu -std-vga
-</span><span class='line'>kqemu\USB-Kqemu-Halt.exe</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到開始時執行開啟 Kqemu，接著就是要啟動 qemu，我這邊啟動的是 *.iso，也就是只要偵測到有 iso 檔就會執行開啟， <code>-m 512</code> 表示使用記憶體為 512 mb， <code>-kernel-kqemu</code> 則表示啟動 kqemu 加速器，接著我們只要點兩下 <code>qemu-win.bat</code> 就可以啟動虛擬機器了，執行畫面如下：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ZFEChwFRwVA/UQCd1AtcqxI/AAAAAAAALg4/xd03fBbDwjU/s721/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.13.jpg" alt="image" /></p>
-
-<p>並且可以確認一下加速器是否有正確被啟動，在 qemu 啟動視窗輸入 <code>ctrl + alt + 2</code>，輸入 <code>info kqemu</code> 可以看到下列畫面：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-ca81YlxugiY/UQCd1srHU8I/AAAAAAAALg8/1KQb3V9KpS0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.48.jpg" alt="image" /></p>
-
-<p>就表示加速器已經正確被啟動了！</p>
-
-<p>希望這篇文章可以幫助有需要的人，不要像我一樣花很多時間在撞牆了～</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-24T09:52:00+08:00" pubdate data-updated="true">Jan 24<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/24/qemu/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/24/qemu/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2726,6 +2808,10 @@ B=4
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/05/extjs-component/">extjs: component 的使用，找尋 praent & child</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
       </li>
     
@@ -2739,10 +2825,6 @@ B=4
     
       <li>
         <a href="/blog/2013/02/01/javascript-settimeout/">javascript: setTimeout</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/01/javascript-closure/">javascript: closure</a>
       </li>
     
   </ul>

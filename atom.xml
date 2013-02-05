@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-05T11:40:56+08:00</updated>
+  <updated>2013-02-05T14:52:04+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,139 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs: component 的使用，找尋 praent & child]]></title>
+<link href="http://smlsun.com/blog/2013/02/05/extjs-component/"/>
+<updated>2013-02-05T14:47:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/05/extjs-component</id>
+
+      <content type="html"><![CDATA[<p>了解 component 的運作將有助於在操作 extjs 時，能夠更靈活操作在一個頁面中各個元件的運作，有了 component 查詢父類以及子類的方法可以更方便存取各階層的元件，特別在 single page 的頁面設計下更顯重要，並且在前端程式架構與分工上我們將可以很輕易的將 view 與事件獨立開來，避免重覆設計元件，造成維護上的困擾。</p>
+
+<p>下面將說明查詢父類以及子類的方式</p>
+
+<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a></h2>
+
+<ul>
+<li>subclass :Ext.BoxComponent</li>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a> subclass: Ext.Container</li>
+<li>component 之 parent 必定是 Ext.BoxContainer</li>
+</ul>
+
+
+<h2>取得特定 component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext-method-getCmp">getCmp</a></li>
+</ul>
+
+
+<h2>取得 parent component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">parent</span> <span class="o">=</span> <span class="nx">child</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentBy">findParentBy</a></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">form</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//定義你要索引的 parent 的條件式，若回傳為 true 將會回傳該 container parent</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">getForm</span><span class="p">;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentByType">findParentByType</a> (  String/Class xtype ) : Container</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">主要透過</span> <span class="nx">findParentBy</span> <span class="err">實作</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">xtype</span><span class="p">)</span> <span class="o">?</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nx">xtype</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">})</span> <span class="o">:</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">findParentBy</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">xtype</span> <span class="o">===</span> <span class="nx">xtype</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>取得 child component</h2>
+
+<ul>
+<li>getComponent</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">childPanel</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;parentPanel&#39;</span><span class="p">).</span><span class="nx">getComponent</span><span class="p">(</span><span class="s1">&#39;childPanel09&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">childPanel</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;yes. child exists&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>find</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">childPanel</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;parentPanel&#39;</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;childPanel09&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// [0] because find returns array</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">childPanel</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;yes. child exists&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>findBy</li>
+<li>findByType</li>
+</ul>
+
+
+<p>父子都搞定了，再來就看你自己了～XD</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/05/extjs-component/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -2514,55 +2647,6 @@ F. An exception is thrown at runtime.
 
 <p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/09/node-production-setting/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[mongodb 匯入 csv 方法介紹- 透過mongohub 以及 command]]></title>
-<link href="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/"/>
-<updated>2013-01-05T11:55:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/05/mongodb-import-csv</id>
-
-      <content type="html"><![CDATA[<p>在使用database 要進行初始資料insert，相信大家在使用時不會想要一筆筆資料慢慢打，最快的方式就是使用大家熟悉的excel，或者csv進行初始資料的建立，之後在用db提供的dataimport工具，將整理好的資料進行匯入，網路上關於ms sqlserver，或是mysql相關資料已經很多，今天要介紹的是如何將cvs的文字資料匯入到mongodb。</p>
-
-<p>首先在開始時我們可以先申請一個免費的mongodb來玩玩，介紹大家一個免費空間又大的線上mongodb網站</p>
-
-<p><a href="https://mongolab.com/welcome/">mongolab</a></p>
-
-<p>提供免費的 500 mb空間，比<a href="https://www.mongohq.com/home">mongohq</a> 大上十倍，非常的夠用了。</p>
-
-<p>接著如果如果要進行CVS匯入我們可以有兩種方式，一種是透過mongodb提供的指令進行匯入，安裝方式可參考下列網址:<a href="http://docs.mongodb.org/manual/installation/">Installing MongoDB</a></p>
-
-<p>範例指令</p>
-
-<div><script src='https://gist.github.com/4452313.js?file='></script>
-<noscript><pre><code>mongoimport --host mongolab.com --port 40000 --username user --password db --collection store --db dbname --type csv --file ~/gdata.csv --headerline</code></pre></noscript></div>
-
-
-<p>可以參考下面網址的個參數說明：<a href="http://docs.mongodb.org/manual/administration/import-export/">Importing and Exporting MongoDB Data</a></p>
-
-<p>另外一個就是使用gui介面進行資料匯入，在這邊使用 <a href="http://mongohub.todayclose.com/">mongohub</a>，介紹可參考 <a href="http://blog.lyhdev.com/2012/03/mongohub-mongodb-mac.html">MongoHub 簡單易用的 MongoDB 圖形化管理工具</a></p>
-
-<p>再來就要介紹如何使用gui進行mongodb的批次cvs資料匯入，可以點選mongohub中你要匯入的collection就是類是一般sql的table，這邊選取的是motostore這個collection，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-jg9hJXlb5Ig/UOesHMhFQGI/AAAAAAAALc0/4pAZgjilePU/s739/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.17.20.jpg" alt="img" /></p>
-
-<p>選取之後在點選上方放大鏡，query那個圖示，會開啟下面的畫面：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9YnPsJEa2Yk/UOesIOm6_YI/AAAAAAAALc4/EKUPvTuAIyw/s562/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.19.10.jpg" alt="img" /></p>
-
-<p>點選新開啟的視窗上面的import按鈕，接著選取你要匯入的檔案，type選取cvs，下方Headerline需打勾，表示資料的第一行為欄位邊號，接著點選import按鈕就完成資料的匯入了，是不是很簡單，至少不用去記很多的指令，不過有一個重點！</p>
-
-<blockquote><p>cvs 的檔案編碼請記得要用utf-8</p></blockquote>
-
-<p>如果沒有用utf-8編碼會造成mongohub會跟你說資料匯入成功，但是實際上卻是失敗，我在嘗試匯入時，先用mongohub，結果就一直搞不定，後來改用command的方式才知道原來是檔案編碼錯誤造成無法匯入，後來編碼正確後，再一次使用mongohub就可以正常匯入啦！</p>
-
-<p>匯入cvs的檔案編碼方式要注意阿！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/05/mongodb-import-csv/"></a></p>]]></content>
     </entry>
   
 </feed>
