@@ -352,6 +352,17 @@ Extjs: Events
 </ul>
 
 
+<p>舉例來說，假如我要進行事件延遲處理，就可以使用 delay</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(){</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="s2">&quot;btnAlert&quot;</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;click&quot;</span> <span class="p">,</span><span class="nx">a</span><span class="p">,</span> <span class="k">this</span> <span class="p">,{</span><span class="nx">delay</span><span class="o">:</span><span class="mi">2000</span><span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>要知道更詳細的解說可以查看 extjs api: <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.EventManager-method-addListener">Ext.EventManager-method-addListener</a></p>
 
 <h2>Extjs 之事件模型</h2>
@@ -505,15 +516,6 @@ Extjs: Events
 
 
 <blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
-
-<h2>事件延遲處理，事件處理緩存</h2>
-
-<p>Ext.onReady( function (){</p>
-
-<pre><code>Ext.get( "btnAlert" ).on( "click" ,a, this ,{delay:2000});   
-</code></pre>
-
-<p>});</p>
 
   </div>
 
