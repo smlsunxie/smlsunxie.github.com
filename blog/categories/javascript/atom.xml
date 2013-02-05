@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-04T23:55:29+08:00</updated>
+  <updated>2013-02-05T10:20:45+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,164 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: events]]></title>
+    <link href="http://smlsun.com/blog/2013/02/05/extjs-events/"/>
+    <updated>2013-02-05T10:18:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/05/extjs-events</id>
+    <content type="html"><![CDATA[<p>資料來源: 次世代 Ajax 解決方案 EXTjs 開發實戰</p>
+
+<p>作者:徐會生、何啟偉、康愛媛</p>
+
+<h2>自訂事件</h2>
+
+<ul>
+<li><p>Ext之事件模型</p>
+
+<p>所有繼承自 Ext.util.observable 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
+
+<p>下面是個簡單的例子</p>
+
+<ul>
+<li><p>定義Person類別</p>
+
+<ul>
+<li>此例定義了一個Person物件，擁有一個屬性 name。</li>
+<li>使用 this.addEvent() 函式定義了 walk、eat與sleep三個自訂事件。</li>
+<li>使用 Ext.extend() 讓Person物件繼承Ext.util.observable所有屬性。</li>
+<li>並擴充一個新函數 info()，並設計info() 函式可傳回Person的資訊。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+Person = function(name){
+  this.name = name;
+  this.addEvents(“walk”,”eat”,”sleep”);
+}</p>
+
+<p>Ext.extend(Person, Ext.util.observable, {
+  info: function(event) {</p>
+
+<pre><code>return this.name + ‘is’ + event + ‘ing.’;
+</code></pre>
+
+<p>  }
+});
+```</p>
+
+<ul>
+<li><p>建立Person實體物件(instance)，並為其事件配置監聽器(listener)</p>
+
+<ul>
+<li>on 為 addListener() 的簡寫型式。</li>
+<li>on 函式第一個函數為事件名稱，第二個參數為事件發生時所執行的函數。</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+var person = new Person(‘Lingo’);
+person.on(‘walk’ , function() {</p>
+
+<pre><code>Ext.Msg.alert(‘event’ , person.name + “is walking…”);
+</code></pre>
+
+<p>});
+person.on(‘eat’, function(breakfast, lunch, supper){</p>
+
+<pre><code>Ext.Msg.alert(‘event’, person.name + “want to eat” + breakfast + “and ”+ lunch + “and ” + supper + “.”);
+</code></pre>
+
+<p>});
+person.on(‘sleep’, function(time) {</p>
+
+<pre><code>Ext.Msg.alert(‘event’,person.name + “從” + time.format(“H”) + “點開始睡覺。”); 
+</code></pre>
+
+<p>})
+```</p>
+
+<ul>
+<li><p>觸發事件</p>
+
+<ul>
+<li>呼叫fireEvent() 即觸發函式，傳入一個事件名稱，其對應之監聽函式即會執行。</li>
+<li>與 on() 相反，un() 為 removeListener() 函式的簡寫，用途為刪除某事件之對應函數。</li>
+<li>另有一 purgeListeners() 函數，可將所有監聽器刪除。</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+Ext.get(‘walk’).on(‘click’ , function{
+  person.fireEvent(‘walk’);
+});</p>
+
+<p>Ext.get(‘eat’).on(‘click’, function(){
+  person.fireEvent(‘eat’, ‘早餐’, ‘午餐’, ‘晚餐’);
+});</p>
+
+<p>Ext.get(‘sleep’).on(‘click’,function(){
+  person.fireEvent(‘sleep’, new Date());
+});
+```</p>
+
+<ul>
+<li><p>瀏覽器事件</p>
+
+<ul>
+<li>主要使用 Ext.EventManager, Ext.EventObject 與 Ext.lib.Event 對原生瀏覽器事件進行包裝。</li>
+<li><p>HTML 瀏覽器事件屬於單一綁定，Ext框架則是對於同一個事件可以綁定至多個事件處理控制碼上。</p></li>
+<li><p>原生 HTML</p></li>
+</ul>
+</li>
+</ul>
+
+
+<p><code>javascript
+var e=document.getElementById(“test”);
+e.onclick=function(){alert(“handle1”)};
+e.onclick=function(){alert(“hangle2”)};
+</code></p>
+
+<pre><code>&gt;按下 test後，只會顯示 handle2 提示框。
+</code></pre>
+
+<ul>
+<li>extjs</li>
+</ul>
+
+
+<p>``` javascript
+Ext.onReady( function(){
+  var test = Ext.get(‘test’);
+  test.on(‘click’, function() {</p>
+
+<pre><code>alert(“handle1”); 
+</code></pre>
+
+<p>  });</p>
+
+<p>  test.on(‘click’, function(){</p>
+
+<pre><code>alert(“handle2”);
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<pre><code>&gt; 按下 test 後，handle1 與 handle2 提示框皆會依序顯示。
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[javascript: callback]]></title>
@@ -460,135 +618,6 @@ return f;
 <li>跟透過函數的參數把變數傳給函數比較起來，Javascript Engine 會比較難對 Closure 進行最佳化。如果有效能上的考量，這一點也需要注意。</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[javascript: about scope]]></title>
-    <link href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/"/>
-    <updated>2013-02-01T12:07:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/01/javascript-about-scope</id>
-    <content type="html"><![CDATA[<h4>參考來源</h4>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
-
-<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
-
-<h2>函式是如何被初始化</h2>
-
-<ol>
-<li>先宣告函式參數，並設定參數的值</li>
-<li>所有函式內部的函式被宣告</li>
-<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
-<li>賦予變數值</li>
-</ol>
-
-
-<p>接著來看 scope</p>
-
-<h2>了解變數 scope 以及初始化</h2>
-
-<ol>
-<li>唯一的變數 scope 就是你所在的函式。</li>
-<li>還有全域的 scope，但並沒有區塊的 scope。</li>
-<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
-<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
-<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
-</ol>
-
-
-<h2>scope 的運作原理</h2>
-
-<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
-
-<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
-
-<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
-
-<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
-
-<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
-
-<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
-
-<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
-
-<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
-
-<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
-
-<h2>scope management</h2>
-
-<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
-
-<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
-
-<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
-
-<h2>效能改善相關</h2>
-
-<ol>
-<li>對那些常常會存取的變數，盡量把它放在 local</li>
-<li>避免使用 with</li>
-<li>小心使用 try / catch</li>
-<li>沒有必要的話不要用 closure</li>
-<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
-</ol>
-
-
-<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
-
-<p>``` javascript
-  function setup(items)
-  {</p>
-
-<pre><code>  var divs = document.getElementsByTagName("div");
-  var images = document.getElementsByTagName("image");
-  var button = document.getElementsById("save-btn");
-
-  for (var i = 0; i &lt; items.length; i++) {
-      process(items[i], div[i]);
-  }
-
-  button.addEventListener("click", function(event) {
-      alert("Saved");
-  }, false);
-</code></pre>
-
-<p>  }
-```</p>
-
-<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
-
-<p>``` javascript</p>
-
-<p>  function setup(items)
-  {</p>
-
-<pre><code>  var doc = document; // 原本沒有這行
-
-  // document 全部替換為 doc，也就是改為區域變數
-  var divs = doc.getElementsByTagName("div");
-  var images = doc.getElementsByTagName("image");
-  var button = doc.getElementsById("save-btn");
-
-  for (var i = 0; i &lt; items.length; i++) {
-      process(items[i], div[i]);
-  }
-
-  button.addEventListener("click", function(event) {
-      alert("Saved");
-  }, false);
-</code></pre>
-
-<p>  }
-```</p>
 ]]></content>
   </entry>
   

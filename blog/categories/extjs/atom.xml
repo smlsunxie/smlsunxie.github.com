@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: extjs | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-02-05T10:20:45+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: events]]></title>
+    <link href="http://smlsun.com/blog/2013/02/05/extjs-events/"/>
+    <updated>2013-02-05T10:18:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/05/extjs-events</id>
+    <content type="html"><![CDATA[<p>資料來源: 次世代 Ajax 解決方案 EXTjs 開發實戰</p>
+
+<p>作者:徐會生、何啟偉、康愛媛</p>
+
+<h2>自訂事件</h2>
+
+<ul>
+<li><p>Ext之事件模型</p>
+
+<p>所有繼承自 Ext.util.observable 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
+
+<p>下面是個簡單的例子</p>
+
+<ul>
+<li><p>定義Person類別</p>
+
+<ul>
+<li>此例定義了一個Person物件，擁有一個屬性 name。</li>
+<li>使用 this.addEvent() 函式定義了 walk、eat與sleep三個自訂事件。</li>
+<li>使用 Ext.extend() 讓Person物件繼承Ext.util.observable所有屬性。</li>
+<li>並擴充一個新函數 info()，並設計info() 函式可傳回Person的資訊。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+Person = function(name){
+  this.name = name;
+  this.addEvents(“walk”,”eat”,”sleep”);
+}</p>
+
+<p>Ext.extend(Person, Ext.util.observable, {
+  info: function(event) {</p>
+
+<pre><code>return this.name + ‘is’ + event + ‘ing.’;
+</code></pre>
+
+<p>  }
+});
+```</p>
+
+<ul>
+<li><p>建立Person實體物件(instance)，並為其事件配置監聽器(listener)</p>
+
+<ul>
+<li>on 為 addListener() 的簡寫型式。</li>
+<li>on 函式第一個函數為事件名稱，第二個參數為事件發生時所執行的函數。</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+var person = new Person(‘Lingo’);
+person.on(‘walk’ , function() {</p>
+
+<pre><code>Ext.Msg.alert(‘event’ , person.name + “is walking…”);
+</code></pre>
+
+<p>});
+person.on(‘eat’, function(breakfast, lunch, supper){</p>
+
+<pre><code>Ext.Msg.alert(‘event’, person.name + “want to eat” + breakfast + “and ”+ lunch + “and ” + supper + “.”);
+</code></pre>
+
+<p>});
+person.on(‘sleep’, function(time) {</p>
+
+<pre><code>Ext.Msg.alert(‘event’,person.name + “從” + time.format(“H”) + “點開始睡覺。”); 
+</code></pre>
+
+<p>})
+```</p>
+
+<ul>
+<li><p>觸發事件</p>
+
+<ul>
+<li>呼叫fireEvent() 即觸發函式，傳入一個事件名稱，其對應之監聽函式即會執行。</li>
+<li>與 on() 相反，un() 為 removeListener() 函式的簡寫，用途為刪除某事件之對應函數。</li>
+<li>另有一 purgeListeners() 函數，可將所有監聽器刪除。</li>
+</ul>
+</li>
+</ul>
+
+
+<p>``` javascript
+Ext.get(‘walk’).on(‘click’ , function{
+  person.fireEvent(‘walk’);
+});</p>
+
+<p>Ext.get(‘eat’).on(‘click’, function(){
+  person.fireEvent(‘eat’, ‘早餐’, ‘午餐’, ‘晚餐’);
+});</p>
+
+<p>Ext.get(‘sleep’).on(‘click’,function(){
+  person.fireEvent(‘sleep’, new Date());
+});
+```</p>
+
+<ul>
+<li><p>瀏覽器事件</p>
+
+<ul>
+<li>主要使用 Ext.EventManager, Ext.EventObject 與 Ext.lib.Event 對原生瀏覽器事件進行包裝。</li>
+<li><p>HTML 瀏覽器事件屬於單一綁定，Ext框架則是對於同一個事件可以綁定至多個事件處理控制碼上。</p></li>
+<li><p>原生 HTML</p></li>
+</ul>
+</li>
+</ul>
+
+
+<p><code>javascript
+var e=document.getElementById(“test”);
+e.onclick=function(){alert(“handle1”)};
+e.onclick=function(){alert(“hangle2”)};
+</code></p>
+
+<pre><code>&gt;按下 test後，只會顯示 handle2 提示框。
+</code></pre>
+
+<ul>
+<li>extjs</li>
+</ul>
+
+
+<p>``` javascript
+Ext.onReady( function(){
+  var test = Ext.get(‘test’);
+  test.on(‘click’, function() {</p>
+
+<pre><code>alert(“handle1”); 
+</code></pre>
+
+<p>  });</p>
+
+<p>  test.on(‘click’, function(){</p>
+
+<pre><code>alert(“handle2”);
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<pre><code>&gt; 按下 test 後，handle1 與 handle2 提示框皆會依序顯示。
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
