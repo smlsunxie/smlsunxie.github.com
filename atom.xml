@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-06T12:52:59+08:00</updated>
+  <updated>2013-02-07T17:51:57+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -1364,9 +1364,9 @@ B=4
 
 <p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
 
-<p>下面的兩個例子，請務必先有 closure 的概念，不然一定會一頭霧水，腦筋打結，邏輯說不通，建議可以 google 了解一下，或者看我寫的另外一篇 <a href="">javascript: clossure</a></p>
+<p>接著我們來看另一個特殊的情形&#8230;</p>
 
-<h2>closure 中的 this 又又是 window 的情況</h2>
+<h2>setTimeout 中的令人困惑的 this</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1391,10 +1391,10 @@ B=4
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">TT</span><span class="p">();</span>
-</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 會無作用</span>
+</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 中的 lm 會被指向 window 而不是 TT 這個 object</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; ok</span>
+</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; lm 被正確建立於 TT 上</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
 </span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
@@ -1409,18 +1409,31 @@ B=4
 
 <p>因為：</p>
 
+<p>setTimeout其實是 window.setTimeout() 函數，並不是某個物件觸發的事件，在這種情況下，this 就會指向 window，因為當你呼叫 setTimeout 時，該函數裡的任務會被加入執行對列等候執行，一旦時間到開始執行實際上並不是經由 TT 來觸發而是全域的 window。</p>
+
+<p>經由下列的測試可以證明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">);</span> <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>又可以this.alert，又有this.document可用，表示 this 在當時指向的是 window。</p>
+
+<blockquote><p>20120207 修正，下面是錯誤的理解，感謝與我討論的朋友</p>
+
 <ol>
 <li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
-<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為 d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
-<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() 底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
+<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為  d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
+<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() >底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
 </ol>
-
+</blockquote>
 
 <p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
 
-<p>既然如此我們要怎麼解決此問題？？？讓…</p>
+<p>既然如此我們要怎麼解決此問題？？？</p>
 
-<h2>closure 中的 this 變成不是 window 的情況</h2>
+<h2>解決 setTimeout 中的 this 是 window 的情況</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1443,7 +1456,10 @@ B=4
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p>
+<p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
+
+<blockquote><p>20120207 修正，一樣是錯誤的理解，感謝與我討論的朋友
+上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
 
 <p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
 
@@ -1542,6 +1558,8 @@ B=4
 
 
 <p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
+
+<blockquote><p>20120207 教學真的會相長阿！ ^_^</p></blockquote>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/"></a></p>]]></content>
     </entry>
   
