@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-07T17:54:28+08:00</updated>
+  <updated>2013-02-07T18:07:43+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -1424,7 +1424,7 @@ B=4
 
 <p>既然如此我們要怎麼解決此問題？？？</p>
 
-<blockquote><p>20120207 修正，下面是錯誤的理解，感謝與我討論的朋友</p>
+<blockquote><p>20130207 下面是錯誤的理解，感謝與我討論的朋友</p>
 
 <ol>
 <li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
@@ -1458,7 +1458,7 @@ B=4
 
 <p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
 
-<blockquote><p>20120207 修正，一樣是錯誤的理解，感謝與我討論的朋友</p>
+<blockquote><p>20120207 一樣是錯誤的理解，感謝與我討論的朋友</p>
 
 <p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
 
@@ -1560,7 +1560,7 @@ B=4
 
 <p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
 
-<blockquote><p>20120207 教學真的會相長阿！ ^_^</p></blockquote>
+<blockquote><p>20130207 教學真的會相長阿！ ^_^</p></blockquote>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/"></a></p>]]></content>
     </entry>
   
