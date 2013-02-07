@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-07T17:51:57+08:00</updated>
+  <updated>2013-02-07T17:54:28+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -1420,6 +1420,10 @@ B=4
 
 <p>又可以this.alert，又有this.document可用，表示 this 在當時指向的是 window。</p>
 
+<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
+
+<p>既然如此我們要怎麼解決此問題？？？</p>
+
 <blockquote><p>20120207 修正，下面是錯誤的理解，感謝與我討論的朋友</p>
 
 <ol>
@@ -1428,10 +1432,6 @@ B=4
 <li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() >底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
 </ol>
 </blockquote>
-
-<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
-
-<p>既然如此我們要怎麼解決此問題？？？</p>
 
 <h2>解決 setTimeout 中的 this 是 window 的情況</h2>
 
@@ -1458,8 +1458,9 @@ B=4
 
 <p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
 
-<blockquote><p>20120207 修正，一樣是錯誤的理解，感謝與我討論的朋友
-上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
+<blockquote><p>20120207 修正，一樣是錯誤的理解，感謝與我討論的朋友</p>
+
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
 
 <p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
 
