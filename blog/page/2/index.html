@@ -310,6 +310,745 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h2>到底 this 是誰？</h2>
+
+<p>JavaScript 的 code 寫多了，你一定會碰到 this 這個關鍵字，是某個 object 下的 method 也好，或是 callback function 也好，關於 this 的用法常常會讓人搞混。</p>
+
+<p>以一句簡單的話來說：在 function 裡，this 所代表的就是呼叫這個 function 的東西。</p>
+
+<p>這樣講可能有點抽象，大家來看個實際的例子：</p>
+
+<h2>this 是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;button&quot;</span>  <span class="nx">id</span> <span class="o">=</span><span class="s2">&quot;aButton&quot;</span>  <span class="nx">value</span> <span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">function</span>  <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span> <span class="p">.</span><span class="nx">value</span>  <span class="o">=</span>  <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
+
+<p>更進一步的來看簡單的例子：</p>
+
+<h2>this 不是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span>  <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span>  <span class="nx">demo</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在此例中 this 代表的是 button，因為是透過函數指定的方式 button.onclick =  demo 來呼叫 demo()，他的上層是 button，所以也就有 value 的屬性</p>
+
+<p>對於 button.onclick 輸出得到的是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也就代表 demo() 屬於 button 的</p>
+
+<h2>this 又是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;demo()&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">demo</span> <span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>得到的輸出是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">onclick</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">demo</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
+
+<p>接著我們來看另一個特殊的情形&#8230;</p>
+
+<h2>setTimeout 中的令人困惑的 this</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">TT</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 中的 lm 會被指向 window 而不是 TT 這個 object</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; lm 被正確建立於 TT 上</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT(&#8220;the message&#8221;) 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
+
+<p>但是很不幸的 d.startT(); 執行時在 d.startT();裡面的 this.lm 會是 undefind…</p>
+
+<p>Why!!!…… 我死的不明不白阿！</p>
+
+<p>因為：</p>
+
+<p>setTimeout其實是 window.setTimeout() 函數，並不是某個物件觸發的事件，在這種情況下，this 就會指向 window，因為當你呼叫 setTimeout 時，該函數裡的任務會被加入執行對列等候執行，一旦時間到開始執行實際上並不是經由 TT 來觸發而是全域的 window。</p>
+
+<p>經由下列的測試可以證明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">);</span> <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>又可以this.alert，又有this.document可用，表示 this 在當時指向的是 window。</p>
+
+<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
+
+<p>既然如此我們要怎麼解決此問題？？？</p>
+
+<blockquote><p>20130207 下面是錯誤的理解，感謝與我討論的朋友</p>
+
+<ol>
+<li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
+<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為  d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
+<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() >底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
+</ol>
+</blockquote>
+
+<h2>解決 setTimeout 中的 this 是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// 重點！</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
+
+<blockquote><p>20120207 一樣是錯誤的理解，感謝與我討論的朋友</p>
+
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
+
+<p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
+
+<h2>call() 和 apply()</h2>
+
+<p><code>call()</code> 和 <code>apply()</code> 的差別主要在於 <code>call()</code> 只接受一個參數，即 <code>call(thisArg);</code>而 apply() 接受兩個參數，即 <code>apply(thisArg, argArray)</code> 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 <code>call()</code> 和 <code>apply()</code> 可以改變 this 名稱所指涉的對象。</p>
+
+<p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
+
+<blockquote><p>If thisArg is null or undefined, the called function is passed the global object as the this value. Otherwise, the called function is passed ToObject(thisArg) as the this value.</p></blockquote>
+
+<p>接著我們分別透過 <code>call()</code> 和 <code>apply()</code> 來驗證一下</p>
+
+<ul>
+<li>call()</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">myFunc</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">hello</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>myFunc();</code>未指定的情狀下，this 輸出的是 window， <code>myFunc.call(hello);</code>則輸出 hello world</p>
+
+<ul>
+<li><p>apply()</p>
+
+<p>  以下面這段程式碼為例：</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span> <span class="p">};</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">bar</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span><span class="s1">&#39;def&#39;</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p>
+
+<p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
+
+<p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
+
+<ul>
+<li>call 呼叫的話會變成；<code>myFunc.call(hello,"abc","def");</code></li>
+<li>apply 的好處是可以先把陣列準備好，如 <code>foo.apply(bar, ['abc','def']);</code>，然後重覆使用。</li>
+</ul>
+
+
+<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.roodo.com/rocksaying/archives/2532303.html">石頭閒語</a></li>
+<li><a href="http://www.cnblogs.com/ruxpinsp1/archive/2008/04/20/1162463.html">棕熊@Think Fast</a></li>
+<li><a href="http://blog.ericsk.org/archives/1360">ericsk.net</a></li>
+</ul>
+
+
+<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
+
+<blockquote><p>20130207 教學真的會相長阿！ ^_^</p></blockquote>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-31T13:12:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/31/javascript-what-is-this/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/31/javascript-what-is-this/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/01/25/customize-live-cd/">Tips: Customize Live Cd</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在研究如何製作 live cd 也因為這項研究，讓我更熟悉 linux 的架構，發現一些有用的知識，與 linux 運作的設定，這篇算是筆記，陸續在新增</p>
+
+<ul>
+<li><p><code>/etc/skel</code></p>
+
+<p>  在這資料夾下面的檔案，只要當新增使用者時，就會複製一份給新增使用者，當你需要有一些預設設定時很好用，比如說：chrome 要有預設的首頁以及捷徑，還有輸入法預設有哪些等。</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/xdg/autostart/</code></p>
+
+<p>  global 自動執行，放在底下的 *.desktop 將會自動執行</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>~/.config/autostart/</code></p>
+
+<p>  local 自動執行，同 <code>/etc/xdg/autostart/</code>，可搭配 <code>/etc/skel</code> 服用，如果你有每個使用者登入就要執行某些程式的需求</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/rc.local</code></p>
+
+<p>  當你登入系統時，希望要執行任何 command 可以在這編輯，比如說：製作 livecd 一開始時是在 command 模式，你想要讓他直接進到 xwindow 通常需要下 startx，此時就可以在這檔案裡編寫指令，讓他自動執行。需要注意的是在這直接執行 <code>startx</code> 將是使用 root 的身分，在 etc 底下都屬於 global</p>
+
+<p>  相關說明：</p>
+
+<ul>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_sysinit">init 處理系統初始化流程 (/etc/rc.d/rc.sysinit)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_runlevel">啟動系統服務與相關啟動設定檔 (/etc/rc.d/rc N &amp; /etc/sysconfig)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_local">使用者自訂開機啟動程序 (/etc/rc.d/rc.local)</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p>live cd 啟動後，沒有 gdm 的情況下，自動登入 xwindow</p>
+
+<p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
+
+<p>  加入下列語法；</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$DISPLAY&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$(</span>tty<span class="k">)</span> <span class="o">==</span> /dev/tty1 <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>startx
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p>
+
+<hr />
+
+<ul>
+<li><p><code>locale-gen zh_TW.UTF-8</code></p>
+
+<p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>apt-get --yes autoremove</code></p>
+
+<p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+<li><p>產生 live cd 範例 makefile</p>
+
+<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LIVECD_HOME</span><span class="o">=</span>~/livecd
+</span><span class='line'><span class="nv">LIVECD_TMP</span><span class="o">=</span>/tmp/livecd
+</span><span class='line'>
+</span><span class='line'><span class="nv">ORG_ISO_URL</span><span class="o">=</span>http://www.ubuntu-mini-remix.org/download/12.10
+</span><span class='line'><span class="nv">ORG_ISO_NAME</span><span class="o">=</span>ubuntu-mini-remix-12.10-i386.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">CREATE_ISO_NAME</span><span class="o">=</span>Ubuntu-cusmize-livecd.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">DEPLOY_LOC</span><span class="o">=</span>~/
+</span><span class='line'><span class="nv">DEPLOY_REMOTE</span><span class="o">=</span>user@ip:~/
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>all: clean
+</span><span class='line'>
+</span><span class='line'>clean:
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/proc/
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/sys/
+</span><span class='line'>  sudo rm -rf <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>
+</span><span class='line'>init: clean
+</span><span class='line'>  wget -nc <span class="k">${</span><span class="nv">ORG_ISO_URL</span><span class="k">}</span>/<span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  sudo apt-get install squashfs-tools dchroot
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - sudo mount -o loop <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - mkdir -p <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  rsync --exclude<span class="o">=</span>/casper/filesystem.squashfs -a <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/ <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs  <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo modprobe squashfs
+</span><span class='line'>  - sudo mount -t squashfs -o loop <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/
+</span><span class='line'>  sudo cp -a <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/* <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo cp /etc/resolv.conf /etc/hosts <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/etc/    
+</span><span class='line'>
+</span><span class='line'>  
+</span><span class='line'>install: init
+</span><span class='line'>  
+</span><span class='line'>  <span class="c"># copy install script 在 install.sh 寫入你需要安裝的套件</span>
+</span><span class='line'>  sudo chmod +x install.sh
+</span><span class='line'>  sudo cp install.sh <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/home/
+</span><span class='line'>  
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom /home/./install.sh
+</span><span class='line'>
+</span><span class='line'>build: install
+</span><span class='line'>  chmod +w <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom dpkg-query -W --showformat<span class="o">=</span><span class="s1">&#39;${Package} ${Version}\n&#39;</span> &gt; <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo cp <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest-desktop
+</span><span class='line'>  sudo mksquashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.squashfs
+</span><span class='line'>  <span class="nb">cd</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd ;sudo mkisofs -r -V <span class="s2">&quot;Ubuntu-cusmize-livecd&quot;</span> -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> .
+</span><span class='line'>
+</span><span class='line'>deploy: build
+</span><span class='line'>  scp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_REMOTE</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'>deploy_loc: build
+</span><span class='line'>  cp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_LOC</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">test</span>:
+</span><span class='line'>  qemu-system-i386 -cdrom ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> -boot d -m 512
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 install.sh：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'>mount -t proc none /proc/
+</span><span class='line'>mount -t sysfs none /sys/
+</span><span class='line'><span class="nb">export </span><span class="nv">HOME</span><span class="o">=</span>/root
+</span><span class='line'>
+</span><span class='line'>locale-gen zh_TW.UTF-8
+</span><span class='line'>update-locale <span class="nv">LANG</span><span class="o">=</span>zh_TW.UTF-8
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install lxde
+</span><span class='line'>sudo apt-get --yes install language-support-zh language-pack-gnome-zh* ttf-arphic-*
+</span><span class='line'>
+</span><span class='line'>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo dpkg -i ./google-chrome*.deb
+</span><span class='line'>sudo apt-get --yes -f install
+</span><span class='line'>
+</span><span class='line'>rm google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install Leafpad
+</span><span class='line'>sudo apt-get --yes install xinit
+</span><span class='line'>sudo apt-get --yes install ibus
+</span><span class='line'>sudo apt-get --yes install ibus-chewing
+</span><span class='line'>sudo apt-get --yes install lxterminal
+</span><span class='line'>sudo apt-get --yes install ttf-arphic-uming
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes purge xscreensaver
+</span><span class='line'>
+</span><span class='line'>apt-get --yes autoremove
+</span><span class='line'>apt-get clean
+</span><span class='line'>rm -rf /tmp/*
+</span><span class='line'>rm -f /etc/hosts /etc/resolv.conf
+</span><span class='line'>umount /proc/
+</span><span class='line'>umount /sys/
+</span><span class='line'><span class="nb">exit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>話說：最近越來越 linux 了～</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-25T10:29:00+08:00" pubdate data-updated="true">Jan 25<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/25/customize-live-cd/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/25/customize-live-cd/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/24/qemu/">Lightweight and Portable Virtual Machine: Qemu</a>
 
 </h1>
@@ -1472,254 +2211,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/node-start/">快速了解 Node 以及 Mongodb，mail的使用</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
-
-<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
-
-<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
-
-<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
-
-<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
-
-<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T09:40:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-start/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-start/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile Deploy</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
-
-<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
-
-<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
-
-<p><code>/etc/init/yourapp.conf</code></p>
-
-<p>範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
-</span><span class='line'>author "user"                                                              
-</span><span class='line'>
-</span><span class='line'>start on startup
-</span><span class='line'>stop on shutdown
-</span><span class='line'>
-</span><span class='line'>script
-</span><span class='line'>    export HOME="/root"
-</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
-</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-start script
-</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-stop script
-</span><span class='line'>    #rm /var/run/yourprogram.pid
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
-
-<p><code>initctl list | grep node</code></p>
-
-<p>會看到下列輸出：</p>
-
-<p><code>yourapp stop/waiting</code></p>
-
-<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
-
-<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
-</span><span class='line'>
-</span><span class='line'>restart: rsync
-</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
-</span><span class='line'>
-</span><span class='line'>rsync: 
-</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
-
-<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T08:36:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-production-setting/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-production-setting/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1797,6 +2288,14 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/15/mac-andorid-usb-3g/">如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/05/extjs-component/">extjs: component 的使用，找尋 parent & child</a>
       </li>
     
@@ -1806,14 +2305,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/04/google-spreadsheets-connect/">JavaScript 存取 google spreadsheets 試算表</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/01/javascript-settimeout/">javascript: setTimeout</a>
       </li>
     
   </ul>

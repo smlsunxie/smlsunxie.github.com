@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-07T18:07:43+08:00</updated>
+  <updated>2013-02-15T18:44:43+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,33 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 3.x: 本地資料 PagingStore 的使用]]></title>
+    <link href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"/>
+    <updated>2013-02-15T18:04:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/15/extjs-pagingstore</id>
+    <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
+
+<p>當然文章一開始有提到 extjs 3 原生未支援這樣處理的方式，好家在網路上的大神已經有幫我們開發出外掛，讓我們可以很方便去使用，該外掛相關說明以及下載地址：</p>
+
+<p><a href="http://www.sencha.com/forum/showthread.php?71532-Ext.ux.data.PagingStore-v0.5">Ext.ux.data.PagingStore [v0.5]</a></p>
+
+<p>使用是需要注意的重點：</p>
+
+<ul>
+<li>根據資料來源的不同會有不同的 store</li>
+<li>在分頁 toolbar 的使用，記得也要使用 ux 的版本 <code>Ext.ux.PagingToolbar</code></li>
+<li>可以使用 <code>Ext.data.MemoryProxy</code> 當畫面 render 完成後在進行 store.load</li>
+</ul>
+
+
+<p>最後提供一個已經寫好的小範例讓大家參考一下，希望可以讓需要的人快速上手囉！</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child]]></title>
@@ -502,81 +529,6 @@ query.send(function(resp){
 
 
 <p>如果你要做一個簡單問卷，或是購買清單之類的應用，相信 google spreadsheets 是個不錯的選擇，夠簡單，且輔助 google 表單，可以很快速的完成資料輸入的頁面，查詢上也不複雜，就是幾個實用上要注意的額外處裡一下，希望可以幫有需要的人解省一些時間囉！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[javascript: setTimeout]]></title>
-    <link href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/"/>
-    <updated>2013-02-01T21:09:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/01/javascript-settimeout</id>
-    <content type="html"><![CDATA[<p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
-
-<p>```javascript
-  for (var i = 0; i &lt; 4; i++)
-  {</p>
-
-<pre><code>  console.log("A="+i);
-  function A(){
-      console.log("B="+i);
-  }
-  window.setTimeout(A, 0);
-</code></pre>
-
-<p>  }
-```</p>
-
-<p>一般常理判斷結果應該是：</p>
-
-<pre><code>A=0
-B=0
-A=1
-B=1
-A=2
-B=2
-A=3
-B=3
-</code></pre>
-
-<p>實際結果如下：</p>
-
-<pre><code>A=0
-A=1
-A=2
-A=3
-B=4
-B=4
-B=4
-B=4 
-</code></pre>
-
-<p>有沒有覺得很奇怪?</p>
-
-<p>這是因為 javascript 屬於單執行序，看起來 <code>window.setTimeout(A, 0);</code> 似乎是馬上執行，但是實際上， for 迴圈裡的 setTimeout 會先放在代執行的堆疊裡，直到 for 迴圈結束，但如此一來到結束時，i 即為 4，所以結果就是堆疊裡的每個待執行任務中的 i 都為 4。</p>
-
-<p>所以比較好的寫法應該是：</p>
-
-<p>```javascript
-  var i = 0;
-  function doAppend()
-  {</p>
-
-<pre><code>  if (i++ &gt;= 1000){
-      return;
-  }
-  console.log("B="+i);
-  setTimeout(doAppend, 0);
-</code></pre>
-
-<p>  }
-  setTimeout(doAppend, 0);
-```</p>
-
-<p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
-
-<p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
-
-<p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
 ]]></content>
   </entry>
   

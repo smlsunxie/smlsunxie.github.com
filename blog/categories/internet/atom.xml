@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: internet | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/internet/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-02-15T18:44:43+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網]]></title>
+    <link href="http://smlsun.com/blog/2013/02/15/mac-andorid-usb-3g/"/>
+    <updated>2013-02-15T16:55:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/15/mac-andorid-usb-3g</id>
+    <content type="html"><![CDATA[<p>在智慧型手機盛行的現在，很多時候出門在外需要共享網路時 android 提供很方便的網路分享機制可以讓我將 3g 網路分享給周遭的設備，一個是透過 wifi 另一個就是透過 usb 網路共享啦。</p>
+
+<p>當然很多時候透過 wifi 是很方便，但是利用 wifi 分享網路有些問題：那就是有可能不穩定，手機耗電，以及最重要的傳輸速度比使用 usb 網路共用來的慢很多很多，假設在外工作的話，你可不想讓網路速度影響你的工作效率吧！</p>
+
+<p>已筆者身邊的手機 nexus one 為例，將一一介紹如何在目前三個最大的 os 進行 usb 網路共享。</p>
+
+<h2>Windows</h2>
+
+<ol>
+<li>請先下載 android  windows 專用的驅動程式：<a href="http://www.android.com/drivers/tetherxp.inf">tetherxp.inf</a></li>
+<li>將 android 設定中的 USB 網路共用開啟</li>
+<li>把手機連結到 windows 上，會跳出安裝驅動程式的訊息，此時驅動選擇第一步驟所下載的檔案</li>
+<li>等待安裝完成，就可以快快樂樂上網啦！</li>
+</ol>
+
+
+<h2>Ubuntu</h2>
+
+<p>沒什麼好說的，Ubuntu 沒想到是最方便的，手機插上電腦，開啟 android 網路共享，就可以上網了，連驅動都不用裝，太棒了！</p>
+
+<h2>Apple MacBook</h2>
+
+<p>參考這篇文章 <a href="http://smartphones.wonderhowto.com/how-to/usb-tether-your-android-device-your-mac-without-rooting-0140478/">How to USB Tether Your Android Device to Your Mac—Without Rooting</a></p>
+
+<ol>
+<li>請先下載 <a href="https://github.com/downloads/jwise/HoRNDIS/HoRNDIS-rel2.pkg">HoRNDIS-rel2.pkg</a>，將他安裝完成</li>
+<li>連上你的 andorid phone</li>
+<li>開啟 usb 網路共用</li>
+<li>接著你就可以在網路偏好設定中看到你的手機已被掛載上網路啦！</li>
+</ol>
+
+
+<p>上面就是各 os 使用 android usb 網路共用的步驟，即使你是使用桌機沒有牽網路，也沒有 wifi 也可以透過這樣的方式分享網路進行上網，對於遊牧各地只有 3g 在手的朋友，可以更方便的讓其他設備上網，工作起來也將更得心應手，能夠全速飆網，工作才能行雲流水阿！</p>
+]]></content>
+  </entry>
+  
+</feed>

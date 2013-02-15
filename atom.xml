@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-07T18:07:43+08:00</updated>
+  <updated>2013-02-15T18:44:43+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs 3.x: 本地資料 PagingStore 的使用]]></title>
+<link href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"/>
+<updated>2013-02-15T18:04:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/15/extjs-pagingstore</id>
+
+      <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
+
+<p>當然文章一開始有提到 extjs 3 原生未支援這樣處理的方式，好家在網路上的大神已經有幫我們開發出外掛，讓我們可以很方便去使用，該外掛相關說明以及下載地址：</p>
+
+<p><a href="http://www.sencha.com/forum/showthread.php?71532-Ext.ux.data.PagingStore-v0.5">Ext.ux.data.PagingStore [v0.5]</a></p>
+
+<p>使用是需要注意的重點：</p>
+
+<ul>
+<li>根據資料來源的不同會有不同的 store</li>
+<li>在分頁 toolbar 的使用，記得也要使用 ux 的版本 <code>Ext.ux.PagingToolbar</code></li>
+<li>可以使用 <code>Ext.data.MemoryProxy</code> 當畫面 render 完成後在進行 store.load</li>
+</ul>
+
+
+<p>最後提供一個已經寫好的小範例讓大家參考一下，希望可以讓需要的人快速上手囉！</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網]]></title>
+<link href="http://smlsun.com/blog/2013/02/15/mac-andorid-usb-3g/"/>
+<updated>2013-02-15T16:55:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/15/mac-andorid-usb-3g</id>
+
+      <content type="html"><![CDATA[<p>在智慧型手機盛行的現在，很多時候出門在外需要共享網路時 android 提供很方便的網路分享機制可以讓我將 3g 網路分享給周遭的設備，一個是透過 wifi 另一個就是透過 usb 網路共享啦。</p>
+
+<p>當然很多時候透過 wifi 是很方便，但是利用 wifi 分享網路有些問題：那就是有可能不穩定，手機耗電，以及最重要的傳輸速度比使用 usb 網路共用來的慢很多很多，假設在外工作的話，你可不想讓網路速度影響你的工作效率吧！</p>
+
+<p>已筆者身邊的手機 nexus one 為例，將一一介紹如何在目前三個最大的 os 進行 usb 網路共享。</p>
+
+<h2>Windows</h2>
+
+<ol>
+<li>請先下載 android  windows 專用的驅動程式：<a href="http://www.android.com/drivers/tetherxp.inf">tetherxp.inf</a></li>
+<li>將 android 設定中的 USB 網路共用開啟</li>
+<li>把手機連結到 windows 上，會跳出安裝驅動程式的訊息，此時驅動選擇第一步驟所下載的檔案</li>
+<li>等待安裝完成，就可以快快樂樂上網啦！</li>
+</ol>
+
+
+<h2>Ubuntu</h2>
+
+<p>沒什麼好說的，Ubuntu 沒想到是最方便的，手機插上電腦，開啟 android 網路共享，就可以上網了，連驅動都不用裝，太棒了！</p>
+
+<h2>Apple MacBook</h2>
+
+<p>參考這篇文章 <a href="http://smartphones.wonderhowto.com/how-to/usb-tether-your-android-device-your-mac-without-rooting-0140478/">How to USB Tether Your Android Device to Your Mac—Without Rooting</a></p>
+
+<ol>
+<li>請先下載 <a href="https://github.com/downloads/jwise/HoRNDIS/HoRNDIS-rel2.pkg">HoRNDIS-rel2.pkg</a>，將他安裝完成</li>
+<li>連上你的 andorid phone</li>
+<li>開啟 usb 網路共用</li>
+<li>接著你就可以在網路偏好設定中看到你的手機已被掛載上網路啦！</li>
+</ol>
+
+
+<p>上面就是各 os 使用 android usb 網路共用的步驟，即使你是使用桌機沒有牽網路，也沒有 wifi 也可以透過這樣的方式分享網路進行上網，對於遊牧各地只有 3g 在手的朋友，可以更方便的讓其他設備上網，工作起來也將更得心應手，能夠全速飆網，工作才能行雲流水阿！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/15/mac-andorid-usb-3g/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -2551,130 +2631,6 @@ F. An exception is thrown at runtime.
 
 <p>來隨著流浪漢環遊世界吧！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/09/this-guy-is-my-bro/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[快速了解 node 以及 mongodb，mail的使用]]></title>
-<link href="http://smlsun.com/blog/2013/01/09/node-start/"/>
-<updated>2013-01-09T09:40:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/09/node-start</id>
-
-      <content type="html"><![CDATA[<p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
-
-<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
-
-<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
-
-<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
-
-<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
-
-<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/09/node-start/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile deploy]]></title>
-<link href="http://smlsun.com/blog/2013/01/09/node-production-setting/"/>
-<updated>2013-01-09T08:36:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/09/node-production-setting</id>
-
-      <content type="html"><![CDATA[<p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
-
-<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
-
-<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
-
-<p><code>/etc/init/yourapp.conf</code></p>
-
-<p>範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
-</span><span class='line'>author "user"                                                              
-</span><span class='line'>
-</span><span class='line'>start on startup
-</span><span class='line'>stop on shutdown
-</span><span class='line'>
-</span><span class='line'>script
-</span><span class='line'>    export HOME="/root"
-</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
-</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-start script
-</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-stop script
-</span><span class='line'>    #rm /var/run/yourprogram.pid
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
-
-<p><code>initctl list | grep node</code></p>
-
-<p>會看到下列輸出：</p>
-
-<p><code>yourapp stop/waiting</code></p>
-
-<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
-
-<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
-</span><span class='line'>
-</span><span class='line'>restart: rsync
-</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
-</span><span class='line'>
-</span><span class='line'>rsync: 
-</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
-
-<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/09/node-production-setting/"></a></p>]]></content>
     </entry>
   
 </feed>
