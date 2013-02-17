@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-17T20:04:19+08:00</updated>
+  <updated>2013-02-17T20:05:54+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -146,6 +146,8 @@ PIPI.Mapping.push(externLib);
     lib2 = null;
 })();
 </code></pre>
+
+<p>一旦上面得程式碼執行後，可以透過 chrome 的開發者工具中的 Profiles 來觀看變數的使用情形，如下圖：</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"></a></p>]]></content>
     </entry>
   
