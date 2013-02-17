@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-17T20:09:18+08:00</updated>
+  <updated>2013-02-17T20:11:44+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -150,6 +150,8 @@ PIPI.Mapping.push(externLib);
 <p>一旦上面得程式碼執行後，可以透過 chrome 的開發者工具中的 Profiles 來觀看變數的使用情形，如下圖：</p>
 
 <p><img src="https://lh5.googleusercontent.com/-1I9sdsmLfxo/USCnHcVdzVI/AAAAAAAALhs/1udovkwXtfE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.43.34.jpg" alt="img" /></p>
+
+<p>可以看到，有兩個 library 對象：一個是函數宣告，另外一個才是 <code>new Library("0000")</code>，下面的 Retaining tree 呈現有哪些物件引用了 <code>new Library("0000")</code>，分別是外部變數 externLib 以及 <code>PIPI.Mapping[0]</code> (圖中樹狀從節點往 root)。</p>
 
 <p>透過該工具的協助既然知道了有哪些 Reference 沒有確實清除，要解決此問題就簡單多了只要加入：</p>
 
