@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-17T20:11:44+08:00</updated>
+  <updated>2013-02-17T20:14:55+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,7 +18,7 @@
 
 
 
-<title type="html"><![CDATA[javascript: Memory Leaks]]></title>
+<title type="html"><![CDATA[javascript: Memory Leaks 的情況以及如何解決與偵測]]></title>
 <link href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"/>
 <updated>2013-02-17T13:40:00+08:00</updated>
 <id>http://smlsun.com/blog/2013/02/17/javascript-memory-leaks</id>
@@ -28,7 +28,6 @@
 <ul>
 <li><a href="http://fred-zone.blogspot.tw/2012/05/javascript_22.html">簡單理解 JavaScript 的記憶體管理機制</a></li>
 <li><a href="http://www.ppzhang.com/?p=8">配合GC，JavaScript性能優化之：邪惡閉包，對象引用清除深入探究</a></li>
-<li></li>
 </ul>
 
 
