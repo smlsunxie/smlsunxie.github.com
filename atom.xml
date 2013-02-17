@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-17T19:59:43+08:00</updated>
+  <updated>2013-02-17T20:04:19+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,12 +18,134 @@
 
 
 
-<title type="html"><![CDATA[javascript: Memory Leaks 的情況以及如何解決與偵測]]></title>
+<title type="html"><![CDATA[javascript: Memory Leaks]]></title>
 <link href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"/>
 <updated>2013-02-17T13:40:00+08:00</updated>
 <id>http://smlsun.com/blog/2013/02/17/javascript-memory-leaks</id>
 
-      <content type="html"><![CDATA[
+      <content type="html"><![CDATA[<p>文章來源：</p>
+
+<ul>
+<li><a href="http://fred-zone.blogspot.tw/2012/05/javascript_22.html">簡單理解 JavaScript 的記憶體管理機制</a></li>
+<li><a href="http://www.ppzhang.com/?p=8">配合GC，JavaScript性能優化之：邪惡閉包，對象引用清除深入探究</a></li>
+<li></li>
+</ul>
+
+
+<p>若要知曉如何避免 Memory Leaks 就要先了解 &#8230;</p>
+
+<h2>JavaScript 的記憶體管理機制</h2>
+
+<p>不像其他的語言，JavaScript 開發者永遠沒有辦法自己去釋放記憶體，頂多只能移除物件的 Reference （代表這物件已經沒有人在使用），而且這物件所佔的記憶體並不會馬上被釋放，而是 Garbage Collection 在滿足某些條件的情況下，才在背景自動去尋找沒有被使用的物件，然後釋放。若你嘗試過尋找釋放記憶體或移除物件 Reference 的方法，得到的解答，應該不外乎是使用 delete 關鍵字或是將變數設為 null，若在不瞭解的情況下使用它們，可能因此產生 Memory leaks 的狀況。JavaScript 的記憶體管理機制，更準確的說，是物件的管理機制。</p>
+
+<p>從 JavaScript 開發者角度來看，JavaScript Engine 在運作時，記憶體使用是呈現樹狀結構，也就是所有命名或建立的變數或物件，都是存放在一個全域(global)的 Object 中。</p>
+
+<p>我們可以做個實驗理解一下：</p>
+
+<pre><code>var myVar = 'Hello';
+function myFunc() {
+    return 123;
+}
+var myObj = {
+    a: 1,
+    b: 2
+};
+
+console.log(global);
+</code></pre>
+
+<p>執行以上程式，你應該可以從 global 中找到我們自己定義的變數和函式：</p>
+
+<pre><code>{
+    ...（已省略基本預設的環境變數）...
+    myVar: 'Hello',
+    myFunc: [function],
+    myObj: {
+        a: 1,
+        b: 2
+    },
+    ...
+}
+</code></pre>
+
+<p>從結果可以發現，所有的物件都以樹狀的形式被 global Object 保存著，無論是變數還是任何一種類型的物件，都是一組組 Key/Value 的存在。而 Value 就是各種不同形態的物件，如字串、函數、陣列、數值等。</p>
+
+<p>所以，移除某物件的 Reference，就意味著將把物件從這棵樹上拔除掉。因此，我們可以直接將該變數設為 null：</p>
+
+<pre><code>myVar = null;
+</code></pre>
+
+<p>由於該變數被設為 null，原本的字串（包含著『Hello』）物件就失去了依附的樹枝，如枯葉般從樹上掉下來，等著 Garbage Collection 來回收它。對於開發者而言，其實就是告訴 GC 我不需要這物件了，隨時可以把這個物件的記憶體釋放。</p>
+
+<p>然而，雖然變數被設為 null 後，原本的物件被釋放了，但該變數還是存在的，別忘了，他是一個在 global Object 中的 Key，現在只是沒有 Value 為 null 而已。要真正把這個變數給刪除，這時就要用到 delete 關鍵字。如果你去查一下 JavaScript 的 API 參考文獻，就會發現 delete 關鍵字其實是拿來刪除 Object 中的一組 Key/Value。因此，既然 JavaScript 所有的變數其實都只是一組存放在 global Object 的 Key/Value，我們理所當然可以用 delete 關鍵字去移除掉他：</p>
+
+<pre><code>delete myVar;
+</code></pre>
+
+<p>知曉了 JavaScript 的記憶體管理機制後，你就會了解使用 delete 關鍵字和將變數設為 null，其實並不是代表物件就會被釋放，只是砍樹枝去減少物件的 Reference。</p>
+
+<p>此外，如果一個物件有多個 Reference，只是單單刪其中一個也不會讓物件被 GC 釋放：</p>
+
+<pre><code>var myVar = 'Hello';
+var myVar1 = myVar;
+
+myVar = null;
+delete myVar;
+
+console.log(myVar1);
+</code></pre>
+
+<p>以上的程式會顯示『Hello』字串，該物件並不會因為失去 myVar 這 Reference 而被 GC 移除。若想要這一個字串被釋放，必需清空物件所有的 Reference（包括 myVar 和 myVar1），才能讓物件具有被 GC 回收的條件。所以，如果你不小心讓一個不明顯的變數勾搭上了物件，然後你忘記了這個變數的存在，很有可能就會造成 Memory Leaks，讓以為已經被釋放的物件，偷偷存活在於記憶體上。</p>
+
+<p>其中 Reference 是常見於各種系統的設計，主要做法是幫物件建立一個 Reference 計數器，當有人關聯或使用到他，就會讓這計數器加一，等到關聯被移除或使用完畢後，就會讓計數器減一。所以，一旦計數器為零時，代表現在沒有任何外部的物件在使用或關聯到它，是可以被釋放掉的狀態。</p>
+
+<p>對於記憶體的管理機制了解之後，接著看 &#8230;</p>
+
+<h2>GC 的判定方式</h2>
+
+<p>mark-and-sweep（標記清除）算法，即：</p>
+
+<p>（1）遍歷所有可訪問的對象。</p>
+
+<p>（2）回收已不可訪問的對象。</p>
+
+<p>實際運作上，就如同上一節有講到的，透過檢查計數器是否為 0 來確認是否可以進行 GC</p>
+
+<p>正常來說，如果有確實將全域變數的 Reference 正確清除的話，記憶體應該會被 GC。</p>
+
+<h2>如何避免無法 GC 的情形？</h2>
+
+<ol>
+<li>定義變數一定要用 var，否則預設宣告出來的變量都是全域變量，不是區域變數</li>
+<li>全域變數沒用時記得要指定為 null，確實將全域變數的 Reference 正確清除</li>
+<li>正確使用 delete ，刪除沒用的一些函數屬性；</li>
+<li>window.open 出來的視窗即使 close 了，它的 window 對象還是存在的，要記得刪除引用；</li>
+<li>frame 和 iframe 的情況和 window.open 的情況類似。</li>
+</ol>
+
+
+<h2>如何透過工具偵測 leaks 情形？</h2>
+
+<p>下面例子是全域變數之 Reference 沒有確實清除的情形：</p>
+
+<pre><code>function Library(name){
+    this.name = name;
+}
+var PIPI = {
+    Mapping : [],
+    get : function(){
+         return PIPI.Mapping[0];
+    }
+}
+var externLib = new Library("0000");
+PIPI.Mapping.push(externLib);
+(function(){
+    var lib = PIPI.get();
+    lib = null;
+    var lib2 = PIPI.Mapping[0];
+    lib2 = null;
+})();
+</code></pre>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"></a></p>]]></content>
     </entry>
   
