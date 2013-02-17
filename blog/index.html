@@ -310,6 +310,83 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/17/javascript-memory-leaks/">Javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-17T13:40:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/17/javascript-memory-leaks/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/17/javascript-memory-leaks/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/15/extjs-pagingstore/">Extjs 3.x: 本地資料 PagingStore 的使用</a>
 
 </h1>
@@ -1453,7 +1530,7 @@ B=4
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
 </span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">){</span>
 </span><span class='line'>          <span class="k">return</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
 </span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
@@ -1468,6 +1545,22 @@ B=4
 <p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
 
 <p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
+
+<p>另外一旦我們想要清除定時器，可以通過將定時時產生的ID標識傳遞給clearTimeout或者clearInterval函數來清除定時，至於使用哪個函數取決於調用的時候使用的是setTimeout還是setInterval。範例如下：</p>
+
+<pre><code>var id = setTimeout ( foo ,  1000 ); 
+clearTimeout ( id );
+</code></pre>
+
+<p>假設我們要清除所有定時器，但由於沒有內置的清除所有定時器的方法，可以採用一種暴力的方式來達到這一目的。</p>
+
+<pre><code>//清空"所有"的定時器
+for ( var i =  1 ; i &lt;  1000 ; i ++)  { 
+    clearTimeout ( i ); 
+}
+</code></pre>
+
+<p>可能還有些定時器不會在上面代碼中被清除（如果定時器調用時返回的ID值大於1000），因此我們可以事先保存所有的定時器ID，然後一把清除。</p>
 
   </div>
 
@@ -1921,8 +2014,10 @@ B=4
 <ol>
 <li>對那些常常會存取的變數，盡量把它放在 local</li>
 <li>避免使用 with</li>
-<li>小心使用 try / catch</li>
-<li>沒有必要的話不要用 closure</li>
+<li><p>小心使用 try / catch</p>
+
+<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
+<li><p>沒有必要的話不要用 closure</p></li>
 <li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
 </ol>
 
@@ -2041,191 +2136,6 @@ B=4
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>介紹幾篇關於效能的文章：</p>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>節錄幾個重要的觀念：</p>
-
-<ol>
-<li><p>了解變數 scope 以及初始化</p>
-
-<p> 可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p></li>
-<li><p>避免寫與 HTML 混在一起(inline)的 JavaScript</p>
-
-<ul>
-<li><p>錯誤示範：</p>
-
-<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
-</code></pre>
-
-<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
-<li><p>正確：</p>
-
-<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
-
-  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
-  initializePage();
-      // pretend that these functions are in /s/init.js
-      function initializePage() {
-          document.getElementById("my_btn")
-              .addEventListener("click", doThis);
-      }
-      function doThis(e) {
-          // do cool stuff here
-      }
-  // ]]&gt;&lt;/script&gt;
-</code></pre></li>
-</ul>
-
-
-<p> 另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p></li>
-<li><p>找到對的 Event 去做 binding</p>
-
-<p> 比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p></li>
-<li><p>使用快速的 selectors</p>
-
-<p> 如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
-
-<p> 如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p></li>
-<li><p>非必要的時候不要去動 document</p>
-
-<p> 這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
-
-<p> 盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
-
-<p> 如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p></li>
-<li><p>等值檢查與真值</p>
-
-<p> JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
-
-<ul>
-<li>“5″ == 5 but “5″ !== 5</li>
-<li>0 == false but 0 !== false</li>
-<li>null == undefined but null !== undefined</li>
-</ul>
-
-
-<p> 換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p></li>
-<li><p>資料存取方式</p>
-
-<p> 有四種存取資料的方式分別是：</p>
-
-<ul>
-<li>數值或字串  (literal value)</li>
-<li>變數</li>
-<li>物件屬性</li>
-<li>陣列</li>
-</ul>
-
-
-<p> 在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
-
-<p> 物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
-
-<p> 在資料存取的建議是：</p>
-
-<ul>
-<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
-<li>盡量減低物件或是陣列存取的深度。</li>
-</ul>
-</li>
-<li><p>迴圈</p>
-
-<p> 不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p></li>
-<li><p>DOM</p>
-
-<p> 在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
-
-<p> 透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
-
-<p> 關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
-
-<p> 關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
-
-<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote></li>
-</ol>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2301,6 +2211,10 @@ B=4
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
       </li>
     
@@ -2314,10 +2228,6 @@ B=4
     
       <li>
         <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
       </li>
     
   </ul>

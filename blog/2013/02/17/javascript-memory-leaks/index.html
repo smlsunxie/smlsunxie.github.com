@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>關於產業會議的15K - 蹤影</title>
+  <title>javascript: Memory Leaks 的情況以及如何解決與偵測 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,9 +26,9 @@
   
   
   
-  <meta name="description" content="15K不是重點！產業會議：開放勞工超時加班、增加派遣">
+  <meta name="description" content="說明在 javascript 中，Memory Leaks 發生的情形，以及如何解決還有偵測的方式">
   
-  <meta name="keywords" content="15K,news,產業會議,超時加班,增加派遣">
+  <meta name="keywords" content="javascript, leaks, IE, Memory, chrome, profiles">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/13/news-15k/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">
 
 
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-關於產業會議的15K
+Javascript: Memory Leaks 的情況以及如何解決與偵測
 
 </h1>
 
@@ -321,21 +321,7 @@
 
 
   <div class="post-description">
-    <p>真的不要再模糊焦點了，大家請仔細看清楚</p>
-
-<p><a href="http://www.ettoday.net/news/20121212/139079.htm">15K不是重點！產業會議：開放勞工超時加班、增加派遣</a></p>
-
-<p>還記得我之前發的</p>
-
-<p>「如果你不夠謹慎，報紙會讓你痛恨那些正在被壓迫的人們，同時愛戴那些正在施暴的壓迫者。」</p>
-
-<p>就是指這回事，他媽的拿別人的聲譽來模糊焦點，這算什麼！？</p>
-
-<p>很奇怪耶！這事情還有陳為廷事件，都是因為對政府不滿，所以情緒不好的發言被作文章，所以得到一個教訓，雖然最近大家都很不爽，如果要討論或是揭發一些事，一定一定要淡定但堅持的討論，不然又有哪個記者在那模糊焦點。</p>
-
-<p>雖然我很不喜歡看新聞，要是以前我一定會算了，這社會不就這樣，但是如果知道真相，但是又不去散布真正的事實，那不就謊言滿天飛，現在資訊發達，轉發很簡單，但請不要隨便轉發，不論好壞正確的事才值得宣傳。正所謂僅言慎行，請對自己的轉發與言論要更有責任感！如果不這麼做，那就不要怨嘆現在的社會，因為那都是你我一點一滴造成的！！</p>
-
-<p>話又說回來，不然來弄個真相新聞網，專門收集不實的新聞，正確事實發生經過，內容不作評論，只整理經過與事實，哈哈～</p>
+    
 
   </div>
 
@@ -369,12 +355,12 @@
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-13T10:07:00+08:00" pubdate data-updated="true">Dec 13<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-17T13:40:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/心得/'>心得</a>
+    <a class='category' href='/blog/categories/ie/'>IE</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/leaks/'>leaks</a>
   
 </span></span>
 
@@ -389,7 +375,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/13/news-15k/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/13/news-15k/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/" target="_blank" >Tweet</a>
     
   
   
@@ -410,10 +396,8 @@
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/10/about-write/" title="Previous Post: 關於寫作"><li>&laquo; 關於寫作</li></a>
+            <a class="left" href="/blog/2013/02/15/extjs-pagingstore/" title="Previous Post: extjs 3.x: 本地資料 PagingStore 的使用"><li>&laquo; extjs 3.x: 本地資料 PagingStore 的使用</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/16/about-east-west-religion/" title="Next Post: 從東西方宗教來看東西方差異"><li>從東西方宗教來看東西方差異 &raquo;</li></a>
           
         </ul>
 
@@ -557,7 +541,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/13/news-15k/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/13/news-15k/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/" target="_blank" >Tweet</a>
     
   
   
@@ -709,8 +693,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/13/news-15k/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/13/news-15k/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -389,8 +389,10 @@ Javascript: About Scope
 <ol>
 <li>對那些常常會存取的變數，盡量把它放在 local</li>
 <li>避免使用 with</li>
-<li>小心使用 try / catch</li>
-<li>沒有必要的話不要用 closure</li>
+<li><p>小心使用 try / catch</p>
+
+<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
+<li><p>沒有必要的話不要用 closure</p></li>
 <li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
 </ol>
 
@@ -540,7 +542,7 @@ Javascript: About Scope
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2013/02/01/javascript-performance/" title="Previous Post: javascript: performance"><li>&laquo; javascript: performance</li></a>
+            <a class="left" href="/blog/2013/02/01/javascript-performance/" title="Previous Post: javascript: performance & Tip"><li>&laquo; javascript: performance & Tip</li></a>
           
           
             <a class="right" href="/blog/2013/02/01/javascript-closure/" title="Next Post: javascript: closure"><li>javascript: closure &raquo;</li></a>
@@ -637,6 +639,10 @@ Javascript: About Scope
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
       </li>
     
@@ -650,10 +656,6 @@ Javascript: About Scope
     
       <li>
         <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
       </li>
     
   </ul>

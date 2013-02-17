@@ -310,6 +310,394 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance & Tip</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>介紹幾篇關於效能的文章：</p>
+
+<ul>
+<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
+<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
+<li><a href="http://bonsaiden.github.com/JavaScript-Garden/zh/">JavaScript秘密花園</a></li>
+<li><a href="http://dev.opera.com/articles/view/efficient-javascript/">Efficient JavaScript</a></li>
+<li><a href="http://www.woiweb.net/efficient-javascript.html">Efficient JavaScript 中文</a></li>
+</ul>
+
+
+<p>節錄幾個重要的觀念：</p>
+
+<h2>1. 了解變數 scope 以及初始化</h2>
+
+<p>可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p>
+
+<h2>2. 避免寫與 HTML 混在一起(inline)的 JavaScript</h2>
+
+<ul>
+<li><p>錯誤示範：</p>
+
+<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
+</code></pre>
+
+<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
+<li><p>正確：</p>
+
+<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
+
+  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
+  initializePage();
+      // pretend that these functions are in /s/init.js
+      function initializePage() {
+          document.getElementById("my_btn")
+              .addEventListener("click", doThis);
+      }
+      function doThis(e) {
+          // do cool stuff here
+      }
+  // ]]&gt;&lt;/script&gt;
+</code></pre></li>
+</ul>
+
+
+<p>另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p>
+
+<h2>3. 找到對的 Event 去做 binding</h2>
+
+<p>比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p>
+
+<h2>4. 使用快速的 selectors</h2>
+
+<p>如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
+
+<p>如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p>
+
+<h2>5. 非必要的時候不要去動 document</h2>
+
+<p>這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
+
+<p>盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
+
+<p>如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p>
+
+<h2>6. 等值檢查與真值</h2>
+
+<p>JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
+
+<ul>
+<li>“5″ == 5 but “5″ !== 5</li>
+<li>0 == false but 0 !== false</li>
+<li>null == undefined but null !== undefined</li>
+</ul>
+
+
+<p>換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p>
+
+<h2>7. 資料存取方式</h2>
+
+<p>有四種存取資料的方式分別是：</p>
+
+<ul>
+<li>數值或字串  (literal value)</li>
+<li>變數</li>
+<li>物件屬性</li>
+<li>陣列</li>
+</ul>
+
+
+<p>在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
+
+<p>物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
+
+<p>在資料存取的建議是：</p>
+
+<ul>
+<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
+<li>盡量減低物件或是陣列存取的深度。</li>
+</ul>
+
+
+<h2>8. 迴圈</h2>
+
+<p>不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p>
+
+<h2>9. DOM</h2>
+
+<p>在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
+
+<p>透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
+
+<p>關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
+
+<p>關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
+
+<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote>
+
+<h2>10. 避免使用 eval 或 Function 構造函數</h2>
+
+<h3>為什麼不要使用eval</h3>
+
+<p>每次eval或Function構造函數作用於字符串表示的源代碼時，腳本引擎都需要將源代碼轉換成可執行代碼。這是很消耗資源的操作——通常比簡單的函數調用慢100倍以上。</p>
+
+<p>eval函數效率特別低，由於事先無法知曉傳給eval的字符串中的內容，eval在其上下文中解釋要處理的代碼，也就是說編譯器無法優化上下文，因此只能有瀏覽器在運行時解釋代碼。這對性能影響很大。</p>
+
+<h3>重寫eval</h3>
+
+<p>eval不僅效率低下，而且絕大部分情況下完全沒有使用的必要。很多情況下使用eval是因為信息以字符串形式提供，開發者誤認為只有eval能使用此信息。下例是一個典型的錯誤：</p>
+
+<p>function getProperty(oString) {
+  var oReference;
+  eval(&#8216;oReference = test.prop.&#8217;+oString);
+  return oReference;
+}</p>
+
+<p>下面的代碼執行完全相同的函數，但沒有使用eval：</p>
+
+<p>function getProperty(oString) {
+  return test.prop[oString];
+}</p>
+
+<h3>Function</h3>
+
+<p>用 Function 類直接創建函數的語法如下：</p>
+
+<pre><code>var function_name = new function(arg1, arg2, ..., argN, function_body)
+
+var doAdd = new Function("iNum", "alert(iNum + 10)"); 
+</code></pre>
+
+<p>可以看到其定義的方式與 eval 很像，因此也有類似 eval 的問題，只是 Function 構造函數比 eval 略好，因為使用此代碼不會影響周圍代碼；但其速度仍很慢。</p>
+
+<h3>偽裝的eval</h3>
+
+<p>定時函數 setTimeout和setInterval都可以接受字符串作為它們的第一個參數。這個字符串總是在全局作用域中執行，這個特性絕對不要使用，因為它在內部使用了eval。</p>
+
+<p>function foo ()  {</p>
+
+<pre><code>//將會被調用
+</code></pre>
+
+<p>}</p>
+
+<p>function bar ()  {</p>
+
+<pre><code>function foo ()  { 
+    //不會被調用
+} 
+setTimeout ( 'foo()' ,  1000 ); 
+</code></pre>
+
+<p>}
+bar ();</p>
+
+<p>由於eval在這種情況下不是被直接調用，因此傳遞到setTimeout的字符串會自全局作用域中執行；因此，上面的回調函數使用的不是定義在bar作用域中的局部變量foo。</p>
+
+<p>建議不要在調用定時器函數時，為了向回調函數傳遞參數而使用字符串的形式，這麼寫的代碼明顯質量很差。</p>
+
+<pre><code>function foo ( a , b , c )  {} 
+
+//不要這樣做
+setTimeout ( 'foo(1,2, 3)' ,  1000 ) 
+
+//可以使用匿名函數完成相同功能
+setTimeout ( function ()  { 
+    foo ( a , b , c ); 
+},  1000 )
+</code></pre>
+
+<p>當需要向回調函數傳遞參數時，可以創建一個匿名函數，如上例，在函數內執行真實的回調函數，如此一來可避免使用 eval。</p>
+
+<h3>安全問題</h3>
+
+<p>eval也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
+
+<h3>結論</h3>
+
+<p>在任何情況下我們都應該避免使用eval函數。99.9%使用eval的場景都有不使用 eval的解決方案，任何使用它的代碼都會在它的工作方式，性能和安全性方面受到質疑。如果一些情況 ​​必須使用到eval才能正常工作，首先它的設計會受到質疑，這不應該是首選的解決方案，一個更好的不使用eval的解決方案應該得到充分考慮並優先採用。</p>
+
+<p>在Opera 9, Firefox, 和Internet Explorer 中後者比前者快95%，在Safari 中快85%。(注意此比較中不含函數本身調用時間。)</p>
+
+<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval，應該避免使用</p>
+
+<p>建議可使用下列 js lib: <a href="https://github.com/douglascrockford/JSON-js">JSON-js</a></p>
+
+<h2>11. 自動分號插入</h2>
+
+<p>儘管JavaScript有C的代碼風格，但是它不強制要求在代碼中使用分號，實際上可以省略它們。</p>
+
+<p>JavaScript不是一個沒有分號的語言，恰恰相反上它需要分號來就解析源代碼。因此JavaScript解析器在遇到由於缺少分號導致的解析錯誤時，會自動在源代碼中插入分號。</p>
+
+<p>自動的分號插入被認為是JavaScript語言最大的設計缺陷之一，因為它能改變代碼的行為。</p>
+
+<h3>運作原理</h3>
+
+<p>下面的代碼沒有分號，因此解析器需要自己判斷需要在哪些地方插入分號。</p>
+
+<pre><code>( function ( window ,  undefined )  { 
+    function test ( options )  { 
+        log ( 'testing!' ) 
+
+        ( options . list ||  []). forEach ( function ( i )  { 
+
+        }) 
+
+        options . value . test ( 
+            'long string to pass here' , 
+            'and another long string to pass' 
+        ) 
+
+        return 
+        { 
+            foo :  function ()  {} 
+        } 
+    } 
+    window . test = test 
+
+})( window ) 
+
+( function ( window )  { 
+    window . someLibrary =  {} 
+})( window )
+</code></pre>
+
+<p>下面是解析器&#8221;猜測&#8221;的結果。</p>
+
+<pre><code>( function ( window ,  undefined )  { 
+    function test ( options )  { 
+
+        //沒有插入分號，兩行被合併為一行
+        log ( 'testing!' )( options . list ||  []). forEach ( function ( i )  { 
+
+        });  // &lt;-插入分號
+
+        options . value . test ( 
+            'long string to pass here' , 
+            'and another long string to pass' 
+        );  // &lt;-插入分號
+
+        return ;  // &lt;-插入分號,改變了return表達式的行為
+        {  //作為一個代碼段處理
+            foo :  function ()  {}  
+        };  // &lt;-插入分號
+    } 
+    window . test = test ;  // &lt;-插入分號
+
+//兩行又被合併了
+})( window )( function ( window )  { 
+    window . someLibrary =  {};  // &lt;-插入分號
+})( window );  //&lt;-插入分號
+</code></pre>
+
+<p>建議絕對不要省略分號，同時也提倡將花括號和相應的表達式放在一行，對於只有一行代碼的if或者else表達式，也不應該省略花括號。這些良好的編程習慣不僅可以提到代碼的一致性，而且可以防止解析器改變代碼行為的錯誤處理，雖然 javascript 沒有強制檢查，但好的習慣可以避免不必要的麻煩。</p>
+
+<h2>12. 不要在影響性能的關鍵函數中使用try-catch-finally</h2>
+
+<p>try-catch-finally結構比較特殊。和其他語法結構不同，它在runtime的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的exception對象賦給一個變量。這個變量不屬於任何腳本。它在catch語句開始時被創建，在結束時被銷毀。</p>
+
+<p>由於此函數比較特殊，且是在運行時動態創建動態銷毀，有些瀏覽器對其的處理並不高效。把catch 語句放在關鍵循環中將極大影響性能。</p>
+
+<p>如果可能，應在腳本中不頻繁被調用的地方進行異常處理，或通過檢查某種動作是否被支持來避免使用。下面的例子中，如果所需的屬性不存在，將在循環語句中拋出許多異常：</p>
+
+<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
+for( i = 0; i &lt; oProperties.length; i++ ) {
+  try {
+    test[oProperties[i]].someproperty = somevalue;
+  } catch(e) {
+    ...
+  }
+}
+</code></pre>
+
+<p>很多情況下，可把try-catch-finally結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
+有時可用屬性檢測或其他檢測代替try-catch-finally結構：</p>
+
+<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
+try {
+  for( i = 0; i &lt; oProperties.length; i++ ) {
+    test[oProperties[i]].someproperty = somevalue;
+  }
+} catch(e) {
+  ...
+}
+</code></pre>
+
+<h2>13. location.replace()控制歷史項</h2>
+
+<p>有時需要通過腳本修改頁面地址。常見的方法是給location.href賦新地址。這將和打開新鏈接一樣添加新歷史項、載入新頁面。
+有時不想添加新歷史項，因為用戶不需要回到前面的頁面。這在內存資源有限的設備中很有用。通過替換歷史項恢復當前頁面所使用的內存。可以通過location.replace()方法實現。</p>
+
+<p>注意頁面仍被保存在cache 中，仍佔用內存，但比保存在歷史中要少的多。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>
 
 </h1>
@@ -2060,157 +2448,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/this-guy-is-my-bro/">This Guy Is My Bro!這傢伙是我哥～</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p><img src="http://4.bp.blogspot.com/-qkBOxhKvsu4/UGqp2TSiLSI/AAAAAAAAAC8/EWBp1UoXzaw/s1600/P1000578.jpg" alt="img" /></p>
-
-<p>這傢伙是我哥，認識我的人都知道我是很穩定的人，但我哥卻是個浪子，一個非常有勇氣去追逐夢想的人，曾幾何時我還年輕時，總覺得我哥很不務正業，每天都在想東想西，做著一些不算工作的工作，常常讓爸媽擔心，十足是家裡的問題份子，但隨著年歲的增長，看東西的角度不一樣後，現在卻覺得我哥很了不起，能夠有勇氣去追逐他的夢想，並且用他異於常人的方式去完成，有多異於常人？可以看看他寫的網誌，那些艱苦的旅程，真的很難想像，也非常的有趣！</p>
-
-<p>有哪些旅程呢？</p>
-
-<p>從一開始的<a href="http://www.wretch.cc/blog/rz250xr/11556922">複習曲之金旺環島之大雨伴我行</a></p>
-
-<p><img src="https://lh3.googleusercontent.com/-eyj-BRr6FT0/UOzmeKlUmpI/AAAAAAAALd8/Ib7w0j8aF3M/s640/1961773358.jpg" alt="img" /></p>
-
-<p>然後是<a href="http://www.wretch.cc/blog/rz250xr/11889412">流浪漢與男子漢的新春萬榮丹大貫通協奏曲</a>，重點是…騎腳踏車…過程都在不是路的路</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ywo7PaIfmqY/UOzmZsH2EAI/AAAAAAAALdM/whOP-589CAI/s640/1404992859.jpg" alt="img" /></p>
-
-<p>接著<a href="http://www.wretch.cc/blog/rz250xr/12147238">北京到西藏越野車之旅</a>&#8230;重點是騎摩托車，在遇到車禍，在火車上修引擎->因為我家是摩托車店，別懷疑！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-iOolL_NMwy8/UOzma320ptI/AAAAAAAALdY/FEctbyj2-jM/s600/1283332842.jpg" alt="img" /></p>
-
-<p>對了！還有這篇很有趣，<a href="http://www.wretch.cc/blog/rz250xr/12214139">睡</a></p>
-
-<p><img src="https://lh4.googleusercontent.com/-aQk3XSMQk_s/UOzmb6NiG1I/AAAAAAAALdg/CB8aKbRzORE/s640/1492851339.jpg" alt="img" /></p>
-
-<p>西藏之旅得到一個很屌的獎狀！</p>
-
-<p><img src="https://lh3.googleusercontent.com/-O6sa5TS6Hao/UOzmccSHLnI/AAAAAAAALdo/Gb3U1Sf7gFc/s640/1281824619.jpg" alt="img" /></p>
-
-<p>然後我老哥展開他的澳洲兩年的打工旅遊之旅，他又騎著他在當地買的金旺開始他的環澳洲之旅</p>
-
-<p><img src="http://i.imgur.com/hUm2A.jpg" alt="img" /></p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr/12373657">單騎金旺深入澳洲中心</a></p>
-
-<p>又是一個令人傻眼的環澳洲島之旅</p>
-
-<p><img src="https://lh6.googleusercontent.com/-rCv9G7sBox8/UOzmc97IEqI/AAAAAAAALdw/lqMRGD7W6wU/s600/1444736965.jpg" alt="img" /></p>
-
-<p>之後趁著空檔時間跑去<a href="http://www.wretch.cc/blog/rz250xr/12401508">泰國少林寺</a>，裡面有說到：</p>
-
-<blockquote><p>要先和教練相約面試
-面試內容大約是詢問學習泰拳的動機,並確定有能力完成訓練,而不是抱持玩樂的心情
-實際上課的內容是真的非常辛苦,我想我當兵的操課連五分之一都不到吧</p></blockquote>
-
-<p><img src="https://lh5.googleusercontent.com/-WPqco-sA8WQ/UO0g7sNk9DI/AAAAAAAALek/7y4ipvKfD_E/s535/1328731743.jpg" alt="img" /></p>
-
-<p>哈哈～台灣阿兵哥汗顏…</p>
-
-<p>度過困難的泰拳訓練，離開 <a href="http://www.wretch.cc/blog/rz250xr/12402097">A LITTLE PIECE OF HEAVEN</a></p>
-
-<p><img src="https://lh3.googleusercontent.com/-fu0W0RpoU_8/UO0kGMm_BHI/AAAAAAAALe4/LfA5eY9DZsY/s600/1630126878.jpg" alt="img" /></p>
-
-<p>文章最後：</p>
-
-<blockquote><p>非常難忘,這樣的生活似乎也讓我中毒了&#8230;
-開始思索我需要麼不需要什麼,是否因為要求得太多而讓人生變得越來越貧窮
-間單的生活才是最自在的&#8230;.我需要想想</p></blockquote>
-
-<p>嗯…也值得我們想想&#8230;</p>
-
-<p>呼～是不是好像跟著文章走過很多不同的地方，接著在他回來台灣以後，本想他應該就這樣定了下來沒想到兩個禮拜後…</p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr/12408306">流浪漢即將前進印度!!</a></p>
-
-<p><img src="https://lh6.googleusercontent.com/-6eoe4l3c1dM/UOzoG5VImOI/AAAAAAAALeQ/PXdCt5aHwkk/s640/1281824624.jpg" alt="img" /></p>
-
-<p><a href="http://613tin.blogspot.tw/2012/11/blog-post_27.html">印度旅行近況報告</a></p>
-
-<p><img src="http://1.bp.blogspot.com/-dyJSlFINbig/ULIau1otqGI/AAAAAAAAAF0/O9UKgenS8Rg/s320/P1010098.JPG" alt="img" /></p>
-
-<p>我想旅行是會令人上癮的，雖然他號稱他回來後就不會這樣趴趴走，但我覺得應該要持保留態度，哈哈～不管如何，我老哥就是一個屌字可以形容，誰說一定要會念書，進大公司才是最好的選擇，傳統觀念總是給我們太多枷鎖，如果我哥回來有段時間不再亂跑，我一定鼓勵他出本書，我想那內容應該是很吸引人才對，希望我有機會可以為大家介紹囉！最後附上我老哥的網誌：</p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr">流浪漢越野生活</a></p>
-
-<p><a href="http://613tin.blogspot.tw/">新流浪漢越野生活</a></p>
-
-<p>來隨著流浪漢環遊世界吧！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T10:27:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/this-guy-is-my-bro/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/this-guy-is-my-bro/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2288,6 +2525,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
       </li>
     
@@ -2301,10 +2542,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
       </li>
     
   </ul>

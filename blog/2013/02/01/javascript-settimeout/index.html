@@ -389,7 +389,7 @@ B=4
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
 </span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">1000</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">){</span>
 </span><span class='line'>          <span class="k">return</span><span class="p">;</span>
 </span><span class='line'>      <span class="p">}</span>
 </span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
@@ -404,6 +404,22 @@ B=4
 <p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
 
 <p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
+
+<p>另外一旦我們想要清除定時器，可以通過將定時時產生的ID標識傳遞給clearTimeout或者clearInterval函數來清除定時，至於使用哪個函數取決於調用的時候使用的是setTimeout還是setInterval。範例如下：</p>
+
+<pre><code>var id = setTimeout ( foo ,  1000 ); 
+clearTimeout ( id );
+</code></pre>
+
+<p>假設我們要清除所有定時器，但由於沒有內置的清除所有定時器的方法，可以採用一種暴力的方式來達到這一目的。</p>
+
+<pre><code>//清空"所有"的定時器
+for ( var i =  1 ; i &lt;  1000 ; i ++)  { 
+    clearTimeout ( i ); 
+}
+</code></pre>
+
+<p>可能還有些定時器不會在上面代碼中被清除（如果定時器調用時返回的ID值大於1000），因此我們可以事先保存所有的定時器ID，然後一把清除。</p>
 
   </div>
 
@@ -575,6 +591,10 @@ B=4
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
       </li>
     
@@ -588,10 +608,6 @@ B=4
     
       <li>
         <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/04/javascript-callback/">javascript: callback</a>
       </li>
     
   </ul>
