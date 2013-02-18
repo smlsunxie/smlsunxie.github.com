@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-18T12:47:39+08:00</updated>
+  <updated>2013-02-18T19:17:56+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,130 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
+    <link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
+    <updated>2013-02-18T19:12:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
+    <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 ...</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改顯 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 ...</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果。</p>
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: DOM、Element 以及 Component 的差別]]></title>
@@ -750,183 +874,6 @@ if (childPanel) {
 
 
 <p>父子都搞定了，再來就看你自己了～XD</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: events]]></title>
-    <link href="http://smlsun.com/blog/2013/02/05/extjs-events/"/>
-    <updated>2013-02-05T10:18:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/05/extjs-events</id>
-    <content type="html"><![CDATA[<p>資料來源: 次世代 Ajax 解決方案 EXTjs 開發實戰</p>
-
-<p>作者:徐會生、何啟偉、康愛媛</p>
-
-<h2>Extjs 事件</h2>
-
-<p>ExtJs對事件的管理非常強大，主要定義在Ext.EventManager對象(單例模式)中。先看註冊事件監聽方式，ExtJs提供了幾種方式來註冊元素監聽函數</p>
-
-<ul>
-<li>透過 <code>Ext.EventManager.addListener/on</code> 函數來為指定元素的某種事件註冊監聽函數。例如：<code>Ext.EventManager.on('test1','click',clickMe,this);</code></li>
-<li>透過ExtJs元素的on函數來為自身註冊某種事件的監聽處理函數。例如：
-<code>Ext.get('test1').on('click', clickMe,this,{preventDefault:true});</code></li>
-</ul>
-
-
-<p>其中 options參數是事件配置項，各項說明如下：</p>
-
-<ul>
-<li>scope ：可指定執行上下文</li>
-<li>delegate ：事件代理</li>
-<li>stopEvent ：阻止冒泡和默認行為</li>
-<li>preventDefault ：阻止默認行為</li>
-<li>stopPropagation ：停止事件冒泡</li>
-<li>normalized ：僅傳原生事件對象</li>
-<li>delay ：延遲執行</li>
-<li>single :僅執行一次</li>
-<li>buffer ：延遲執行，多次時最後一次覆蓋前一次</li>
-<li>target :指定在父元素上執行</li>
-</ul>
-
-
-<p>舉例來說，假如我要進行事件延遲處理，就可以使用 delay</p>
-
-<p>``` javascript
-Ext.onReady( function (){</p>
-
-<pre><code>Ext.get( "btnAlert" ).on( "click" ,a, this ,{delay:2000});   
-</code></pre>
-
-<p>});
-```</p>
-
-<p>要知道更詳細的解說可以查看 extjs api: <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.EventManager-method-addListener">Ext.EventManager-method-addListener</a></p>
-
-<h2>Extjs 之事件模型</h2>
-
-<p>所有繼承自 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.util.Observable">Ext.util.observable</a> 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
-
-<p>下面是個簡單的例子</p>
-
-<h3>定義Person類別</h3>
-
-<ul>
-<li>此例定義了一個Person物件，擁有一個屬性 name。</li>
-<li>使用 this.addEvent() 函式定義了 walk、eat與sleep三個自訂事件。</li>
-<li>使用 Ext.extend() 讓Person物件繼承Ext.util.observable所有屬性。</li>
-<li>並擴充一個新函數 info()，並設計info() 函式可傳回Person的資訊。</li>
-</ul>
-
-
-<p>``` javascript
-Person = function(name){
-  this.name = name;
-  this.addEvents(“walk”,”eat”,”sleep”);
-}</p>
-
-<p>Ext.extend(Person, Ext.util.observable, {
-  info: function(event) {</p>
-
-<pre><code>return this.name + ‘is’ + event + ‘ing.’;
-</code></pre>
-
-<p>  }
-});
-```</p>
-
-<h3>建立Person實體物件(instance)，並為其事件配置監聽器(listener)</h3>
-
-<ul>
-<li>on 為 addListener() 的簡寫型式。</li>
-<li>on 函式第一個函數為事件名稱，第二個參數為事件發生時所執行的函數。</li>
-</ul>
-
-
-<p>``` javascript
-var person = new Person(‘Lingo’);
-person.on(‘walk’ , function() {</p>
-
-<pre><code>Ext.Msg.alert(‘event’ , person.name + “is walking…”);
-</code></pre>
-
-<p>});
-person.on(‘eat’, function(breakfast, lunch, supper){</p>
-
-<pre><code>Ext.Msg.alert(‘event’, person.name + “want to eat” + breakfast + “and ”+ lunch + “and ” + supper + “.”);
-</code></pre>
-
-<p>});
-person.on(‘sleep’, function(time) {</p>
-
-<pre><code>Ext.Msg.alert(‘event’,person.name + “從” + time.format(“H”) + “點開始睡覺。”); 
-</code></pre>
-
-<p>})
-```</p>
-
-<h3>觸發事件</h3>
-
-<ul>
-<li>呼叫fireEvent() 即觸發函式，傳入一個事件名稱，其對應之監聽函式即會執行。</li>
-<li>與 on() 相反，un() 為 removeListener() 函式的簡寫，用途為刪除某事件之對應函數。</li>
-<li>另有一 purgeListeners() 函數，可將所有監聽器刪除。</li>
-</ul>
-
-
-<p>``` javascript
-Ext.get(‘walk’).on(‘click’ , function{
-  person.fireEvent(‘walk’);
-});</p>
-
-<p>Ext.get(‘eat’).on(‘click’, function(){
-  person.fireEvent(‘eat’, ‘早餐’, ‘午餐’, ‘晚餐’);
-});</p>
-
-<p>Ext.get(‘sleep’).on(‘click’,function(){
-  person.fireEvent(‘sleep’, new Date());
-});
-```</p>
-
-<h2>瀏覽器事件</h2>
-
-<ul>
-<li>主要使用 Ext.EventManager, Ext.EventObject 與 Ext.lib.Event 對原生瀏覽器事件進行包裝。</li>
-<li>HTML 瀏覽器事件屬於單一綁定，Ext框架則是對於同一個事件可以綁定至多個事件處理控制碼上。</li>
-</ul>
-
-
-<h3>原生 HTML</h3>
-
-<p><code>javascript
-var e=document.getElementById(“test”);
-e.onclick=function(){alert(“handle1”)};
-e.onclick=function(){alert(“hangle2”)};
-</code></p>
-
-<blockquote><p>按下 test後，只會顯示 handle2 提示框。</p></blockquote>
-
-<h3>extjs</h3>
-
-<p>``` javascript
-Ext.onReady( function(){
-  var test = Ext.get(‘test’);
-  test.on(‘click’, function() {</p>
-
-<pre><code>alert(“handle1”); 
-</code></pre>
-
-<p>  });</p>
-
-<p>  test.on(‘click’, function(){</p>
-
-<pre><code>alert(“handle2”);
-</code></pre>
-
-<p>  });
-});
-```</p>
-
-<blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
 ]]></content>
   </entry>
   

@@ -310,6 +310,315 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/01/javascript-closure/">Javascript: Closure</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>資料來源</h4>
+
+<ul>
+<li><a href="http://caterpillar.onlyfun.net/Gossip/JavaScript/Closure.html">Gossip@caterpillar</a></li>
+<li><a href="http://hi.baidu.com/jz1108/item/e549ca105c4c6bf89c778ab6">一句話說 JavaScript 中的 Closure</a></li>
+<li><a href="http://blog.ithome.com.tw/index.php?op=ViewArticle&amp;articleId=19392&amp;blogId=257">搞清楚lexical scope與closure</a></li>
+</ul>
+
+
+<h2>什麼是 closure</h2>
+
+<p>JavaScript 中的 closure 是初學者比較難理解的觀念，下面是幾個來源關於 closure 的解釋：</p>
+
+<ul>
+<li>A <code>closure</code> is created when a function <code>keeps a link to its parent's scope</code> even after the parent has returned.
+
+<blockquote><p>Object-Oriented JavaScript</p></blockquote></li>
+<li>A closure is a protected variable space, created by using nested functions.
+
+<blockquote><p>Pro JavaScript Design Patterns</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>Closures are means through which inner functions can refer to the variables present in their outer enclosing function after their parent functions have already terminated.
+
+<blockquote><p>Pro JavaScript Techniques</p></blockquote></li>
+<li>A closure is a special kind of object that combines two things: a function, and the environment in which that function was created.
+
+<blockquote><p>MDC</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>A &#8220;closure&#8221; is an expression (typically a function) that can have free variables together with an environment that binds those variables (that &#8220;closes&#8221; the expression).
+
+<blockquote><p>jibbering.com</p></blockquote></li>
+</ul>
+
+
+<p>本來想將上面的解釋翻譯成中文，發現中文對特定名詞無法很精準的表達，只好讓大家練練英文，有時間在慢慢品嚐，在這直接舉一個實際的例子來看會更容易理解</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doSome</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">doSome</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span> <span class="c1">//輸出結果為 30</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span> <span class="c1">//輸出結果為 40</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面 doSome 的例子中，f 建立了一個 closure，如果你單看：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看來起 x 似乎沒有定義。實際上，x 是從外部函式捕捉而來。closure 是個捕捉了外部函式變數（或使之繼續存活）的函式。在上例中，函式 f 建立了 closure，因為它將變數x關入（close）自己的範圍。如果形式 closure 的函式物件持續存活，被關閉的變數 x 也會繼續存活。就像是延續了變數x的生命週期。</p>
+
+<p>由於 doSome 傳回了函式物件並指定給 foo，就 doSome 而言已經執行完畢。單看 x 的話，理應 x 已結束其生命週期，但由於 doSome 中建立了closure並傳回，x 被關閉在 closure 中，所以 x 的生命週期就與 closure 的生命週期相同了。如上例所示， 呼叫 foo(20) 結果就是 10+20（因為被閉關的 x 值是 10 ），呼叫 foo(30) 結果就是 10+30。</p>
+
+<p>更精簡的說明 Closure 就是擁有閒置變數（Free variable）的運算式，上面提到的例子中 x 就是所謂的 Free variable，什麼是 Free variable ？</p>
+
+<p>參考這篇：<a href="http://stackoverflow.com/questions/12934929/what-are-free-variables"></a></p>
+
+<blockquote><p>Free variables are simply the variables that are neither locally declared nor passed as parameter.</p></blockquote>
+
+<p>聽起來很玄，翻譯起來就是 Free variable 代表不是 function 的參數，x 之所以稱為 Free variable 也就是因為在 f 這個 function 外面被宣告，也沒有透過 function 的參數傳入，但是在 f 裡面卻可以存取。</p>
+
+<p>另外 Closure 有 lexical scope 的特性，所謂的 lexical scope 就是讓我們可以用區域變數的方式，把變數當作一個 function 物件的 private member，但是又可以用一個 function 當作 getter/setter 來存取他，如同：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">Bean</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">X</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">Y</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">setX</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">X</span><span class="o">=</span><span class="nx">x</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">getX</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">X</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">setY</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">Y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">getY</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">Y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Bean</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">setX</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">setY</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">getX</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">a</span><span class="p">.</span><span class="nx">getY</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>closure 關閉的對象</h2>
+
+<p>closure 關閉(包起來)的是變數，而不是變數所參考的值。下面這個範例可以證明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doOther</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>直覺來看應該是 10+20，以及 10+30，實際上卻不是，因為在 建立closure時綁定的是 x 變數，而不是數值 10（x變數的值），也因此 doOther 之後改變了 x 變數的值，因此此時 x 的值已變為 100，而後執行 foo 就是用 x=100 在做運算，範例顯示的結果分別是 100+20 與 100+30。</p>
+
+<p>並且由於 closure 綁定的是變數，所以你也可以在 closure 中改變變數的值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">element</span><span class="p">;</span>
+</span><span class='line'>   <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">sum</span><span class="p">;</span> <span class="c1">//變數內容為 15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果closure關閉了某個變數，使得該變數的生命週期得以延長，那麼這個會怎麼樣？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doOther</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">x</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">f1</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">f1</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">f2</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在這個範例中，doOther被呼叫了兩次（或更多次），doOther中的closure關閉了x，並對其執行了遞減。呼叫了f1時，x會被遞減1，所以顯示9，這沒有問題，那麼呼叫f2()後，結果是9？</p>
+
+<p>像這類的例子，其實結果是一致的，關閉的是建立closure時外部範圍下的變數。以上例來說，第一次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。第二次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。所以f1與f2關閉的根本是不同作用範圍的 x 變數（也就是該次呼叫 doOther 時所建立的 x 變數）。所以上例中，呼叫f2之後顯示的值仍是9。</p>
+
+<h2>Closure 使用上需注意</h2>
+
+<ul>
+<li>Closure 有可能會造成記憶體洩漏，主要是因為被參考的變數無法被垃圾收集機制處理，造成佔用的資源無法釋放，所以使用上必須考慮清楚，不要造成意外的記憶體洩漏。（在上面的例子中，如果 f1 一直未執行，使用到的記憶體 x 就不會被釋放）</li>
+<li>跟透過函數的參數把變數傳給函數比較起來，Javascript Engine 會比較難對 Closure 進行最佳化。如果有效能上的考量，這一點也需要注意。</li>
+</ul>
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T14:46:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-closure/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-closure/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
 
 </h1>
@@ -2471,114 +2780,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/14/video-man/">Video Man - 『尊重』的重要，與『沒關係』的可怕</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>有趣的短片介紹 <strong>man</strong> ：</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WfGMYdalClU?list=FLEHOkEUdqDd_BUFy5_YFT0g" frameborder="0" allowfullscreen></iframe>
-
-
-<p>感想：</p>
-
-<p>人類的慾望隨著科技的發達，只有增加沒有減少過，為了讓我們的生活更便利，往往犧牲別的物種的世界，即使是同種不同國家的人類們，每天都在競爭中踩著別人往上爬，到最後其實什麼都沒得到，影片最後的空虛世界，在消耗了那麼多資源後人類作為王者存在又為？在更為強大的外星人面前也是被打扁的份。</p>
-
-<p>總是在想，以前的農業社會，與大自然共存，就算物質生還沒有現在的多，但人們是單純且快樂的，人與大自然間的關系有一份尊重在，在現在的人們心中『尊重』的概念越來越少，以致於人與人之間越來越自私，看看社會新聞，酒駕：撞人後不管死活先跑了再說；出去玩亂丟垃圾，反正有人撿，大家都一樣沒關係，為了賺錢污染環境也沒關係，是多麼的自大！</p>
-
-<p>也許有人會覺得又在無病呻吟，講這麼多大環境還不是沒辦法改變！</p>
-
-<p>的確，一人之力是無法改變，但何不從你我開始，大家都有『尊重』的觀念，自然世界就會越來越美好！</p>
-
-<p>『尊重』別人的安全，所以不應該酒駕，設身處地的想，假若今天出事的是你的家人，你開心嗎？</p>
-
-<p>『尊重』大家共有的環境，所以不應該亂丟垃圾，設身處地的想，如果別人來你家亂丟垃圾，你開心嗎？</p>
-
-<p>『尊重』賺錢的方式，取之自然但也要永續的自然，哪天世界不再那麼美麗，那活著還有什麼好期待？</p>
-
-<h3>勿以惡小而為之，勿以善小而不為</h3>
-
-<p>也許現在的很少讀古人的言詞，在白話一點就是：</p>
-
-<p>不要因為做錯的事無關緊要所以做了也『沒關係』，不要因為做一點對的事無法改變現況所以不做也『沒關係』，那我乾脆就不要做了，反正也沒效</p>
-
-<p>如果事這樣的想法，那不好的事慢慢的累積，就會變成大壞，好的事情因為都不去做那又怎麼會有更好的明天勒？</p>
-
-<p>堅持一下，觀念先對了，就會越做越對，累積久了，也會令人刮目相看；要得到別人的尊重，要先從尊重別人開始！</p>
-
-<p>還記得之前小學讀過一個故事叫做『差不多先生』，而我們常常是『沒關係先生』，對於做對的事情上不能再『沒關係』了！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-14T15:26:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/14/video-man/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/14/video-man/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2656,6 +2857,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/18/extjs-dom-element-component/">extjs: DOM、Element 以及 Component 的差別</a>
       </li>
     
@@ -2669,10 +2874,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/02/15/mac-andorid-usb-3g/">如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/05/extjs-component/">extjs: component 的使用，找尋 parent & child</a>
       </li>
     
   </ul>

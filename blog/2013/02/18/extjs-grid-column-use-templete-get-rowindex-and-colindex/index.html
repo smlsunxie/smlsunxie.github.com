@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>關於寫作 - 蹤影</title>
+  <title>extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,9 @@
   
   
   
+  <meta name="description" content="說明如何在 grid 使用 templete 並且能夠取得 rowIndex 以及 colIndex 屬性，更進一步透過繼承 extjs 元件來實作">
   
+  <meta name="keywords" content="extjs, grid, templete, grid, rowIndex, colIndex, javascript, extend, renderer">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -34,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/10/about-write/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">
 
 
 
@@ -308,7 +310,7 @@
     
 <h1 class="entry-title">
 
-關於寫作
+Extjs: Grid 中的欄位使用 Templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性
 
 </h1>
 
@@ -319,40 +321,122 @@
 
 
   <div class="post-description">
-    <p>最近開始有寫作的習慣，漸漸讓我思考關於寫作這件事，
-我其實不是個很有梗的人，但是我覺得寫作可以幫助我：</p>
+    <p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
 
-<ul>
-<li>把我的思緒整理清楚，表達我所要表達的，我想這是我們台灣人，也許是中國人所缺少的，表達自己的意見</li>
-<li>學習思考的更周詳，能夠更快理解事物，</li>
-<li>想辦法把複雜的事說明的更簡單，讓別人理解你的想法</li>
-<li>當你思考的更快，就可做更多事情，做起事來就會有效率，</li>
-<li>會表達自己的意見，才有可能改變環境</li>
-<li>還有很多好處，可參考 <a href="http://caterpillar.onlyfun.net/Gossip/StudyGossip/writing.html">寫作之用與趣</a></li>
-</ul>
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
 
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
 
-<p>我想下面是關於大家常常遇到的問題，也是我的親身體驗與轉變</p>
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
 
-<ul>
-<li>覺得寫作是浪費時間，之前我會這麼想</li>
-<li>覺得沒有時間寫作，之前我也是這麼想</li>
-<li>覺得寫作很麻煩，之前我還是這麼想</li>
-</ul>
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
 
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
 
-<p>但是！透過一些工具，以及練習，以前困擾我的都一一被解決，現在我喜愛寫作，因為一些阻礙我寫作的原因消失了，更加練習表達讓我的心思能夠更流暢的被表達出來，當你會思考，才有可能持續改善你周遭的環境。</p>
+<p>其中</p>
 
-<p>讓寫作的阻礙降到最低，下面是我認為讓寫作更流暢的方法</p>
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
 
-<ol>
-<li>一個好鍵盤，利其器才能善其事</li>
-<li>使用markdown，讓你可以快速寫作的而不用在乎排版，包括圖片以超連結都可以很方便使用</li>
-<li>使用octopress可以很方便可以將你的文章發佈至網路上</li>
-</ol>
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
 
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改顯 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
 
-<p>上面的工具，可能不多人知道，因為對於資訊的大量讀取與處理的活動中，發展出一套非常方便得工具組，推薦給大家，寫作的興趣是需要培養的，試著寫幾篇看看，不用太長，當做在寫日記一樣，你也會喜歡上，並享受這樣的過程。</p>
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果。</p>
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
 
   </div>
 
@@ -386,12 +470,12 @@
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-10T17:35:00+08:00" pubdate data-updated="true">Dec 10<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T19:12:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/心得/'>心得</a>
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
 </span></span>
 
@@ -406,7 +490,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/10/about-write/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/10/about-write/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/" target="_blank" >Tweet</a>
     
   
   
@@ -427,10 +511,8 @@
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/10/otcopress-warp-bootstrap-deckjs/" title="Previous Post: Otcopress + warp bootstrap + deck.js"><li>&laquo; Otcopress + warp bootstrap + deck.js</li></a>
+            <a class="left" href="/blog/2013/02/18/extjs-dom-element-component/" title="Previous Post: extjs: DOM、Element 以及 Component 的差別"><li>&laquo; extjs: DOM、Element 以及 Component 的差別</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/13/news-15k/" title="Next Post: 關於產業會議的15K"><li>關於產業會議的15K &raquo;</li></a>
           
         </ul>
 
@@ -574,7 +656,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/10/about-write/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/10/about-write/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/" target="_blank" >Tweet</a>
     
   
   
@@ -726,8 +808,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/10/about-write/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/10/about-write/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/';
         var disqus_script = 'embed.js';
       
     (function () {

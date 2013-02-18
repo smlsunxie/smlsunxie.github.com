@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-18T12:47:39+08:00</updated>
+  <updated>2013-02-18T19:17:56+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,136 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
+<link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
+<updated>2013-02-18T19:12:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
+
+      <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改顯 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果。</p>
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3291,52 +3421,6 @@ F. An exception is thrown at runtime.
 
 <p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/15/intrduction-grails/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[video man - 『尊重』的重要，與『沒關係』的可怕]]></title>
-<link href="http://smlsun.com/blog/2013/01/14/video-man/"/>
-<updated>2013-01-14T15:26:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/14/video-man</id>
-
-      <content type="html"><![CDATA[<p>有趣的短片介紹 <strong>man</strong> ：</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WfGMYdalClU?list=FLEHOkEUdqDd_BUFy5_YFT0g" frameborder="0" allowfullscreen></iframe>
-
-
-<p>感想：</p>
-
-<p>人類的慾望隨著科技的發達，只有增加沒有減少過，為了讓我們的生活更便利，往往犧牲別的物種的世界，即使是同種不同國家的人類們，每天都在競爭中踩著別人往上爬，到最後其實什麼都沒得到，影片最後的空虛世界，在消耗了那麼多資源後人類作為王者存在又為？在更為強大的外星人面前也是被打扁的份。</p>
-
-<p>總是在想，以前的農業社會，與大自然共存，就算物質生還沒有現在的多，但人們是單純且快樂的，人與大自然間的關系有一份尊重在，在現在的人們心中『尊重』的概念越來越少，以致於人與人之間越來越自私，看看社會新聞，酒駕：撞人後不管死活先跑了再說；出去玩亂丟垃圾，反正有人撿，大家都一樣沒關係，為了賺錢污染環境也沒關係，是多麼的自大！</p>
-
-<p>也許有人會覺得又在無病呻吟，講這麼多大環境還不是沒辦法改變！</p>
-
-<p>的確，一人之力是無法改變，但何不從你我開始，大家都有『尊重』的觀念，自然世界就會越來越美好！</p>
-
-<p>『尊重』別人的安全，所以不應該酒駕，設身處地的想，假若今天出事的是你的家人，你開心嗎？</p>
-
-<p>『尊重』大家共有的環境，所以不應該亂丟垃圾，設身處地的想，如果別人來你家亂丟垃圾，你開心嗎？</p>
-
-<p>『尊重』賺錢的方式，取之自然但也要永續的自然，哪天世界不再那麼美麗，那活著還有什麼好期待？</p>
-
-<h3>勿以惡小而為之，勿以善小而不為</h3>
-
-<p>也許現在的很少讀古人的言詞，在白話一點就是：</p>
-
-<p>不要因為做錯的事無關緊要所以做了也『沒關係』，不要因為做一點對的事無法改變現況所以不做也『沒關係』，那我乾脆就不要做了，反正也沒效</p>
-
-<p>如果事這樣的想法，那不好的事慢慢的累積，就會變成大壞，好的事情因為都不去做那又怎麼會有更好的明天勒？</p>
-
-<p>堅持一下，觀念先對了，就會越做越對，累積久了，也會令人刮目相看；要得到別人的尊重，要先從尊重別人開始！</p>
-
-<p>還記得之前小學讀過一個故事叫做『差不多先生』，而我們常常是『沒關係先生』，對於做對的事情上不能再『沒關係』了！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/14/video-man/"></a></p>]]></content>
     </entry>
   
 </feed>

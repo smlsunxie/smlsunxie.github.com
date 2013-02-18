@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-18T12:47:39+08:00</updated>
+  <updated>2013-02-18T19:17:56+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,130 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
+    <link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
+    <updated>2013-02-18T19:12:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
+    <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 ...</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改顯 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 ...</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果。</p>
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: DOM、Element 以及 Component 的差別]]></title>
