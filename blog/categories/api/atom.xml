@@ -4,7 +4,7 @@
   <title><![CDATA[Category: api | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/api/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-18T12:41:36+08:00</updated>
+  <updated>2013-02-18T12:43:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -66,7 +66,7 @@ var list = dh.append(
 </ul>
 
 
-<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼(DomHelper-more)[http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper] 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
+<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
 
 <p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
 
