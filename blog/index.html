@@ -310,6 +310,220 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/18/extjs-dom-element-component/">Extjs: DOM、Element 以及 Component 的差別</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>資料來源：</p>
+
+<ul>
+<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
+</ul>
+
+
+<p>學習及應用 extjs，需要理解Html DOM、Ext Element及Component三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
+
+<p>而在 extjs 中就有個專門用來處理 DOM 的類別 &#8230;</p>
+
+<h2>Ext.DomHelper</h2>
+
+<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
+
+<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
+
+<pre><code>var dh = Ext.DomHelper; // create shorthand alias
+// specification object
+var spec = {
+    id: 'my-ul',
+    tag: 'ul',
+    cls: 'my-list',
+    // append children after creating
+    children: [     // may also specify 'cn' instead of 'children'
+        {tag: 'li', id: 'item0', html: 'List Item 0'},
+        {tag: 'li', id: 'item1', html: 'List Item 1'},
+        {tag: 'li', id: 'item2', html: 'List Item 2'}
+    ]
+};
+var list = dh.append(
+    'my-div', // the context element 'my-div' can either be the id or the actual node
+    spec      // the specification object
+);
+</code></pre>
+
+<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
+
+<ul>
+<li>append</li>
+<li>insertBefore</li>
+<li>insertAfter</li>
+<li>overwrite</li>
+<li>createTemplate</li>
+<li>insertHtml</li>
+</ul>
+
+
+<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼(DomHelper-more)[http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper] 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
+
+<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
+
+<pre><code>// gets dom node based on id
+var elDom = Ext.getDom('elId');
+// gets dom node based on the dom node
+var elDom1 = Ext.getDom(elDom);
+
+// If we don't know if we are working with an
+// Ext.Element or a dom node use Ext.getDom
+function(el){
+    var dom = Ext.getDom(el);
+    // do something with the dom node
+}
+</code></pre>
+
+<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 &#8230;</p>
+
+<h2>Ext.Element</h2>
+
+<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
+
+<pre><code>// by id
+var el = Ext.get("my-div");
+
+// by DOM element reference
+var el = Ext.get(myDivElement);
+</code></pre>
+
+<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
+
+<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句javascript才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
+
+<pre><code>var el = Ext.get("my-div");
+
+// no animation
+el.setWidth(100);
+</code></pre>
+
+<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
+
+<pre><code>// default animation
+el.setWidth(100, true);
+</code></pre>
+
+<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
+
+<p>因此，Ext在DOM的基礎上，創建了Ext.Element，可以使用Element來包裝任何DOM，Element 對像中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
+
+<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
+
+<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
+
+<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
+
+<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 &#8230;</p>
+
+<h2>Ext.Component</h2>
+
+<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
+
+<p>在Ext中，組件渲染以後可以通過訪問 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到組件對應的 Element ，通過訪問 Element 的 dom 屬性可以得到其下面的 DOM 對象。</p>
+
+<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
+
+<p>而下面範例說明實際上的使用狀況：</p>
+
+<pre><code>var view=new Ext.Viewport();                //創建了一個組件 Component 
+view.el.setOpacity(.5);                         //調用 Element 的 setOpacity 方法
+view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM 對象
+</code></pre>
+
+<p>以及如何分別取得 dom、element 以及 component</p>
+
+<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
+win .show(); 
+var c=Ext.getCmp("win1");           //得到組件win 
+var e=Ext.get("win1");              //根據id得到組件win相應的Element 
+var dom=Ext .getDom("win1");    //得到id為win1的DOM節點
+</code></pre>
+
+<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：(Ext JS 3.0 - Class Diagram)[http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D]</p>
+
+<h2>深入 extjs</h2>
+
+<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，有時需要 extend extjs 的元件作為自定義的元件，如何實作有時舊要從原始碼找答案。</p>
+
+<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器
+ Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是必看的。當需要從一個 extent 某個元件時，會有很大的幫助。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T12:32:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-dom-element-component/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-dom-element-component/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/17/javascript-memory-leaks/">Javascript: Memory Leaks 的情況以及如何解決與偵測</a>
 
 </h1>
@@ -2351,229 +2565,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h4>參考來源</h4>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
-
-<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
-
-<h2>函式是如何被初始化</h2>
-
-<ol>
-<li>先宣告函式參數，並設定參數的值</li>
-<li>所有函式內部的函式被宣告</li>
-<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
-<li>賦予變數值</li>
-</ol>
-
-
-<p>接著來看 scope</p>
-
-<h2>了解變數 scope 以及初始化</h2>
-
-<ol>
-<li>唯一的變數 scope 就是你所在的函式。</li>
-<li>還有全域的 scope，但並沒有區塊的 scope。</li>
-<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
-<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
-<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
-</ol>
-
-
-<h2>scope 的運作原理</h2>
-
-<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
-
-<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
-
-<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
-
-<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
-
-<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
-
-<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
-
-<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
-
-<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
-
-<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
-
-<h2>scope management</h2>
-
-<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
-
-<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
-
-<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
-
-<h2>效能改善相關</h2>
-
-<ol>
-<li>對那些常常會存取的變數，盡量把它放在 local</li>
-<li>避免使用 with</li>
-<li><p>小心使用 try / catch</p>
-
-<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
-<li><p>沒有必要的話不要用 closure</p></li>
-<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
-</ol>
-
-
-<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T12:07:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-about-scope/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-about-scope/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2649,6 +2640,10 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/18/extjs-dom-element-component/">extjs: DOM、Element 以及 Component 的差別</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
       </li>
     
@@ -2662,10 +2657,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
     
       <li>
         <a href="/blog/2013/02/05/extjs-component/">extjs: component 的使用，找尋 parent & child</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/05/extjs-events/">extjs: events</a>
       </li>
     
   </ul>
