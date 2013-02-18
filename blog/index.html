@@ -388,6 +388,11 @@ constructor: function(cfg){
 
 <p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
 
+<p>實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
 <p>接著我們就可以將其應用於 grid 的欄位建立：</p>
 
 <pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
@@ -432,7 +437,10 @@ columns: [
 });
 </code></pre>
 
-<p>效果是一樣的，可以更直接做到相同的效果。</p>
+<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
 
 <h2>實際在使用上該選擇哪種方式？</h2>
 
