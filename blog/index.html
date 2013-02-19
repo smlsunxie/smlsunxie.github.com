@@ -310,6 +310,324 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/19/extjs-tree/">Extjs: Tree</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
+<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
+</ul>
+
+
+<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
+
+<p>這裡將介紹兩種 tree 的建立方式：</p>
+
+<h1>利用物件來產生 tree</h1>
+
+<pre><code>Ext.onReady( function() {
+
+    var root = new Ext.tree.TreeNode( {
+        text : '根'
+    });
+
+    var node1Child1 = new Ext.tree.TreeNode( {
+        text : '個人資料維護',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+    var node1Child2 = new Ext.tree.TreeNode( {
+        text : '密碼變更',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+
+    var node1 = new Ext.tree.TreeNode( {
+        text : '個人資料'
+    });
+    node1.appendChild(node1Child1);
+    node1.appendChild(node1Child2);
+
+    root.appendChild(node1);
+
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : root
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
+
+<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
+
+<pre><code>Ext.onReady( function() {
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : new Ext.tree.AsyncTreeNode( {
+            text : '根',
+
+            children : [ {
+                text : '個人資料',
+                children : [ {
+                    text : '個人資料維護',
+                    leaf : true
+                }, {
+                    text : '密碼變更',
+                    leaf : true
+                } ]
+            }, {
+                text : '客戶資料',
+                children : [ {
+                    text : '客戶基本資料查詢維護',
+                    leaf : true
+                }, {
+                    text : '客戶基本資料列印',
+                    leaf : true
+                } ]
+            }]
+        })
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>讀取 json 資料來源產生 tree</h2>
+
+<p>假設遠端的 json 資料來源：</p>
+
+<p>[{</p>
+
+<pre><code>id: 1,
+text: 'A leaf Node',
+leaf: true
+</code></pre>
+
+<p>  },{</p>
+
+<pre><code>id: 2,
+text: 'A folder Node',
+children: [{
+  id: 3,
+  text: 'A child Node',
+  leaf: true
+}]
+</code></pre>
+
+<p>  }]</p>
+
+<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
+
+<pre><code>Ext.onReady(function() {
+    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
+    var tree = new Ext.tree.TreePanel({
+        el: 't',
+        width: 150,
+        autoHeight: true,
+        root: root,
+        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
+    });
+    tree.render();
+});
+</code></pre>
+
+<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
+
+<h2>讀取 xml 資料來源產生 tree</h2>
+
+<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
+
+<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
+
+<ul>
+<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
+</ul>
+
+
+<h2>tree 的操作與參照</h2>
+
+<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
+
+<ul>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
+
+<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
+<li><p>selectPath( path, [attr], [callback] )</p>
+
+<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
+
+<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
+</ul>
+
+
+<p>其他請參照 API，以下有實際使用飯例：</p>
+
+<pre><code>Ext.onReady( function() {
+  var viewport = new Ext.tree.TreePanel( {
+    title : "系統相關",
+    width : 200,
+    height : 500,
+    rootVisible : true,//root結點顯不顯示
+    root : new Ext.tree.AsyncTreeNode( {
+      text : '根',
+      id:'r',
+
+      children : [ {
+        text : '個人資料',
+        id:'c1',
+        children : [ {
+            text : '個人資料維護',
+            id:'c1c1',
+            leaf : true
+
+        }, {
+            text : '密碼變更',
+            myid:'c1c2',
+            leaf : true
+        } ]
+      }, {
+        text : '客戶資料',
+        id:'c2',
+        children : [ {
+            text : '客戶基本資料查詢維護',
+            leaf : true,
+            id:'c2c1'
+        }, {
+            text : '客戶基本資料列印',
+            leaf : true,
+            id:'c2c2'
+        } ]
+      } ]
+    })
+
+  });
+
+  viewport.render('toolbar');
+  viewport.doLayout();
+
+  var btn=new Ext.Button({
+    renderTo:"btn",
+    id:'test',
+    text:'test',
+    handler:function(){
+
+        // selectPath 可以做到 expand 之後在進行 select
+      viewport.selectPath('/r/c2/c2c1');
+
+      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 一旦開啟過節點，再次 findChild 就會取得實體。
+      viewport.expandPath('/r/c1/c1c1');
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 除了 id 之外，我們也可以用別的屬性來做搜尋
+      viewport.root.findChild( 'myid', 'c1c2', true ).select();
+    }
+  });
+
+});
+</code></pre>
+
+<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-19T18:40:00+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/19/extjs-tree/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/19/extjs-tree/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/19/extjs-component/">Extjs: Component 的使用，找尋 Parent & Child，以及區別 Id、itemid 以及 Ref 的不同</a>
 
 </h1>
@@ -2519,181 +2837,6 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">function</span> <span class="nx">A</span><span class="p">(){</span>
-</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>一般常理判斷結果應該是：</p>
-
-<pre><code>A=0
-B=0
-A=1
-B=1
-A=2
-B=2
-A=3
-B=3
-</code></pre>
-
-<p>實際結果如下：</p>
-
-<pre><code>A=0
-A=1
-A=2
-A=3
-B=4
-B=4
-B=4
-B=4 
-</code></pre>
-
-<p>有沒有覺得很奇怪?</p>
-
-<p>這是因為 javascript 屬於單執行序，看起來 <code>window.setTimeout(A, 0);</code> 似乎是馬上執行，但是實際上， for 迴圈裡的 setTimeout 會先放在代執行的堆疊裡，直到 for 迴圈結束，但如此一來到結束時，i 即為 4，所以結果就是堆疊裡的每個待執行任務中的 i 都為 4。</p>
-
-<p>所以比較好的寫法應該是：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">){</span>
-</span><span class='line'>          <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
-
-<p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
-
-<p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
-
-<p>另外一旦我們想要清除定時器，可以通過將定時時產生的ID標識傳遞給clearTimeout或者clearInterval函數來清除定時，至於使用哪個函數取決於調用的時候使用的是setTimeout還是setInterval。範例如下：</p>
-
-<pre><code>var id = setTimeout ( foo ,  1000 ); 
-clearTimeout ( id );
-</code></pre>
-
-<p>假設我們要清除所有定時器，但由於沒有內置的清除所有定時器的方法，可以採用一種暴力的方式來達到這一目的。</p>
-
-<pre><code>//清空"所有"的定時器
-for ( var i =  1 ; i &lt;  1000 ; i ++)  { 
-    clearTimeout ( i ); 
-}
-</code></pre>
-
-<p>可能還有些定時器不會在上面代碼中被清除（如果定時器調用時返回的ID值大於1000），因此我們可以事先保存所有的定時器ID，然後一把清除。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T21:09:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-settimeout/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-settimeout/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2769,6 +2912,10 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/19/extjs-tree/">extjs: tree</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/19/extjs-component/">extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同</a>
       </li>
     
@@ -2782,10 +2929,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
     
       <li>
         <a href="/blog/2013/02/17/javascript-memory-leaks/">javascript: Memory Leaks 的情況以及如何解決與偵測</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
       </li>
     
   </ul>

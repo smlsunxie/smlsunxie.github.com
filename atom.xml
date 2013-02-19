@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T11:05:57+08:00</updated>
+  <updated>2013-02-19T22:17:57+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,262 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs: tree]]></title>
+<link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
+<updated>2013-02-19T18:40:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
+
+      <content type="html"><![CDATA[<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
+<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
+</ul>
+
+
+<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
+
+<p>這裡將介紹兩種 tree 的建立方式：</p>
+
+<h1>利用物件來產生 tree</h1>
+
+<pre><code>Ext.onReady( function() {
+
+    var root = new Ext.tree.TreeNode( {
+        text : '根'
+    });
+
+    var node1Child1 = new Ext.tree.TreeNode( {
+        text : '個人資料維護',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+    var node1Child2 = new Ext.tree.TreeNode( {
+        text : '密碼變更',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+
+    var node1 = new Ext.tree.TreeNode( {
+        text : '個人資料'
+    });
+    node1.appendChild(node1Child1);
+    node1.appendChild(node1Child2);
+
+    root.appendChild(node1);
+
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : root
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
+
+<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
+
+<pre><code>Ext.onReady( function() {
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : new Ext.tree.AsyncTreeNode( {
+            text : '根',
+
+            children : [ {
+                text : '個人資料',
+                children : [ {
+                    text : '個人資料維護',
+                    leaf : true
+                }, {
+                    text : '密碼變更',
+                    leaf : true
+                } ]
+            }, {
+                text : '客戶資料',
+                children : [ {
+                    text : '客戶基本資料查詢維護',
+                    leaf : true
+                }, {
+                    text : '客戶基本資料列印',
+                    leaf : true
+                } ]
+            }]
+        })
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>讀取 json 資料來源產生 tree</h2>
+
+<p>假設遠端的 json 資料來源：</p>
+
+<p>[{</p>
+
+<pre><code>id: 1,
+text: 'A leaf Node',
+leaf: true
+</code></pre>
+
+<p>  },{</p>
+
+<pre><code>id: 2,
+text: 'A folder Node',
+children: [{
+  id: 3,
+  text: 'A child Node',
+  leaf: true
+}]
+</code></pre>
+
+<p>  }]</p>
+
+<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
+
+<pre><code>Ext.onReady(function() {
+    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
+    var tree = new Ext.tree.TreePanel({
+        el: 't',
+        width: 150,
+        autoHeight: true,
+        root: root,
+        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
+    });
+    tree.render();
+});
+</code></pre>
+
+<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
+
+<h2>讀取 xml 資料來源產生 tree</h2>
+
+<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
+
+<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
+
+<ul>
+<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
+</ul>
+
+
+<h2>tree 的操作與參照</h2>
+
+<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
+
+<ul>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
+
+<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
+<li><p>selectPath( path, [attr], [callback] )</p>
+
+<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
+
+<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
+</ul>
+
+
+<p>其他請參照 API，以下有實際使用飯例：</p>
+
+<pre><code>Ext.onReady( function() {
+  var viewport = new Ext.tree.TreePanel( {
+    title : "系統相關",
+    width : 200,
+    height : 500,
+    rootVisible : true,//root結點顯不顯示
+    root : new Ext.tree.AsyncTreeNode( {
+      text : '根',
+      id:'r',
+
+      children : [ {
+        text : '個人資料',
+        id:'c1',
+        children : [ {
+            text : '個人資料維護',
+            id:'c1c1',
+            leaf : true
+
+        }, {
+            text : '密碼變更',
+            myid:'c1c2',
+            leaf : true
+        } ]
+      }, {
+        text : '客戶資料',
+        id:'c2',
+        children : [ {
+            text : '客戶基本資料查詢維護',
+            leaf : true,
+            id:'c2c1'
+        }, {
+            text : '客戶基本資料列印',
+            leaf : true,
+            id:'c2c2'
+        } ]
+      } ]
+    })
+
+  });
+
+  viewport.render('toolbar');
+  viewport.doLayout();
+
+  var btn=new Ext.Button({
+    renderTo:"btn",
+    id:'test',
+    text:'test',
+    handler:function(){
+
+        // selectPath 可以做到 expand 之後在進行 select
+      viewport.selectPath('/r/c2/c2c1');
+
+      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 一旦開啟過節點，再次 findChild 就會取得實體。
+      viewport.expandPath('/r/c1/c1c1');
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 除了 id 之外，我們也可以用別的屬性來做搜尋
+      viewport.root.findChild( 'myid', 'c1c2', true ).select();
+    }
+  });
+
+});
+</code></pre>
+
+<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/19/extjs-tree/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3600,74 +3856,6 @@ F. An exception is thrown at runtime.
 </ol>
 
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/16/android-vm/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹]]></title>
-<link href="http://smlsun.com/blog/2013/01/15/intrduction-grails/"/>
-<updated>2013-01-15T20:17:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/15/intrduction-grails</id>
-
-      <content type="html"><![CDATA[<p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，以及複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
-
-<p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
-
-<ul>
-<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
-<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
-<li>URLMappings：Don’t Repeat Yourself</li>
-<li>約定優於配置：Convention over Configuration</li>
-<li>自動產生 CRUD 維護畫面：scaffold</li>
-</ul>
-
-
-<p>使用 Groovy，做為 grails 開發的基礎，其特性就是大量簡化 java 語言繁瑣的程式指令步驟。</p>
-
-<p>可以看到 Grails 算是集目前 java 世界許多成熟的套件，這些原本單獨使用很繁瑣的套件，在 Grails 上都有某種程度的簡化，簡單到一開始很難直覺想像，往後會會在詳細介紹，這邊不多談。</p>
-
-<p>接著就是設定的部份，在傳統的 java 開發我們常常需要設定像是 jdbc config 、 spring aop 設定的位置等，在 Grails 中，是基於「約定優於配置」的精神，也就是只要放對位置，設定就會生效。</p>
-
-<p>以及 Don’t Repeat Yourself 的精神，在網路應用程式的開發，假設有用到 restful 的技術，在傳統的 JAVA 開發，總要為每個 class 設定 url 規則，如果一多是很繁瑣的。</p>
-
-<p>最後就是自動產生 CRUD 維護畫面，在開發初期，常常需要快速的建立測試資料，以往要是前端與後端程式開發是分開的，總是需要等到後端工程師將 API 開出來後才能開始進行資料庫操作，在 grails 效法 ruby rails 也提供了快速產生維護畫面的功能。</p>
-
-<p>以上是 grails 的特性簡介，不過！絕對不只如此其他還有很多特性，往後會在一一介紹，完全改變對於 Java 開發的習慣。</p>
-
-<p>再來就要在簡單介紹，在 grails 各種不同用途的 Class(groovy) 介紹：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-qgBQ7bBJaDg/UPVP_UtqoxI/AAAAAAAALfQ/rPBPRd5iLXk/s223/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-15+%E4%B8%8B%E5%8D%888.46.39.jpg" alt="img" /></p>
-
-<p>在「約定優於配置」的精神下，grails 本身就針對不同責任的程式進行分類，可以看到如上圖幾種，這邊將簡單介紹各個項目所有處理的事情：</p>
-
-<ul>
-<li>domain: 簡單來講就是原本 hibernate 的 DAO 物件，如果沒有用過類似 O/R MAPPING 的技術可以以把它想像成每個不同的 table 的定義，屬於 MVC 架構中的 Model</li>
-<li>controllers: 也就是 MVC 架構中的 control，用來操作 Model，以及將運算結果呈現給 view</li>
-<li>view: MVC 架構中的 view，在 grails 的世界，是用 gsp ，可以想像成 jsp</li>
-<li>taglib: 可以在 view 中使用一些已經定義好的 tag ，原本在傳統的 j2ee 是非常繁瑣的技術，在 grails 可以很方便使用。</li>
-<li>services: 商業邏輯放置的位置，這部份的程式可任意在 domain、controllers、taglib中直接宣告，將利用 spring 進行注入，有 scope 以及 transaction 交易安全的屬性可以進行操作</li>
-<li>utils: 檢查數值或資料是否符合特定的規格運算程式放置的地方，比如說 email</li>
-<li>scripts: 可以撰寫在 terminal 或是 command line 下可以執行的程式，搭配 <code>grails create-script execute-report</code> 使用。</li>
-<li>i18n: 也就是多語系啦，可以搭配 taglib 在 view 層進行語系的轉換</li>
-<li>src/java: 在 grails 如果你要寫傳統 java 也是 ok 的只要放在這個資料夾，就會編譯成 class</li>
-<li>src/groovy: 上述分類中無法歸屬，或著原本有寫過純 groovy 的程式碼就放在這</li>
-<li>test/utils: 單元測試，只要放在這資料夾的測試程式，都會被執行</li>
-<li>test/integration: 整合測試，也就是會將上述所有的不同功能都載入進行測試。</li>
-</ul>
-
-
-<p>大致上上面所說的就是 grails 中一開始需要習慣的地方，與以往的 free style 的開發雖然多了些限制，但有了約定，基本上程式也不會亂放導致東一塊西一塊，並且透過了解上面的結構，對於程式初學也可以較清楚知道一個完整的程式，必須包含哪些不同責任的元件。</p>
-
-<p>也許有些專案成員沒有辦法立即現有的工作換到新的開發框架，不過！找時間玩玩看，相信可以更了解程式的責任釐清，像我就是！陸續會在根據不同責任的程式使用的方式個別進行詳細說明，文章就到這啦！</p>
-
-<p>這篇花了我一小時的時間，寫文章還是不夠快速，要在加油…</p>
-
-<p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/15/intrduction-grails/"></a></p>]]></content>
     </entry>
   
 </feed>

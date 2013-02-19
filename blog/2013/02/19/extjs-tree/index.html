@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>大陸韓國看台灣-我們應該更有自信 - 蹤影</title>
+  <title>extjs: tree - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,8 +26,6 @@
   
   
   
-  <meta name="description" content="大陸韓國看台灣-我們應該更有自信">
-  
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -36,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/19/extjs-tree/">
 
 
 
@@ -310,7 +308,7 @@
     
 <h1 class="entry-title">
 
-大陸韓國看台灣-我們應該更有自信
+Extjs: Tree
 
 </h1>
 
@@ -321,37 +319,248 @@
 
 
   <div class="post-description">
-    <p>寫這篇文章不只給大家看，也給自己看，因為想創業，所以離開了我熟悉得工作內容，最近在摸索的期間，有時會焦慮，有時候覺得能力不足，看的不夠廣，或是態度還沒準備好，總覺得需要學習的還有很多，除了自身以外，相信現在台灣的年輕人對於台灣環境的憂慮我想大家都不是很看好，不管是經濟，或者是政治，有時候我們也真的不要都看自己人的說詞，也看別人怎麼看台灣，特別台灣媒體政治人物特別喜歡唱衰，應該也是因為沒自信造成的。</p>
+    <p>資料來源：</p>
 
-<p>先看看韓國人怎麼說，下面的連結：</p>
+<ul>
+<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
+<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
+</ul>
 
-<blockquote><p><a href="http://cpaper-blog.blogspot.tw/2012/12/life-is-good.html">泡菜與番薯，Life is good？</a></p></blockquote>
 
-<p>我想最近大家都覺得韓國人來勢洶洶，不管在經濟或是偶像娛樂事業，沒錯～在競爭力來看，韓國確實很強，但另一方面，國家人民不太有選擇，因為大財團，還有國家的民族性，讓他們沒有什麼選擇，也因此他們很羨慕台灣的多元性，我們可以選擇我們想要的，如果我們朝韓國的方向前進，其實就是犧牲自由的選擇，之前看過一本書叫做<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010556027">怪咖時代</a>，裡面有說到因為有選擇權，才會造就更極致的事業，怪咖才能崛起，可以想想如果真的都定型了，我們有有什麼自由意志可言，每個人都往大企業跑，又怎麼會像美國，有這麼多令人讚賞的創意，從韓國人的角度看台灣，其實我們擁有的更加可貴！</p>
+<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
 
-<p>再來是從經濟的角度：</p>
+<p>這裡將介紹兩種 tree 的建立方式：</p>
 
-<blockquote><p><a href="http://blog.udn.com/sscorp/7150517">給所有台灣人一點自信，台灣的真實地位</a></p></blockquote>
+<h1>利用物件來產生 tree</h1>
 
-<p>台灣媒體總是喜歡用聳動的標題或是單一的舉證來說明一個事實，有時候不夠客觀，比如說最近常在講，我們是亞洲四小龍之末，但從數據來看，其實台灣還是很有競爭力，從失業率來看，外國動扎兩位數的失業率，在西班牙甚至高於50%，相較起來台灣真的好多了，要是我們總是因為錯誤的報導，認為台灣的環境不好，其實也更間接讓一些有能力的人，認為台灣沒有發展，因此海外人才就不來台灣，我們不只在嚇自己也在嚇別人！其實這樣是不對的，我們應該要更有自信，台灣是寶島不是鬼島，住在上面是寶貴的，不是鬼在住的！勇於接受外來的刺激，跳出舒適圈，之前看到個很不錯的slogan</p>
+<pre><code>Ext.onReady( function() {
 
-<blockquote><p>全世界最笨的是每天做一樣的事卻希望有不一樣的未來！</p></blockquote>
+    var root = new Ext.tree.TreeNode( {
+        text : '根'
+    });
 
-<p>共勉～</p>
+    var node1Child1 = new Ext.tree.TreeNode( {
+        text : '個人資料維護',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+    var node1Child2 = new Ext.tree.TreeNode( {
+        text : '密碼變更',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
 
-<p>最後從大陸人的眼光來看台灣</p>
+    var node1 = new Ext.tree.TreeNode( {
+        text : '個人資料'
+    });
+    node1.appendChild(node1Child1);
+    node1.appendChild(node1Child2);
 
-<p><a href="http://www.chinanews.com/tw/2012/12-18/4415974.shtml">大陆人看台湾：建立两岸互信 台湾首先要自信</a></p>
+    root.appendChild(node1);
 
-<p>我想這篇文章的重點</p>
+    var viewport = new Ext.tree.TreePanel( {
 
-<blockquote><p>所有的互信都是從自信開始的，因著自信而願意去主動瞭解對方。與主動的瞭解探尋相比，被動接受的信息往往單一而平面，只有好壞兩個維度的座標</p></blockquote>
+        title : "系統相關",
+        width : 200,
 
-<p>在沒有自信的情況下，我們會害怕我們不了解的事物，其實就像前面講得因為沒自信我們害怕了解，只看片面之詞，如果我們有自信，對於一些不實的報導，我們就會比較，我們有這麼差嗎？如果有自信，我們就不會害怕嘗試，害怕失敗，因為有自信，會相信從失敗中我們能夠變得更強！</p>
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : root
 
-<p>當然最後還要強調自信並不是要目中無人，自信中帶著謙遜，可以看到成功並且令人尊敬的人仕都有這樣的特質，時時提醒自己：</p>
+    });
 
-<blockquote><p>自信中不要忘了謙遜</p></blockquote>
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
+
+<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
+
+<pre><code>Ext.onReady( function() {
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : new Ext.tree.AsyncTreeNode( {
+            text : '根',
+
+            children : [ {
+                text : '個人資料',
+                children : [ {
+                    text : '個人資料維護',
+                    leaf : true
+                }, {
+                    text : '密碼變更',
+                    leaf : true
+                } ]
+            }, {
+                text : '客戶資料',
+                children : [ {
+                    text : '客戶基本資料查詢維護',
+                    leaf : true
+                }, {
+                    text : '客戶基本資料列印',
+                    leaf : true
+                } ]
+            }]
+        })
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>讀取 json 資料來源產生 tree</h2>
+
+<p>假設遠端的 json 資料來源：</p>
+
+<p>[{</p>
+
+<pre><code>id: 1,
+text: 'A leaf Node',
+leaf: true
+</code></pre>
+
+<p>  },{</p>
+
+<pre><code>id: 2,
+text: 'A folder Node',
+children: [{
+  id: 3,
+  text: 'A child Node',
+  leaf: true
+}]
+</code></pre>
+
+<p>  }]</p>
+
+<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
+
+<pre><code>Ext.onReady(function() {
+    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
+    var tree = new Ext.tree.TreePanel({
+        el: 't',
+        width: 150,
+        autoHeight: true,
+        root: root,
+        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
+    });
+    tree.render();
+});
+</code></pre>
+
+<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
+
+<h2>讀取 xml 資料來源產生 tree</h2>
+
+<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
+
+<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
+
+<ul>
+<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
+</ul>
+
+
+<h2>tree 的操作與參照</h2>
+
+<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
+
+<ul>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
+
+<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
+<li><p>selectPath( path, [attr], [callback] )</p>
+
+<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
+
+<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
+</ul>
+
+
+<p>其他請參照 API，以下有實際使用飯例：</p>
+
+<pre><code>Ext.onReady( function() {
+  var viewport = new Ext.tree.TreePanel( {
+    title : "系統相關",
+    width : 200,
+    height : 500,
+    rootVisible : true,//root結點顯不顯示
+    root : new Ext.tree.AsyncTreeNode( {
+      text : '根',
+      id:'r',
+
+      children : [ {
+        text : '個人資料',
+        id:'c1',
+        children : [ {
+            text : '個人資料維護',
+            id:'c1c1',
+            leaf : true
+
+        }, {
+            text : '密碼變更',
+            myid:'c1c2',
+            leaf : true
+        } ]
+      }, {
+        text : '客戶資料',
+        id:'c2',
+        children : [ {
+            text : '客戶基本資料查詢維護',
+            leaf : true,
+            id:'c2c1'
+        }, {
+            text : '客戶基本資料列印',
+            leaf : true,
+            id:'c2c2'
+        } ]
+      } ]
+    })
+
+  });
+
+  viewport.render('toolbar');
+  viewport.doLayout();
+
+  var btn=new Ext.Button({
+    renderTo:"btn",
+    id:'test',
+    text:'test',
+    handler:function(){
+
+        // selectPath 可以做到 expand 之後在進行 select
+      viewport.selectPath('/r/c2/c2c1');
+
+      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 一旦開啟過節點，再次 findChild 就會取得實體。
+      viewport.expandPath('/r/c1/c1c1');
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 除了 id 之外，我們也可以用別的屬性來做搜尋
+      viewport.root.findChild( 'myid', 'c1c2', true ).select();
+    }
+  });
+
+});
+</code></pre>
+
+<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+
 
   </div>
 
@@ -385,14 +594,8 @@
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-25T11:14:00+08:00" pubdate data-updated="true">Dec 25<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-19T18:40:00+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time>
 
-
-<span ><i class="mini-ico-tags"></i><span class="categories">
-  
-    <a class='category' href='/blog/categories/心得/'>心得</a>
-  
-</span></span>
 
 
 
@@ -405,7 +608,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/19/extjs-tree/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/19/extjs-tree/" target="_blank" >Tweet</a>
     
   
   
@@ -426,10 +629,8 @@
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/24/how-to-use-markdown/" title="Previous Post: 快速了解 markdown"><li>&laquo; 快速了解 markdown</li></a>
+            <a class="left" href="/blog/2013/02/19/extjs-component/" title="Previous Post: extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同"><li>&laquo; extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/25/how-to-use-git/" title="Next Post: how to use git"><li>how to use git &raquo;</li></a>
           
         </ul>
 
@@ -573,7 +774,7 @@
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/19/extjs-tree/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/19/extjs-tree/" target="_blank" >Tweet</a>
     
   
   
@@ -725,8 +926,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/25/taiwan-china-Korea/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/19/extjs-tree/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/19/extjs-tree/';
         var disqus_script = 'embed.js';
       
     (function () {
