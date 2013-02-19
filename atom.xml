@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T09:39:55+08:00</updated>
+  <updated>2013-02-19T10:10:37+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -152,7 +152,27 @@
 
 <h2>id 與 itemid 的不同</h2>
 
-<p>從官方的 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-itemId">/Ext.Component-cfg-itemId</a> 的說明可以看到文件內容記載，為了避免翻譯上的落差，使用中英文對照：</p>
+<p>從官方的 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-id">Ext.Component-cfg-id</a> 以及 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-itemId">Ext.Component-cfg-itemId</a> 的說明可以看到文件內容記載，為了避免翻譯上的落差，使用中英文對照：</p>
+
+<h3>id</h3>
+
+<p>節錄比較重要的部分，全文請參考官方 API</p>
+
+<p>id 是作為 component 的 唯一識別，如果沒有設置 id 將會自動產生 id。</p>
+
+<blockquote><p>The unique id of this component (defaults to an auto-assigned id).</p></blockquote>
+
+<p>必須注意的是 id 會作為 html 中 element 的 id，一旦該物件已經被 rendered。</p>
+
+<blockquote><p>Note that this id will also be used as the element id for the containing HTML element that is rendered to the page for this component.</p></blockquote>
+
+<p>如果你有需要改變 component 的 css 就可以透過 id 來進行操作，如果也需要改變 component 底下的 子元件也必須使用 id 來操作。</p>
+
+<blockquote><p>This allows you to write id-based CSS rules to style the specific instance of this component uniquely, and also to select sub-elements using this component&#8217;s id as the parent.</p></blockquote>
+
+<p>官方文件說明的很清楚，我就不再補述了。接著我們在來看 itemid 的說明。</p>
+
+<h3>itemid</h3>
 
 <p>itemid 可以作為參照 component 的替代方案</p>
 
@@ -182,11 +202,37 @@
 
 <ol>
 <li>若你要取得相關的 Component 若是屬於 container 請設置 id</li>
-<li>若是只屬於某個 container 底下的元件，請設置 itemId</li>
+<li>若是只屬於某個 container 底下的元件，請設置 itemId；某些情況下當然你也可以連同 id 一起設置，比如需要改變 css style，除此之外 itmeid 還是優先的選擇</li>
+<li>getCmp 以及 getComponent 是不一樣的，使用上必須注意，必須搭配 id 以及 itemid 使用</li>
 </ol>
 
 
-<p>如此一來 id 與 itemid 就會有從屬關係，也不會造成在定義 id 時需要編碼避免重覆，而因為 itemid 是屬於某個 id 底下的，所以即使 itemid 重覆，也可以利用唯一的 id 利用 Ext.getCmp 取得參照後，在接著使用 getComponent 取得所屬 itemId 的參照。</p>
+<p>如此一來 id 與 itemid 就會有從屬關係，非必要不需定義 id，也不會造成在定義 id 時需要編碼避免重覆，而因為 itemid 是屬於某個 id 底下的，所以即使 itemid 重覆，也可以利用唯一的 id 利用 Ext.getCmp 取得參照後，在接著使用 getComponent 取得所屬 itemId 的參照。</p>
+
+<p>實際的使用參考官方範例：</p>
+
+<pre><code>var c = new Ext.Panel({ //
+    height: 300,
+    renderTo: document.body,
+    layout: 'auto',
+    items: [
+        {
+            itemId: 'p1',
+            title: 'Panel 1',
+            height: 150
+        },
+       {
+        itemId: 'p2',
+            title: 'Panel 2',
+            height: 150
+        }
+    ]
+})
+p1 = c.getComponent('p1'); // not the same as Ext.getCmp()
+p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
+</code></pre>
+
+<p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
 
 <p>父子都搞定了，再來就看你自己了～XD</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/19/extjs-component/"></a></p>]]></content>
