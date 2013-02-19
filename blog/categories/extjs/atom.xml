@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T22:17:57+08:00</updated>
+  <updated>2013-02-19T22:21:01+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,256 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: tree 的建立與使用]]></title>
+    <link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
+    <updated>2013-02-19T18:40:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
+    <content type="html"><![CDATA[<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
+<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
+</ul>
+
+
+<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
+
+<p>這裡將介紹兩種 tree 的建立方式：</p>
+
+<h1>利用物件來產生 tree</h1>
+
+<pre><code>Ext.onReady( function() {
+
+    var root = new Ext.tree.TreeNode( {
+        text : '根'
+    });
+
+    var node1Child1 = new Ext.tree.TreeNode( {
+        text : '個人資料維護',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+    var node1Child2 = new Ext.tree.TreeNode( {
+        text : '密碼變更',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+
+    var node1 = new Ext.tree.TreeNode( {
+        text : '個人資料'
+    });
+    node1.appendChild(node1Child1);
+    node1.appendChild(node1Child2);
+
+    root.appendChild(node1);
+
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : root
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
+
+<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
+
+<pre><code>Ext.onReady( function() {
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : new Ext.tree.AsyncTreeNode( {
+            text : '根',
+
+            children : [ {
+                text : '個人資料',
+                children : [ {
+                    text : '個人資料維護',
+                    leaf : true
+                }, {
+                    text : '密碼變更',
+                    leaf : true
+                } ]
+            }, {
+                text : '客戶資料',
+                children : [ {
+                    text : '客戶基本資料查詢維護',
+                    leaf : true
+                }, {
+                    text : '客戶基本資料列印',
+                    leaf : true
+                } ]
+            }]
+        })
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>讀取 json 資料來源產生 tree</h2>
+
+<p>假設遠端的 json 資料來源：</p>
+
+<p>[{</p>
+
+<pre><code>id: 1,
+text: 'A leaf Node',
+leaf: true
+</code></pre>
+
+<p>  },{</p>
+
+<pre><code>id: 2,
+text: 'A folder Node',
+children: [{
+  id: 3,
+  text: 'A child Node',
+  leaf: true
+}]
+</code></pre>
+
+<p>  }]</p>
+
+<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
+
+<pre><code>Ext.onReady(function() {
+    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
+    var tree = new Ext.tree.TreePanel({
+        el: 't',
+        width: 150,
+        autoHeight: true,
+        root: root,
+        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
+    });
+    tree.render();
+});
+</code></pre>
+
+<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
+
+<h2>讀取 xml 資料來源產生 tree</h2>
+
+<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
+
+<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
+
+<ul>
+<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
+</ul>
+
+
+<h2>tree 的操作與參照</h2>
+
+<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
+
+<ul>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
+
+<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
+<li><p>selectPath( path, [attr], [callback] )</p>
+
+<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
+
+<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
+</ul>
+
+
+<p>其他請參照 API，以下有實際使用飯例：</p>
+
+<pre><code>Ext.onReady( function() {
+  var viewport = new Ext.tree.TreePanel( {
+    title : "系統相關",
+    width : 200,
+    height : 500,
+    rootVisible : true,//root結點顯不顯示
+    root : new Ext.tree.AsyncTreeNode( {
+      text : '根',
+      id:'r',
+
+      children : [ {
+        text : '個人資料',
+        id:'c1',
+        children : [ {
+            text : '個人資料維護',
+            id:'c1c1',
+            leaf : true
+
+        }, {
+            text : '密碼變更',
+            myid:'c1c2',
+            leaf : true
+        } ]
+      }, {
+        text : '客戶資料',
+        id:'c2',
+        children : [ {
+            text : '客戶基本資料查詢維護',
+            leaf : true,
+            id:'c2c1'
+        }, {
+            text : '客戶基本資料列印',
+            leaf : true,
+            id:'c2c2'
+        } ]
+      } ]
+    })
+
+  });
+
+  viewport.render('toolbar');
+  viewport.doLayout();
+
+  var btn=new Ext.Button({
+    renderTo:"btn",
+    id:'test',
+    text:'test',
+    handler:function(){
+
+        // selectPath 可以做到 expand 之後在進行 select
+      viewport.selectPath('/r/c2/c2c1');
+
+      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 一旦開啟過節點，再次 findChild 就會取得實體。
+      viewport.expandPath('/r/c1/c1c1');
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 除了 id 之外，我們也可以用別的屬性來做搜尋
+      viewport.root.findChild( 'myid', 'c1c2', true ).select();
+    }
+  });
+
+});
+</code></pre>
+
+<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同]]></title>
@@ -608,183 +858,6 @@ var dom=Ext .getDom("win1");    //得到id為win1的DOM節點
 
 <iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: events]]></title>
-    <link href="http://smlsun.com/blog/2013/02/05/extjs-events/"/>
-    <updated>2013-02-05T10:18:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/05/extjs-events</id>
-    <content type="html"><![CDATA[<p>資料來源: 次世代 Ajax 解決方案 EXTjs 開發實戰</p>
-
-<p>作者:徐會生、何啟偉、康愛媛</p>
-
-<h2>Extjs 事件</h2>
-
-<p>ExtJs對事件的管理非常強大，主要定義在Ext.EventManager對象(單例模式)中。先看註冊事件監聽方式，ExtJs提供了幾種方式來註冊元素監聽函數</p>
-
-<ul>
-<li>透過 <code>Ext.EventManager.addListener/on</code> 函數來為指定元素的某種事件註冊監聽函數。例如：<code>Ext.EventManager.on('test1','click',clickMe,this);</code></li>
-<li>透過ExtJs元素的on函數來為自身註冊某種事件的監聽處理函數。例如：
-<code>Ext.get('test1').on('click', clickMe,this,{preventDefault:true});</code></li>
-</ul>
-
-
-<p>其中 options參數是事件配置項，各項說明如下：</p>
-
-<ul>
-<li>scope ：可指定執行上下文</li>
-<li>delegate ：事件代理</li>
-<li>stopEvent ：阻止冒泡和默認行為</li>
-<li>preventDefault ：阻止默認行為</li>
-<li>stopPropagation ：停止事件冒泡</li>
-<li>normalized ：僅傳原生事件對象</li>
-<li>delay ：延遲執行</li>
-<li>single :僅執行一次</li>
-<li>buffer ：延遲執行，多次時最後一次覆蓋前一次</li>
-<li>target :指定在父元素上執行</li>
-</ul>
-
-
-<p>舉例來說，假如我要進行事件延遲處理，就可以使用 delay</p>
-
-<p>``` javascript
-Ext.onReady( function (){</p>
-
-<pre><code>Ext.get( "btnAlert" ).on( "click" ,a, this ,{delay:2000});   
-</code></pre>
-
-<p>});
-```</p>
-
-<p>要知道更詳細的解說可以查看 extjs api: <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.EventManager-method-addListener">Ext.EventManager-method-addListener</a></p>
-
-<h2>Extjs 之事件模型</h2>
-
-<p>所有繼承自 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.util.Observable">Ext.util.observable</a> 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
-
-<p>下面是個簡單的例子</p>
-
-<h3>定義Person類別</h3>
-
-<ul>
-<li>此例定義了一個Person物件，擁有一個屬性 name。</li>
-<li>使用 this.addEvent() 函式定義了 walk、eat與sleep三個自訂事件。</li>
-<li>使用 Ext.extend() 讓Person物件繼承Ext.util.observable所有屬性。</li>
-<li>並擴充一個新函數 info()，並設計info() 函式可傳回Person的資訊。</li>
-</ul>
-
-
-<p>``` javascript
-Person = function(name){
-  this.name = name;
-  this.addEvents(“walk”,”eat”,”sleep”);
-}</p>
-
-<p>Ext.extend(Person, Ext.util.observable, {
-  info: function(event) {</p>
-
-<pre><code>return this.name + ‘is’ + event + ‘ing.’;
-</code></pre>
-
-<p>  }
-});
-```</p>
-
-<h3>建立Person實體物件(instance)，並為其事件配置監聽器(listener)</h3>
-
-<ul>
-<li>on 為 addListener() 的簡寫型式。</li>
-<li>on 函式第一個函數為事件名稱，第二個參數為事件發生時所執行的函數。</li>
-</ul>
-
-
-<p>``` javascript
-var person = new Person(‘Lingo’);
-person.on(‘walk’ , function() {</p>
-
-<pre><code>Ext.Msg.alert(‘event’ , person.name + “is walking…”);
-</code></pre>
-
-<p>});
-person.on(‘eat’, function(breakfast, lunch, supper){</p>
-
-<pre><code>Ext.Msg.alert(‘event’, person.name + “want to eat” + breakfast + “and ”+ lunch + “and ” + supper + “.”);
-</code></pre>
-
-<p>});
-person.on(‘sleep’, function(time) {</p>
-
-<pre><code>Ext.Msg.alert(‘event’,person.name + “從” + time.format(“H”) + “點開始睡覺。”); 
-</code></pre>
-
-<p>})
-```</p>
-
-<h3>觸發事件</h3>
-
-<ul>
-<li>呼叫fireEvent() 即觸發函式，傳入一個事件名稱，其對應之監聽函式即會執行。</li>
-<li>與 on() 相反，un() 為 removeListener() 函式的簡寫，用途為刪除某事件之對應函數。</li>
-<li>另有一 purgeListeners() 函數，可將所有監聽器刪除。</li>
-</ul>
-
-
-<p>``` javascript
-Ext.get(‘walk’).on(‘click’ , function{
-  person.fireEvent(‘walk’);
-});</p>
-
-<p>Ext.get(‘eat’).on(‘click’, function(){
-  person.fireEvent(‘eat’, ‘早餐’, ‘午餐’, ‘晚餐’);
-});</p>
-
-<p>Ext.get(‘sleep’).on(‘click’,function(){
-  person.fireEvent(‘sleep’, new Date());
-});
-```</p>
-
-<h2>瀏覽器事件</h2>
-
-<ul>
-<li>主要使用 Ext.EventManager, Ext.EventObject 與 Ext.lib.Event 對原生瀏覽器事件進行包裝。</li>
-<li>HTML 瀏覽器事件屬於單一綁定，Ext框架則是對於同一個事件可以綁定至多個事件處理控制碼上。</li>
-</ul>
-
-
-<h3>原生 HTML</h3>
-
-<p><code>javascript
-var e=document.getElementById(“test”);
-e.onclick=function(){alert(“handle1”)};
-e.onclick=function(){alert(“hangle2”)};
-</code></p>
-
-<blockquote><p>按下 test後，只會顯示 handle2 提示框。</p></blockquote>
-
-<h3>extjs</h3>
-
-<p>``` javascript
-Ext.onReady( function(){
-  var test = Ext.get(‘test’);
-  test.on(‘click’, function() {</p>
-
-<pre><code>alert(“handle1”); 
-</code></pre>
-
-<p>  });</p>
-
-<p>  test.on(‘click’, function(){</p>
-
-<pre><code>alert(“handle2”);
-</code></pre>
-
-<p>  });
-});
-```</p>
-
-<blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
 ]]></content>
   </entry>
   

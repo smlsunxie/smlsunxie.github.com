@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T22:17:57+08:00</updated>
+  <updated>2013-02-19T22:21:01+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,256 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: tree 的建立與使用]]></title>
+    <link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
+    <updated>2013-02-19T18:40:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
+    <content type="html"><![CDATA[<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
+<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
+</ul>
+
+
+<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
+
+<p>這裡將介紹兩種 tree 的建立方式：</p>
+
+<h1>利用物件來產生 tree</h1>
+
+<pre><code>Ext.onReady( function() {
+
+    var root = new Ext.tree.TreeNode( {
+        text : '根'
+    });
+
+    var node1Child1 = new Ext.tree.TreeNode( {
+        text : '個人資料維護',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+    var node1Child2 = new Ext.tree.TreeNode( {
+        text : '密碼變更',
+        leaf : 'true'// 是否為末結果,樹葉
+    });
+
+    var node1 = new Ext.tree.TreeNode( {
+        text : '個人資料'
+    });
+    node1.appendChild(node1Child1);
+    node1.appendChild(node1Child2);
+
+    root.appendChild(node1);
+
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : root
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
+
+<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
+
+<pre><code>Ext.onReady( function() {
+    var viewport = new Ext.tree.TreePanel( {
+
+        title : "系統相關",
+        width : 200,
+
+        height : 500,
+        rootVisible : true,//root結點顯不顯示
+        root : new Ext.tree.AsyncTreeNode( {
+            text : '根',
+
+            children : [ {
+                text : '個人資料',
+                children : [ {
+                    text : '個人資料維護',
+                    leaf : true
+                }, {
+                    text : '密碼變更',
+                    leaf : true
+                } ]
+            }, {
+                text : '客戶資料',
+                children : [ {
+                    text : '客戶基本資料查詢維護',
+                    leaf : true
+                }, {
+                    text : '客戶基本資料列印',
+                    leaf : true
+                } ]
+            }]
+        })
+
+    });
+
+    viewport.render('toolbar');
+    viewport.doLayout();
+
+});
+</code></pre>
+
+<h2>讀取 json 資料來源產生 tree</h2>
+
+<p>假設遠端的 json 資料來源：</p>
+
+<p>[{</p>
+
+<pre><code>id: 1,
+text: 'A leaf Node',
+leaf: true
+</code></pre>
+
+<p>  },{</p>
+
+<pre><code>id: 2,
+text: 'A folder Node',
+children: [{
+  id: 3,
+  text: 'A child Node',
+  leaf: true
+}]
+</code></pre>
+
+<p>  }]</p>
+
+<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
+
+<pre><code>Ext.onReady(function() {
+    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
+    var tree = new Ext.tree.TreePanel({
+        el: 't',
+        width: 150,
+        autoHeight: true,
+        root: root,
+        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
+    });
+    tree.render();
+});
+</code></pre>
+
+<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
+
+<h2>讀取 xml 資料來源產生 tree</h2>
+
+<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
+
+<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
+
+<ul>
+<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
+</ul>
+
+
+<h2>tree 的操作與參照</h2>
+
+<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
+
+<ul>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
+
+<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
+<li><p>selectPath( path, [attr], [callback] )</p>
+
+<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
+<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
+
+<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
+</ul>
+
+
+<p>其他請參照 API，以下有實際使用飯例：</p>
+
+<pre><code>Ext.onReady( function() {
+  var viewport = new Ext.tree.TreePanel( {
+    title : "系統相關",
+    width : 200,
+    height : 500,
+    rootVisible : true,//root結點顯不顯示
+    root : new Ext.tree.AsyncTreeNode( {
+      text : '根',
+      id:'r',
+
+      children : [ {
+        text : '個人資料',
+        id:'c1',
+        children : [ {
+            text : '個人資料維護',
+            id:'c1c1',
+            leaf : true
+
+        }, {
+            text : '密碼變更',
+            myid:'c1c2',
+            leaf : true
+        } ]
+      }, {
+        text : '客戶資料',
+        id:'c2',
+        children : [ {
+            text : '客戶基本資料查詢維護',
+            leaf : true,
+            id:'c2c1'
+        }, {
+            text : '客戶基本資料列印',
+            leaf : true,
+            id:'c2c2'
+        } ]
+      } ]
+    })
+
+  });
+
+  viewport.render('toolbar');
+  viewport.doLayout();
+
+  var btn=new Ext.Button({
+    renderTo:"btn",
+    id:'test',
+    text:'test',
+    handler:function(){
+
+        // selectPath 可以做到 expand 之後在進行 select
+      viewport.selectPath('/r/c2/c2c1');
+
+      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 一旦開啟過節點，再次 findChild 就會取得實體。
+      viewport.expandPath('/r/c1/c1c1');
+      alert(viewport.root.findChild( 'id', 'c1c1', true ));
+
+      // 除了 id 之外，我們也可以用別的屬性來做搜尋
+      viewport.root.findChild( 'myid', 'c1c2', true ).select();
+    }
+  });
+
+});
+</code></pre>
+
+<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同]]></title>
@@ -1028,33 +1278,6 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 <blockquote><p>這不是內存泄漏。如果您創建了許多無法獲得也無法釋放的對象，那才是內存泄漏。在這裏，您將創建許多元素，Internet Explorer 需要保存它們以正確呈現頁面。Internet Explorer 並不知道您以後不會運行操縱您剛剛創建的所有這些對象的腳本。當頁面消失時（當您瀏覽完，離開瀏覽器時）會釋放內存。它不會泄漏。當銷毀頁面時，會中斷循環引用。</p></blockquote>
 
 <p>因此，雖然不知道新版的 IE 是否已沒有上述問題，保險起見，避免上述狀況的程式撰寫風格才是上上策。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs 3.x: 本地資料 PagingStore 的使用]]></title>
-    <link href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"/>
-    <updated>2013-02-15T18:04:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/15/extjs-pagingstore</id>
-    <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
-
-<p>當然文章一開始有提到 extjs 3 原生未支援這樣處理的方式，好家在網路上的大神已經有幫我們開發出外掛，讓我們可以很方便去使用，該外掛相關說明以及下載地址：</p>
-
-<p><a href="http://www.sencha.com/forum/showthread.php?71532-Ext.ux.data.PagingStore-v0.5">Ext.ux.data.PagingStore [v0.5]</a></p>
-
-<p>使用是需要注意的重點：</p>
-
-<ul>
-<li>根據資料來源的不同會有不同的 store</li>
-<li>在分頁 toolbar 的使用，記得也要使用 ux 的版本 <code>Ext.ux.PagingToolbar</code></li>
-<li>可以使用 <code>Ext.data.MemoryProxy</code> 當畫面 render 完成後在進行 store.load</li>
-</ul>
-
-
-<p>最後提供一個已經寫好的小範例讓大家參考一下，希望可以讓需要的人快速上手囉！</p>
-
-<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
 ]]></content>
   </entry>
   
