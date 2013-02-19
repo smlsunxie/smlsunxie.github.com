@@ -423,25 +423,20 @@
 
 <p>假設遠端的 json 資料來源：</p>
 
-<p>[{</p>
-
-<pre><code>id: 1,
-text: 'A leaf Node',
-leaf: true
-</code></pre>
-
-<p>  },{</p>
-
-<pre><code>id: 2,
-text: 'A folder Node',
-children: [{
-  id: 3,
-  text: 'A child Node',
-  leaf: true
+<pre><code>[{
+    id: 1,
+    text: 'A leaf Node',
+    leaf: true
+},{
+    id: 2,
+    text: 'A folder Node',
+    children: [{
+        id: 3,
+        text: 'A child Node',
+        leaf: true
+    }]
 }]
 </code></pre>
-
-<p>  }]</p>
 
 <p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
 
