@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>extjs: component 的使用，找尋 parent & child - 蹤影</title>
+  <title>extjs: component 的使用，找尋 parent & child，以及區別 id 與 itemid 的不同 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,7 @@
   
   
   
-  <meta name="description" content="說明如何透過 extjs component 來查詢找出相關 praent & child component">
+  <meta name="description" content="說明如何透過 extjs component 來查詢找出相關 praent & child component 以及區別 id 與 itemid 的不同並且正確使用">
   
   <meta name="keywords" content="javascript, extjs, component,find ,parent">
 
@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2013/02/05/extjs-component/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/02/19/extjs-component/">
 
 
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Extjs: Component 的使用，找尋 Parent & Child
+Extjs: Component 的使用，找尋 Parent & Child，以及區別 Id 與 Itemid 的不同
 
 </h1>
 
@@ -448,6 +448,44 @@ Extjs: Component 的使用，找尋 Parent & Child
 </ul>
 
 
+<h2>id 與 itemid 的不同</h2>
+
+<p>從官方的 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-itemId">/Ext.Component-cfg-itemId</a> 的說明可以看到文件內容記載，為了避免翻譯上的落差，使用中英文對照：</p>
+
+<p>itemid 可以作為參照 component 的替代方案</p>
+
+<blockquote><p>An itemId can be used as an alternative way to get a reference to a component when no object reference is available.</p></blockquote>
+
+<p>其中：</p>
+
+<ul>
+<li>id 可用於 Ext.getCmp</li>
+<li>itemid 用於 Ext.Container.getComponent</li>
+</ul>
+
+
+<p>區別兩者不同，並且善用能夠取得設定該 config 相關的元件</p>
+
+<blockquote><p>Instead of using an id with Ext.getCmp, use itemId with Ext.Container.getComponent which will retrieve itemId&#8217;s or id&#8217;s.</p></blockquote>
+
+<p>一旦 itemid 設置於 container 底下的任何物件 (MixedCollection)，則 itemId 他的範圍 (Scope) 將只限於 container 並且是區域性的。</p>
+
+<blockquote><p>Since itemId&#8217;s are an index to the container&#8217;s internal MixedCollection, the itemId is scoped locally to the container</p></blockquote>
+
+<p>最後為了避免淺在衝突，若是使用 Ext.ComponentMgr 必須要有唯一的 id 可進行識別</p>
+
+<blockquote><p>avoiding potential conflicts with Ext.ComponentMgr which requires a unique id.</p></blockquote>
+
+<p>從上面的敘述中可以看出一些使用上需注意的地方</p>
+
+<ol>
+<li>若你要取得相關的 Component 若是屬於 container 請設置 id</li>
+<li>若是只屬於某個 container 底下的元件，請設置 itemId</li>
+</ol>
+
+
+<p>如此一來 id 與 itemid 就會有從屬關係，也不會造成在定義 id 時需要編碼避免重覆，而因為 itemid 是屬於某個 id 底下的，所以即使 itemid 重覆，也可以利用唯一的 id 利用 Ext.getCmp 取得參照後，在接著使用 getComponent 取得所屬 itemId 的參照。</p>
+
 <p>父子都搞定了，再來就看你自己了～XD</p>
 
   </div>
@@ -482,7 +520,7 @@ Extjs: Component 的使用，找尋 Parent & Child
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2013-02-05T14:47:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-02-19T14:47:00+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
@@ -502,7 +540,7 @@ Extjs: Component 的使用，找尋 Parent & Child
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/05/extjs-component/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/05/extjs-component/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/19/extjs-component/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/19/extjs-component/" target="_blank" >Tweet</a>
     
   
   
@@ -523,10 +561,8 @@ Extjs: Component 的使用，找尋 Parent & Child
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2013/02/05/extjs-events/" title="Previous Post: extjs: events"><li>&laquo; extjs: events</li></a>
+            <a class="left" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/" title="Previous Post: extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性"><li>&laquo; extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</li></a>
           
-          
-            <a class="right" href="/blog/2013/02/15/mac-andorid-usb-3g/" title="Next Post: 如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網"><li>如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網 &raquo;</li></a>
           
         </ul>
 
@@ -620,6 +656,10 @@ Extjs: Component 的使用，找尋 Parent & Child
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/19/extjs-component/">extjs: component 的使用，找尋 parent & child，以及區別 id 與 itemid 的不同</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</a>
       </li>
     
@@ -633,10 +673,6 @@ Extjs: Component 的使用，找尋 Parent & Child
     
       <li>
         <a href="/blog/2013/02/15/extjs-pagingstore/">extjs 3.x: 本地資料 PagingStore 的使用</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/15/mac-andorid-usb-3g/">如何令各個 OS 透過 andorid 手機的 usb 網路共用來進行 3g 網路上網</a>
       </li>
     
   </ul>
@@ -670,7 +706,7 @@ Extjs: Component 的使用，找尋 Parent & Child
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/05/extjs-component/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/05/extjs-component/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/02/19/extjs-component/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/02/19/extjs-component/" target="_blank" >Tweet</a>
     
   
   
@@ -822,8 +858,8 @@ Extjs: Component 的使用，找尋 Parent & Child
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2013/02/05/extjs-component/';
-        var disqus_url = 'http://smlsun.com/blog/2013/02/05/extjs-component/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/02/19/extjs-component/';
+        var disqus_url = 'http://smlsun.com/blog/2013/02/19/extjs-component/';
         var disqus_script = 'embed.js';
       
     (function () {

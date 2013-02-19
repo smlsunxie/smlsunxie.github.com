@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-18T19:21:14+08:00</updated>
+  <updated>2013-02-19T09:39:55+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,165 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child，以及區別 id 與 itemid 的不同]]></title>
+    <link href="http://smlsun.com/blog/2013/02/19/extjs-component/"/>
+    <updated>2013-02-19T14:47:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/19/extjs-component</id>
+    <content type="html"><![CDATA[<p>了解 component 的運作將有助於在操作 extjs 時，能夠更靈活操作在一個頁面中各個元件的運作，有了 component 查詢父類以及子類的方法可以更方便存取各階層的元件，特別在 single page 的頁面設計下更顯重要，並且在前端程式架構與分工上我們將可以很輕易的將 view 與事件獨立開來，避免重覆設計元件，造成維護上的困擾。</p>
+
+<p>下面將說明查詢父類以及子類的方式</p>
+
+<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a> hierarchy (階層)</h2>
+
+<ul>
+<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a></p>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Container">Ext.Container</a></li>
+</ul>
+</li>
+</ul>
+
+
+<h2>取得特定 component</h2>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext-method-getCmp">getCmp</a></li>
+</ul>
+
+
+<h2>取得 parent component</h2>
+
+<p>因為 extjs 所有的元件皆繼承於 component，且 Ext.Container 擁有 component，故通常透過下列方式取得的 parent Component 都屬於 Ext.Container，雖然如此，parent 物件還是擁有當初創建 Component 的屬性或方法。</p>
+
+<ul>
+<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></p>
+
+<p>  ownerCt 為 Component 的 properties，因此可直接取得，詳細可查找 extjs api</p></li>
+</ul>
+
+
+<p><code>javascript
+parent = child.ownerCt;
+</code></p>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentBy">findParentBy</a></li>
+</ul>
+
+
+<p>``` javascript   <br/>
+var form=this.findParentBy(function(p) {
+  //定義你要索引的 parent 的條件式，若回傳為 true 將會回傳該 container parent</p>
+
+<pre><code>return p.getForm;
+</code></pre>
+
+<p>});
+```</p>
+
+<ul>
+<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentByType">findParentByType</a> (  String/Class xtype ) : Container</li>
+</ul>
+
+
+<p>主要透過 findParentBy 實作，找出最接近且符合傳入 xtype</p>
+
+<p>``` javascript</p>
+
+<p>function (xtype) {
+  return Ext.isFunction(xtype) ?</p>
+
+<pre><code>this.findParentBy(function(p){
+    return p.constructor === xtype;
+}) :
+this.findParentBy(function(p){
+    return p.constructor.xtype === xtype;
+});
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>取得 child component</h2>
+
+<ul>
+<li>getComponent</li>
+</ul>
+
+
+<p><code>javascript
+var childPanel = Ext.getCmp('parentPanel').getComponent('childPanel09');
+if (childPanel) {
+  alert('yes. child exists');
+}
+</code></p>
+
+<ul>
+<li>find</li>
+</ul>
+
+
+<p><code>javascript
+var childPanel = Ext.getCmp('parentPanel').find('id', 'childPanel09')[0]; // [0] because find returns array
+if (childPanel) {
+  alert('yes. child exists');
+}
+</code></p>
+
+<ul>
+<li><p>findBy</p>
+
+<p>  使用方式同 findParentBy</p></li>
+<li><p>findByType</p>
+
+<p>  使用方式同 findParentByType</p></li>
+</ul>
+
+
+<h2>id 與 itemid 的不同</h2>
+
+<p>從官方的 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-itemId">/Ext.Component-cfg-itemId</a> 的說明可以看到文件內容記載，為了避免翻譯上的落差，使用中英文對照：</p>
+
+<p>itemid 可以作為參照 component 的替代方案</p>
+
+<blockquote><p>An itemId can be used as an alternative way to get a reference to a component when no object reference is available.</p></blockquote>
+
+<p>其中：</p>
+
+<ul>
+<li>id 可用於 Ext.getCmp</li>
+<li>itemid 用於 Ext.Container.getComponent</li>
+</ul>
+
+
+<p>區別兩者不同，並且善用能夠取得設定該 config 相關的元件</p>
+
+<blockquote><p>Instead of using an id with Ext.getCmp, use itemId with Ext.Container.getComponent which will retrieve itemId's or id's.</p></blockquote>
+
+<p>一旦 itemid 設置於 container 底下的任何物件 (MixedCollection)，則 itemId 他的範圍 (Scope) 將只限於 container 並且是區域性的。</p>
+
+<blockquote><p>Since itemId's are an index to the container's internal MixedCollection, the itemId is scoped locally to the container</p></blockquote>
+
+<p>最後為了避免淺在衝突，若是使用 Ext.ComponentMgr 必須要有唯一的 id 可進行識別</p>
+
+<blockquote><p>avoiding potential conflicts with Ext.ComponentMgr which requires a unique id.</p></blockquote>
+
+<p>從上面的敘述中可以看出一些使用上需注意的地方</p>
+
+<ol>
+<li>若你要取得相關的 Component 若是屬於 container 請設置 id</li>
+<li>若是只屬於某個 container 底下的元件，請設置 itemId</li>
+</ol>
+
+
+<p>如此一來 id 與 itemid 就會有從屬關係，也不會造成在定義 id 時需要編碼避免重覆，而因為 itemid 是屬於某個 id 底下的，所以即使 itemid 重覆，也可以利用唯一的 id 利用 Ext.getCmp 取得參照後，在接著使用 getComponent 取得所屬 itemId 的參照。</p>
+
+<p>父子都搞定了，再來就看你自己了～XD</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
@@ -314,127 +473,6 @@ var dom=Ext .getDom("win1");    //得到id為win1的DOM節點
 
 <iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child]]></title>
-    <link href="http://smlsun.com/blog/2013/02/05/extjs-component/"/>
-    <updated>2013-02-05T14:47:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/05/extjs-component</id>
-    <content type="html"><![CDATA[<p>了解 component 的運作將有助於在操作 extjs 時，能夠更靈活操作在一個頁面中各個元件的運作，有了 component 查詢父類以及子類的方法可以更方便存取各階層的元件，特別在 single page 的頁面設計下更顯重要，並且在前端程式架構與分工上我們將可以很輕易的將 view 與事件獨立開來，避免重覆設計元件，造成維護上的困擾。</p>
-
-<p>下面將說明查詢父類以及子類的方式</p>
-
-<h2><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component">component</a> hierarchy (階層)</h2>
-
-<ul>
-<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.BoxComponent">Ext.BoxComponent</a></p>
-
-<ul>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Container">Ext.Container</a></li>
-</ul>
-</li>
-</ul>
-
-
-<h2>取得特定 component</h2>
-
-<ul>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext-method-getCmp">getCmp</a></li>
-</ul>
-
-
-<h2>取得 parent component</h2>
-
-<p>因為 extjs 所有的元件皆繼承於 component，且 Ext.Container 擁有 component，故通常透過下列方式取得的 parent Component 都屬於 Ext.Container，雖然如此，parent 物件還是擁有當初創建 Component 的屬性或方法。</p>
-
-<ul>
-<li><p><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-ownerCt">Component.ownerCt</a></p>
-
-<p>  ownerCt 為 Component 的 properties，因此可直接取得，詳細可查找 extjs api</p></li>
-</ul>
-
-
-<p><code>javascript
-parent = child.ownerCt;
-</code></p>
-
-<ul>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentBy">findParentBy</a></li>
-</ul>
-
-
-<p>``` javascript   <br/>
-var form=this.findParentBy(function(p) {
-  //定義你要索引的 parent 的條件式，若回傳為 true 將會回傳該 container parent</p>
-
-<pre><code>return p.getForm;
-</code></pre>
-
-<p>});
-```</p>
-
-<ul>
-<li><a href="http://docs-devel.sencha.com/ext-js/3-4/#!/api/Ext.Component-method-findParentByType">findParentByType</a> (  String/Class xtype ) : Container</li>
-</ul>
-
-
-<p>主要透過 findParentBy 實作，找出最接近且符合傳入 xtype</p>
-
-<p>``` javascript</p>
-
-<p>function (xtype) {
-  return Ext.isFunction(xtype) ?</p>
-
-<pre><code>this.findParentBy(function(p){
-    return p.constructor === xtype;
-}) :
-this.findParentBy(function(p){
-    return p.constructor.xtype === xtype;
-});
-</code></pre>
-
-<p>}
-```</p>
-
-<h2>取得 child component</h2>
-
-<ul>
-<li>getComponent</li>
-</ul>
-
-
-<p><code>javascript
-var childPanel = Ext.getCmp('parentPanel').getComponent('childPanel09');
-if (childPanel) {
-  alert('yes. child exists');
-}
-</code></p>
-
-<ul>
-<li>find</li>
-</ul>
-
-
-<p><code>javascript
-var childPanel = Ext.getCmp('parentPanel').find('id', 'childPanel09')[0]; // [0] because find returns array
-if (childPanel) {
-  alert('yes. child exists');
-}
-</code></p>
-
-<ul>
-<li><p>findBy</p>
-
-<p>  使用方式同 findParentBy</p></li>
-<li><p>findByType</p>
-
-<p>  使用方式同 findParentByType</p></li>
-</ul>
-
-
-<p>父子都搞定了，再來就看你自己了～XD</p>
 ]]></content>
   </entry>
   
