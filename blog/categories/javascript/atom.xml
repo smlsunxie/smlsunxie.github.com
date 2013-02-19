@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T10:10:37+08:00</updated>
+  <updated>2013-02-19T11:01:01+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -212,9 +212,98 @@ p1 = c.getComponent('p1'); // not the same as Ext.getCmp()
 p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 </code></pre>
 
-<p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
+<p>除了上述 id 以及 itemid 可用於索引元件取得參照之外，我們還可以使用以下方法</p>
 
-<p>父子都搞定了，再來就看你自己了～XD</p>
+<h2>ref</h2>
+
+<p>使用 ref 可以更加方便得取得 container 底下的 Component，連 getComponent 都可以免了。</p>
+
+<p>參考官方文件 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-ref">Ext.Component-cfg-ref</a></p>
+
+<p>ref 是使用路徑的語法，該路徑相關於 Component 的 ownerCt，ownerCt 所參照的是該物件的所屬的 Container 也就是他的上層父元件</p>
+
+<blockquote><p>A path specification, relative to the Component's ownerCt specifying into which ancestor Container to place a named reference to this Component.</p></blockquote>
+
+<p>從上面的敘述有個概念後，來看實例會更清楚 ref 的作用，如下：</p>
+
+<p>``` javascript</p>
+
+<pre><code>// 自定義數一個元件，繼承於 Ext.form.FormPanel
+MyComponent = Ext.extend(Ext.form.FormPanel, {
+    frame: true,
+
+    initComponent: function() {
+
+        // 這個元件擁有兩個欄位，以及兩個 button
+        var config = {
+            items: [{
+                        xtype: 'textfield',
+                        fieldLabel: 'Name'
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Address'
+                    }],
+            /* 
+            * 對於 bbar 裡的 button 使用 ref
+            * 在這層結構上為 panel &gt; toolbar &gt; button
+            * 為了改變為 panel &gt; button
+            * 所以以 button 的 ownerCt 為 root 也就是 toolbar 的情況下
+            * 在往上一層就如同上述的結構透過 ../ 將層級提昇
+            */
+            bbar: ['-&gt;', {
+                        text: 'Cancel',
+                        minWidth: 100,
+                        ref: '../cancelButton' 
+                    }, {
+                        text: 'Save',
+                        minWidth: 100,
+                        ref: '../saveButton' 
+                    }]
+        };
+
+        //將 initComponent 裡設置好的初始 config 與 initialConfig 合併作為初始的元件
+        Ext.apply(this, Ext.apply(this.initialConfig, config));
+
+        //執行 superclass.initComponent 並且指定自定義好的元件作為 this 
+        MyComponent.superclass.initComponent.apply(this, arguments);
+
+    }
+});
+
+//對新元件註冊 xtype 透過 Ext.reg
+Ext.reg('my_component_xtype', MyComponent);
+
+
+// Create a display a window with the panel in it...
+
+var w = new Ext.Window({
+            modal: true,
+            items: {
+                // 一旦 my_component_xtype 也就是 MyComponent
+                // 被實體化後就會有兩個欄位與兩個 button
+                xtype: 'my_component_xtype',
+                title: 'Panel 1',
+                // 在這邊的階層為 window &gt; panel
+                ref: 'theFormPanel'
+            }
+        });
+w.show();
+
+
+// See how we can use the references...
+// 因為在 MyComponent 改變了 ref 往上一層跳過 toolbar
+// 所以我們就可以如以下操作該物件
+
+w.theFormPanel.saveButton.on('click', function() {
+            console.log('Save was clicked');
+        }, this);
+</code></pre>
+
+<p>```</p>
+
+<p>詳細註解與說明都在上面程式的註解裡，這邊就不多做說明，可以看到透過 ref 的使用，我們可以更加方變得操作 extjs 裡的元件。除了 id 以及 itemid 之外也多了一個可以更方便敘述物件關係的方式。</p>
+
+<p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
 ]]></content>
   </entry>
   
