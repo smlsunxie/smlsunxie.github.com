@@ -4,7 +4,7 @@
   <title><![CDATA[Category: IE | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/ie/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-20T13:15:39+08:00</updated>
+  <updated>2013-02-20T13:30:04+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -188,6 +188,8 @@ PIPI.Mapping.push(externLib);
 <p><img src="https://lh5.googleusercontent.com/-LMw8XLJlJBM/USCnHEzC08I/AAAAAAAALhk/RAo0i4Yi97k/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.31.45.jpg" alt="img" /></p>
 
 <p>可以看到原本除了宣告函數存在之外，另一個變數已消失，表示 leaks 的情形已被解決！當然上述的狀況說明的是關於全域變數如果要確實 GC 的方式，關於區域變數，照理來說一旦所屬函數被執行完之後，區域變數應該會馬上被回收，要注意的是如果是有 closure 的情形，如果 closure 未被執行，表示函數尚未完全執行結束，也就代表區域變數無法被正確回收，這點必須特別注意，也因此再次強調使用 closure 要特別小心 leaks 的情形。</p>
+
+<p>另外只要將游標指向你欲查看的變數上面，profiles 將顯示該變數被宣告的程式檔與行號，透過超連結，可以直接開啟，可以方便找出有問題的全域變數位置。</p>
 
 <p>其中針對圖中的欄位解釋如下:</p>
 
