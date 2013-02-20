@@ -1107,7 +1107,7 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 
 <p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
 
-<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改顯 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
 
 <pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
 constructor: function(cfg){
