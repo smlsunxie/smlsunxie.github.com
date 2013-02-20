@@ -504,7 +504,9 @@ PIPI.Mapping.push(externLib);
 </ul>
 
 
-<p>所謂的 <strong>不正常</strong> leaks 情形，幾乎只有在 IE 瀏覽器中會出現，以下將詳細說明在 IE 中為什麼會造成 leaks，首先必須先了解在舊版 IE 中 GC 的運作與現在的瀏覽器有什麼不同</p>
+<blockquote><p>一旦客戶說速度變得異常的慢，記憶體標高時，就是時候分析客戶目前瀏覽器關於記憶體使用的 profile，麻煩使用者改用 chrome 在關鍵時刻，請他將瀏覽網頁 snapshot 起來分析一下囉！</p></blockquote>
+
+<p>所謂的 <strong>不正常</strong> leaks 情形，幾乎只有在 IE 瀏覽器中會出現，以下將詳細說明在 IE 中為什麼會造成 leaks，首先必須先了解在舊版 IE 中 GC 的運作與現在的瀏覽器有什麼不同。</p>
 
 <blockquote><p>如果所開發的產品不考慮 IE 的使用者，那可以直接跳過下面這段，以下所敘述的問題其實也只在舊版的 IE6 以前會有問題，不過&#8230; 基本上世界上還是有不少 IE 的舊版，了解一下並且盡量避免可以活的比較快樂&#8230;</p></blockquote>
 
@@ -522,11 +524,11 @@ PIPI.Mapping.push(externLib);
 
 <p>因為第 2 點的狀況GC算法是計數器，因此只碰到循環 引用就會造成 memory leakage，也就是說 IE6 中 JScript 的 GC 算法使用的是 nongeneration mark-and-sweep。</p>
 
-<p>對於javascript對算法的實現缺陷，也就是說，IE 6對於純粹的 Script Objects 間的 Circular References 是可以正確處理的，可惜它處理不了的是 JScript 與 Native Object(例如Dom、ActiveX Object) 之間的 Circular References。</p>
+<p>對於 javascript 對算法的實現缺陷，也就是說，IE 6 對於純粹的 Script Objects 間的 Circular References 是可以正確處理的，可惜它處理不了的是 JScript 與 Native Object (例如Dom、ActiveX Object) 之間的 Circular References。</p>
 
-<p>所以，當我們出現Native對象(例如Dom、ActiveX Object)與 Javascript 對象間的循環引用時，內存泄露的問題就出現了。</p>
+<p>所以，當我們出現Native對象 (例如Dom、ActiveX Object) 與 Javascript 對象間的循環引用時，內存泄露的問題就出現了。</p>
 
-<blockquote><p>好消息是，這個bug在IE 7中已經被修復了！</p></blockquote>
+<blockquote><p>好消息是，這個bug在 IE 7 中已經被修復了！</p></blockquote>
 
 <p>簡單的例子來重現這個問題：</p>
 
@@ -583,7 +585,7 @@ PIPI.Mapping.push(externLib);
                 function  ClickEventHandler(){
 
                     //This closure refs element  
-                    //該函數有個引用指向AttachEvents(element)調用Scope，也就是執行了參數element。 
+                    //該函數有個引用指向AttachEvents(element)調用Scope，也就是執行了參數 element。             element.click();
 
                 }
             }
@@ -724,11 +726,11 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 
 <p>LeakMemory 和 CleanMemory 這兩段函數的唯一區別就在於他們的代碼的循序，從代碼上看，兩段代碼的邏輯都沒有錯。</p>
 
-<p>但 LeakMemory 卻會造成泄露。原因是 LeakMemory() 會先建立起 parentDiv 和 childDiv 之間的連接，這時候，為了讓 childDiv 能夠獲知 parentDiv 的信息，因此 IE 需要先建立一個臨時的 scope 對象。而後 parentDiv 建立了和 hostElement 對象的聯系， parentDiv 和 childDiv 直接使用頁面 document 的 scope 。可惜的是，IE 不會釋放剛才那個臨 時的 scope 對象的內存空間，直到我們跳轉頁面，這塊空間才能被釋放。而 CleanMemory 函數不同，他先把 parentDiv 和 hostElement 建立聯系，而後再把 childDiv 和 parentDiv 建立聯系，這個過程不需要單獨建立臨時的 scope ，只要直接使用頁面 document 的 scope 就可以了， 所以也就不會造成內存泄露了</p>
+<p>但 LeakMemory 卻會造成泄露。原因是 LeakMemory() 會先建立起 parentDiv 和 childDiv 之間的連接，這時候，為了讓 childDiv 能夠獲知 parentDiv 的信息，因此 IE 需要先建立一個臨時的 scope 對象。而後 parentDiv 建立了和 hostElement 對象的聯系， parentDiv 和 childDiv 直接使用頁面 document 的 scope 。可惜的是，IE 不會釋放剛才那個臨時的 scope 對象的內存空間，直到我們跳轉頁面，這塊空間才能被釋放。而 CleanMemory 函數不同，他先把 parentDiv 和 hostElement 建立聯系，而後再把 childDiv 和 parentDiv 建立聯系，這個過程不需要單獨建立臨時的 scope ，只要直接使用頁面 document 的 scope 就可以了， 所以也就不會造成內存泄露了</p>
 
 <p>詳細可參考：<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/IETechCol/dnwebgen/ie_leak_patterns.asp">ie_leak_patterns</a></p>
 
-<h3>Pseudo-Leaks (秀逗泄露)</h3>
+<h3>Pseudo-Leaks (秀逗 Leaks)</h3>
 
 <p>看看這個例子:</p>
 

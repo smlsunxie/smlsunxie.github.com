@@ -4,7 +4,7 @@
   <title><![CDATA[Category: api | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/api/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T22:24:08+08:00</updated>
+  <updated>2013-02-20T13:15:39+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -25,7 +25,7 @@
 </ul>
 
 
-<p>學習及應用 extjs，需要理解Html DOM、Ext Element及Component三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
+<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
 
 <p>而在 extjs 中就有個專門用來處理 DOM 的類別 ...</p>
 
@@ -98,7 +98,7 @@ var el = Ext.get(myDivElement);
 
 <p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
 
-<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句javascript才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
+<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
 
 <pre><code>var el = Ext.get("my-div");
 
@@ -114,7 +114,7 @@ el.setWidth(100, true);
 
 <p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
 
-<p>因此，Ext在DOM的基礎上，創建了Ext.Element，可以使用Element來包裝任何DOM，Element 對像中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
+<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
 
 <blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
 
@@ -128,24 +128,26 @@ el.setWidth(100, true);
 
 <p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
 
-<p>在Ext中，組件渲染以後可以通過訪問 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到組件對應的 Element ，通過訪問 Element 的 dom 屬性可以得到其下面的 DOM 對象。</p>
+<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
 
 <p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
 
 <p>而下面範例說明實際上的使用狀況：</p>
 
-<pre><code>var view=new Ext.Viewport();                //創建了一個組件 Component 
-view.el.setOpacity(.5);                         //調用 Element 的 setOpacity 方法
-view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM 對象
+<pre><code>var view=new Ext.Viewport();                
+//建立了一個組件 Component 
+view.el.setOpacity(.5);                     
+//呼叫 Element 的 setOpacity 方法
+view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
 </code></pre>
 
 <p>以及如何分別取得 dom、element 以及 component</p>
 
 <pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
 win .show(); 
-var c=Ext.getCmp("win1");           //得到組件win 
-var e=Ext.get("win1");              //根據id得到組件win相應的Element 
-var dom=Ext .getDom("win1");    //得到id為win1的DOM節點
+var c=Ext.getCmp("win1");           //得到 win 
+var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
+var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
 </code></pre>
 
 <p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>

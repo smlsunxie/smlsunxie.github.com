@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ux | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/ux/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-19T22:24:08+08:00</updated>
+  <updated>2013-02-20T13:15:39+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,7 +18,7 @@
     <link href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"/>
     <updated>2013-02-15T18:04:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/02/15/extjs-pagingstore</id>
-    <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
+    <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對 server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
 
 <p>當然文章一開始有提到 extjs 3 原生未支援這樣處理的方式，好家在網路上的大神已經有幫我們開發出外掛，讓我們可以很方便去使用，該外掛相關說明以及下載地址：</p>
 

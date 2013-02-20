@@ -513,7 +513,7 @@ setTimeout ( function ()  {
 
 <h3>安全問題</h3>
 
-<p>eval也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
+<p>eval 也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
 
 <h3>結論</h3>
 
@@ -521,7 +521,7 @@ setTimeout ( function ()  {
 
 <p>在Opera 9, Firefox, 和Internet Explorer 中後者比前者快95%，在Safari 中快85%。(注意此比較中不含函數本身調用時間。)</p>
 
-<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval，應該避免使用</p>
+<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval 進行轉換，應該避免使用</p>
 
 <p>建議可使用下列 js lib: <a href="https://github.com/douglascrockford/JSON-js">JSON-js</a></p>
 
@@ -596,7 +596,7 @@ setTimeout ( function ()  {
 
 <h2>12. 不要在影響性能的關鍵函數中使用try-catch-finally</h2>
 
-<p>try-catch-finally結構比較特殊。和其他語法結構不同，它在runtime的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的exception對象賦給一個變量。這個變量不屬於任何腳本。它在catch語句開始時被創建，在結束時被銷毀。</p>
+<p>try-catch-finally 結構比較特殊。和其他語法結構不同，它在 runtime 的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的 exception 對象賦給一個變量。這個變量不屬於任何腳本。它在 catch 語句開始時被創建，在結束時被銷毀。</p>
 
 <p>由於此函數比較特殊，且是在運行時動態創建動態銷毀，有些瀏覽器對其的處理並不高效。把catch 語句放在關鍵循環中將極大影響性能。</p>
 
@@ -612,8 +612,8 @@ for( i = 0; i &lt; oProperties.length; i++ ) {
 }
 </code></pre>
 
-<p>很多情況下，可把try-catch-finally結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
-有時可用屬性檢測或其他檢測代替try-catch-finally結構：</p>
+<p>很多情況下，可把 try-catch-finally 結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
+有時可用屬性檢測或其他檢測代替 try-catch-finally 結構：</p>
 
 <pre><code>var oProperties = ['first','second','third',...,'nth'], i;
 try {
