@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: play! | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/play-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-02-21T17:18:28+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[程式東西軍： grails & play!]]></title>
+    <link href="http://smlsun.com/blog/2013/02/21/grails-play/"/>
+    <updated>2013-02-21T16:37:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/21/grails-play</id>
+    <content type="html"><![CDATA[<p>grails 與 play! 是當今比較完整的 java framework，當然兩者也常被拿來比較，要說比較優？其實各有各的好。</p>
+
+<p>學習一樣工具需要花很多時間，在開始學習一樣新東西時，當然需要知道哪個是比較值得投入的，人生苦短阿！</p>
+
+<p>因此，在搜尋相關資訊時，發現一個比較 grails and play! 的優缺點很不錯的網站，介紹給大家：</p>
+
+<p><a href="http://www.ubertracks.com/preso/#/">Play vs. Grails Smackdown</a></p>
+
+<p><img src="https://lh4.googleusercontent.com/-64F82PXFzn8/USXlKERNNuI/AAAAAAAALiA/4BTWEumSSzg/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.13.jpg" alt="image" /></p>
+
+<p>這網站的內容是用簡報的方式來呈現，個人是蠻喜歡的，他做了兩個網站，分別使用 grails and play! 進行建置，分別是<a href="http://bike.ubertracks.com/">grils - Bike Über Tracks</a> 以及 <a href="http://hike.ubertracks.com/">play! - Hike Über Tracks</a>；當然在比較時需要從各個面向來進行，該網站先從開發一個專案舉凡資料庫、MVC 架構、設定方式等來進行比較。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-fAoYv2Tr204/USXlLVE-RNI/AAAAAAAALiI/AJgJkzTA45w/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.44.jpg" alt="image" /></p>
+
+<p>接著透過一些應用程式評比工具來測試兩者的優劣，除了開發方便性，效能測試外，對於發展趨勢也有很完整的介紹。</p>
+
+<p>最後的結論由三個面向來做為總結，分別是：程式碼、統計分析、生態系統來做為總結。</p>
+
+<p>雖然有時候比較有點無濟於事，況且對於事物的看法每個人都有所不同，沒有絕對對錯，假如你也正在煩惱哪個比較好，希望這樣的資訊能夠協助你判斷囉。</p>
+
+<p>我個人看完以後看起來是 grails 目前佔上風，不過… 科技日新月異，況且 play! 在 hacker news 數上完勝 grails，誰知道呢？</p>
+
+<p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
+]]></content>
+  </entry>
+  
+</feed>

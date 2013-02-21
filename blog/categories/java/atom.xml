@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-20T13:36:25+08:00</updated>
+  <updated>2013-02-21T17:18:28+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[程式東西軍： grails & play!]]></title>
+    <link href="http://smlsun.com/blog/2013/02/21/grails-play/"/>
+    <updated>2013-02-21T16:37:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/21/grails-play</id>
+    <content type="html"><![CDATA[<p>grails 與 play! 是當今比較完整的 java framework，當然兩者也常被拿來比較，要說比較優？其實各有各的好。</p>
+
+<p>學習一樣工具需要花很多時間，在開始學習一樣新東西時，當然需要知道哪個是比較值得投入的，人生苦短阿！</p>
+
+<p>因此，在搜尋相關資訊時，發現一個比較 grails and play! 的優缺點很不錯的網站，介紹給大家：</p>
+
+<p><a href="http://www.ubertracks.com/preso/#/">Play vs. Grails Smackdown</a></p>
+
+<p><img src="https://lh4.googleusercontent.com/-64F82PXFzn8/USXlKERNNuI/AAAAAAAALiA/4BTWEumSSzg/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.13.jpg" alt="image" /></p>
+
+<p>這網站的內容是用簡報的方式來呈現，個人是蠻喜歡的，他做了兩個網站，分別使用 grails and play! 進行建置，分別是<a href="http://bike.ubertracks.com/">grils - Bike Über Tracks</a> 以及 <a href="http://hike.ubertracks.com/">play! - Hike Über Tracks</a>；當然在比較時需要從各個面向來進行，該網站先從開發一個專案舉凡資料庫、MVC 架構、設定方式等來進行比較。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-fAoYv2Tr204/USXlLVE-RNI/AAAAAAAALiI/AJgJkzTA45w/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.44.jpg" alt="image" /></p>
+
+<p>接著透過一些應用程式評比工具來測試兩者的優劣，除了開發方便性，效能測試外，對於發展趨勢也有很完整的介紹。</p>
+
+<p>最後的結論由三個面向來做為總結，分別是：程式碼、統計分析、生態系統來做為總結。</p>
+
+<p>雖然有時候比較有點無濟於事，況且對於事物的看法每個人都有所不同，沒有絕對對錯，假如你也正在煩惱哪個比較好，希望這樣的資訊能夠協助你判斷囉。</p>
+
+<p>我個人看完以後看起來是 grails 目前佔上風，不過… 科技日新月異，況且 play! 在 hacker news 數上完勝 grails，誰知道呢？</p>
+
+<p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[java OCP 題目解析：關於 java 指標的運作觀念]]></title>
@@ -471,77 +502,6 @@ import net.sf.jasperreports.engine.JRScriptletException;</p>
 <p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
 
 <p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[agile java with gradle: 使用 gradle 快速開發 java]]></title>
-    <link href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/"/>
-    <updated>2012-12-06T18:04:00+08:00</updated>
-    <id>http://smlsun.com/blog/2012/12/06/agile-java-with-gradle</id>
-    <content type="html"><![CDATA[<p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
-
-<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
-
-<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
-
-<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
-
-<hr />
-
-<p>怎麼辦！？介紹大家一帖好藥</p>
-
-<h2>Gradle</h2>
-
-<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
-
-<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
-
-<p>然後編輯build.gradle，內容如下</p>
-
-<p>``` groovy
-apply plugin: 'java'
-apply plugin: 'eclipse'</p>
-
-<p>repositories {</p>
-
-<pre><code>mavenCentral()
-</code></pre>
-
-<p>}</p>
-
-<p>dependencies {</p>
-
-<pre><code>compile group: 'com.google.zxing', name: 'javase', version: '2.1'
-compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '5.0.0'
-compile group: 'com.lowagie', name:'itext', version:'2.1.7'
-</code></pre>
-
-<p>}</p>
-
-<p>```</p>
-
-<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
-
-<p><a href="http://search.maven.org/">maven Central Repository</a></p>
-
-<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
-
-<p>接著我們只要在Terminal鍵入下列指令：</p>
-
-<p><code>gradle build jar</code></p>
-
-<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
-
-<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
-
-<p><code>gradle eclipse</code></p>
-
-<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
-
-<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
-
-<p>如何？還不趕快試試看阿！</p>
 ]]></content>
   </entry>
   

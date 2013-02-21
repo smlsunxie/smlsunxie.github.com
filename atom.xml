@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-20T13:36:25+08:00</updated>
+  <updated>2013-02-21T17:18:28+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,43 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[程式東西軍： grails & play!]]></title>
+<link href="http://smlsun.com/blog/2013/02/21/grails-play/"/>
+<updated>2013-02-21T16:37:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/21/grails-play</id>
+
+      <content type="html"><![CDATA[<p>grails 與 play! 是當今比較完整的 java framework，當然兩者也常被拿來比較，要說比較優？其實各有各的好。</p>
+
+<p>學習一樣工具需要花很多時間，在開始學習一樣新東西時，當然需要知道哪個是比較值得投入的，人生苦短阿！</p>
+
+<p>因此，在搜尋相關資訊時，發現一個比較 grails and play! 的優缺點很不錯的網站，介紹給大家：</p>
+
+<p><a href="http://www.ubertracks.com/preso/#/">Play vs. Grails Smackdown</a></p>
+
+<p><img src="https://lh4.googleusercontent.com/-64F82PXFzn8/USXlKERNNuI/AAAAAAAALiA/4BTWEumSSzg/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.13.jpg" alt="image" /></p>
+
+<p>這網站的內容是用簡報的方式來呈現，個人是蠻喜歡的，他做了兩個網站，分別使用 grails and play! 進行建置，分別是<a href="http://bike.ubertracks.com/">grils - Bike Über Tracks</a> 以及 <a href="http://hike.ubertracks.com/">play! - Hike Über Tracks</a>；當然在比較時需要從各個面向來進行，該網站先從開發一個專案舉凡資料庫、MVC 架構、設定方式等來進行比較。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-fAoYv2Tr204/USXlLVE-RNI/AAAAAAAALiI/AJgJkzTA45w/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.44.jpg" alt="image" /></p>
+
+<p>接著透過一些應用程式評比工具來測試兩者的優劣，除了開發方便性，效能測試外，對於發展趨勢也有很完整的介紹。</p>
+
+<p>最後的結論由三個面向來做為總結，分別是：程式碼、統計分析、生態系統來做為總結。</p>
+
+<p>雖然有時候比較有點無濟於事，況且對於事物的看法每個人都有所不同，沒有絕對對錯，假如你也正在煩惱哪個比較好，希望這樣的資訊能夠協助你判斷囉。</p>
+
+<p>我個人看完以後看起來是 grails 目前佔上風，不過… 科技日新月異，況且 play! 在 hacker news 數上完勝 grails，誰知道呢？</p>
+
+<p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/21/grails-play/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3761,102 +3798,6 @@ F. An exception is thrown at runtime.
 
 <p>一般物件的話當然做等於運算就是傳指標了</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/17/java-pointer/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[androVM - Run Android In VirtualBox And Deploy App]]></title>
-<link href="http://smlsun.com/blog/2013/01/16/android-vm/"/>
-<updated>2013-01-16T21:24:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/16/android-vm</id>
-
-      <content type="html"><![CDATA[<p>在隨處亂逛時，看到一個有趣的東西，那就是android VM!</p>
-
-<p><a href="http://androvm.org/blog/download/">androVM</a></p>
-
-<p>開發 Android 的經驗中，如果要驗證所開發的程式是否正確，比較常用的兩個方法：</p>
-
-<ol>
-<li>使用 google 官方的虛擬 android</li>
-<li>使用實體機器</li>
-</ol>
-
-
-<p>第一個的問題就是，速度真 T…M… 的慢，在講求速度的開發環境，會很想殺人！！！</p>
-
-<p>第二個的問題是，如果 usb 不夠插，或臨時設備不再身邊，或是設備出了意外… 那只好工作停擺啦</p>
-
-<p>所幸還有第三個方案，他還是模擬器沒錯，但是比 google 官方的虛擬 android 來的快多了，號稱快 4 倍，我是憑感覺真的有比較快，至少你不會覺得 <strong>頓</strong>！</p>
-
-<p>安裝方式很簡單</p>
-
-<ol>
-<li>首先你需要安裝 <a href="https://www.virtualbox.org/">Virtualbox</a></li>
-<li>下載 <a href="http://androvm.org/blog/download/">androVM</a> 官方提供的 ova 檔，請選擇適合你用的版本</li>
-<li>下載完成後，請點兩下你下載下來的 ova 檔，他會將設定檔載入你的 virtualBox，包括映像檔，所以一旦你安裝完成後就可以把下載下來的檔案刪掉</li>
-</ol>
-
-
-<p>如此一來就完成啦，實際執行結果如下：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-A623K9XMEUQ/UPeMFnwsF5I/AAAAAAAALfk/LSDz6MekOVY/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.14.18.jpg" alt="img" /></p>
-
-<p>啟動速度比實體機器快很多喔(三倍速+)！</p>
-
-<p>我個人覺得如果還可以支援 camera 那就太完美啦！不過網路上也有人對作者反應，作者也承諾 I&#8217;ll readd the feature asap! 如此一來在開發上將更有彈性，相信以 virtualBox 為基底應該是可以做的到。</p>
-
-<p>再來鄉民應該會覺得，我沒事拿個 vm 來玩平板或手機幹嘛？當然還要能夠拿來開發，並且可以將程式 deploy 上去進行測試啦！在這裡我將說明執行步驟，基本上你可以將運行在 VM 上的 android 想像成現在連接著你的電腦，只是不同的是他在你的電腦中運行，所以你必須告訴你的電腦要在哪裡連接，連接方式是透過 指定 IP 告訴你的開發環境正確的位置，讓我們來一步接著一步進行：</p>
-
-<ol>
-<li><p>首先必須先讓 vm 能夠有個存取的位置，所以我們需要打開 virtualBox 的網路設定頁面</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-P3bHwsK-Y3w/UPeMGgkLUeI/AAAAAAAALfw/fCCG_HEddBQ/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.31.27.jpg" alt="img" /></p>
-
-<p> 將附加選項選擇：橋接介面卡，然後名稱就是你的實體網路的接口，我的電腦只有 wifi，如果是實體網路就應該為 <code>eh0</code>，設定好後，可以進到虛擬的 Android 查看 ip 位置：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-50Uem4xpARg/UPeMHs3YcWI/AAAAAAAALf4/YwWcBpq6WVs/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.35.07.jpg" alt="img" /></p>
-
-<p> 進到 system status 可以看到 ip 為 <code>10.0.3.15</code>，實際上你去 ping 是 ping 不到的，因為那是虛擬的 ip，那要如何找到正確的 ip 呢？androVM 很貼心的在裡面預裝了一個 app 可以讓你對 android 進行一些設定還有環境變數的查詢，裡面就有真實設備的 ip 啦！如下圖：</p>
-
-<p> <img src="https://lh3.googleusercontent.com/-OM5gKYL6QEg/UPeMIU0ILzI/AAAAAAAALgY/IRkUa4FnvCw/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.38.24.jpg" alt="img" /></p>
-
-<p> 有個 android 機器人，好像在做蛋糕(大便) 的樣子 <code>androVM Configuration</code>，哈～顯示如下圖：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-azSrBFWVJ94/UPeMI827gVI/AAAAAAAALgI/vVTWktc1Q4A/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.39.38.jpg" alt="img" /></p>
-
-<p> 點進去後你可以看到在執行畫面上方有個</p>
-
-<p> <code>eh0: 192.168.1.8</code></p>
-
-<p> 就是實際你可以存取得位置啦！</p></li>
-<li><p>接著我們就必須將設備註冊到 adb 上，讓我們進入到 android sdk 資料夾裡面，路徑為</p>
-
-<p> <code>${ANDROID_HOME}/platform-tools</code></p>
-
-<p> 底下應該有個 <code>adb</code> 的檔案，打開 terminal 根據剛剛查到的 ip 輸入：</p>
-
-<p> <code>./adb connect 192.168.1.8</code></p>
-
-<p> 就完成連接了，簡單吧！正常應該會吐出下列訊息</p>
-
-<p> <code>connected to 192.168.1.8:5555</code></p>
-
-<p> 接著我們來看實際運作的狀況，打開 eclipse，執行要 deploy 的專案：</p>
-
-<p> <img src="https://lh6.googleusercontent.com/-fC3_LracFxc/UPeMJkniW2I/AAAAAAAALgQ/oosUBfdmri8/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.50.54.jpg" alt="img" /></p>
-
-<p> 在這裡執行 <code>Run As &gt; Adroid application</code> 會先檢查有無設備連接上，如果沒有會用 google 內建的虛擬機器，如果有連上就會使用實體機器(不過還是虛擬的)，我們就可以看到執行畫面如下：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-IsPB4DxxolY/UPeMKUS4a7I/AAAAAAAALgU/dBhsGIWRSfM/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.53.32.jpg" alt="img" /></p>
-
-<p> 就是如此簡單！接著你要 debug 或是檢查在 app 操作過程中吐出來的訊息就都可以在 eclipse 底下的 Console 進行觀察了，相信開發過程中會方便許多，也避免掉很多不必要的麻煩，試試看囉！</p></li>
-</ol>
-
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/16/android-vm/"></a></p>]]></content>
     </entry>
   
 </feed>
