@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-23T11:48:26+08:00</updated>
+  <updated>2013-02-23T15:20:39+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,264 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)]]></title>
+<link href="http://smlsun.com/blog/2013/02/23/javascript-sync/"/>
+<updated>2013-02-23T13:50:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/23/javascript-sync</id>
+
+      <content type="html"><![CDATA[<p>在開發網站應用程式時，假設有用到與後端的 server 透過 ajax 互動交換資料，為了確保當 ajax 執行完成後，能夠循序的執行之後的資料呈現，一般來說我們會使用 callback 來確保順序是正確的，不過 callback 一多程式是比較多層一點，對與我以往的經驗有是用過 DWR 提供的 setAsync(false) 來達到同樣的效果，不過該作法有個缺點，如果某個函數執行時間過長，會感覺好像整個瀏覽器都當掉一樣，因此我們需要更好的作法。</p>
+
+<p>在找相關資料時，剛好有的不錯的參考介紹給大家：<a href="http://book.nodejs.tw/zh-tw/node_javascript.html#id1">JavaScript 與 NodeJS - 流程控制</a>，雖然該篇文章是以 NodeJS 為主，但實際上NodeJS 就是利用 javascript 來進行程式撰寫，所以概念上相當類似，其中關於流程控制章節，就是我們要參考的內容。</p>
+
+<h2>並發與等待</h2>
+
+<p>所謂的併發就是有點像多執行續，而等待就是等所有執行續都完成後在執行指定的函式，簡單來說假設你有 a, b, c 三個函式，其中你必須等待 a, b 兩個函式都執行完成後在執行 c 這個函式，最直覺的作法就是使用 callback 一個一個執行，但實際上如果一多的話程式會變得很難閱讀，所以換個方式來處理這樣的問題，我們來看一下下面的範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">wait</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callbacks</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;wait start&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="nx">callbacks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">next</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span><span class="c1">//接收函數執行結果，並判斷是否結束執行</span>
+</span><span class='line'>      <span class="c1">//closure </span>
+</span><span class='line'>      <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="nx">counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">done</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span><span class="c1">//如果結束執行，就把所有執行結果傳給指定的callback處理</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">callbacks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="c1">//依次呼叫所有要執行的函數</span>
+</span><span class='line'>      <span class="c1">//每個 callback 皆呼叫 next 函式，一旦 counter 歸 0 則執行 done 函式。</span>
+</span><span class='line'>      <span class="nx">callbacks</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;wait end&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的 wait 函式實作了多函數 callbacks 執行完後在執行 done 的函式，透過每個函數執行完後就將 counter 減一，檢查 counter 是否歸 0，而下面就是實際應用的範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
+</span><span class='line'>  <span class="p">[</span>
+</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>              <span class="c1">// callback 呼叫 next 函數</span>
+</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done a&#39;</span><span class="p">);</span>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done b&#39;</span><span class="p">);</span>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">},</span><span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done c&#39;</span><span class="p">);</span>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">1500</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">},</span><span class="mi">1500</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>    
+</span><span class='line'>  <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
+</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">ret</span> <span class="o">+=</span> <span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done all. result: &#39;</span><span class="o">+</span><span class="nx">ret</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如上面的例子，我們就可以很簡單的處理需要同步執行的狀況啦！</p>
+
+<p>在舉個例子假設我們要使用 extjs 的 msg box 一旦確定完成後才執行後續程式，我們可以改寫成：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
+</span><span class='line'>    <span class="p">[</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">next</span><span class="p">(</span><span class="s2">&quot; hello!&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
+</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>就是這麼簡單！而在進階一點如果我們需要連續兩次 confirm 該怎麼做？直覺上，如果應該會如此處理：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
+</span><span class='line'>    <span class="p">[</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>             <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
+</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是！實際上只會有一個 confirm 跳出來，因為是同時執行對於 ext 而言 Ext.MessageBox 是同一個物件，所以最後一個執行的會把前述的 confirm 蓋掉，因此就只會有一個 confirm，正確來說我們可以在  done 在執行一個 wait，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
+</span><span class='line'>    <span class="p">[</span>
+</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">resultsA</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">wait</span><span class="p">(</span>
+</span><span class='line'>            <span class="p">[</span>
+</span><span class='line'>                <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>                    <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="kd">function</span><span class="p">(</span><span class="nx">resultsB</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">resultsA</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">resultsB</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/javascript-sync/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -2108,6 +2366,10 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 
 <p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
 (callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
+
+<h2>使用上的技巧</h2>
+
+<p>因為 callback 的特性，如果你的函數傳入的參數不一致時將變得難以維護，建議函數在設計時應該盡量保持只有一個參數，若要傳入多參數則使用 json 來組合多個參數，然後統一有另一個參數用來傳入 callback 的函式。需注意在執行 callback 時需要先判斷該該參數是否為 function 若是才執行。</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/04/javascript-callback/"></a></p>]]></content>
     </entry>
   
@@ -3716,57 +3978,6 @@ try {
 
 <p>話說：最近越來越 linux 了～</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/25/customize-live-cd/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[Lightweight and portable virtual machine: qemu]]></title>
-<link href="http://smlsun.com/blog/2013/01/24/qemu/"/>
-<updated>2013-01-24T09:52:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/24/qemu</id>
-
-      <content type="html"><![CDATA[<p>最近在研究 qemu 虛擬機器的應用，期望能夠在 windows 下能夠將事先製作好的 Live CD 將其放在 usb，當使用者需要使用時，只要插入 usb 隨即可以在 windows 底下開啟製作好的 Live CD，透過這樣的結合，可以很方便的讓你客製的 os 被使用者所使用，且不用安裝一堆軟體，檔案也很小，只要 6 mb 左右就可以啦，下面就來說明相關資源。</p>
-
-<p>在使用 qemu 時，如果單獨使用 qemu，他本身啟動速度很慢，必須加裝加速器才算堪用，所以除了 qemu 還需要 kqemu，相關網站如下:</p>
-
-<p><a href="http://homepage3.nifty.com/takeda-toshiya/">qemu for windows</a></p>
-
-<p><a href="http://www.h6.dion.ne.jp/~kazuw/qemu-win/Kqemu-1.3.0pre11-install.exe">kqemu</a></p>
-
-<p>使用步驟可以參考下列網站：</p>
-
-<p><a href="http://milky.manishsinha.net/2008/07/10/using-qemu-on-windows/">Using qemu on Windows</a></p>
-
-<p>在研究過程中，我只能說非常撞牆，原本在 linux 很理所當然的運行，在 windows 下一切都不是那樣，搞了很久不是視訊有問題，不然就是滑鼠不能動，最後總算找到懶人包，其中包括了 kqemu portable 加速，算是非常方便了，連結如下：</p>
-
-<p><a href="http://code.google.com/p/kqemu-portable-win/">kqemu-portable-win</a></p>
-
-<p>使用方式非常簡單，將你製作好的 iso 或者 img 放到解開的資料夾，然後開啟 <code>qemu-win.bat</code> 在底下就可以定義你要開啟檔案的路徑，以及要開啟的方式，範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>kqemu\USB-Kqemu.exe
-</span><span class='line'>qemu.exe -L . -cdrom *.iso -localtime -m 512 -boot d -kernel-kqemu -std-vga
-</span><span class='line'>kqemu\USB-Kqemu-Halt.exe</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到開始時執行開啟 Kqemu，接著就是要啟動 qemu，我這邊啟動的是 *.iso，也就是只要偵測到有 iso 檔就會執行開啟， <code>-m 512</code> 表示使用記憶體為 512 mb， <code>-kernel-kqemu</code> 則表示啟動 kqemu 加速器，接著我們只要點兩下 <code>qemu-win.bat</code> 就可以啟動虛擬機器了，執行畫面如下：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ZFEChwFRwVA/UQCd1AtcqxI/AAAAAAAALg4/xd03fBbDwjU/s721/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.13.jpg" alt="image" /></p>
-
-<p>並且可以確認一下加速器是否有正確被啟動，在 qemu 啟動視窗輸入 <code>ctrl + alt + 2</code>，輸入 <code>info kqemu</code> 可以看到下列畫面：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-ca81YlxugiY/UQCd1srHU8I/AAAAAAAALg8/1KQb3V9KpS0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.48.jpg" alt="image" /></p>
-
-<p>就表示加速器已經正確被啟動了！</p>
-
-<p>希望這篇文章可以幫助有需要的人，不要像我一樣花很多時間在撞牆了～</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/24/qemu/"></a></p>]]></content>
     </entry>
   
 </feed>

@@ -422,6 +422,10 @@ Javascript: Callback
 <p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
 (callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
 
+<h2>使用上的技巧</h2>
+
+<p>因為 callback 的特性，如果你的函數傳入的參數不一致時將變得難以維護，建議函數在設計時應該盡量保持只有一個參數，若要傳入多參數則使用 json 來組合多個參數，然後統一有另一個參數用來傳入 callback 的函式。需注意在執行 callback 時需要先判斷該該參數是否為 function 若是才執行。</p>
+
   </div>
 
 
@@ -592,6 +596,10 @@ Javascript: Callback
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">ubuntu 中安装 apache ab 進行壓力測試</a>
       </li>
     
@@ -605,10 +613,6 @@ Javascript: Callback
     
       <li>
         <a href="/blog/2013/02/19/extjs-tree/">extjs: tree 的建立與使用</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/19/extjs-component/">extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同</a>
       </li>
     
   </ul>

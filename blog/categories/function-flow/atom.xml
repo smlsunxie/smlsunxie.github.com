@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: function flow | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/function-flow/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-02-23T15:20:39+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)]]></title>
+    <link href="http://smlsun.com/blog/2013/02/23/javascript-sync/"/>
+    <updated>2013-02-23T13:50:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/23/javascript-sync</id>
+    <content type="html"><![CDATA[<p>在開發網站應用程式時，假設有用到與後端的 server 透過 ajax 互動交換資料，為了確保當 ajax 執行完成後，能夠循序的執行之後的資料呈現，一般來說我們會使用 callback 來確保順序是正確的，不過 callback 一多程式是比較多層一點，對與我以往的經驗有是用過 DWR 提供的 setAsync(false) 來達到同樣的效果，不過該作法有個缺點，如果某個函數執行時間過長，會感覺好像整個瀏覽器都當掉一樣，因此我們需要更好的作法。</p>
+
+<p>在找相關資料時，剛好有的不錯的參考介紹給大家：<a href="http://book.nodejs.tw/zh-tw/node_javascript.html#id1">JavaScript 與 NodeJS - 流程控制</a>，雖然該篇文章是以 NodeJS 為主，但實際上NodeJS 就是利用 javascript 來進行程式撰寫，所以概念上相當類似，其中關於流程控制章節，就是我們要參考的內容。</p>
+
+<h2>並發與等待</h2>
+
+<p>所謂的併發就是有點像多執行續，而等待就是等所有執行續都完成後在執行指定的函式，簡單來說假設你有 a, b, c 三個函式，其中你必須等待 a, b 兩個函式都執行完成後在執行 c 這個函式，最直覺的作法就是使用 callback 一個一個執行，但實際上如果一多的話程式會變得很難閱讀，所以換個方式來處理這樣的問題，我們來看一下下面的範例：</p>
+
+<p>``` javascript</p>
+
+<pre><code>var wait = function(callbacks, done) {
+    console.log('wait start');
+    var counter = callbacks.length;
+    var results = [];
+
+    var next = function(result) {//接收函數執行結果，並判斷是否結束執行
+        //closure 
+        results.push(result);
+        if(--counter == 0) {
+            done(results);//如果結束執行，就把所有執行結果傳給指定的callback處理
+        }
+    };
+
+    for(var i = 0; i &lt; callbacks.length; i++) {//依次呼叫所有要執行的函數
+        //每個 callback 皆呼叫 next 函式，一旦 counter 歸 0 則執行 done 函式。
+        callbacks[i](next);
+    }
+    console.log('wait end');
+}
+</code></pre>
+
+<p>```</p>
+
+<p>上面的 wait 函式實作了多函數 callbacks 執行完後在執行 done 的函式，透過每個函數執行完後就將 counter 減一，檢查 counter 是否歸 0，而下面就是實際應用的範例：</p>
+
+<p>``` javascript</p>
+
+<pre><code>wait(
+    [
+        function(next){
+            setTimeout(function(){
+                // callback 呼叫 next 函數
+                console.log('done a');
+                var result = 500;
+                next(result)
+            },500);
+        },
+        function(next){
+            setTimeout(function(){
+                console.log('done b');
+                var result = 1000;
+                next(result)
+            },1000);
+        },
+        function(next){
+            setTimeout(function(){
+                console.log('done c');
+                var result = 1500;
+                next(1500)
+            },1500);
+        }   
+    ],
+
+    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
+    function(results){
+        var ret = 0, i=0;
+        for(; i&lt;results.length; i++) {
+            ret += results[i];
+        }
+        console.log('done all. result: '+ret);
+    }
+);
+</code></pre>
+
+<p>```</p>
+
+<p>如上面的例子，我們就可以很簡單的處理需要同步執行的狀況啦！</p>
+
+<p>在舉個例子假設我們要使用 extjs 的 msg box 一旦確定完成後才執行後續程式，我們可以改寫成：</p>
+
+<p>``` javascript</p>
+
+<pre><code>wait(
+    [
+        function(next){
+            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
+        },
+        function(next){
+            next(" hello!")
+        }  
+    ],
+
+    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
+    function(results){
+        Ext.MessageBox.alert('Status', 'results id '+ results[0]+' and '+ results[1]);
+    }
+);
+</code></pre>
+
+<p>```</p>
+
+<p>就是這麼簡單！而在進階一點如果我們需要連續兩次 confirm 該怎麼做？直覺上，如果應該會如此處理：</p>
+
+<p>``` javascript</p>
+
+<pre><code>wait(
+    [
+        function(next){
+            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
+        },
+        function(next){
+             Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
+        }  
+    ],
+
+    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
+    function(results){
+        Ext.MessageBox.alert('Status', 'results id '+ results[0]+' and '+ results[1]);
+    }
+);
+</code></pre>
+
+<p>```</p>
+
+<p>但是！實際上只會有一個 confirm 跳出來，因為是同時執行對於 ext 而言 Ext.MessageBox 是同一個物件，所以最後一個執行的會把前述的 confirm 蓋掉，因此就只會有一個 confirm，正確來說我們可以在  done 在執行一個 wait，如下：</p>
+
+<p>``` javascript</p>
+
+<pre><code>wait(
+    [
+        function(next){
+            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
+        }
+    ],
+
+    function(resultsA){
+        wait(
+            [
+                function(next){
+                    Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
+                }
+            ],
+
+            function(resultsB){
+                Ext.MessageBox.alert('Status', 'results id '+ resultsA[0]+' and '+ resultsB[0]);
+            }
+        );
+    }
+);
+</code></pre>
+
+<p>```</p>
+
+<p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
+]]></content>
+  </entry>
+  
+</feed>
