@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mysql | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-02-23T11:31:38+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin]]></title>
+    <link href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"/>
+    <updated>2013-02-22T18:43:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install</id>
+    <content type="html"><![CDATA[<p>最近為了運行依一個專案是用 tomcat 作為 AP 與 mysql 作為 DB 的運行環境，實際跑過一次安裝步驟，與過程中的疑難排解，特別寫篇文章記錄一下，順變給有需要的朋友參考看看。</p>
+
+<p>之前在公司時所使用的環境是以 jboss 作為 AP 以及 ms sql 作為 db，而所使用的 os 是 windows xp，基本上還算單純，jboss 解開下載回來的 zip 檔，基本上就可以使用了，而 ms sql 安裝上也不能，只是要注意是否允許資料庫分辨大小寫，以及資料庫編碼方式等。</p>
+
+<p>而這次所要安裝的環境是在 ubuntu 底下，步驟就比較繁瑣了，包括安裝位置什麼的，都有固定位置，更重要的還有權限控管，環境參數等，如果沒有設置好的話是沒有辦法運行的。</p>
+
+<p>首先就先從安裝 mysql 開始啦！</p>
+
+<h2>mysql</h2>
+
+<p>在 ubuntu 安裝 mysql 很簡單只要一句：</p>
+
+<p><code>sudo apt-get install mysql-server</code></p>
+
+<p>安裝完成後會詢問 root 密碼，輸入完成後，接著我們就可進行登入，使用下列語法：</p>
+
+<p><code>mysql -u root -p [資料庫名稱]</code></p>
+
+<p>上述指定，如果沒有如入資料庫名稱，則為資料庫的根目錄，一旦登入後，需要指定操作的資料庫可用下列指令：</p>
+
+<p><code>use [資料庫名稱] ;</code></p>
+
+<p>其中最後的 <code>;</code> 請要記得輸入，那是作為指令結束的識別，有了 <code>;</code> 才會執行，接著一旦登入完成後我們可以建立一個新的資料庫。</p>
+
+<p><code>create database demo</code></p>
+
+<p>預設來說，新增的資料庫是不支援中文，所以如果你要建立資料庫是屬於 utf-8 的編碼方式可以用下列指令：</p>
+
+<p><code>CREATE DATABASE demo DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;</code></p>
+
+<p>再來如果你要新建一個使用者帳號，可以用下列指令，需先登入 mysql：</p>
+
+<p><code>create user 'UserName'@'Host' identified by 'Password';</code></p>
+
+<p>ex:</p>
+
+<p><code>create user 'joey'@'localhost' identified by 'abcd2345';</code></p>
+
+<p>如果你不指定 host 可以先用 <code>%</code> 取代如：</p>
+
+<p><code>create user 'joey'@'%' identified by 'abcd2345';</code></p>
+
+<p>在 mysql 官方的說明如下：</p>
+
+<blockquote><p>If you specify only the user name part of the account name, a host name part of '%' is used.</p></blockquote>
+
+<p>user 建立好了，接著就要給予權限啦：</p>
+
+<p><code>grant OPTION on TARGET to USER;</code></p>
+
+<p>範例如下：</p>
+
+<p><code>grant all on *.* to 'joey'@'localhost';</code></p>
+
+<p>上述的意思是 joey 對整個資料庫的所有資料表都擁有全部的權利，如果要指定 joey 只擁有對 demo 這個資料檔[的所有表格]的查詢及新增權利，指令如下：</p>
+
+<p><code>grant select,insert on demo.* to 'joey'@'localhost';</code></p>
+
+<p>假使我們需要知道目前有建立的使用者有哪些，可以使用下列指令顯示 mysql 這個資料庫中 user 資料表的 Host 及 User 欄位：</p>
+
+<p><code>select Host, User from mysql.user;</code></p>
+
+<p>最後如果你要刪除 user 可以用下列指令：</p>
+
+<p><code>drop user OPTION 'UserName'@'Host';</code></p>
+
+<p>如果你需要啟動或停止 mysql 可以用下列指令：</p>
+
+<ul>
+<li>啟動： <code>sudo start mysql</code></li>
+<li>關閉： <code>sudo stop mysql</code></li>
+<li>重啟： <code>sudo restart mysql</code></li>
+</ul>
+
+
+<p>上面就是 mysql 的基礎安裝，當然如果希望一個 gui 元件來管理 mysql，請接著看以下介紹：</p>
+
+<h2>phpmyadmin</h2>
+
+<p>安裝指令也很簡單：</p>
+
+<p><code>sudo apt-get install libapache2-mod-auth-mysql php5-mysql phpmyadmin</code></p>
+
+<p>請根據安裝步驟將他完成，詳細可參考此網址：<a href="http://www.distrogeeks.com/install-phpmyadmin-ubuntu/">Install phpMyAdmin in Ubuntu</a>，其中因為 phpmyadmin 是 php 寫的因此需要運行於 server 上，在這我所使用的是 apache2 可以透過下列指令安裝：</p>
+
+<p><code>sudo apt-get install apache2</code></p>
+
+<p>安裝完成後可以透過瀏覽下列網址來進行操作 <code>http://localhost/phpmyadmin</code>，不過有可能你會看到 404 因此如果你真的遇到了請增加下列步驟：</p>
+
+<p>編輯：</p>
+
+<p><code>sudo vim /etc/apache2/apache2.conf</code></p>
+
+<p>加入下列字串：</p>
+
+<p><code>Include /etc/phpmyadmin/apache.conf</code></p>
+
+<p>重啟 apache2</p>
+
+<p><code>sudo /etc/init.d/apache2 restart</code></p>
+
+<p>你也可以使用啟動與停止：</p>
+
+<pre><code>sudo /etc/init.d/apache2 start   #start apache
+sudo /etc/init.d/apache2 stop   #stop apache
+sudo /etc/init.d/apache2 restart   #restart apache
+</code></pre>
+
+<p>如此一來你就可以用 gui 介面來管理或維護資料庫啦！</p>
+
+<p><img src="https://lh6.googleusercontent.com/-HsxmrVP4C6U/USgqWZS9EaI/AAAAAAAALic/LBXHLR96Wf0/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-23+%E4%B8%8A%E5%8D%8810.32.29.jpg" alt="image" /></p>
+
+<p>mysql 的 介紹算是告一段落了，一些進階的就請 google 一下囉！接著來看 tomcat7 的安裝。</p>
+
+<h2>tomcat7</h2>
+
+<p>在 ubuntu 底下我們可用下列指令來安裝 tomcat7：</p>
+
+<p>sudo apt-get install tomcat7</p>
+
+<p>安裝完成後，我們可以透過下列指令來啟動或關閉 tomcat7：</p>
+
+<ul>
+<li>啟動： <code>sudo service tomcat7 start</code></li>
+<li>關閉： <code>sudo service tomcat7 stop</code></li>
+<li>重啟： <code>sudo service tomcat7 restart</code></li>
+</ul>
+
+
+<p>如果是使用 apt-get install tomcat7 相關檔案放置位置如下：</p>
+
+<ul>
+<li><code>/etc/tomcat6</code> for configuration and runtime, called CATALINA_HOME</li>
+<li><code>/var/lib/tomcat7/webapps/</code> webapps 的位置</li>
+</ul>
+
+
+<p>如果你不想透過 apt-get install tomcat7 可以參考這篇文章安裝：<a href="http://diegobenna.blogspot.tw/2011/01/install-tomcat-7-in-ubuntu-1010.html">Install Tomcat 7 on Ubuntu 12.04</a>，需要注意的是，如果是自行安裝 JAVA_HOME 的設定必須確實，如果設定錯誤，啟動 tomcat 時不會出現明確的錯誤訊息。</p>
+
+<p>以上就是 tomcat 與 mysql 的安裝步驟。</p>
+]]></content>
+  </entry>
+  
+</feed>

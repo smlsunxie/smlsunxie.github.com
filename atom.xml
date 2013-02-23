@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-21T17:18:28+08:00</updated>
+  <updated>2013-02-23T11:31:38+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,160 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin]]></title>
+<link href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"/>
+<updated>2013-02-22T18:43:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install</id>
+
+      <content type="html"><![CDATA[<p>最近為了運行依一個專案是用 tomcat 作為 AP 與 mysql 作為 DB 的運行環境，實際跑過一次安裝步驟，與過程中的疑難排解，特別寫篇文章記錄一下，順變給有需要的朋友參考看看。</p>
+
+<p>之前在公司時所使用的環境是以 jboss 作為 AP 以及 ms sql 作為 db，而所使用的 os 是 windows xp，基本上還算單純，jboss 解開下載回來的 zip 檔，基本上就可以使用了，而 ms sql 安裝上也不能，只是要注意是否允許資料庫分辨大小寫，以及資料庫編碼方式等。</p>
+
+<p>而這次所要安裝的環境是在 ubuntu 底下，步驟就比較繁瑣了，包括安裝位置什麼的，都有固定位置，更重要的還有權限控管，環境參數等，如果沒有設置好的話是沒有辦法運行的。</p>
+
+<p>首先就先從安裝 mysql 開始啦！</p>
+
+<h2>mysql</h2>
+
+<p>在 ubuntu 安裝 mysql 很簡單只要一句：</p>
+
+<p><code>sudo apt-get install mysql-server</code></p>
+
+<p>安裝完成後會詢問 root 密碼，輸入完成後，接著我們就可進行登入，使用下列語法：</p>
+
+<p><code>mysql -u root -p [資料庫名稱]</code></p>
+
+<p>上述指定，如果沒有如入資料庫名稱，則為資料庫的根目錄，一旦登入後，需要指定操作的資料庫可用下列指令：</p>
+
+<p><code>use [資料庫名稱] ;</code></p>
+
+<p>其中最後的 <code>;</code> 請要記得輸入，那是作為指令結束的識別，有了 <code>;</code> 才會執行，接著一旦登入完成後我們可以建立一個新的資料庫。</p>
+
+<p><code>create database demo</code></p>
+
+<p>預設來說，新增的資料庫是不支援中文，所以如果你要建立資料庫是屬於 utf-8 的編碼方式可以用下列指令：</p>
+
+<p><code>CREATE DATABASE demo DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;</code></p>
+
+<p>再來如果你要新建一個使用者帳號，可以用下列指令，需先登入 mysql：</p>
+
+<p><code>create user 'UserName'@'Host' identified by 'Password';</code></p>
+
+<p>ex:</p>
+
+<p><code>create user 'joey'@'localhost' identified by 'abcd2345';</code></p>
+
+<p>如果你不指定 host 可以先用 <code>%</code> 取代如：</p>
+
+<p><code>create user 'joey'@'%' identified by 'abcd2345';</code></p>
+
+<p>在 mysql 官方的說明如下：</p>
+
+<blockquote><p>If you specify only the user name part of the account name, a host name part of &#8216;%&#8217; is used.</p></blockquote>
+
+<p>user 建立好了，接著就要給予權限啦：</p>
+
+<p><code>grant OPTION on TARGET to USER;</code></p>
+
+<p>範例如下：</p>
+
+<p><code>grant all on *.* to 'joey'@'localhost';</code></p>
+
+<p>上述的意思是 joey 對整個資料庫的所有資料表都擁有全部的權利，如果要指定 joey 只擁有對 demo 這個資料檔[的所有表格]的查詢及新增權利，指令如下：</p>
+
+<p><code>grant select,insert on demo.* to 'joey'@'localhost';</code></p>
+
+<p>假使我們需要知道目前有建立的使用者有哪些，可以使用下列指令顯示 mysql 這個資料庫中 user 資料表的 Host 及 User 欄位：</p>
+
+<p><code>select Host, User from mysql.user;</code></p>
+
+<p>最後如果你要刪除 user 可以用下列指令：</p>
+
+<p><code>drop user OPTION 'UserName'@'Host';</code></p>
+
+<p>如果你需要啟動或停止 mysql 可以用下列指令：</p>
+
+<ul>
+<li>啟動： <code>sudo start mysql</code></li>
+<li>關閉： <code>sudo stop mysql</code></li>
+<li>重啟： <code>sudo restart mysql</code></li>
+</ul>
+
+
+<p>上面就是 mysql 的基礎安裝，當然如果希望一個 gui 元件來管理 mysql，請接著看以下介紹：</p>
+
+<h2>phpmyadmin</h2>
+
+<p>安裝指令也很簡單：</p>
+
+<p><code>sudo apt-get install libapache2-mod-auth-mysql php5-mysql phpmyadmin</code></p>
+
+<p>請根據安裝步驟將他完成，詳細可參考此網址：<a href="http://www.distrogeeks.com/install-phpmyadmin-ubuntu/">Install phpMyAdmin in Ubuntu</a>，其中因為 phpmyadmin 是 php 寫的因此需要運行於 server 上，在這我所使用的是 apache2 可以透過下列指令安裝：</p>
+
+<p><code>sudo apt-get install apache2</code></p>
+
+<p>安裝完成後可以透過瀏覽下列網址來進行操作 <code>http://localhost/phpmyadmin</code>，不過有可能你會看到 404 因此如果你真的遇到了請增加下列步驟：</p>
+
+<p>編輯：</p>
+
+<p><code>sudo vim /etc/apache2/apache2.conf</code></p>
+
+<p>加入下列字串：</p>
+
+<p><code>Include /etc/phpmyadmin/apache.conf</code></p>
+
+<p>重啟 apache2</p>
+
+<p><code>sudo /etc/init.d/apache2 restart</code></p>
+
+<p>你也可以使用啟動與停止：</p>
+
+<pre><code>sudo /etc/init.d/apache2 start   #start apache
+sudo /etc/init.d/apache2 stop   #stop apache
+sudo /etc/init.d/apache2 restart   #restart apache
+</code></pre>
+
+<p>如此一來你就可以用 gui 介面來管理或維護資料庫啦！</p>
+
+<p><img src="https://lh6.googleusercontent.com/-HsxmrVP4C6U/USgqWZS9EaI/AAAAAAAALic/LBXHLR96Wf0/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-23+%E4%B8%8A%E5%8D%8810.32.29.jpg" alt="image" /></p>
+
+<p>mysql 的 介紹算是告一段落了，一些進階的就請 google 一下囉！接著來看 tomcat7 的安裝。</p>
+
+<h2>tomcat7</h2>
+
+<p>在 ubuntu 底下我們可用下列指令來安裝 tomcat7：</p>
+
+<p>sudo apt-get install tomcat7</p>
+
+<p>安裝完成後，我們可以透過下列指令來啟動或關閉 tomcat7：</p>
+
+<ul>
+<li>啟動： <code>sudo service tomcat7 start</code></li>
+<li>關閉： <code>sudo service tomcat7 stop</code></li>
+<li>重啟： <code>sudo service tomcat7 restart</code></li>
+</ul>
+
+
+<p>如果是使用 apt-get install tomcat7 相關檔案放置位置如下：</p>
+
+<ul>
+<li><code>/etc/tomcat6</code> for configuration and runtime, called CATALINA_HOME</li>
+<li><code>/var/lib/tomcat7/webapps/</code> webapps 的位置</li>
+</ul>
+
+
+<p>如果你不想透過 apt-get install tomcat7 可以參考這篇文章安裝：<a href="http://diegobenna.blogspot.tw/2011/01/install-tomcat-7-in-ubuntu-1010.html">Install Tomcat 7 on Ubuntu 12.04</a>，需要注意的是，如果是自行安裝 JAVA_HOME 的設定必須確實，如果設定錯誤，啟動 tomcat 時不會出現明確的錯誤訊息。</p>
+
+<p>以上就是 tomcat 與 mysql 的安裝步驟。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3516,288 +3670,6 @@ try {
 
 <p>就這樣，不要再忍受令人錯亂的 ctrl 與 command 鍵，讓複製、剪下、貼上行雲流水吧！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[java OCP 題目解析：關於 java 指標的運作觀念]]></title>
-<link href="http://smlsun.com/blog/2013/01/17/java-pointer/"/>
-<updated>2013-01-17T11:44:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/17/java-pointer</id>
-
-      <content type="html"><![CDATA[<p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
-
-<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setX</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Gamma</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the output?</p>
-
-<pre><code>A. 300-100-100-100-100
-B. 300-300-100-100-100
-C. 300-300-300-100-100
-D. 300-300-300-300-100
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<pre><code>做這題頭腦不夠清楚可能會被搞混喔
-這題是考JAVA 隱藏的指標觀念，其實規則很容易：
-1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
-2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
-    2.1. 等號處理基本資料型態時是傳值
-    2.2. 等號處理物件時是傳位址
-</code></pre>
-
-<p>依照題目的情況來模擬一下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'><span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-
-    </tr>
-
-  </tbody>
-</table>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
-
-<p>方法第三行回傳了fooBar: foo指標</p>
-
-<p>後來在主方法執行了這一行</p>
-
-<pre><code>foo = fooBar(fooFoo);
-</code></pre>
-
-<p>之後記憶體狀況會變成</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td></td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
-
-<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KungFu</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">400</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">x</span><span class="o">++;</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb2</span> <span class="o">=</span> <span class="n">sb1</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">sb1</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;5&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">sb1</span> <span class="o">==</span> <span class="n">sb2</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the result?</p>
-
-<pre><code>A. true true
-B. false true
-C. true false
-D. false false
-E. Compilation fails.
-F. An exception is thrown at runtime.
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
-
-<p>一般物件的話當然做等於運算就是傳指標了</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/17/java-pointer/"></a></p>]]></content>
     </entry>
   
 </feed>
