@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-23T11:31:38+08:00</updated>
+  <updated>2013-02-23T11:48:26+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,129 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[ubuntu 中安装 apache ab 進行壓力測試]]></title>
+<link href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"/>
+<updated>2013-02-23T11:35:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking</id>
+
+      <content type="html"><![CDATA[<p>資料來源： <a href="http://hikin.iteye.com/blog/866582">ubuntu 中安装 apache ab 來進行簡單的壓力測試</a></p>
+
+<p>在 ubuntu 底下安裝 apache ab 很簡單：</p>
+
+<p>apt-get install apache2-utils</p>
+
+<p>我們可以透過以下指令來做簡單測試：</p>
+
+<p>ab -n 100 -c 10 http://localhost:8080/</p>
+
+<p>其中關於 ab 其他指令的運用可以參考 man</p>
+
+<p>Usage: ab [options] [http[s]://]hostname[:port]/path
+Options are:</p>
+
+<pre><code>//總需求數
+-n requests Number of requests to perform宅 
+
+//一次同時併發的請求數 總的請求數(n)=次數*一次併發數(c) 
+-c concurrency Number of multiple requests to make
+
+-t timelimit Seconds to max. wait for responses
+-b windowsize Size of TCP send/receive buffer, in bytes
+-p postfile File containing data to POST. Remember also to set -T
+-u putfile File containing data to PUT. Remember also to set -T
+-T content-type Content-type header for POSTing, eg.
+'application/x-www-form-urlencoded'
+Default is 'text/plain'
+-v verbosity How much troubleshooting info to print
+-w Print out results in HTML tables
+-i Use HEAD instead of GET
+-x attributes String to insert as table attributes
+-y attributes String to insert as tr attributes
+-z attributes String to insert as td or th attributes
+-C attribute Add cookie, eg. 'Apache=1234. (repeatable)
+-H attribute Add Arbitrary header line, eg. 'Accept-Encoding: gzip'
+Inserted after all normal header lines. (repeatable)
+-A attribute Add Basic WWW Authentication, the attributes
+are a colon separated username and password.
+-P attribute Add Basic Proxy Authentication, the attributes
+are a colon separated username and password.
+-X proxy:port Proxyserver and port number to use
+-V Print version number and exit
+-k Use HTTP KeepAlive feature
+-d Do not show percentiles served table.
+-S Do not show confidence estimators and warnings.
+-g filename Output collected data to gnuplot format file.
+-e filename Output CSV file with percentages served
+-r Don't exit on socket receive errors.
+-h Display usage information (this message)
+-Z ciphersuite Specify SSL/TLS cipher suite (See openssl ciphers)
+-f protocol Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)
+</code></pre>
+
+<p>實際的運行報告呈現如下：</p>
+
+<pre><code>Server Software: lighttpd/1.4.20
+Server Hostname: hikin.iteye.com
+Server Port: 80
+
+Document Path: /
+Document Length: 2095 bytes
+
+Concurrency Level: 10
+
+//整個測試持續的時間 
+Time taken for tests: 3.303 seconds
+
+//完成的請求數量 
+Complete requests: 100
+Failed requests: 0
+Write errors: 0
+Total transferred: 235200 bytes
+HTML transferred: 209500 bytes
+
+//平均每秒處理30個請求 
+Requests per second: 30.27 [#/sec] (mean)
+
+//平均每個請求處理時間為330毫秒 注:這裡將一次10個併發請求看成一個整體 
+Time per request: 330.335 [ms] (mean)
+
+//平均每個併發請求處理 時間 為33毫秒 
+Time per request: 33.034 [ms] (mean, across all concurrent requests)
+Transfer rate: 69.53 [Kbytes/sec] received
+
+Connection Times (ms)
+min mean[+/-sd] median max
+Connect: 51 170 35.9 178 230
+Processing: 60 153 64.5 121 263
+Waiting: 55 148 64.4 115 258
+Total: 235 322 59.9 299 437
+
+Percentage of the requests served within a certain time (ms)
+
+//在這100個請求中有50%在299毫秒內完成 
+50% 299
+
+//在這100個請求中有66%在312毫秒內完成 
+66% 312
+75% 383
+80% 412
+90% 431
+95% 432
+98% 436
+99% 437
+100% 437 (longest request)
+</code></pre>
+
+<p>以往要用人工來進行測試，使用 apache ab 可以很快速的完成，讓壓力測試不再是個黑盒子，永遠不知道到底系統運行效率如何。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3644,32 +3767,6 @@ try {
 
 <p>希望這篇文章可以幫助有需要的人，不要像我一樣花很多時間在撞牆了～</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/24/qemu/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[HOWTO: Apple Keyboard mapping for Ubuntu]]></title>
-<link href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"/>
-<updated>2013-01-22T09:49:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config</id>
-
-      <content type="html"><![CDATA[<p>不曉得各位使用 macbook 的阿宅有沒有ㄍ跟我一樣的困擾，那就是雖然使用 Mac os 但是還是需要連到遠端的不同 os 比如說 ubuntu 或者 windows 之類的，當你在同時操作這些系統時，讓人不習慣的不是 os 本身提供的功能，或者是介面的 layout，其實最令我困擾的是 <strong>Win and ubuntu 的 ctrl</strong> 以及 <strong>Mac 的 command</strong>，真的讓我非常的錯亂，甚至會手抽筋！</p>
-
-<p>人總是在受不了或看不慣時會尋找解法，所以我受不了了！上網找了一下，總算讓我找到設定方式，其實步驟很簡單：</p>
-
-<ol>
-<li><p>Go into System -> Preferences -> Keyboard</p></li>
-<li><p>Click on the &#8220;Layouts&#8221; tab and then click the &#8220;Layout Options&#8221; button.</p></li>
-<li><p>Click on &#8220;Alt/Win key behavior&#8221;</p></li>
-</ol>
-
-
-<p>就這樣，不要再忍受令人錯亂的 ctrl 與 command 鍵，讓複製、剪下、貼上行雲流水吧！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/22/ubuntu-mac-keyboard-config/"></a></p>]]></content>
     </entry>
   
 </feed>

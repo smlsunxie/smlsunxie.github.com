@@ -248,7 +248,11 @@
     </url>
     <url>
         <loc>http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/</loc>
-        <lastmod>2013-02-23T11:31:11+08:00</lastmod>
+        <lastmod>2013-02-23T11:32:45+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/</loc>
+        <lastmod>2013-02-23T11:48:17+08:00</lastmod>
     </url>
     <url>
         <loc>http://smlsun.com/404.html</loc>
@@ -256,15 +260,15 @@
     </url>
     <url>
         <loc>http://smlsun.com/aboutme/</loc>
-        <lastmod>2013-02-23T11:31:11+08:00</lastmod>
+        <lastmod>2013-02-23T11:48:17+08:00</lastmod>
     </url>
     <url>
         <loc>http://smlsun.com/archives/</loc>
-        <lastmod>2013-02-23T11:31:11+08:00</lastmod>
+        <lastmod>2013-02-23T11:48:17+08:00</lastmod>
     </url>
     <url>
         <loc>http://smlsun.com/blog/</loc>
-        <lastmod>2013-02-23T11:31:11+08:00</lastmod>
+        <lastmod>2013-02-23T11:48:17+08:00</lastmod>
     </url>
     <url>
         <loc>http://smlsun.com/downloads/code/slidedeck.html</loc>
@@ -272,7 +276,7 @@
     </url>
     <url>
         <loc>http://smlsun.com/</loc>
-        <lastmod>2013-02-23T11:31:11+08:00</lastmod>
+        <lastmod>2013-02-23T11:48:17+08:00</lastmod>
     </url>
     <url>
         <loc>http://smlsun.com/slides/</loc>
