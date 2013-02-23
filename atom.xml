@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-23T15:20:39+08:00</updated>
+  <updated>2013-02-23T15:50:29+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -267,6 +267,8 @@
 
 
 <p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
+
+<p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/javascript-sync/"></a></p>]]></content>
     </entry>
   
