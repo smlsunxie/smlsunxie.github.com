@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-02-23T15:50:29+08:00</updated>
+  <updated>2013-02-28T21:03:25+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[學 web 開發的好地方]]></title>
+<link href="http://smlsun.com/blog/2013/02/28/study-coding/"/>
+<updated>2013-02-28T18:45:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/28/study-coding</id>
+
+      <content type="html"><![CDATA[<p>如果你是你剛踏入軟體開發的行列，很多語法或特性還不是很熟，是不是很想有個地方可以讓你找到各種語法的使用方式。</p>
+
+<p>或者你是已經有經驗的開發者，有些時候你想試試看哪個屬性或者語法執行的結果如何，但當下又沒有環境讓你測試。</p>
+
+<p>下面將介紹幾個不錯的網站讓不管是初學還是有經驗的開發者，都可以有個現成的環境讓你試試每個語法的特性。</p>
+
+<h2><a href="http://jsfiddle.net/">jsfiddle</a></h2>
+
+<p><img src="https://lh5.googleusercontent.com/-yFUqWAT58q0/US9CeiPUAiI/AAAAAAAALiw/L3CanL_aS58/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%886.52.46.jpg" alt="img" /></p>
+
+<p>一個可以線上模擬一個網站的環境，只要在上面的 HTML、css 以及 JavaScript 中寫入你要測試的程式碼，一旦執行以後，就可以在 Result 看到輸出的結果，特別的是該網站整合了一些大家都會常用的套件或是 framework，舉凡 jquery、extjs 或者是 YUI 等，都可以很輕易的測試每個套件的特性，圖片中的範例是用 extjs 來做範例</p>
+
+<h2><a href="http://sqlfiddle.com/">sqlfiddle</a></h2>
+
+<p><img src="https://lh5.googleusercontent.com/-iZt6XO24I_U/US9VL4aM9YI/AAAAAAAALjM/YuTxlBkcM58/s774/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%889.00.59.jpg" alt="image" /></p>
+
+<p>線上 sql 語法練習網站，與 jsfiddle 類似，只是對象改成 sql，在開始練習前，需要先將範例 table 建立的語法置於左上角區域，接著就點選 Build Schema 就可以開始練習 sql 語法啦！</p>
+
+<p>這網站還有一個特別的地方，他將 sql 的執行計畫也一併產生出來，可以讓你分析你下的 sql 執行效率，真的很方便呢！</p>
+
+<h2><a href="http://www.w3schools.com/">w3schools</a></h2>
+
+<p><img src="https://lh3.googleusercontent.com/-OD_nz64JW8I/US9CfAlsghI/AAAAAAAALi4/EWnAar60Nx0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%887.41.17.jpg" alt="image" /></p>
+
+<p>與 jsfiddle 不同，w3schools 專注於每種語法的特性，一些在 wed 開發中會用到的技術介紹，當然他也可以線上測試各種語法的特性，雖然只是單語言測試，但對於急於查詢相關語法或者測試運行結果非常夠用了，除此之外有蠻詳細的解釋與範例，是個不錯的參考網站。</p>
+
+<p>相關語言有：</p>
+
+<ul>
+<li><p>HTML &amp; CSS</p>
+
+<ul>
+<li>HTML Tutorial</li>
+<li>HTML5 Tutorial</li>
+<li>CSS Tutorial</li>
+<li>CSS3 Tutorial</li>
+</ul>
+</li>
+<li><p>Browser Scripting</p>
+
+<ul>
+<li>JavaScript Tutorial</li>
+<li>HTML DOM Tutorial</li>
+<li>jQuery Tutorial</li>
+<li>JSON Tutorial</li>
+<li>Google API Tutorial</li>
+</ul>
+</li>
+<li><p>Server Scripting</p>
+
+<ul>
+<li>PHP Tutorial</li>
+<li>SQL Tutorial</li>
+<li>ASP Tutorial</li>
+<li>ASP.NET Tutorial</li>
+<li>Web Services Tutorial</li>
+<li>Schema Tutorial</li>
+<li>SOAP Tutorial</li>
+<li>WSDL Tutorial</li>
+</ul>
+</li>
+<li><p>Web Building</p>
+
+<ul>
+<li>Web Browsers</li>
+<li>Web Certification</li>
+<li>Web Hosting</li>
+<li>Web TCP/IP</li>
+<li>Web W3C</li>
+<li>Web Quality</li>
+</ul>
+</li>
+</ul>
+
+
+<p>上面列出幾項，都是很常見的技術，真的是非常完整，可以參考看看囉！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/28/study-coding/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3679,307 +3769,6 @@ try {
 
 <blockquote><p>20130207 教學真的會相長阿！ ^_^</p></blockquote>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[tips: customize live cd]]></title>
-<link href="http://smlsun.com/blog/2013/01/25/customize-live-cd/"/>
-<updated>2013-01-25T10:29:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/01/25/customize-live-cd</id>
-
-      <content type="html"><![CDATA[<p>最近在研究如何製作 live cd 也因為這項研究，讓我更熟悉 linux 的架構，發現一些有用的知識，與 linux 運作的設定，這篇算是筆記，陸續在新增</p>
-
-<ul>
-<li><p><code>/etc/skel</code></p>
-
-<p>  在這資料夾下面的檔案，只要當新增使用者時，就會複製一份給新增使用者，當你需要有一些預設設定時很好用，比如說：chrome 要有預設的首頁以及捷徑，還有輸入法預設有哪些等。</p></li>
-</ul>
-
-
-<hr />
-
-<ul>
-<li><p><code>/etc/xdg/autostart/</code></p>
-
-<p>  global 自動執行，放在底下的 *.desktop 將會自動執行</p></li>
-</ul>
-
-
-<hr />
-
-<ul>
-<li><p><code>~/.config/autostart/</code></p>
-
-<p>  local 自動執行，同 <code>/etc/xdg/autostart/</code>，可搭配 <code>/etc/skel</code> 服用，如果你有每個使用者登入就要執行某些程式的需求</p></li>
-</ul>
-
-
-<hr />
-
-<ul>
-<li><p><code>/etc/rc.local</code></p>
-
-<p>  當你登入系統時，希望要執行任何 command 可以在這編輯，比如說：製作 livecd 一開始時是在 command 模式，你想要讓他直接進到 xwindow 通常需要下 startx，此時就可以在這檔案裡編寫指令，讓他自動執行。需要注意的是在這直接執行 <code>startx</code> 將是使用 root 的身分，在 etc 底下都屬於 global</p>
-
-<p>  相關說明：</p>
-
-<ul>
-<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_sysinit">init 處理系統初始化流程 (/etc/rc.d/rc.sysinit)</a></li>
-<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_runlevel">啟動系統服務與相關啟動設定檔 (/etc/rc.d/rc N &amp; /etc/sysconfig)</a></li>
-<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_local">使用者自訂開機啟動程序 (/etc/rc.d/rc.local)</a></li>
-</ul>
-</li>
-</ul>
-
-
-<hr />
-
-<ul>
-<li><p>live cd 啟動後，沒有 gdm 的情況下，自動登入 xwindow</p>
-
-<p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
-
-<p>  加入下列語法；</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$DISPLAY&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$(</span>tty<span class="k">)</span> <span class="o">==</span> /dev/tty1 <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">  </span>startx
-</span><span class='line'><span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p>
-
-<hr />
-
-<ul>
-<li><p><code>locale-gen zh_TW.UTF-8</code></p>
-
-<p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
-</ul>
-
-
-<hr />
-
-<ul>
-<li><p><code>apt-get --yes autoremove</code></p>
-
-<p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
-<li><p>產生 live cd 範例 makefile</p>
-
-<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LIVECD_HOME</span><span class="o">=</span>~/livecd
-</span><span class='line'><span class="nv">LIVECD_TMP</span><span class="o">=</span>/tmp/livecd
-</span><span class='line'>
-</span><span class='line'><span class="nv">ORG_ISO_URL</span><span class="o">=</span>http://www.ubuntu-mini-remix.org/download/12.10
-</span><span class='line'><span class="nv">ORG_ISO_NAME</span><span class="o">=</span>ubuntu-mini-remix-12.10-i386.iso
-</span><span class='line'>
-</span><span class='line'><span class="nv">CREATE_ISO_NAME</span><span class="o">=</span>Ubuntu-cusmize-livecd.iso
-</span><span class='line'>
-</span><span class='line'><span class="nv">DEPLOY_LOC</span><span class="o">=</span>~/
-</span><span class='line'><span class="nv">DEPLOY_REMOTE</span><span class="o">=</span>user@ip:~/
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>all: clean
-</span><span class='line'>
-</span><span class='line'>clean:
-</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
-</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs
-</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/proc/
-</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/sys/
-</span><span class='line'>  sudo rm -rf <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>
-</span><span class='line'>init: clean
-</span><span class='line'>  wget -nc <span class="k">${</span><span class="nv">ORG_ISO_URL</span><span class="k">}</span>/<span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
-</span><span class='line'>  sudo apt-get install squashfs-tools dchroot
-</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
-</span><span class='line'>  - sudo mount -o loop <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
-</span><span class='line'>  - mkdir -p <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
-</span><span class='line'>  rsync --exclude<span class="o">=</span>/casper/filesystem.squashfs -a <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/ <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
-</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs  <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
-</span><span class='line'>  sudo modprobe squashfs
-</span><span class='line'>  - sudo mount -t squashfs -o loop <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/
-</span><span class='line'>  sudo cp -a <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/* <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
-</span><span class='line'>  sudo cp /etc/resolv.conf /etc/hosts <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/etc/    
-</span><span class='line'>
-</span><span class='line'>  
-</span><span class='line'>install: init
-</span><span class='line'>  
-</span><span class='line'>  <span class="c"># copy install script 在 install.sh 寫入你需要安裝的套件</span>
-</span><span class='line'>  sudo chmod +x install.sh
-</span><span class='line'>  sudo cp install.sh <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/home/
-</span><span class='line'>  
-</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom /home/./install.sh
-</span><span class='line'>
-</span><span class='line'>build: install
-</span><span class='line'>  chmod +w <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
-</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom dpkg-query -W --showformat<span class="o">=</span><span class="s1">&#39;${Package} ${Version}\n&#39;</span> &gt; <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
-</span><span class='line'>  sudo cp <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest-desktop
-</span><span class='line'>  sudo mksquashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.squashfs
-</span><span class='line'>  <span class="nb">cd</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd ;sudo mkisofs -r -V <span class="s2">&quot;Ubuntu-cusmize-livecd&quot;</span> -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> .
-</span><span class='line'>
-</span><span class='line'>deploy: build
-</span><span class='line'>  scp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_REMOTE</span><span class="k">}</span>
-</span><span class='line'>
-</span><span class='line'>deploy_loc: build
-</span><span class='line'>  cp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_LOC</span><span class="k">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">test</span>:
-</span><span class='line'>  qemu-system-i386 -cdrom ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> -boot d -m 512
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其中 install.sh：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'>mount -t proc none /proc/
-</span><span class='line'>mount -t sysfs none /sys/
-</span><span class='line'><span class="nb">export </span><span class="nv">HOME</span><span class="o">=</span>/root
-</span><span class='line'>
-</span><span class='line'>locale-gen zh_TW.UTF-8
-</span><span class='line'>update-locale <span class="nv">LANG</span><span class="o">=</span>zh_TW.UTF-8
-</span><span class='line'>
-</span><span class='line'>sudo apt-get update
-</span><span class='line'>
-</span><span class='line'>sudo apt-get --yes install lxde
-</span><span class='line'>sudo apt-get --yes install language-support-zh language-pack-gnome-zh* ttf-arphic-*
-</span><span class='line'>
-</span><span class='line'>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
-</span><span class='line'>
-</span><span class='line'>sudo dpkg -i ./google-chrome*.deb
-</span><span class='line'>sudo apt-get --yes -f install
-</span><span class='line'>
-</span><span class='line'>rm google-chrome-stable_current_i386.deb
-</span><span class='line'>
-</span><span class='line'>sudo apt-get --yes install Leafpad
-</span><span class='line'>sudo apt-get --yes install xinit
-</span><span class='line'>sudo apt-get --yes install ibus
-</span><span class='line'>sudo apt-get --yes install ibus-chewing
-</span><span class='line'>sudo apt-get --yes install lxterminal
-</span><span class='line'>sudo apt-get --yes install ttf-arphic-uming
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>sudo apt-get --yes purge xscreensaver
-</span><span class='line'>
-</span><span class='line'>apt-get --yes autoremove
-</span><span class='line'>apt-get clean
-</span><span class='line'>rm -rf /tmp/*
-</span><span class='line'>rm -f /etc/hosts /etc/resolv.conf
-</span><span class='line'>umount /proc/
-</span><span class='line'>umount /sys/
-</span><span class='line'><span class="nb">exit</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>話說：最近越來越 linux 了～</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/01/25/customize-live-cd/"></a></p>]]></content>
     </entry>
   
 </feed>

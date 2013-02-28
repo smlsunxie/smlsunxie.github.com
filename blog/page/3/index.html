@@ -310,6 +310,369 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/25/customize-live-cd/">Tips: Customize Live Cd</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在研究如何製作 live cd 也因為這項研究，讓我更熟悉 linux 的架構，發現一些有用的知識，與 linux 運作的設定，這篇算是筆記，陸續在新增</p>
+
+<ul>
+<li><p><code>/etc/skel</code></p>
+
+<p>  在這資料夾下面的檔案，只要當新增使用者時，就會複製一份給新增使用者，當你需要有一些預設設定時很好用，比如說：chrome 要有預設的首頁以及捷徑，還有輸入法預設有哪些等。</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/xdg/autostart/</code></p>
+
+<p>  global 自動執行，放在底下的 *.desktop 將會自動執行</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>~/.config/autostart/</code></p>
+
+<p>  local 自動執行，同 <code>/etc/xdg/autostart/</code>，可搭配 <code>/etc/skel</code> 服用，如果你有每個使用者登入就要執行某些程式的需求</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/rc.local</code></p>
+
+<p>  當你登入系統時，希望要執行任何 command 可以在這編輯，比如說：製作 livecd 一開始時是在 command 模式，你想要讓他直接進到 xwindow 通常需要下 startx，此時就可以在這檔案裡編寫指令，讓他自動執行。需要注意的是在這直接執行 <code>startx</code> 將是使用 root 的身分，在 etc 底下都屬於 global</p>
+
+<p>  相關說明：</p>
+
+<ul>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_sysinit">init 處理系統初始化流程 (/etc/rc.d/rc.sysinit)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_runlevel">啟動系統服務與相關啟動設定檔 (/etc/rc.d/rc N &amp; /etc/sysconfig)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_local">使用者自訂開機啟動程序 (/etc/rc.d/rc.local)</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p>live cd 啟動後，沒有 gdm 的情況下，自動登入 xwindow</p>
+
+<p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
+
+<p>  加入下列語法；</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$DISPLAY&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$(</span>tty<span class="k">)</span> <span class="o">==</span> /dev/tty1 <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>startx
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p>
+
+<hr />
+
+<ul>
+<li><p><code>locale-gen zh_TW.UTF-8</code></p>
+
+<p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>apt-get --yes autoremove</code></p>
+
+<p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+<li><p>產生 live cd 範例 makefile</p>
+
+<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LIVECD_HOME</span><span class="o">=</span>~/livecd
+</span><span class='line'><span class="nv">LIVECD_TMP</span><span class="o">=</span>/tmp/livecd
+</span><span class='line'>
+</span><span class='line'><span class="nv">ORG_ISO_URL</span><span class="o">=</span>http://www.ubuntu-mini-remix.org/download/12.10
+</span><span class='line'><span class="nv">ORG_ISO_NAME</span><span class="o">=</span>ubuntu-mini-remix-12.10-i386.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">CREATE_ISO_NAME</span><span class="o">=</span>Ubuntu-cusmize-livecd.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">DEPLOY_LOC</span><span class="o">=</span>~/
+</span><span class='line'><span class="nv">DEPLOY_REMOTE</span><span class="o">=</span>user@ip:~/
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>all: clean
+</span><span class='line'>
+</span><span class='line'>clean:
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/proc/
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/sys/
+</span><span class='line'>  sudo rm -rf <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>
+</span><span class='line'>init: clean
+</span><span class='line'>  wget -nc <span class="k">${</span><span class="nv">ORG_ISO_URL</span><span class="k">}</span>/<span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  sudo apt-get install squashfs-tools dchroot
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - sudo mount -o loop <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - mkdir -p <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  rsync --exclude<span class="o">=</span>/casper/filesystem.squashfs -a <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/ <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs  <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo modprobe squashfs
+</span><span class='line'>  - sudo mount -t squashfs -o loop <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/
+</span><span class='line'>  sudo cp -a <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/* <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo cp /etc/resolv.conf /etc/hosts <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/etc/    
+</span><span class='line'>
+</span><span class='line'>  
+</span><span class='line'>install: init
+</span><span class='line'>  
+</span><span class='line'>  <span class="c"># copy install script 在 install.sh 寫入你需要安裝的套件</span>
+</span><span class='line'>  sudo chmod +x install.sh
+</span><span class='line'>  sudo cp install.sh <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/home/
+</span><span class='line'>  
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom /home/./install.sh
+</span><span class='line'>
+</span><span class='line'>build: install
+</span><span class='line'>  chmod +w <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom dpkg-query -W --showformat<span class="o">=</span><span class="s1">&#39;${Package} ${Version}\n&#39;</span> &gt; <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo cp <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest-desktop
+</span><span class='line'>  sudo mksquashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.squashfs
+</span><span class='line'>  <span class="nb">cd</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd ;sudo mkisofs -r -V <span class="s2">&quot;Ubuntu-cusmize-livecd&quot;</span> -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> .
+</span><span class='line'>
+</span><span class='line'>deploy: build
+</span><span class='line'>  scp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_REMOTE</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'>deploy_loc: build
+</span><span class='line'>  cp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_LOC</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">test</span>:
+</span><span class='line'>  qemu-system-i386 -cdrom ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> -boot d -m 512
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 install.sh：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'>mount -t proc none /proc/
+</span><span class='line'>mount -t sysfs none /sys/
+</span><span class='line'><span class="nb">export </span><span class="nv">HOME</span><span class="o">=</span>/root
+</span><span class='line'>
+</span><span class='line'>locale-gen zh_TW.UTF-8
+</span><span class='line'>update-locale <span class="nv">LANG</span><span class="o">=</span>zh_TW.UTF-8
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install lxde
+</span><span class='line'>sudo apt-get --yes install language-support-zh language-pack-gnome-zh* ttf-arphic-*
+</span><span class='line'>
+</span><span class='line'>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo dpkg -i ./google-chrome*.deb
+</span><span class='line'>sudo apt-get --yes -f install
+</span><span class='line'>
+</span><span class='line'>rm google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install Leafpad
+</span><span class='line'>sudo apt-get --yes install xinit
+</span><span class='line'>sudo apt-get --yes install ibus
+</span><span class='line'>sudo apt-get --yes install ibus-chewing
+</span><span class='line'>sudo apt-get --yes install lxterminal
+</span><span class='line'>sudo apt-get --yes install ttf-arphic-uming
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes purge xscreensaver
+</span><span class='line'>
+</span><span class='line'>apt-get --yes autoremove
+</span><span class='line'>apt-get clean
+</span><span class='line'>rm -rf /tmp/*
+</span><span class='line'>rm -f /etc/hosts /etc/resolv.conf
+</span><span class='line'>umount /proc/
+</span><span class='line'>umount /sys/
+</span><span class='line'><span class="nb">exit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>話說：最近越來越 linux 了～</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-25T10:29:00+08:00" pubdate data-updated="true">Jan 25<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/25/customize-live-cd/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/25/customize-live-cd/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/24/qemu/">Lightweight and Portable Virtual Machine: Qemu</a>
 
 </h1>
@@ -1559,167 +1922,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile Deploy</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
-
-<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
-
-<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
-
-<p><code>/etc/init/yourapp.conf</code></p>
-
-<p>範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
-</span><span class='line'>author "user"                                                              
-</span><span class='line'>
-</span><span class='line'>start on startup
-</span><span class='line'>stop on shutdown
-</span><span class='line'>
-</span><span class='line'>script
-</span><span class='line'>    export HOME="/root"
-</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
-</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-start script
-</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-stop script
-</span><span class='line'>    #rm /var/run/yourprogram.pid
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
-
-<p><code>initctl list | grep node</code></p>
-
-<p>會看到下列輸出：</p>
-
-<p><code>yourapp stop/waiting</code></p>
-
-<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
-
-<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
-</span><span class='line'>
-</span><span class='line'>restart: rsync
-</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
-</span><span class='line'>
-</span><span class='line'>rsync: 
-</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
-
-<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T08:36:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-production-setting/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-production-setting/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1797,6 +1999,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/28/study-coding/">學 web 開發的好地方</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
       </li>
     
@@ -1810,10 +2016,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/02/21/grails-play/">程式東西軍： grails & play!</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/19/extjs-tree/">extjs: tree 的建立與使用</a>
       </li>
     
   </ul>

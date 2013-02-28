@@ -310,6 +310,157 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在開始之前請容許我發洩一下：</p>
+
+<p>ireport 的文件真他媽的少阿!</p>
+
+<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
+
+<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
+
+<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
+
+<p>開始我們的正題</p>
+
+<h2>如何使用 ireport scriptlet</h2>
+
+<p>先來看看java code</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
+</span><span class='line'>       <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;titleAddOrderid&quot;</span><span class="o">,</span> <span class="s">&quot;test Scriptlet ORDERID:&quot;</span><span class="o">+</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>java部分</h3>
+
+<p>重點如下：</p>
+
+<ul>
+<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
+<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
+<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
+<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
+<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
+</ul>
+
+
+<p>java部分大概就是這樣了~</p>
+
+<hr />
+
+<h3>接著回到ireport</h3>
+
+<p>需要處理的重點如下：</p>
+
+<ul>
+<li>將打包好的jar加入到ireport的classpath</li>
+<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
+<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
+<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
+</ul>
+
+
+<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
+
+<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
+
+<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
+
+<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-06T20:00:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/06/ireport-use-scriptlet/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/06/ireport-use-scriptlet/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a>
 
 </h1>
@@ -1657,88 +1808,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/">Rework 工作大解放 讀後心得</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h1>其他人的心得</h1>
-
-<ul>
-<li><a href="http://woundero.wordpress.com/2012/10/30/rework/">Rework：我們從「工作大解放」學到的十件事</a></li>
-</ul>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-11-05T09:32:00+08:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1816,6 +1885,10 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/02/28/study-coding/">學 web 開發的好地方</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
       </li>
     
@@ -1829,10 +1902,6 @@
     
       <li>
         <a href="/blog/2013/02/21/grails-play/">程式東西軍： grails & play!</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/19/extjs-tree/">extjs: tree 的建立與使用</a>
       </li>
     
   </ul>
