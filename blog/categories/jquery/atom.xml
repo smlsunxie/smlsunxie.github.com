@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: jquery | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/jquery/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-03-01T21:01:40+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美搭配]]></title>
+    <link href="http://smlsun.com/blog/2013/03/01/grails-taggable/"/>
+    <updated>2013-03-01T18:34:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/03/01/grails-taggable</id>
+    <content type="html"><![CDATA[<p>引言：<a href="http://blog.lyhdev.com/2013/01/grails-22.html">快速瀏覽 Grails 2.2 新功能</a></p>
+
+<blockquote><p>Grails 是受到 Ruby on Rails (RoR) 啟發的 Java EE 開發框架，它利用 Java 世界的 Groovy Scripting 語言實現與 Rails MVC 架構相似的開發工具；因為基於 Java 豐富的企業元件基礎，可以同時獲得敏捷的開發效率，並且和既有的 Java 程式保持相容。</p></blockquote>
+
+<p>最近開始想要幫家裡開發一個資訊發佈平台，因為我本身習慣開發 java，這陣子經由 <a href="http://blog.lyhdev.com/">lyhcode</a> 的介紹開始使用 Grails，發現他真的是一個充滿驚奇的 framework，一開始可能會因為他的 <strong>精簡</strong> 讓你感到困惑，原本可能需要的步驟被省略後反而無法理解… 但一旦深入了解並且了解其習性後，才發現原來開發 java 也可以這麼快速！</p>
+
+<p>一旦使用 Grails 後，你就不想用原始的 java 開發程式，正所謂回不去了… 除了骨子裡是 java，外在的部分基本上已經完全不一樣了，是說變帥了嘛？（誤）</p>
+
+<p>回到正題，在一般 blog 的網站，很常用到的 tag (標籤)在實作上… 說實在的細節實在很多，我也不知道該怎麼實作… 在完全不知道怎麼實作光構思就可能花上一天，在加上開發運氣好的話或許 3 天解決，但今天我所要介紹的，只花你 1 小時，就完成 taggable 的實作！！很難想像嘛？就讓我們繼續看下去。</p>
+
+<p>此範例參考下列網站：<a href="http://blog.armbruster-it.de/2011/04/a-perfect-team-grails-taggable-plugin-and-jquery-tagit/">Grails Taggable plugin and JQuery Tagit</a>，在這個範例中用的 grails 版本：1.4；jquery-tagit 版本：1.5。</p>
+
+<p>而本文章撰寫時所使用的 grails 版本：2.2；jquery-tagit 版本：2.0。雖然版本不一樣但步驟上大致相同，首先我們必須安裝 taggable plugin。</p>
+
+<h1>taggable &amp; jquery-ui plugin install</h1>
+
+<p>在新版 2.2 grails 中已不建議使用 plugin install，根據官方的建議我們只要在 BuildConfig.groovy 新增下列：</p>
+
+<pre><code>compile ':spring-security-ui:latest.release'
+compile ":taggable:1.0.1"
+</code></pre>
+
+<p>一旦進入 grails 運行環境時將會自動安裝 plugin，就是這麼簡單，而 resources plugin 在 2.2 版已內建，所以不需要安裝，接著我們來處理…</p>
+
+<h1>jquery tagit install</h1>
+
+<p>下載 <a href="http://aehlke.github.com/tag-it/">jquery tagit</a></p>
+
+<p>解壓縮後將檔案放置於：</p>
+
+<ul>
+<li>jquery.tagit.css: 'web-app/tagit/css/jquery.tagit.css'</li>
+<li>tagit.ui-zendesk.css: 'web-app/tagit/css/tagit.ui-zendesk.css'</li>
+<li>tag-it.js: 'web-app/tagit/js/tag-it.js'</li>
+</ul>
+
+
+<p>接著需要定義 ApplicationResourses.goovy</p>
+
+<pre><code>tagit {
+    dependsOn 'jquery-ui'
+    resource url: 'tagit/css/jquery.tagit.css'
+    resource url: 'tagit/css/tagit.ui-zendesk.css'
+    resource url: 'tagit/js/tag-it.js'
+}
+</code></pre>
+
+<p> 如此一來，基本環境與需要的套件都已經 ready 了，就讓我們開始實作 taggable 功能，就先從定義…</p>
+
+<h2>domain object</h2>
+
+<p>在 grails 中所謂的 domain object 就是所謂的資料表物件，定義資料結構的地方，假設我們是要開發自己的 blog 平台，那每一篇文章在資料庫中我們就可以定義 table 為 post，相關程式碼如下：</p>
+
+<pre><code>package sample
+
+class Post {
+    String title
+    String content
+}
+</code></pre>
+
+<p>我們所要做的就是將 <code>org.grails.taggable.Taggable</code> import 進去，並且實作 Taggable</p>
+
+<pre><code>package sample
+import org.grails.taggable.Taggable
+
+class Post implements Taggable {
+    String title
+    String content
+}
+</code></pre>
+
+<p>ok～我們的 domain object 準備好的，不需要額外的設定… 簡單吧！詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
+
+<h2>view</h2>
+
+<p>在 view 的撰寫上，基本上與原文中一樣，這邊對重點的部份進行說明</p>
+
+<p>``` groovy
+  ...
+  &lt;%-- in the head section --%>
+  &lt;%-- 下面會將剛剛在 ApplicationResourses 所定義需要載入的 tagit 相關 js、css 載入 --%>
+  &lt;r:use modules="tagit"/>
+  ...
+  &lt;%-- in the form section --%>
+  <fieldset class="form"></p>
+
+<pre><code>&lt;r:script&gt;
+  $(function() {
+    /*將${g.createLink(action: 'tags')}：產生 postController action 為 tags 的連結
+    * 透過設定 jquery tagit 的 tagSource 的網址，一旦當你輸入 tag name
+    * 將會透過 ajax 的方式比對輸入的資料與資料庫中的 tag 來當做 auto-completion
+    * 的資料來源  
+    */
+    $("ul[name='tags']").tagit({select:true, tagSource: "${g.createLink(action: 'tags')}"});
+  });
+&lt;/r:script&gt;
+
+&lt;h3&gt;Tags&lt;/h3&gt;
+&lt;div class="fieldcontain"&gt;
+  &lt;ul name="tags"&gt;
+     &lt;%-- 透過 ${post.tags} 取得 tags 的資料 --%&gt;
+    &lt;g:each in="${post.tags}"&gt;
+      &lt;li&gt;${it}&lt;/li&gt;
+    &lt;/g:each&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>  </fieldset>
+```</p>
+
+<p>view 的部分這樣就算完成啦，跟前面比起來稍微複雜一點，但還是挺簡單的，接著我們就需要定義 controller 的部份。</p>
+
+<h2>controller</h2>
+
+<p>首先我們先把 tag 的 auto-completion 實作完成，我們需要先將相關的套件載入</p>
+
+<p>  import org.grails.taggable.Tag
+  import grails.converters.JSON</p>
+
+<p>接著我們就可以新增 controller 中的 action</p>
+
+<p>  def tags = {</p>
+
+<pre><code>  render Tag.findAllByNameIlike("${params.term}%").name as JSON
+</code></pre>
+
+<p>  }</p>
+
+<p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
+
+<p>  render ... as JSON</p>
+
+<p>指的是將查出來的結果轉為 JSON，接著看下面：</p>
+
+<p>  Tag.findAllByNameIlike("${params.term}%")</p>
+
+<p>根據 <a href="http://grails.org/doc/latest/guide/GORM.html#domainClasses">grails domainClasses API</a> 的說明，提到：</p>
+
+<blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
+
+<p>也就是區別大小寫，找出所有的 Name like "${params.term}%"，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，實際回傳的資料如下，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
+
+<p>  ["test1","test2"]</p>
+
+<p>如此一來在輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
+
+<p>很棒吧！假設 tag 輸入完畢了，我們必須把 tag 的資料寫入資料庫我們定義 action 為 update，相關程式碼如下：</p>
+
+<p>``` groovy
+  def update(Long id) {</p>
+
+<pre><code>def post = Post.get(id)
+post.properties = params
+post.tags = params.tags // 為了儲存 tags 只要新增這行
+post.save(flush: true)
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>完成了！簡單幾個步驟就完成 taggable 的實作，包括漂亮的介面，方便的輸入，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
+]]></content>
+  </entry>
+  
+</feed>

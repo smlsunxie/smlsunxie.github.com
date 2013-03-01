@@ -310,6 +310,181 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/12/07/ireport-use-qrcode/">Ireport Use Qrcode</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>其實這篇才是最後的目的，讓我們回顧一下系列文章：</p>
+
+<ul>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a></p>
+
+<p>  利用gradle 快速開發java，並且包成jar，所要做的就是下一篇文章scriptlet 會用到的jar</p></li>
+<li><p><a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a></p>
+
+<p>  說明如何引入自己寫的class在ireport可以使用</p></li>
+</ul>
+
+
+<p>最後所有做的就是</p>
+
+<h2>ireport 產生 QRCode</h2>
+
+<p>So，之前兩篇文章把一些細節都說明過了，就直接進入重點吧！</p>
+
+<p>參考這篇文章</p>
+
+<p><a href="http://stackoverflow.com/questions/7626013/google-zxing-barcode-generator-in-ireport">google-zxing-barcode-generator-in-ireport</a></p>
+
+<p>把第二篇的javacode改寫後，程式碼如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.BarcodeFormat</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.WriterException</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.common.BitMatrix</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.qrcode.QRCodeWriter</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.zxing.client.j2se.MatrixToImageWriter</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">QRCodeScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">QRCodeWriter</span> <span class="n">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QRCodeWriter</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">BitMatrix</span> <span class="n">matrix</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">matrix</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">(),</span> <span class="n">BarcodeFormat</span><span class="o">.</span><span class="na">QR_CODE</span><span class="o">,</span> <span class="mi">256</span><span class="o">,</span> <span class="mi">256</span><span class="o">);</span>
+</span><span class='line'>            <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;BarCodeImage&quot;</span><span class="o">,</span> <span class="n">MatrixToImageWriter</span><span class="o">.</span><span class="na">toBufferedImage</span><span class="o">(</span><span class="n">matrix</span><span class="o">)</span> <span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">WriterException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不多說了，重點如下：</p>
+
+<ul>
+<li>需要用的套件與版本，請參考 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">Agile Java With Gradle: 使用 Gradle 快速開發 Java</a> 的gradle.build，其中 <code>com.google.zxing</code> 主要是要用來產生QRcode</li>
+<li>將你要轉換成QRcode 的文字傳入，此範例用的是 Field ORDERID</li>
+<li>同樣將處理結果塞到 ireport的 Variable，此範例命名為 BarCodeImage</li>
+<li>在此 Variable 的型別為 BufferedImage</li>
+</ul>
+
+
+<p>回到ireport，我們同樣要進行 <a href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a> 中，ireport的設定，其中不一樣的是：</p>
+
+<ul>
+<li>Variable 的 type 要改成 java.awt.image.BufferedImage</li>
+<li>然後原本用的是text field 改成用 Image</li>
+<li>Image的type 改成 java.awt.Image</li>
+</ul>
+
+
+<p>上面都處理好，就可以來看結果了</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XWqDIn7kLFs/UMFcwQZq9MI/AAAAAAAALXg/PTyLE0dmsLk/s640/ireport%2520qrcode.jpg" alt="qrcode" /></p>
+
+<p>DONE!!如果有此需求，趕快動手做做看囉～</p>
+
+<h3>請搭配我的github project 服用～</h3>
+
+<blockquote><p><a href="https://github.com/smlsunxie/ireport-qrcode">ireport-qrcode github</a></p></blockquote>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-12-07T10:41:00+08:00" pubdate data-updated="true">Dec 7<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/07/ireport-use-qrcode/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/07/ireport-use-qrcode/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/12/06/ireport-use-scriptlet/">Ireport Use Scriptlet</a>
 
 </h1>
@@ -1703,111 +1878,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/">Ireport系列-安裝篇</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h1>ireport下載</h1>
-
-<p><a href="http://sourceforge.net/projects/ireport/files/iReport/">ireport 下載網址</a></p>
-
-<p>文章撰寫時，最新版本為 iReport-4.8.0</p>
-
-<p>for ubuntu 請下載 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz/download">iReport-4.8.0.tar.gz</a></p>
-
-<h1>ireport指令安裝</h1>
-
-<ul>
-<li><p>安裝java</p>
-
-<pre><code>  sudo apt-get install openjdk-7-jdk
-</code></pre></li>
-<li><p>下載ireport</p>
-
-<pre><code>  wget http://downloads.sourceforge.net/project/ireport/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz
-</code></pre></li>
-<li><p>解壓縮</p>
-
-<pre><code>  tar zxvf iReport-4.8.0.tar.gz
-</code></pre></li>
-<li><p>執行ireport</p>
-
-<pre><code>  sh ~/iReport-4.8.0/bin/./ireport
-</code></pre></li>
-</ul>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-11-12T21:52:00+08:00" pubdate data-updated="true">Nov 12<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1885,6 +1955,10 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美搭配</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/02/28/study-coding/">學 web 開發以及 sql 語法的好地方</a>
       </li>
     
@@ -1898,10 +1972,6 @@
     
       <li>
         <a href="/blog/2013/02/22/mysql5-tomcat7-install/">mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/21/grails-play/">程式東西軍： grails & play!</a>
       </li>
     
   </ul>

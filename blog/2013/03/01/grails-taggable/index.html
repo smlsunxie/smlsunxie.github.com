@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>grails taggable plugin 搭配 jquery tagit 的完美搭配 - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  <meta name="description" content="說明如何在 grails 下使用 taggable plugin 搭配 jquery tagit 完成類似 blog 標籤的功能，透過簡單幾個步驟，快速完成相關的實作！享受 grails 開發 java 的樂趣～">
+  
+  <meta name="keywords" content="java, grails, jquery, plugin, taggable, tagit">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2013/03/01/grails-taggable/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+<hr>
+
+<div class="row">
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+<hr>
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+Grails Taggable Plugin 搭配 Jquery Tagit 的完美搭配
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>引言：<a href="http://blog.lyhdev.com/2013/01/grails-22.html">快速瀏覽 Grails 2.2 新功能</a></p>
+
+<blockquote><p>Grails 是受到 Ruby on Rails (RoR) 啟發的 Java EE 開發框架，它利用 Java 世界的 Groovy Scripting 語言實現與 Rails MVC 架構相似的開發工具；因為基於 Java 豐富的企業元件基礎，可以同時獲得敏捷的開發效率，並且和既有的 Java 程式保持相容。</p></blockquote>
+
+<p>最近開始想要幫家裡開發一個資訊發佈平台，因為我本身習慣開發 java，這陣子經由 <a href="http://blog.lyhdev.com/">lyhcode</a> 的介紹開始使用 Grails，發現他真的是一個充滿驚奇的 framework，一開始可能會因為他的 <strong>精簡</strong> 讓你感到困惑，原本可能需要的步驟被省略後反而無法理解… 但一旦深入了解並且了解其習性後，才發現原來開發 java 也可以這麼快速！</p>
+
+<p>一旦使用 Grails 後，你就不想用原始的 java 開發程式，正所謂回不去了… 除了骨子裡是 java，外在的部分基本上已經完全不一樣了，是說變帥了嘛？（誤）</p>
+
+<p>回到正題，在一般 blog 的網站，很常用到的 tag (標籤)在實作上… 說實在的細節實在很多，我也不知道該怎麼實作… 在完全不知道怎麼實作光構思就可能花上一天，在加上開發運氣好的話或許 3 天解決，但今天我所要介紹的，只花你 1 小時，就完成 taggable 的實作！！很難想像嘛？就讓我們繼續看下去。</p>
+
+<p>此範例參考下列網站：<a href="http://blog.armbruster-it.de/2011/04/a-perfect-team-grails-taggable-plugin-and-jquery-tagit/">Grails Taggable plugin and JQuery Tagit</a>，在這個範例中用的 grails 版本：1.4；jquery-tagit 版本：1.5。</p>
+
+<p>而本文章撰寫時所使用的 grails 版本：2.2；jquery-tagit 版本：2.0。雖然版本不一樣但步驟上大致相同，首先我們必須安裝 taggable plugin。</p>
+
+<h1>taggable &amp; jquery-ui plugin install</h1>
+
+<p>在新版 2.2 grails 中已不建議使用 plugin install，根據官方的建議我們只要在 BuildConfig.groovy 新增下列：</p>
+
+<pre><code>compile ':spring-security-ui:latest.release'
+compile ":taggable:1.0.1"
+</code></pre>
+
+<p>一旦進入 grails 運行環境時將會自動安裝 plugin，就是這麼簡單，而 resources plugin 在 2.2 版已內建，所以不需要安裝，接著我們來處理…</p>
+
+<h1>jquery tagit install</h1>
+
+<p>下載 <a href="http://aehlke.github.com/tag-it/">jquery tagit</a></p>
+
+<p>解壓縮後將檔案放置於：</p>
+
+<ul>
+<li>jquery.tagit.css: &#8216;web-app/tagit/css/jquery.tagit.css&#8217;</li>
+<li>tagit.ui-zendesk.css: &#8216;web-app/tagit/css/tagit.ui-zendesk.css&#8217;</li>
+<li>tag-it.js: &#8216;web-app/tagit/js/tag-it.js&#8217;</li>
+</ul>
+
+
+<p>接著需要定義 ApplicationResourses.goovy</p>
+
+<pre><code>tagit {
+    dependsOn 'jquery-ui'
+    resource url: 'tagit/css/jquery.tagit.css'
+    resource url: 'tagit/css/tagit.ui-zendesk.css'
+    resource url: 'tagit/js/tag-it.js'
+}
+</code></pre>
+
+<p> 如此一來，基本環境與需要的套件都已經 ready 了，就讓我們開始實作 taggable 功能，就先從定義…</p>
+
+<h2>domain object</h2>
+
+<p>在 grails 中所謂的 domain object 就是所謂的資料表物件，定義資料結構的地方，假設我們是要開發自己的 blog 平台，那每一篇文章在資料庫中我們就可以定義 table 為 post，相關程式碼如下：</p>
+
+<pre><code>package sample
+
+class Post {
+    String title
+    String content
+}
+</code></pre>
+
+<p>我們所要做的就是將 <code>org.grails.taggable.Taggable</code> import 進去，並且實作 Taggable</p>
+
+<pre><code>package sample
+import org.grails.taggable.Taggable
+
+class Post implements Taggable {
+    String title
+    String content
+}
+</code></pre>
+
+<p>ok～我們的 domain object 準備好的，不需要額外的設定… 簡單吧！詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
+
+<h2>view</h2>
+
+<p>在 view 的撰寫上，基本上與原文中一樣，這邊對重點的部份進行說明</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="o">...</span>
+</span><span class='line'>  <span class="o">&lt;%--</span> <span class="k">in</span> <span class="n">the</span> <span class="n">head</span> <span class="n">section</span> <span class="o">--%&gt;</span>
+</span><span class='line'>  <span class="o">&lt;%--</span> <span class="err">下面會將剛剛在</span> <span class="n">ApplicationResourses</span> <span class="err">所定義需要載入的</span> <span class="n">tagit</span> <span class="err">相關</span> <span class="n">js</span><span class="err">、</span><span class="n">css</span> <span class="err">載入</span> <span class="o">--%&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nl">r:</span><span class="n">use</span> <span class="n">modules</span><span class="o">=</span><span class="s2">&quot;tagit&quot;</span><span class="s">/&gt;</span>
+</span><span class='line'><span class="s">  ...</span>
+</span><span class='line'><span class="s">  &lt;%-- in the form section --%&gt;</span>
+</span><span class='line'><span class="s">  &lt;fieldset class=&quot;form&quot;&gt;</span>
+</span><span class='line'><span class="s">    &lt;r:script&gt;</span>
+</span><span class='line'><span class="s">      $(function() {</span>
+</span><span class='line'><span class="s">        /</span><span class="o">*</span><span class="err">將</span><span class="n">$</span><span class="o">{</span><span class="n">g</span><span class="o">.</span><span class="na">createLink</span><span class="o">(</span><span class="nl">action:</span> <span class="s1">&#39;tags&#39;</span><span class="o">)}</span><span class="err">：產生</span> <span class="n">postController</span> <span class="n">action</span> <span class="err">為</span> <span class="n">tags</span> <span class="err">的連結</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">透過設定</span> <span class="n">jquery</span> <span class="n">tagit</span> <span class="err">的</span> <span class="n">tagSource</span> <span class="err">的網址，一旦當你輸入</span> <span class="n">tag</span> <span class="n">name</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">將會透過</span> <span class="n">ajax</span> <span class="err">的方式比對輸入的資料與資料庫中的</span> <span class="n">tag</span> <span class="err">來當做</span> <span class="n">auto</span><span class="o">-</span><span class="n">completion</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">的資料來源</span>
+</span><span class='line'>        <span class="o">*</span><span class="s">/</span>
+</span><span class='line'><span class="s">        $(&quot;ul[name=&#39;tags&#39;]&quot;).tagit({select:true, tagSource: &quot;${g.createLink(action: &#39;tags&#39;)}&quot;});</span>
+</span><span class='line'><span class="s">      });</span>
+</span><span class='line'><span class="s">    &lt;/</span><span class="nl">r:</span><span class="n">script</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Tags</span><span class="o">&lt;</span><span class="s">/h3&gt;</span>
+</span><span class='line'><span class="s">    &lt;div class=&quot;fieldcontain&quot;&gt;</span>
+</span><span class='line'><span class="s">      &lt;ul name=&quot;tags&quot;&gt;</span>
+</span><span class='line'><span class="s">         &lt;%-- 透過 ${post.tags} 取得 tags 的資料 --%&gt;</span>
+</span><span class='line'><span class="s">        &lt;g:each in=&quot;${post.tags}&quot;&gt;</span>
+</span><span class='line'><span class="s">          &lt;li&gt;${it}&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="o">&lt;</span><span class="s">/g:each&gt;</span>
+</span><span class='line'><span class="s">      &lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="s">/div&gt;</span>
+</span><span class='line'><span class="s">  &lt;/</span><span class="n">fieldset</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>view 的部分這樣就算完成啦，跟前面比起來稍微複雜一點，但還是挺簡單的，接著我們就需要定義 controller 的部份。</p>
+
+<h2>controller</h2>
+
+<p>首先我們先把 tag 的 auto-completion 實作完成，我們需要先將相關的套件載入</p>
+
+<p>  import org.grails.taggable.Tag
+  import grails.converters.JSON</p>
+
+<p>接著我們就可以新增 controller 中的 action</p>
+
+<p>  def tags = {</p>
+
+<pre><code>  render Tag.findAllByNameIlike("${params.term}%").name as JSON
+</code></pre>
+
+<p>  }</p>
+
+<p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
+
+<p>  render &#8230; as JSON</p>
+
+<p>指的是將查出來的結果轉為 JSON，接著看下面：</p>
+
+<p>  Tag.findAllByNameIlike(&#8220;${params.term}%&#8221;)</p>
+
+<p>根據 <a href="http://grails.org/doc/latest/guide/GORM.html#domainClasses">grails domainClasses API</a> 的說明，提到：</p>
+
+<blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
+
+<p>也就是區別大小寫，找出所有的 Name like &#8220;${params.term}%&#8221;，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，實際回傳的資料如下，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
+
+<p>  [&#8220;test1&#8221;,&#8221;test2&#8221;]</p>
+
+<p>如此一來在輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
+
+<p>很棒吧！假設 tag 輸入完畢了，我們必須把 tag 的資料寫入資料庫我們定義 action 為 update，相關程式碼如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="kt">def</span> <span class="nf">update</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">properties</span> <span class="o">=</span> <span class="n">params</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">tags</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="na">tags</span> <span class="c1">// 為了儲存 tags 只要新增這行</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>完成了！簡單幾個步驟就完成 taggable 的實作，包括漂亮的介面，方便的輸入，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-03-01T18:34:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/grails/'>grails</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>, <a class='category' href='/blog/categories/plugin/'>plugin</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/03/01/grails-taggable/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/03/01/grails-taggable/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/02/28/study-coding/" title="Previous Post: 學 web 開發以及 sql 語法的好地方"><li>&laquo; 學 web 開發以及 sql 語法的好地方</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+  <div class="span12">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美搭配</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/28/study-coding/">學 web 開發以及 sql 語法的好地方</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">ubuntu 中安装 apache ab 進行壓力測試</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/02/22/mysql5-tomcat7-install/">mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/03/01/grails-taggable/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/03/01/grails-taggable/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2013 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/03/01/grails-taggable/';
+        var disqus_url = 'http://smlsun.com/blog/2013/03/01/grails-taggable/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>
