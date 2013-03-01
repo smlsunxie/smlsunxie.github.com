@@ -4,7 +4,7 @@
   <title><![CDATA[Category: grails | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/grails/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-03-01T21:10:30+08:00</updated>
+  <updated>2013-03-01T21:11:01+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -184,7 +184,7 @@ post.save(flush: true)
 <p>  }
 ```</p>
 
-<p>就這樣完成 taggable 的開發，包括漂亮的介面，方便的輸入，資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
+<p>就這樣完成 taggable 的開發，包括漂亮的介面、方便的輸入以及資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
 ]]></content>
   </entry>
   
