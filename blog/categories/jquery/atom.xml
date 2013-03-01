@@ -4,7 +4,7 @@
   <title><![CDATA[Category: jquery | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/jquery/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-03-01T21:01:40+08:00</updated>
+  <updated>2013-03-01T21:10:30+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美搭配]]></title>
+    <title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美組合]]></title>
     <link href="http://smlsun.com/blog/2013/03/01/grails-taggable/"/>
     <updated>2013-03-01T18:34:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/03/01/grails-taggable</id>
@@ -90,7 +90,7 @@ class Post implements Taggable {
 }
 </code></pre>
 
-<p>ok～我們的 domain object 準備好的，不需要額外的設定… 簡單吧！詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
+<p>ok～我們的 domain object 準備好的，不需要額外的設定，而且完整的程式碼就是這樣而已，其他勒？沒有了… 詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
 
 <h2>view</h2>
 
@@ -141,12 +141,14 @@ class Post implements Taggable {
 
 <p>接著我們就可以新增 controller 中的 action</p>
 
-<p>  def tags = {</p>
+<p>``` groovy
+  def tags = {</p>
 
-<pre><code>  render Tag.findAllByNameIlike("${params.term}%").name as JSON
+<pre><code>render Tag.findAllByNameIlike("${params.term}%").name as JSON
 </code></pre>
 
-<p>  }</p>
+<p>  }
+```</p>
 
 <p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
 
@@ -160,11 +162,11 @@ class Post implements Taggable {
 
 <blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
 
-<p>也就是區別大小寫，找出所有的 Name like "${params.term}%"，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，實際回傳的資料如下，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
+<p>也就是區別大小寫，找出所有的 Name like "${params.term}%"，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
 
 <p>  ["test1","test2"]</p>
 
-<p>如此一來在輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
+<p>如此一來在 web 網頁輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
 
 <p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
 
@@ -182,7 +184,7 @@ post.save(flush: true)
 <p>  }
 ```</p>
 
-<p>完成了！簡單幾個步驟就完成 taggable 的實作，包括漂亮的介面，方便的輸入，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
+<p>就這樣完成 taggable 的開發，包括漂亮的介面，方便的輸入，資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
 ]]></content>
   </entry>
   
