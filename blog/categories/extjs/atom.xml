@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-03-21T11:41:46+08:00</updated>
+  <updated>2013-03-21T11:46:47+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -37,7 +37,7 @@
 
 <p>每個ExtJS 4的應用都從一個 Application 開始，這個實例包含應用的全域配置（例如應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>Ext.Loader.setConfig({
     enabled: true,
@@ -73,7 +73,7 @@ Ext.application({
 
 <p>定義來源資料的 mapping 以及資料型態</p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>// app/model/MN/MNM001/MenuGroup.js
 Ext.define('Frontend.model.MN.MNM001.MenuGroup', {
@@ -93,7 +93,7 @@ Ext.define('Frontend.model.MN.MNM001.MenuGroup', {
 
 <p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>// app.store.MN.MNM001.Store.js
 Ext.define('Frontend.store.MN.MNM001.Store' ,{
@@ -135,7 +135,7 @@ Ext.define('Frontend.store.MN.MNM001.Store' ,{
 
 <h3>parent Controller</h3>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>/**
  * std Controller
@@ -201,7 +201,7 @@ Ext.define('Frontend.controller.common.Standard', {
 
 <p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>// app.controller.MN.MNM001.js
 /**
@@ -276,7 +276,7 @@ Ext.define('Frontend.controller.MN.MNM001', {
 
 <p>使用的第一個 store <code>US.USM002.Store</code></p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>Ext.define('Frontend.view.MN.MNM001.Combobox', {
     extend: 'Ext.form.ComboBox',
@@ -296,7 +296,7 @@ Ext.define('Frontend.controller.MN.MNM001', {
 
 <p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
 
-<p>```  javascript</p>
+<p>```javascript</p>
 
 <pre><code>Ext.define('Frontend.view.MN.MNM001.Panel' ,{
     extend: 'Frontend.view.common.gridpanel.standard',

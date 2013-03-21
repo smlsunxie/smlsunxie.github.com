@@ -310,6 +310,221 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/18/extjs-dom-element-component/">Extjs: DOM、Element 以及 Component 的差別</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>資料來源：</p>
+
+<ul>
+<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
+</ul>
+
+
+<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
+
+<p>而在 extjs 中就有個專門用來處理 DOM 的類別 &#8230;</p>
+
+<h2>Ext.DomHelper</h2>
+
+<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
+
+<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
+
+<pre><code>var dh = Ext.DomHelper; // create shorthand alias
+// specification object
+var spec = {
+    id: 'my-ul',
+    tag: 'ul',
+    cls: 'my-list',
+    // append children after creating
+    children: [     // may also specify 'cn' instead of 'children'
+        {tag: 'li', id: 'item0', html: 'List Item 0'},
+        {tag: 'li', id: 'item1', html: 'List Item 1'},
+        {tag: 'li', id: 'item2', html: 'List Item 2'}
+    ]
+};
+var list = dh.append(
+    'my-div', // the context element 'my-div' can either be the id or the actual node
+    spec      // the specification object
+);
+</code></pre>
+
+<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
+
+<ul>
+<li>append</li>
+<li>insertBefore</li>
+<li>insertAfter</li>
+<li>overwrite</li>
+<li>createTemplate</li>
+<li>insertHtml</li>
+</ul>
+
+
+<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
+
+<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
+
+<pre><code>// gets dom node based on id
+var elDom = Ext.getDom('elId');
+// gets dom node based on the dom node
+var elDom1 = Ext.getDom(elDom);
+
+// If we don't know if we are working with an
+// Ext.Element or a dom node use Ext.getDom
+function(el){
+    var dom = Ext.getDom(el);
+    // do something with the dom node
+}
+</code></pre>
+
+<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 &#8230;</p>
+
+<h2>Ext.Element</h2>
+
+<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
+
+<pre><code>// by id
+var el = Ext.get("my-div");
+
+// by DOM element reference
+var el = Ext.get(myDivElement);
+</code></pre>
+
+<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
+
+<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
+
+<pre><code>var el = Ext.get("my-div");
+
+// no animation
+el.setWidth(100);
+</code></pre>
+
+<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
+
+<pre><code>// default animation
+el.setWidth(100, true);
+</code></pre>
+
+<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
+
+<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
+
+<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
+
+<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
+
+<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
+
+<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 &#8230;</p>
+
+<h2>Ext.Component</h2>
+
+<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
+
+<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
+
+<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
+
+<p>而下面範例說明實際上的使用狀況：</p>
+
+<pre><code>var view=new Ext.Viewport();                
+//建立了一個組件 Component 
+view.el.setOpacity(.5);                     
+//呼叫 Element 的 setOpacity 方法
+view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
+</code></pre>
+
+<p>以及如何分別取得 dom、element 以及 component</p>
+
+<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
+win .show(); 
+var c=Ext.getCmp("win1");           //得到 win 
+var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
+var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
+</code></pre>
+
+<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>
+
+<h2>深入 extjs</h2>
+
+<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，需要 extend extjs 的元件作為自定義的元件時，如何實作有時就要從原始碼找答案。</p>
+
+<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器 Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是蠻重要的。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T12:32:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-dom-element-component/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-dom-element-component/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/17/javascript-memory-leaks/">Javascript: Memory Leaks 的情況以及如何解決與偵測</a>
 
 </h1>
@@ -2378,394 +2593,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance & Tip</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>介紹幾篇關於效能的文章：</p>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-<li><a href="http://bonsaiden.github.com/JavaScript-Garden/zh/">JavaScript秘密花園</a></li>
-<li><a href="http://dev.opera.com/articles/view/efficient-javascript/">Efficient JavaScript</a></li>
-<li><a href="http://www.woiweb.net/efficient-javascript.html">Efficient JavaScript 中文</a></li>
-</ul>
-
-
-<p>節錄幾個重要的觀念：</p>
-
-<h2>1. 了解變數 scope 以及初始化</h2>
-
-<p>可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p>
-
-<h2>2. 避免寫與 HTML 混在一起(inline)的 JavaScript</h2>
-
-<ul>
-<li><p>錯誤示範：</p>
-
-<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
-</code></pre>
-
-<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
-<li><p>正確：</p>
-
-<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
-
-  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
-  initializePage();
-      // pretend that these functions are in /s/init.js
-      function initializePage() {
-          document.getElementById("my_btn")
-              .addEventListener("click", doThis);
-      }
-      function doThis(e) {
-          // do cool stuff here
-      }
-  // ]]&gt;&lt;/script&gt;
-</code></pre></li>
-</ul>
-
-
-<p>另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p>
-
-<h2>3. 找到對的 Event 去做 binding</h2>
-
-<p>比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p>
-
-<h2>4. 使用快速的 selectors</h2>
-
-<p>如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
-
-<p>如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p>
-
-<h2>5. 非必要的時候不要去動 document</h2>
-
-<p>這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
-
-<p>盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
-
-<p>如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p>
-
-<h2>6. 等值檢查與真值</h2>
-
-<p>JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
-
-<ul>
-<li>“5″ == 5 but “5″ !== 5</li>
-<li>0 == false but 0 !== false</li>
-<li>null == undefined but null !== undefined</li>
-</ul>
-
-
-<p>換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p>
-
-<h2>7. 資料存取方式</h2>
-
-<p>有四種存取資料的方式分別是：</p>
-
-<ul>
-<li>數值或字串  (literal value)</li>
-<li>變數</li>
-<li>物件屬性</li>
-<li>陣列</li>
-</ul>
-
-
-<p>在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
-
-<p>物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
-
-<p>在資料存取的建議是：</p>
-
-<ul>
-<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
-<li>盡量減低物件或是陣列存取的深度。</li>
-</ul>
-
-
-<h2>8. 迴圈</h2>
-
-<p>不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p>
-
-<h2>9. DOM</h2>
-
-<p>在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
-
-<p>透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
-
-<p>關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
-
-<p>關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
-
-<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote>
-
-<h2>10. 避免使用 eval 或 Function 構造函數</h2>
-
-<h3>為什麼不要使用eval</h3>
-
-<p>每次eval或Function構造函數作用於字符串表示的源代碼時，腳本引擎都需要將源代碼轉換成可執行代碼。這是很消耗資源的操作——通常比簡單的函數調用慢100倍以上。</p>
-
-<p>eval函數效率特別低，由於事先無法知曉傳給eval的字符串中的內容，eval在其上下文中解釋要處理的代碼，也就是說編譯器無法優化上下文，因此只能有瀏覽器在運行時解釋代碼。這對性能影響很大。</p>
-
-<h3>重寫eval</h3>
-
-<p>eval不僅效率低下，而且絕大部分情況下完全沒有使用的必要。很多情況下使用eval是因為信息以字符串形式提供，開發者誤認為只有eval能使用此信息。下例是一個典型的錯誤：</p>
-
-<p>function getProperty(oString) {
-  var oReference;
-  eval(&#8216;oReference = test.prop.&#8217;+oString);
-  return oReference;
-}</p>
-
-<p>下面的代碼執行完全相同的函數，但沒有使用eval：</p>
-
-<p>function getProperty(oString) {
-  return test.prop[oString];
-}</p>
-
-<h3>Function</h3>
-
-<p>用 Function 類直接創建函數的語法如下：</p>
-
-<pre><code>var function_name = new function(arg1, arg2, ..., argN, function_body)
-
-var doAdd = new Function("iNum", "alert(iNum + 10)"); 
-</code></pre>
-
-<p>可以看到其定義的方式與 eval 很像，因此也有類似 eval 的問題，只是 Function 構造函數比 eval 略好，因為使用此代碼不會影響周圍代碼；但其速度仍很慢。</p>
-
-<h3>偽裝的eval</h3>
-
-<p>定時函數 setTimeout和setInterval都可以接受字符串作為它們的第一個參數。這個字符串總是在全局作用域中執行，這個特性絕對不要使用，因為它在內部使用了eval。</p>
-
-<p>function foo ()  {</p>
-
-<pre><code>//將會被調用
-</code></pre>
-
-<p>}</p>
-
-<p>function bar ()  {</p>
-
-<pre><code>function foo ()  { 
-    //不會被調用
-} 
-setTimeout ( 'foo()' ,  1000 ); 
-</code></pre>
-
-<p>}
-bar ();</p>
-
-<p>由於eval在這種情況下不是被直接調用，因此傳遞到setTimeout的字符串會自全局作用域中執行；因此，上面的回調函數使用的不是定義在bar作用域中的局部變量foo。</p>
-
-<p>建議不要在調用定時器函數時，為了向回調函數傳遞參數而使用字符串的形式，這麼寫的代碼明顯質量很差。</p>
-
-<pre><code>function foo ( a , b , c )  {} 
-
-//不要這樣做
-setTimeout ( 'foo(1,2, 3)' ,  1000 ) 
-
-//可以使用匿名函數完成相同功能
-setTimeout ( function ()  { 
-    foo ( a , b , c ); 
-},  1000 )
-</code></pre>
-
-<p>當需要向回調函數傳遞參數時，可以創建一個匿名函數，如上例，在函數內執行真實的回調函數，如此一來可避免使用 eval。</p>
-
-<h3>安全問題</h3>
-
-<p>eval 也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
-
-<h3>結論</h3>
-
-<p>在任何情況下我們都應該避免使用eval函數。99.9%使用eval的場景都有不使用 eval的解決方案，任何使用它的代碼都會在它的工作方式，性能和安全性方面受到質疑。如果一些情況 ​​必須使用到eval才能正常工作，首先它的設計會受到質疑，這不應該是首選的解決方案，一個更好的不使用eval的解決方案應該得到充分考慮並優先採用。</p>
-
-<p>在Opera 9, Firefox, 和Internet Explorer 中後者比前者快95%，在Safari 中快85%。(注意此比較中不含函數本身調用時間。)</p>
-
-<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval 進行轉換，應該避免使用</p>
-
-<p>建議可使用下列 js lib: <a href="https://github.com/douglascrockford/JSON-js">JSON-js</a></p>
-
-<h2>11. 自動分號插入</h2>
-
-<p>儘管JavaScript有C的代碼風格，但是它不強制要求在代碼中使用分號，實際上可以省略它們。</p>
-
-<p>JavaScript不是一個沒有分號的語言，恰恰相反上它需要分號來就解析源代碼。因此JavaScript解析器在遇到由於缺少分號導致的解析錯誤時，會自動在源代碼中插入分號。</p>
-
-<p>自動的分號插入被認為是JavaScript語言最大的設計缺陷之一，因為它能改變代碼的行為。</p>
-
-<h3>運作原理</h3>
-
-<p>下面的代碼沒有分號，因此解析器需要自己判斷需要在哪些地方插入分號。</p>
-
-<pre><code>( function ( window ,  undefined )  { 
-    function test ( options )  { 
-        log ( 'testing!' ) 
-
-        ( options . list ||  []). forEach ( function ( i )  { 
-
-        }) 
-
-        options . value . test ( 
-            'long string to pass here' , 
-            'and another long string to pass' 
-        ) 
-
-        return 
-        { 
-            foo :  function ()  {} 
-        } 
-    } 
-    window . test = test 
-
-})( window ) 
-
-( function ( window )  { 
-    window . someLibrary =  {} 
-})( window )
-</code></pre>
-
-<p>下面是解析器&#8221;猜測&#8221;的結果。</p>
-
-<pre><code>( function ( window ,  undefined )  { 
-    function test ( options )  { 
-
-        //沒有插入分號，兩行被合併為一行
-        log ( 'testing!' )( options . list ||  []). forEach ( function ( i )  { 
-
-        });  // &lt;-插入分號
-
-        options . value . test ( 
-            'long string to pass here' , 
-            'and another long string to pass' 
-        );  // &lt;-插入分號
-
-        return ;  // &lt;-插入分號,改變了return表達式的行為
-        {  //作為一個代碼段處理
-            foo :  function ()  {}  
-        };  // &lt;-插入分號
-    } 
-    window . test = test ;  // &lt;-插入分號
-
-//兩行又被合併了
-})( window )( function ( window )  { 
-    window . someLibrary =  {};  // &lt;-插入分號
-})( window );  //&lt;-插入分號
-</code></pre>
-
-<p>建議絕對不要省略分號，同時也提倡將花括號和相應的表達式放在一行，對於只有一行代碼的if或者else表達式，也不應該省略花括號。這些良好的編程習慣不僅可以提到代碼的一致性，而且可以防止解析器改變代碼行為的錯誤處理，雖然 javascript 沒有強制檢查，但好的習慣可以避免不必要的麻煩。</p>
-
-<h2>12. 不要在影響性能的關鍵函數中使用try-catch-finally</h2>
-
-<p>try-catch-finally 結構比較特殊。和其他語法結構不同，它在 runtime 的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的 exception 對象賦給一個變量。這個變量不屬於任何腳本。它在 catch 語句開始時被創建，在結束時被銷毀。</p>
-
-<p>由於此函數比較特殊，且是在運行時動態創建動態銷毀，有些瀏覽器對其的處理並不高效。把catch 語句放在關鍵循環中將極大影響性能。</p>
-
-<p>如果可能，應在腳本中不頻繁被調用的地方進行異常處理，或通過檢查某種動作是否被支持來避免使用。下面的例子中，如果所需的屬性不存在，將在循環語句中拋出許多異常：</p>
-
-<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
-for( i = 0; i &lt; oProperties.length; i++ ) {
-  try {
-    test[oProperties[i]].someproperty = somevalue;
-  } catch(e) {
-    ...
-  }
-}
-</code></pre>
-
-<p>很多情況下，可把 try-catch-finally 結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
-有時可用屬性檢測或其他檢測代替 try-catch-finally 結構：</p>
-
-<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
-try {
-  for( i = 0; i &lt; oProperties.length; i++ ) {
-    test[oProperties[i]].someproperty = somevalue;
-  }
-} catch(e) {
-  ...
-}
-</code></pre>
-
-<h2>13. location.replace()控制歷史項</h2>
-
-<p>有時需要通過腳本修改頁面地址。常見的方法是給location.href賦新地址。這將和打開新鏈接一樣添加新歷史項、載入新頁面。
-有時不想添加新歷史項，因為用戶不需要回到前面的頁面。這在內存資源有限的設備中很有用。通過替換歷史項恢復當前頁面所使用的內存。可以通過location.replace()方法實現。</p>
-
-<p>注意頁面仍被保存在cache 中，仍佔用內存，但比保存在歷史中要少的多。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2843,6 +2670,10 @@ try {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/03/21/extjs4-mvc/">extjs4: mvc 使用簡介與範例介紹</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美組合</a>
       </li>
     
@@ -2856,10 +2687,6 @@ try {
     
       <li>
         <a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">ubuntu 中安装 apache ab 進行壓力測試</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/22/mysql5-tomcat7-install/">mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin</a>
       </li>
     
   </ul>
