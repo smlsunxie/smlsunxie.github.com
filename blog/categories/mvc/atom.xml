@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mvc | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/mvc/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-03-21T11:41:46+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[extjs4: mvc 使用簡介與範例介紹]]></title>
+    <link href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/"/>
+    <updated>2013-03-21T08:42:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/03/21/extjs4-mvc</id>
+    <content type="html"><![CDATA[<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
+
+<p>引用上述文章的開頭：</p>
+
+<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類MVC的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種MVC架構，基本大同小異，ExtJS 4的定義如下：</p>
+
+<ul>
+<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
+<li>View: 用於界面展示– grid, tree, panel都是view</li>
+<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
+</ul>
+</blockquote>
+
+<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
+
+<h2>Application</h2>
+
+<p>每個ExtJS 4的應用都從一個 Application 開始，這個實例包含應用的全域配置（例如應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
+
+<p>```  javascript</p>
+
+<pre><code>Ext.Loader.setConfig({
+    enabled: true,
+    //disableCaching: true //強制關閉 cache
+});
+
+Ext.application({
+    name: 'Frontend',   //app folder 別名為 Frontend
+    appFolder: 'app',   //檔案 root 存放位置
+    controllers: [
+
+    'SYS.SYS001',   //使用者登入
+    'SYS.SYS002',   //主畫面
+    'MN.MNM001',     //群組權限維護
+    'US.USM002'    //使用者群組維護
+    ],
+    launch: function() {
+        Ext.create('Ext.container.Viewport', {
+            id: 'mainVP',
+            layout: 'fit',
+            items: [{
+                xtype: 'sys001loginform',
+                url: 'http://localhost:8080/agricloud/user/login.json'
+            }]
+        });
+    }
+});
+</code></pre>
+
+<p>```</p>
+
+<h2>Model</h2>
+
+<p>定義來源資料的 mapping 以及資料型態</p>
+
+<p>```  javascript</p>
+
+<pre><code>// app/model/MN/MNM001/MenuGroup.js
+Ext.define('Frontend.model.MN.MNM001.MenuGroup', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'menuId', type: 'string'},
+        {name: 'menuDes',  type: 'string'},
+        {name: 'userGroupId',  type: 'string'},
+        {name: 'userGroupDes',  type: 'string'}
+    ]
+});
+</code></pre>
+
+<p>```</p>
+
+<h2>Store</h2>
+
+<p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
+
+<p>```  javascript</p>
+
+<pre><code>// app.store.MN.MNM001.Store.js
+Ext.define('Frontend.store.MN.MNM001.Store' ,{
+    model:'Frontend.model.MN.MNM001.MenuGroup', 
+    extend: 'Ext.data.Store',
+    alias : 'widget.mnm001store',
+    autoLoad: true,
+    proxy: {
+        type: 'rest',   // 使用 rest 來與後端 server 溝通
+        url: 'http://localhost:8080/agricloud/rest/menuGroup/',
+        reader: {
+            type: 'json',
+            root: 'items'
+        },
+        writer: {
+            type: 'json'
+        },
+        afterRequest:function(request,success){
+            var operation = request.operation;
+            var response = operation.response; 
+            if(success){
+            }else{}
+        }
+    },
+    listeners: {
+        // 讀取完資料後，進行 load 
+        write: function(store, operation) {
+            store.load();
+        }
+    }
+});
+</code></pre>
+
+<p>```</p>
+
+<h2>Controller</h2>
+
+<p>用於整合 model 的資料讓 view 可以使用，並且定義 view 各個事件要執行的內容，如此一來 view 將可以被獨立設計，一旦 view 被使用於別的功能也不會有衝突的事件定義。在使用上 Controller 也可以進行繼承，下面的 parent Controller 範例實作一些常用的事件，因為對於 controller 而言，所載入的各個 store 都視為 controller 的屬性，故只要繼承至 parent Controller 都有給定要求的變數內容，所定義的事件將會運作正常</p>
+
+<h3>parent Controller</h3>
+
+<p>```  javascript</p>
+
+<pre><code>/**
+ * std Controller
+ */
+Ext.define('Frontend.controller.common.Standard', {
+    extend: 'Ext.app.Controller',
+    execute: function(params) {
+        var tab = Ext.getCmp('mainTab');
+        tab.add({
+            id: params.id,
+            title: params.title,
+            closable: true,
+            layout:'fit',
+            items: {
+                xtype: params.tabXtype
+            }
+        });
+    },
+    doRead: function() {
+        console.log("doRead")
+        this.store.load();
+    },
+    doCreate: function() {
+        this.store.insert(0, this.model);
+    },
+    doDelete:function(){
+        var selection = this.grid.getSelectionModel().getSelection()[0];
+        if (selection) {
+            this.store.remove(selection);
+        }
+    },
+    doUpdate: function() {
+        this.store.sync({
+            success : function(){
+                console.log("success");
+                Ext.Msg.alert('Status', '更新成功');
+            },
+            failure : function(response, options){
+                console.log("failure");
+                Ext.Msg.alert('Status', '更新失敗');
+            }  
+        });
+    },
+    onGridSelection:function(selModel, selections,eOpts){
+        this.selections=selections;
+        this.selModel=selModel;
+
+        //必須利用refs 取得實體介面已 render的物件
+        this.deleteButton.setDisabled(selections.length === 0);
+
+    },
+    onPanelRendered: function() {
+        //將載入的 view 指定為此 controller 的屬性
+        this.grid=this.getGridPanel();
+        this.deleteButton=this.getDeleteButton();
+    }
+});
+</code></pre>
+
+<p>```</p>
+
+<h3>main controller</h3>
+
+<p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
+
+<p>```  javascript</p>
+
+<pre><code>// app.controller.MN.MNM001.js
+/**
+ * 功能群組維護
+ */
+Ext.define('Frontend.controller.MN.MNM001', {
+    extend: 'Frontend.controller.common.Standard',
+    views: [
+        'MN.MNM001.Panel'
+    ], 
+
+    refs: [{
+        ref: 'deleteButton',
+        selector: 'mnm001panel commonbuttondelete'
+    },{
+        ref: 'gridPanel',
+        selector: 'mnm001panel'
+    },{
+        ref: 'combobox',
+        selector: 'mnm001combobox'
+    }],
+    init: function() {
+
+        定義各個元件所要執行的事件以及相關的函數
+        this.control({
+            'mnm001panel commonbuttoncreate': {
+                click: this.doCreate
+            },
+            'mnm001panel commonbuttondelete': {
+                click: this.doDelete
+            },
+            'mnm001panel commonbuttonupdate': {
+                click: this.doUpdate
+            },
+            'mnm001panel commonbuttonread': {
+                click: this.doRead
+            },
+            'mnm001combobox': {
+                select:this.comboboxSelect
+            },
+            'mnm001panel': {
+                selectionchange: this.onGridSelection,
+                render: this.onPanelRendered
+            }
+        })
+        //ref 的使用對象為 Conpoment
+        //store 的取得直接用 this 
+        //在 view 所組成的 compoment 中有使用到的 store 皆可以在 controllr 中存取
+
+        this.store=this.getStore("MN.MNM001.Store");
+
+    },
+    execute: function(params) {
+        //定義此 contoller 所使用之屬性，controller 一旦被執行此事件將會最先被執行
+        params.tabXtype='mnm001panel';
+       //結果將透過下列程式呼叫繼承來的 controller 之 execute
+        this.callParent(arguments);
+    },
+    comboboxSelect: function( combo, records, eOpts ) {
+        this.selections[0].set('userGroupDes',records[0].get('description') );
+    }
+});
+</code></pre>
+
+<p>```</p>
+
+<h2>View</h2>
+
+<p>view 的使用依賴於 controller 有載入的內容，在這邊只作為介面的呈現，不進行事件的定義，除非該事件為通用的事件。</p>
+
+<h3>Combobox</h3>
+
+<p>使用的第一個 store <code>US.USM002.Store</code></p>
+
+<p>```  javascript</p>
+
+<pre><code>Ext.define('Frontend.view.MN.MNM001.Combobox', {
+    extend: 'Ext.form.ComboBox',
+    alias : 'widget.mnm001combobox',
+    id:'mnm001combobox',
+    itemId:'mnm001combobox',
+    store: 'US.USM002.Store',
+    queryMode: 'local',
+    displayField: 'userGroupId',
+    valueField: 'userGroupId'
+});
+</code></pre>
+
+<p>```</p>
+
+<h3>Panel</h3>
+
+<p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
+
+<p>```  javascript</p>
+
+<pre><code>Ext.define('Frontend.view.MN.MNM001.Panel' ,{
+    extend: 'Frontend.view.common.gridpanel.standard',
+    alias : 'widget.mnm001panel',
+    requires:['Frontend.view.MN.MNM001.Combobox'],
+    columns: [
+        { 
+            header: 'menuId',  
+            dataIndex: 'menuId', 
+            flex: 1,
+            field: {
+                xtype: 'textfield'
+            }
+        },
+        { 
+            header: 'menuDes', 
+            dataIndex: 'menuDes'
+        },
+        { 
+            header: 'userGroupId', 
+            dataIndex: 'userGroupId',
+            field: {
+                xtype: 'mnm001combobox'
+            }
+        },
+        { 
+            header: 'userGroupDes', 
+            dataIndex: 'userGroupDes' 
+        }
+    ],
+    plugins: [{
+            ptype:'rowediting'
+    }],
+    store:'MN.MNM001.Store'
+});
+</code></pre>
+
+<p>```</p>
+
+<h2>執行結果</h2>
+
+<h3>功能一</h3>
+
+<p><img src="https://lh5.googleusercontent.com/-lx8V6k3xoO8/UUp-XqNiMnI/AAAAAAAALmk/19RA9GS5zrE/s615/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.17.jpg" alt="image" /></p>
+
+<h3>功能二</h3>
+
+<p><img src="https://lh4.googleusercontent.com/-HjzcF7nh4y0/UUp-YUkVjUI/AAAAAAAALms/sls8kHck6LI/s614/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.28.jpg" alt="image" /></p>
+
+<p>可以看到兩個功能外框是類似的，差別在欄位的不同，其中共用的部分：</p>
+
+<ul>
+<li>功能二的 grid 與功能一的 userGroupId 的 combobox store 為同一個 <code>US.USM002.Store</code></li>
+<li>兩個功能之 panal 皆繼承於 <code>Frontend.view.common.gridpanel.standard</code></li>
+<li>controller 也繼承於 <code>Frontend.controller.common.Standard</code></li>
+</ul>
+
+
+<p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
+]]></content>
+  </entry>
+  
+</feed>
