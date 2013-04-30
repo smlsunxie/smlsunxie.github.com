@@ -310,6 +310,206 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">Extjs: Grid 中的欄位使用 Templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T19:12:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/18/extjs-dom-element-component/">Extjs: DOM、Element 以及 Component 的差別</a>
 
 </h1>
@@ -2370,229 +2570,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h4>參考來源</h4>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
-
-<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
-
-<h2>函式是如何被初始化</h2>
-
-<ol>
-<li>先宣告函式參數，並設定參數的值</li>
-<li>所有函式內部的函式被宣告</li>
-<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
-<li>賦予變數值</li>
-</ol>
-
-
-<p>接著來看 scope</p>
-
-<h2>了解變數 scope 以及初始化</h2>
-
-<ol>
-<li>唯一的變數 scope 就是你所在的函式。</li>
-<li>還有全域的 scope，但並沒有區塊的 scope。</li>
-<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
-<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
-<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
-</ol>
-
-
-<h2>scope 的運作原理</h2>
-
-<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
-
-<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
-
-<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
-
-<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
-
-<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
-
-<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
-
-<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
-
-<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
-
-<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
-
-<h2>scope management</h2>
-
-<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
-
-<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
-
-<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
-
-<h2>效能改善相關</h2>
-
-<ol>
-<li>對那些常常會存取的變數，盡量把它放在 local</li>
-<li>避免使用 with</li>
-<li><p>小心使用 try / catch</p>
-
-<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
-<li><p>沒有必要的話不要用 closure</p></li>
-<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
-</ol>
-
-
-<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T12:07:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-about-scope/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-about-scope/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2670,6 +2647,10 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/04/30/extjs-4-intro/">extjs 4 的新特性與基本概念</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/03/21/extjs4-mvc/">extjs4: mvc 使用簡介與範例介紹</a>
       </li>
     
@@ -2683,10 +2664,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
     
       <li>
         <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">ubuntu 中安装 apache ab 進行壓力測試</a>
       </li>
     
   </ul>

@@ -310,6 +310,98 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">Ubuntu 12.10 Install Gnome(no Effects) and Button Layout Change</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>對於常常使用 windows 的 user 剛換到使用 ubuntu 時，一定很不習慣視窗按鈕放大縮小的位置，特別剛要開始熟悉 ubuntu，會先從 VM 安裝 ubuntu 來體驗一下，不過，很不幸的，在目前最新的 ubuntu 12.10 不支援 2D unity，也無從安裝，所以在 vm 下使用 ubuntu 因為效能的關係，使用者體驗不是很好，如果要能夠使用 2D 的環境，目前只剩下 gnome (no effects) 可以選擇，至於安裝方式如下：</p>
+
+<pre><code>sudo apt-get install gnome-session-fallback
+</code></pre>
+
+<p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
+
+<pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+</code></pre>
+
+<p>不過就是因為尚未所有的第三方軟體都有將參數讀取改至新的設定方式，故保險起見，舊有的設定方式也請服用：</p>
+
+<pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
+</code></pre>
+
+<p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-14T11:32:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/14/ubuntu1210-button-layout-change/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/14/ubuntu1210-button-layout-change/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/09/this-guy-is-my-bro/">This Guy Is My Bro!這傢伙是我哥～</a>
 
 </h1>
@@ -1517,113 +1609,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/22/google-map-get-geo/">Google Map 取得經緯度</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>本篇文章說明如何在新版的google很簡單的取得經緯度，步驟如下：</p>
-
-<ul>
-<li>進入地圖實驗室</li>
-</ul>
-
-
-<p><img src="https://lh5.googleusercontent.com/-d3GV5cDAViw/UNVdHmqpV9I/AAAAAAAALZ8/YPBXMknoQ7s/s640/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.09.jpg" alt="img" /></p>
-
-<ul>
-<li>開啟經緯標記</li>
-</ul>
-
-
-<p><img src="https://lh3.googleusercontent.com/-ChBgulIjT4Y/UNVdLjvDf7I/AAAAAAAALZ4/Y8qRxqssRHI/s774/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.31.jpg" alt="img" /></p>
-
-<ul>
-<li>右鍵置放經緯標記</li>
-</ul>
-
-
-<p><img src="https://lh4.googleusercontent.com/-_lZ4QCCfnLw/UNVdMYgtDbI/AAAAAAAALZw/gsdcZ6ajug8/s386/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.52.jpg" alt="img" /></p>
-
-<ul>
-<li>複製經緯度</li>
-</ul>
-
-
-<p><img src="https://lh6.googleusercontent.com/-cn0Sz00Dxs8/UNVdNAOwuhI/AAAAAAAALZ0/7keCU2zBwcM/s249/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.11.08.jpg" alt="img" /></p>
-
-<p>就這麼簡單！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-22T15:12:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/22/google-map-get-geo/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/22/google-map-get-geo/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1701,6 +1686,10 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/04/30/extjs-4-intro/">extjs 4 的新特性與基本概念</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/03/21/extjs4-mvc/">extjs4: mvc 使用簡介與範例介紹</a>
       </li>
     
@@ -1714,10 +1703,6 @@ id sem consectetuer libero luctus adipiscing.</p></blockquote>
     
       <li>
         <a href="/blog/2013/02/23/javascript-sync/">javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">ubuntu 中安装 apache ab 進行壓力測試</a>
       </li>
     
   </ul>

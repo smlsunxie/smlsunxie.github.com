@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-03-21T11:46:47+08:00</updated>
+  <updated>2013-04-30T15:46:02+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,310 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs 4 的新特性與基本概念]]></title>
+<link href="http://smlsun.com/blog/2013/04/30/extjs-4-intro/"/>
+<updated>2013-04-30T10:28:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/04/30/extjs-4-intro</id>
+
+      <content type="html"><![CDATA[<p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
+
+<p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
+
+<p>當然雖然 extjs 對當時的我來說是那麼的美好，說實在的如果有些基礎 javascript 不熟悉，使用起來常常不知所以然，以致於寫出來的 code 總是讓人覺得「不是一般人寫的出來的」…糟糕，那是個青澀的年代(遠望~)，</p>
+
+<p>時至今日 extjs 來到 4.x，一個新的境界，與以往版本有著更大的不同，希望透過一系列的文章能夠讓剛接觸 extjs 讀者快速了解他的特性，少走一些冤枉路，快速完成公司交辦的工作，早早下班享受人生～</p>
+
+<hr />
+
+<p>系列文章的一開始希望能夠讓大家對 extjs 的基本特性以及原理做個基本介紹，本文將參考下列文章內容節錄重要的部份，有需要更深入了解的讀者可以跳轉參考</p>
+
+<ul>
+<li><p><a href="http://book.51cto.com/art/201109/291474.htm">ExtJS Web應用程序開發指南</a></p></li>
+<li><p><a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html">Ext JS 4 First Look 翻譯：新特性</a></p></li>
+</ul>
+
+
+<p>首先在使用 extjs 時，不得不被他得物件導向特性所吸引到，如果對 javascript 有些開發經驗了解他的特性，可以知道 javascript 是函數式語言，沒有直接的物件導向特性。通常，要將 javascript 設計為物件導向的開發方式不是不行，但相信那不時是初階開發人員可以做到的，實務上物件導向設計確實可以有效的分工，對於多人開發以及程式重覆使用已有多年的驗證，但硬是要將函數語言改為物件語言，沒有深厚的功力，恐怕沒那簡單，也因此第一個要介紹 extjs 的部份，就是其物件導向的設計，讓我們可以很輕易的用  javascript 進行物件導向式的開發。</p>
+
+<h1>動態加載和新的物件導向特性</h1>
+
+<p>JavaScript 沒有真正的物件導向設計，但 ExtJS 自己設計了物件導向式的結構，從而讓開發者可以利用物件導向的精神來開發前端 javascript。</p>
+
+<p>與以往版本的不同，ExtJS 4.0對舊的物件系統進行了全面的更新，進而讓開發更簡單、更靈活。</p>
+
+<p>ExtJS 4 推出4個新的物件導向特性：類別定義、mixins(混合複數classes)、更方便的物件屬性定義及動態加載，下面將針對上述特性做個簡單介紹</p>
+
+<h2>類別定義</h2>
+
+<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於類不存在報出的錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
+
+<p>舉個簡單的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Argicloud.view.ReadBtn&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.button.Button&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.readbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>  
+</span><span class='line'>      <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;readBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;Read&#39;</span><span class="p">,</span>
+</span><span class='line'>  
+</span><span class='line'>      <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  
+</span><span class='line'>          <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述的例子讓我們可以輕易的繼承 extjs 原生的 Button 定義客製的屬性，如此就可做到前端元件重覆使用，並且抽出共用的部分，方便後續維護，這邊先點到為止，後續會有更詳細的文章介紹，接著來看 mixins</p>
+
+<h2>mixins (混合複數classes)</h2>
+
+<p>許多動態語言都支援 mixins 的特性，比如 Ruby、Python。而JavaScript 在語法上並無 mixins 的特性，但 ExtJS 4 自己實現了 mixins 的功能，類似於多重繼承，是種更細的程式碼重覆使用特性，如果一個類別需要某個特性，只需要將擁有該特性的類別類混入目標類別中即可。同樣的先來看一下簡單範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">operate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;1000 rpm&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Wheel&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">scroll</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;go&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Car&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">Engine</span><span class="o">:</span> <span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">Wheel</span><span class="o">:</span> <span class="s2">&quot;MyClass.Wheel&quot;</span>
+</span><span class='line'>       <span class="p">},</span>
+</span><span class='line'>       <span class="nx">dirve</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;forward&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">objCar</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s2">&quot;MyClass.C&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">operate</span><span class="p">();</span> <span class="c1">// 1000 rpm</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">scroll</span><span class="p">();</span> <span class="c1">// go</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">dirve</span><span class="p">();</span> <span class="c1">// forward</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此我們可以很簡單的將一個應用拆分成多個不同的小類別，最後再將各個類別像積木一樣主合成一最後要使用的物件。除了物件導向的特性外 extjs 4 也提供新的物件屬性定義方式。</p>
+
+<h2>新增的 Config 設定</h2>
+
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 ConfigItem 之處理程式碼(set/get/apply三種)，如需自行客製化時，則可以自行設計同名 function:{set/get/apply}+ConfigName，用文字描述可能很難理解，來看一個簡單的範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;My.awesome.Class&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// The default config</span>
+</span><span class='line'>      <span class="nx">config</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Awesome&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">isAwesome</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">awesome</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">My</span><span class="p">.</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">Class</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Super Awesome&#39;</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">getName</span><span class="p">());</span> <span class="c1">// &#39;Super Awesome&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到在類別定義中 config.name 定義好了，但未特別定義 getName 這樣的函數，但我們卻可以直接呼叫，這樣的特性正是 extjs 幫我們完成的，讓我們可以更專注在最重要的邏輯上。</p>
+
+<h2>動態載入(dynamic loading)</h2>
+
+<p>不管你有沒有用過類似 extjs 的框架，或者是寫過大型的 web 應用程式，一旦您的頁面需要載入大量的 resource 或著 .js 檔時，將會造成載入時間過長，很多不需要的腳本其實可以不用載入甚至在需要時載入，但實務上一個人開發時要管控還算簡單，多人就麻煩了！</p>
+
+<p>也因為 extjs 在舊版時沒有很漂亮的解決此問題，我也算是有切身之痛，所幸，extjs 發展到現在也該是時候了，動態載入功能將根據你對類別定義需要的類別引入相關的 js 檔，通過動態載入可以有效地減少客戶端載入的腳本體積，也因此在 html page 你只要載入 extjs 的 lib 以及 application.js（後續 mvc 會介紹），之後所有的 js 檔會在你使用類別時進行動態載入，希望可以讓讀者更清楚知道該屬性，我們來看一下範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'> <span class="nt">&lt;html&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;title&gt;</span>My ExtJS MVC<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;extjs-4.1.0/resources/css/ext-all.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;extjs-4.1.0/ext-all.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;init.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面程式碼我們只有載入 extjs lib 以及初始的 init.js</p>
+
+<p>接著來看 init.js 的內容</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">Loader</span><span class="p">.</span><span class="nx">setConfig</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">application</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">models</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;Item&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">stores</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;ItemStore&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;ItemGrid&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">autoCreateViewport</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//set as true - 將尋找 Viewport.js 自動載入</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">controllers</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;MainController&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Argicloud&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {Appname}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念</p>
+
+<h2>ExtJS中的基本概念</h2>
+
+<p>ExtJS 和傳統的前端 Web 開發的不一樣，不用在 HTML 和 CSS 中打轉，就像筆者當年對兩者都不甚了解，還是用的很開心一樣，可以想像你是在使用 JavaSwing 這樣的技術呈現的結果是在網頁上一樣，不用管介面的樣式以及如何呈現，只要負責操作類別間的互動以及事件的定義，其他就交由 extjs 幫你處理。一但透過目前瀏覽器提供的開發者工具，可以發現 extjs 只是把你宣告的元件轉化成 html dom element，基本上與 html 還是脫不了關係，有這層了解後在使用 extjs 可以更容易理解，在這裡將介紹幾個 extjs 較重要的元件</p>
+
+<h2>Container</h2>
+
+<p>extjs 中 Container 顧名思義就是容器，你可以把它想像成 html 中的 div，在 extjs Container 是一些類別的父類別，比如說：panel，在開始開發 extjs 時，你可以先用繼承於 Cotainer 的類別進行介面的分塊把你想要的呈現方式定義好，之後在放上你要的元件即可。</p>
+
+<h2>Layout</h2>
+
+<p>每個 container 都有個屬性：layout。透過該屬性的定義來對 container 裡所擁有的元件進行擺放，開發者不需要在自行定義 css 或者 html dom 巢狀結構來擺放相關元件，可以更快速的將介面呈現定義好，在開發人員技術不純熟的情況下，可以保證介面呈現的一置性。</p>
+
+<h2>Component</h2>
+
+<p>當你開始製作 extjs 應用程式時，一旦拉好框架，定義好 layout 後，接著你要做的就是將元件放入，舉凡按鈕，欄位，表單以及資料表在 extjs 都是繼承於 Component，透過繼承於 Component 除了 extjs 原生的元件外，你也可以製作你自己的元件，甚至是第三方元件等，大大提昇 extjs 在前端呈現的豐富性。</p>
+
+<p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
+
+<h2>Render</h2>
+
+<p>一般來說，我們在傳統 html 中要定義樣式需要透過 css 來進行定義並且將結果呈現在網頁上，extjs 的 render 也是同樣的道理，不同的是一般 css 我們需要從 server 或是網路下載，在extjs 是透過他的引擎完成樣式的呈現，理解這點在開發 extjs 將能夠更了解其運作原理</p>
+
+<h2>Model 與 Store</h2>
+
+<p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
+
+<p>除此之外，ExtJS 4.0 提供了 關聯 API，可以定義不同 model 間多對多或一對多等的資歷關係，通過關聯 API 將模型關聯起來後，將可以更容易存取相關的資料模型。</p>
+
+<p>透過上述的介紹希望讀者們可以對 extjs 有個初步的了解，如果看完後還算有興趣，下一篇將介紹 extjs 使用到的進階 js 技巧，所謂萬丈高樓平地起，像 extjs 這樣複雜的框架，也是從基本 javascript 建構而來，理解該框架所使用到的 js 進階技巧，將有助於您在使用 extjs 時的理解進而變化運用</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/04/30/extjs-4-intro/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3736,167 +4040,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
 </ul>
 
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/01/javascript-closure/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[javascript: about scope]]></title>
-<link href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/"/>
-<updated>2013-02-01T12:07:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/01/javascript-about-scope</id>
-
-      <content type="html"><![CDATA[<h4>參考來源</h4>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
-
-<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
-
-<h2>函式是如何被初始化</h2>
-
-<ol>
-<li>先宣告函式參數，並設定參數的值</li>
-<li>所有函式內部的函式被宣告</li>
-<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
-<li>賦予變數值</li>
-</ol>
-
-
-<p>接著來看 scope</p>
-
-<h2>了解變數 scope 以及初始化</h2>
-
-<ol>
-<li>唯一的變數 scope 就是你所在的函式。</li>
-<li>還有全域的 scope，但並沒有區塊的 scope。</li>
-<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
-<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
-<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
-</ol>
-
-
-<h2>scope 的運作原理</h2>
-
-<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
-
-<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
-
-<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
-
-<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
-
-<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
-
-<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
-
-<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
-
-<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
-
-<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
-
-<h2>scope management</h2>
-
-<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
-
-<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
-
-<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
-
-<h2>效能改善相關</h2>
-
-<ol>
-<li>對那些常常會存取的變數，盡量把它放在 local</li>
-<li>避免使用 with</li>
-<li><p>小心使用 try / catch</p>
-
-<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
-<li><p>沒有必要的話不要用 closure</p></li>
-<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
-</ol>
-
-
-<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/"></a></p>]]></content>
     </entry>
   
 </feed>

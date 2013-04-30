@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: extjs, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/extjs-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-04-30T15:46:02+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 4 的新特性與基本概念]]></title>
+    <link href="http://smlsun.com/blog/2013/04/30/extjs-4-intro/"/>
+    <updated>2013-04-30T10:28:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/04/30/extjs-4-intro</id>
+    <content type="html"><![CDATA[<p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
+
+<p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
+
+<p>當然雖然 extjs 對當時的我來說是那麼的美好，說實在的如果有些基礎 javascript 不熟悉，使用起來常常不知所以然，以致於寫出來的 code 總是讓人覺得「不是一般人寫的出來的」…糟糕，那是個青澀的年代(遠望~)，</p>
+
+<p>時至今日 extjs 來到 4.x，一個新的境界，與以往版本有著更大的不同，希望透過一系列的文章能夠讓剛接觸 extjs 讀者快速了解他的特性，少走一些冤枉路，快速完成公司交辦的工作，早早下班享受人生～</p>
+
+<hr />
+
+<p>系列文章的一開始希望能夠讓大家對 extjs 的基本特性以及原理做個基本介紹，本文將參考下列文章內容節錄重要的部份，有需要更深入了解的讀者可以跳轉參考</p>
+
+<ul>
+<li><p><a href="http://book.51cto.com/art/201109/291474.htm">ExtJS Web應用程序開發指南</a></p></li>
+<li><p><a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html">Ext JS 4 First Look 翻譯：新特性</a></p></li>
+</ul>
+
+
+<p>首先在使用 extjs 時，不得不被他得物件導向特性所吸引到，如果對 javascript 有些開發經驗了解他的特性，可以知道 javascript 是函數式語言，沒有直接的物件導向特性。通常，要將 javascript 設計為物件導向的開發方式不是不行，但相信那不時是初階開發人員可以做到的，實務上物件導向設計確實可以有效的分工，對於多人開發以及程式重覆使用已有多年的驗證，但硬是要將函數語言改為物件語言，沒有深厚的功力，恐怕沒那簡單，也因此第一個要介紹 extjs 的部份，就是其物件導向的設計，讓我們可以很輕易的用  javascript 進行物件導向式的開發。</p>
+
+<h1>動態加載和新的物件導向特性</h1>
+
+<p>JavaScript 沒有真正的物件導向設計，但 ExtJS 自己設計了物件導向式的結構，從而讓開發者可以利用物件導向的精神來開發前端 javascript。</p>
+
+<p>與以往版本的不同，ExtJS 4.0對舊的物件系統進行了全面的更新，進而讓開發更簡單、更靈活。</p>
+
+<p>ExtJS 4 推出4個新的物件導向特性：類別定義、mixins(混合複數classes)、更方便的物件屬性定義及動態加載，下面將針對上述特性做個簡單介紹</p>
+
+<h2>類別定義</h2>
+
+<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於類不存在報出的錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
+
+<p>舉個簡單的例子：</p>
+
+<p>``` javascript</p>
+
+<pre><code>Ext.define('Argicloud.view.ReadBtn', {
+    extend: 'Ext.button.Button',
+    alias: 'widget.readbtn',
+
+    itemId: 'readBtn',
+    text: 'Read',
+
+    initComponent: function() {
+        var me = this;
+
+        me.callParent(arguments);
+    }
+
+});
+</code></pre>
+
+<p>```</p>
+
+<p>上述的例子讓我們可以輕易的繼承 extjs 原生的 Button 定義客製的屬性，如此就可做到前端元件重覆使用，並且抽出共用的部分，方便後續維護，這邊先點到為止，後續會有更詳細的文章介紹，接著來看 mixins</p>
+
+<h2>mixins (混合複數classes)</h2>
+
+<p>許多動態語言都支援 mixins 的特性，比如 Ruby、Python。而JavaScript 在語法上並無 mixins 的特性，但 ExtJS 4 自己實現了 mixins 的功能，類似於多重繼承，是種更細的程式碼重覆使用特性，如果一個類別需要某個特性，只需要將擁有該特性的類別類混入目標類別中即可。同樣的先來看一下簡單範例：</p>
+
+<p>``` javascript</p>
+
+<pre><code>Ext.define("MyClass.Engine", {
+     operate: function(){
+          console.log("1000 rpm");
+     }
+});
+Ext.define("MyClass.Wheel", {
+     scroll: function(){
+          console.log("go");
+     }
+});
+Ext.define("MyClass.Car", {
+     mixins: {
+          Engine: "MyClass.Engine",
+          Wheel: "MyClass.Wheel"
+     },
+     dirve: function(){
+          console.log("forward");
+     }
+});
+var objCar = Ext.create("MyClass.C");
+objCar.operate(); // 1000 rpm
+objCar.scroll(); // go
+objCar.dirve(); // forward
+</code></pre>
+
+<p>```
+如此我們可以很簡單的將一個應用拆分成多個不同的小類別，最後再將各個類別像積木一樣主合成一最後要使用的物件。除了物件導向的特性外 extjs 4 也提供新的物件屬性定義方式。</p>
+
+<h2>新增的 Config 設定</h2>
+
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 ConfigItem 之處理程式碼(set/get/apply三種)，如需自行客製化時，則可以自行設計同名 function:{set/get/apply}+ConfigName，用文字描述可能很難理解，來看一個簡單的範例：</p>
+
+<p>``` javascript</p>
+
+<pre><code>Ext.define('My.awesome.Class', {
+    // The default config
+    config: {
+        name: 'Awesome',
+        isAwesome: true
+    },
+    constructor: function(config) {
+        this.initConfig(config);
+        return this;
+    }
+});
+
+var awesome = new My.awesome.Class({
+    name: 'Super Awesome'
+});
+
+alert(awesome.getName()); // 'Super Awesome'
+</code></pre>
+
+<p>```</p>
+
+<p>可以看到在類別定義中 config.name 定義好了，但未特別定義 getName 這樣的函數，但我們卻可以直接呼叫，這樣的特性正是 extjs 幫我們完成的，讓我們可以更專注在最重要的邏輯上。</p>
+
+<h2>動態載入(dynamic loading)</h2>
+
+<p>不管你有沒有用過類似 extjs 的框架，或者是寫過大型的 web 應用程式，一旦您的頁面需要載入大量的 resource 或著 .js 檔時，將會造成載入時間過長，很多不需要的腳本其實可以不用載入甚至在需要時載入，但實務上一個人開發時要管控還算簡單，多人就麻煩了！</p>
+
+<p>也因為 extjs 在舊版時沒有很漂亮的解決此問題，我也算是有切身之痛，所幸，extjs 發展到現在也該是時候了，動態載入功能將根據你對類別定義需要的類別引入相關的 js 檔，通過動態載入可以有效地減少客戶端載入的腳本體積，也因此在 html page 你只要載入 extjs 的 lib 以及 application.js（後續 mvc 會介紹），之後所有的 js 檔會在你使用類別時進行動態載入，希望可以讓讀者更清楚知道該屬性，我們來看一下範例：</p>
+
+<p>``` html</p>
+
+<pre><code>&lt;html&gt;
+    &lt;head&gt;
+    &lt;title&gt;My ExtJS MVC&lt;/title&gt;
+    &lt;link rel="stylesheet" type="text/css" href="extjs-4.1.0/resources/css/ext-all.css" /&gt;
+    &lt;script src="extjs-4.1.0/ext-all.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;script src="init.js" type="text/javascript"&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+&lt;body&gt;
+
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>上面程式碼我們只有載入 extjs lib 以及初始的 init.js</p>
+
+<p>接著來看 init.js 的內容</p>
+
+<p>``` javascript</p>
+
+<p>Ext.Loader.setConfig({</p>
+
+<pre><code>enabled: true
+</code></pre>
+
+<p>});</p>
+
+<p>Ext.application({</p>
+
+<pre><code>models: [
+    'Item',
+],
+stores: [
+    'ItemStore',
+],
+views: [
+    'ItemGrid'
+],
+autoCreateViewport: true, //set as true - 將尋找 Viewport.js 自動載入
+
+controllers: [
+    'MainController'
+],
+name: 'Argicloud'
+</code></pre>
+
+<p>});</p>
+
+<p>```</p>
+
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {Appname}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念</p>
+
+<h2>ExtJS中的基本概念</h2>
+
+<p>ExtJS 和傳統的前端 Web 開發的不一樣，不用在 HTML 和 CSS 中打轉，就像筆者當年對兩者都不甚了解，還是用的很開心一樣，可以想像你是在使用 JavaSwing 這樣的技術呈現的結果是在網頁上一樣，不用管介面的樣式以及如何呈現，只要負責操作類別間的互動以及事件的定義，其他就交由 extjs 幫你處理。一但透過目前瀏覽器提供的開發者工具，可以發現 extjs 只是把你宣告的元件轉化成 html dom element，基本上與 html 還是脫不了關係，有這層了解後在使用 extjs 可以更容易理解，在這裡將介紹幾個 extjs 較重要的元件</p>
+
+<h2>Container</h2>
+
+<p>extjs 中 Container 顧名思義就是容器，你可以把它想像成 html 中的 div，在 extjs Container 是一些類別的父類別，比如說：panel，在開始開發 extjs 時，你可以先用繼承於 Cotainer 的類別進行介面的分塊把你想要的呈現方式定義好，之後在放上你要的元件即可。</p>
+
+<h2>Layout</h2>
+
+<p>每個 container 都有個屬性：layout。透過該屬性的定義來對 container 裡所擁有的元件進行擺放，開發者不需要在自行定義 css 或者 html dom 巢狀結構來擺放相關元件，可以更快速的將介面呈現定義好，在開發人員技術不純熟的情況下，可以保證介面呈現的一置性。</p>
+
+<h2>Component</h2>
+
+<p>當你開始製作 extjs 應用程式時，一旦拉好框架，定義好 layout 後，接著你要做的就是將元件放入，舉凡按鈕，欄位，表單以及資料表在 extjs 都是繼承於 Component，透過繼承於 Component 除了 extjs 原生的元件外，你也可以製作你自己的元件，甚至是第三方元件等，大大提昇 extjs 在前端呈現的豐富性。</p>
+
+<p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
+
+<h2>Render</h2>
+
+<p>一般來說，我們在傳統 html 中要定義樣式需要透過 css 來進行定義並且將結果呈現在網頁上，extjs 的 render 也是同樣的道理，不同的是一般 css 我們需要從 server 或是網路下載，在extjs 是透過他的引擎完成樣式的呈現，理解這點在開發 extjs 將能夠更了解其運作原理</p>
+
+<h2>Model 與 Store</h2>
+
+<p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
+
+<p>除此之外，ExtJS 4.0 提供了 關聯 API，可以定義不同 model 間多對多或一對多等的資歷關係，通過關聯 API 將模型關聯起來後，將可以更容易存取相關的資料模型。</p>
+
+<p>透過上述的介紹希望讀者們可以對 extjs 有個初步的了解，如果看完後還算有興趣，下一篇將介紹 extjs 使用到的進階 js 技巧，所謂萬丈高樓平地起，像 extjs 這樣複雜的框架，也是從基本 javascript 建構而來，理解該框架所使用到的 js 進階技巧，將有助於您在使用 extjs 時的理解進而變化運用</p>
+]]></content>
+  </entry>
+  
+</feed>
