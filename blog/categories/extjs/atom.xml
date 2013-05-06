@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-04-30T17:11:37+08:00</updated>
+  <updated>2013-05-06T18:29:37+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,10 +14,57 @@
 
   
   <entry>
+    <title type="html"><![CDATA[使用 extjs 必須了解的 js 技巧與知識]]></title>
+    <link href="http://smlsun.com/blog/2013/05/02/extjs4-with-js/"/>
+    <updated>2013-05-02T09:15:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/05/02/extjs4-with-js</id>
+    <content type="html"><![CDATA[<p>在使用類似 extjs 這樣的 framework 時，一定會被他的方便性還有物件化所吸引，但是如果你對 javascript 的一些基礎或是進階技巧不了解，可能會錯用造成無法預知的麻煩，甚至錯把 javascript 原生當做 extjs 特有的以致於在進行程式開發時扼殺了一些變化的可能性，這些問題也都是筆者曾經經歷過的問題，本篇將就一些在使用 extjs 時一定要知道的觀念與 javascript 的技巧進行介紹。</p>
+
+<p>也許熟手會覺得這是基本中的基本，實際上在業界還不會走路就要會飛的例子比比皆是…不是每個人都是東尼，為了不要摔的太大力，馬步還是蹲好一點。</p>
+
+<hr />
+
+<p>雖說是為了 extjs 而介紹，基本上就算是使用其他的 js 框架，也是需要這些技巧與知識的，就讓我們一個一個來，下面的文章連接皆從我的 blog 而來，歡迎大家進來參觀。</p>
+
+<h2>this</h2>
+
+<p>在使用 extjs 時，很多時候妳必須存取物件的屬性來進行顯示或判斷，特別在物件導向的世界，為了能夠更完美封裝，有些時候妳必須從操作物件的本體來取得相關的物件或屬性，因此，搞懂 this 的對象就非常重要，對於 this 的原理與特性，連結中將有介紹：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">What Is This?</a></p>
+
+<h2>Scope</h2>
+
+<p>Scope 也就是所謂的作用域，了解作用域特性相關的知識在使用 extjs 這樣的框架是很有幫助的，在 extjs 物件導向的特性中很多時候需要利用 Scope 的特性來達成，甚至是在使用 javascript 時，若有效能上的問題，理解 scope 也是個改善方向：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">Scope</a></p>
+
+<h2>callback</h2>
+
+<p>寫 javascript 不得不知道什麼是 callback，extjs 建構於 javascript，使用 extjs 也必須了解，特別是使用 ajax 向後端取得資料時所產生的延遲，為了確保函式執行的順序，callback 就是你要使用的技巧，在使用 extjs 時，可不要認為 callback 形式的函數是 extjs 特有得的：<a href="http://smlsun.com/blog/2013/02/04/javascript-callback/">Callback</a></p>
+
+<h2>Closure</h2>
+
+<p>閉包，是個很強大的特性，但確也是兩面刃，需要花一些時間理解，對於初階開發者也許沒辦法靈活應用，但其特性不得不知，特別是在使用 extjs 這樣的框架，大量使用了閉包的特性來封裝物件，也因此，了解閉包將有助於理解 extjs：<a href="http://smlsun.com/blog/2013/02/01/javascript-closure/">Closure</a></p>
+
+<h2>setTimeout</h2>
+
+<p>從 javascript 原生函式 setTimeout 的運作可以一窺 javascript 在瀏覽器引擎中如何處理接踵而來的任務，雖然與 extjs 沒有直接的關係，但是，在 javascript 的世界裡開車，怎能不了解引擎的運作原理呢：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">setTimeout</a></p>
+
+<h2>Performance</h2>
+
+<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道將能才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
+
+<h2>Memory Leaks 偵測</h2>
+
+<p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
+
+<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神工護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
+
+<p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[extjs 4 的新特性與基本概念]]></title>
-    <link href="http://smlsun.com/blog/2013/04/30/extjs-4-intro/"/>
+    <link href="http://smlsun.com/blog/2013/04/30/extjs4-intro/"/>
     <updated>2013-04-30T10:28:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/04/30/extjs-4-intro</id>
+    <id>http://smlsun.com/blog/2013/04/30/extjs4-intro</id>
     <content type="html"><![CDATA[<p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
 
 <p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
@@ -110,7 +157,7 @@ objCar.dirve(); // forward
 
 <h2>新增的 Config 設定</h2>
 
-<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 ConfigItem 之處理程式碼(set/get/apply三種)，如需自行客製化時，則可以自行設計同名 function:{set/get/apply}+ConfigName，用文字描述可能很難理解，來看一個簡單的範例：</p>
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
 
 <p>``` javascript</p>
 
@@ -199,9 +246,11 @@ name: 'Argicloud'
 
 <p>```</p>
 
-<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {Appname}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
 
-<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念</p>
+<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
 
 <h2>ExtJS中的基本概念</h2>
 
@@ -1117,138 +1166,6 @@ w.theFormPanel.saveButton.on('click', function() {
 <p>詳細註解與說明都在上面程式的註解裡，這邊就不多做說明，可以看到透過 ref 的使用，我們可以更加方變得操作 extjs 裡的元件。除了 id 以及 itemid 之外也多了一個可以更方便敘述物件關係的方式。</p>
 
 <p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
-    <link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
-    <updated>2013-02-18T19:12:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
-    <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
-
-<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 ...</p>
-
-<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
-
-<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
-
-<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
-
-    constructor: function(cfg){
-        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
-        this.renderer = function(value, p, r){
-            return tpl.apply(r.data);
-        };
-        this.tpl = tpl;
-    }
-});
-</code></pre>
-
-<p>其中</p>
-
-<pre><code>this.renderer = function(value, p, r){
-    return tpl.apply(r.data);
-};
-</code></pre>
-
-<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
-
-<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
-
-<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
-constructor: function(cfg){
-    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
-
-    this.renderer = function(value, p, r, rowIndex, colIndex){
-
-            //第一種方法 
-            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
-            return tpl.apply(newData);
-
-            //第二種方法
-            //r.data.rowIndex = rowIndex;
-            //r.data.colIndex = colIndex;
-            //return tpl.apply(r.data);
-
-            //未修改前
-            //return tpl.apply(r.data);
-        };
-
-        this.tpl = tpl;
-}
-});
-</code></pre>
-
-<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
-
-<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
-
-<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
-
-<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
-
-<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
-
-<p>實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
-
-<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
-
-var myColumn==new Ext.grid.CusTemplateColumn({ 
-    ...
-tpl:template     
-});
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
-
-<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 ...</p>
-
-<h2>透過 grid 欄位之 renderer</h2>
-
-<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
-
-<pre><code>var myColumn={ 
-    ...
-    renderer : function(value, p, r, rowIndex, colIndex){
-        r.data.rowIndex = rowIndex;
-        r.data.colIndex = colIndex;
-        return template.apply(r.data);
-    }
-}
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<h2>實際在使用上該選擇哪種方式？</h2>
-
-<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
 ]]></content>
   </entry>
   

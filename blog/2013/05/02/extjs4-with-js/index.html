@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>google map 取得經緯度 - 蹤影</title>
+  <title>使用 extjs 必須了解的 js 技巧與知識 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -26,7 +26,9 @@
   
   
   
+  <meta name="description" content="說明使用 extjs 必須了解的 js 技巧與知識">
   
+  <meta name="keywords" content="javascriptextjsextjs 4">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -34,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/22/google-map-get-geo/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/05/02/extjs4-with-js/">
 
 
 
@@ -308,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Google Map 取得經緯度
+使用 Extjs 必須了解的 Js 技巧與知識
 
 </h1>
 
@@ -319,37 +321,45 @@ Google Map 取得經緯度
 
 
   <div class="post-description">
-    <p>本篇文章說明如何在新版的google很簡單的取得經緯度，步驟如下：</p>
+    <p>在使用類似 extjs 這樣的 framework 時，一定會被他的方便性還有物件化所吸引，但是如果你對 javascript 的一些基礎或是進階技巧不了解，可能會錯用造成無法預知的麻煩，甚至錯把 javascript 原生當做 extjs 特有的以致於在進行程式開發時扼殺了一些變化的可能性，這些問題也都是筆者曾經經歷過的問題，本篇將就一些在使用 extjs 時一定要知道的觀念與 javascript 的技巧進行介紹。</p>
 
-<ul>
-<li>進入地圖實驗室</li>
-</ul>
+<p>也許熟手會覺得這是基本中的基本，實際上在業界還不會走路就要會飛的例子比比皆是…不是每個人都是東尼，為了不要摔的太大力，馬步還是蹲好一點。</p>
 
+<hr />
 
-<p><img src="https://lh5.googleusercontent.com/-d3GV5cDAViw/UNVdHmqpV9I/AAAAAAAALZ8/YPBXMknoQ7s/s640/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.09.jpg" alt="img" /></p>
+<p>雖說是為了 extjs 而介紹，基本上就算是使用其他的 js 框架，也是需要這些技巧與知識的，就讓我們一個一個來，下面的文章連接皆從我的 blog 而來，歡迎大家進來參觀。</p>
 
-<ul>
-<li>開啟經緯標記</li>
-</ul>
+<h2>this</h2>
 
+<p>在使用 extjs 時，很多時候妳必須存取物件的屬性來進行顯示或判斷，特別在物件導向的世界，為了能夠更完美封裝，有些時候妳必須從操作物件的本體來取得相關的物件或屬性，因此，搞懂 this 的對象就非常重要，對於 this 的原理與特性，連結中將有介紹：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">What Is This?</a></p>
 
-<p><img src="https://lh3.googleusercontent.com/-ChBgulIjT4Y/UNVdLjvDf7I/AAAAAAAALZ4/Y8qRxqssRHI/s774/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.31.jpg" alt="img" /></p>
+<h2>Scope</h2>
 
-<ul>
-<li>右鍵置放經緯標記</li>
-</ul>
+<p>Scope 也就是所謂的作用域，了解作用域特性相關的知識在使用 extjs 這樣的框架是很有幫助的，在 extjs 物件導向的特性中很多時候需要利用 Scope 的特性來達成，甚至是在使用 javascript 時，若有效能上的問題，理解 scope 也是個改善方向：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">Scope</a></p>
 
+<h2>callback</h2>
 
-<p><img src="https://lh4.googleusercontent.com/-_lZ4QCCfnLw/UNVdMYgtDbI/AAAAAAAALZw/gsdcZ6ajug8/s386/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.10.52.jpg" alt="img" /></p>
+<p>寫 javascript 不得不知道什麼是 callback，extjs 建構於 javascript，使用 extjs 也必須了解，特別是使用 ajax 向後端取得資料時所產生的延遲，為了確保函式執行的順序，callback 就是你要使用的技巧，在使用 extjs 時，可不要認為 callback 形式的函數是 extjs 特有得的：<a href="http://smlsun.com/blog/2013/02/04/javascript-callback/">Callback</a></p>
 
-<ul>
-<li>複製經緯度</li>
-</ul>
+<h2>Closure</h2>
 
+<p>閉包，是個很強大的特性，但確也是兩面刃，需要花一些時間理解，對於初階開發者也許沒辦法靈活應用，但其特性不得不知，特別是在使用 extjs 這樣的框架，大量使用了閉包的特性來封裝物件，也因此，了解閉包將有助於理解 extjs：<a href="http://smlsun.com/blog/2013/02/01/javascript-closure/">Closure</a></p>
 
-<p><img src="https://lh6.googleusercontent.com/-cn0Sz00Dxs8/UNVdNAOwuhI/AAAAAAAALZ0/7keCU2zBwcM/s249/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202012-12-22%2520%25E4%25B8%258B%25E5%258D%25883.11.08.jpg" alt="img" /></p>
+<h2>setTimeout</h2>
 
-<p>就這麼簡單！</p>
+<p>從 javascript 原生函式 setTimeout 的運作可以一窺 javascript 在瀏覽器引擎中如何處理接踵而來的任務，雖然與 extjs 沒有直接的關係，但是，在 javascript 的世界裡開車，怎能不了解引擎的運作原理呢：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">setTimeout</a></p>
+
+<h2>Performance</h2>
+
+<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道將能才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
+
+<h2>Memory Leaks 偵測</h2>
+
+<p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
+
+<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神工護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
+
+<p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
 
   </div>
 
@@ -383,8 +393,14 @@ Google Map 取得經緯度
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-22T15:12:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-05-02T09:15:00+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2013</time>
 
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/4/'>4</a>, <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/extjs-/'>extjs,</a>, <a class='category' href='/blog/categories/javascript-/'>javascript,</a>
+  
+</span></span>
 
 
 
@@ -397,7 +413,7 @@ Google Map 取得經緯度
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/22/google-map-get-geo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/22/google-map-get-geo/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/02/extjs4-with-js/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/02/extjs4-with-js/" target="_blank" >Tweet</a>
     
   
   
@@ -418,10 +434,8 @@ Google Map 取得經緯度
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/21/ab-testing-seo/" title="Previous Post: 如何確定你的slogan(標語)夠吸引人？利用 A/B testing"><li>&laquo; 如何確定你的slogan(標語)夠吸引人？利用 A/B testing</li></a>
+            <a class="left" href="/blog/2013/04/30/abovetaiwan/" title="Previous Post: 台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走"><li>&laquo; 台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/24/how-to-use-markdown/" title="Next Post: 快速了解 markdown"><li>快速了解 markdown &raquo;</li></a>
           
         </ul>
 
@@ -565,7 +579,7 @@ Google Map 取得經緯度
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/22/google-map-get-geo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/22/google-map-get-geo/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/02/extjs4-with-js/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/02/extjs4-with-js/" target="_blank" >Tweet</a>
     
   
   
@@ -717,8 +731,8 @@ Google Map 取得經緯度
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/22/google-map-get-geo/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/22/google-map-get-geo/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/05/02/extjs4-with-js/';
+        var disqus_url = 'http://smlsun.com/blog/2013/05/02/extjs4-with-js/';
         var disqus_script = 'embed.js';
       
     (function () {

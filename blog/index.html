@@ -310,6 +310,121 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/05/02/extjs4-with-js/">使用 Extjs 必須了解的 Js 技巧與知識</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在使用類似 extjs 這樣的 framework 時，一定會被他的方便性還有物件化所吸引，但是如果你對 javascript 的一些基礎或是進階技巧不了解，可能會錯用造成無法預知的麻煩，甚至錯把 javascript 原生當做 extjs 特有的以致於在進行程式開發時扼殺了一些變化的可能性，這些問題也都是筆者曾經經歷過的問題，本篇將就一些在使用 extjs 時一定要知道的觀念與 javascript 的技巧進行介紹。</p>
+
+<p>也許熟手會覺得這是基本中的基本，實際上在業界還不會走路就要會飛的例子比比皆是…不是每個人都是東尼，為了不要摔的太大力，馬步還是蹲好一點。</p>
+
+<hr />
+
+<p>雖說是為了 extjs 而介紹，基本上就算是使用其他的 js 框架，也是需要這些技巧與知識的，就讓我們一個一個來，下面的文章連接皆從我的 blog 而來，歡迎大家進來參觀。</p>
+
+<h2>this</h2>
+
+<p>在使用 extjs 時，很多時候妳必須存取物件的屬性來進行顯示或判斷，特別在物件導向的世界，為了能夠更完美封裝，有些時候妳必須從操作物件的本體來取得相關的物件或屬性，因此，搞懂 this 的對象就非常重要，對於 this 的原理與特性，連結中將有介紹：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">What Is This?</a></p>
+
+<h2>Scope</h2>
+
+<p>Scope 也就是所謂的作用域，了解作用域特性相關的知識在使用 extjs 這樣的框架是很有幫助的，在 extjs 物件導向的特性中很多時候需要利用 Scope 的特性來達成，甚至是在使用 javascript 時，若有效能上的問題，理解 scope 也是個改善方向：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">Scope</a></p>
+
+<h2>callback</h2>
+
+<p>寫 javascript 不得不知道什麼是 callback，extjs 建構於 javascript，使用 extjs 也必須了解，特別是使用 ajax 向後端取得資料時所產生的延遲，為了確保函式執行的順序，callback 就是你要使用的技巧，在使用 extjs 時，可不要認為 callback 形式的函數是 extjs 特有得的：<a href="http://smlsun.com/blog/2013/02/04/javascript-callback/">Callback</a></p>
+
+<h2>Closure</h2>
+
+<p>閉包，是個很強大的特性，但確也是兩面刃，需要花一些時間理解，對於初階開發者也許沒辦法靈活應用，但其特性不得不知，特別是在使用 extjs 這樣的框架，大量使用了閉包的特性來封裝物件，也因此，了解閉包將有助於理解 extjs：<a href="http://smlsun.com/blog/2013/02/01/javascript-closure/">Closure</a></p>
+
+<h2>setTimeout</h2>
+
+<p>從 javascript 原生函式 setTimeout 的運作可以一窺 javascript 在瀏覽器引擎中如何處理接踵而來的任務，雖然與 extjs 沒有直接的關係，但是，在 javascript 的世界裡開車，怎能不了解引擎的運作原理呢：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">setTimeout</a></p>
+
+<h2>Performance</h2>
+
+<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道將能才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
+
+<h2>Memory Leaks 偵測</h2>
+
+<p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
+
+<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神工護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
+
+<p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-05-02T09:15:00+08:00" pubdate data-updated="true">May 2<span>nd</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/05/02/extjs4-with-js/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/05/02/extjs4-with-js/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
 
 </h1>
@@ -399,7 +514,7 @@
     
 <h1 class="entry-title">
 
-<a href="/blog/2013/04/30/extjs-4-intro/">Extjs 4 的新特性與基本概念</a>
+<a href="/blog/2013/04/30/extjs4-intro/">Extjs 4 的新特性與基本概念</a>
 
 </h1>
 
@@ -538,7 +653,7 @@
 
 <h2>新增的 Config 設定</h2>
 
-<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 ConfigItem 之處理程式碼(set/get/apply三種)，如需自行客製化時，則可以自行設計同名 function:{set/get/apply}+ConfigName，用文字描述可能很難理解，來看一個簡單的範例：</p>
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -667,9 +782,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {Appname}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
 
-<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念</p>
+<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
 
 <h2>ExtJS中的基本概念</h2>
 
@@ -725,11 +842,11 @@
 
 <i class="mini-ico-calendar"></i><time datetime="2013-04-30T10:28:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2013</time></span>
 
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/04/30/extjs-4-intro/"></a></span>
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/04/30/extjs4-intro/"></a></span>
     
 
     
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/04/30/extjs-4-intro/#disqus_thread">View comments &raquo;</a></span>
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/04/30/extjs4-intro/#disqus_thread">View comments &raquo;</a></span>
     
 
     
@@ -2609,319 +2726,6 @@ sudo /etc/init.d/apache2 restart   #restart apache
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/19/extjs-tree/">Extjs: Tree 的建立與使用</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>資料來源：</p>
-
-<ul>
-<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
-<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
-</ul>
-
-
-<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
-
-<p>這裡將介紹兩種 tree 的建立方式：</p>
-
-<h1>利用物件來產生 tree</h1>
-
-<pre><code>Ext.onReady( function() {
-
-    var root = new Ext.tree.TreeNode( {
-        text : '根'
-    });
-
-    var node1Child1 = new Ext.tree.TreeNode( {
-        text : '個人資料維護',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-    var node1Child2 = new Ext.tree.TreeNode( {
-        text : '密碼變更',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-
-    var node1 = new Ext.tree.TreeNode( {
-        text : '個人資料'
-    });
-    node1.appendChild(node1Child1);
-    node1.appendChild(node1Child2);
-
-    root.appendChild(node1);
-
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : root
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
-
-<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
-
-<pre><code>Ext.onReady( function() {
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : new Ext.tree.AsyncTreeNode( {
-            text : '根',
-
-            children : [ {
-                text : '個人資料',
-                children : [ {
-                    text : '個人資料維護',
-                    leaf : true
-                }, {
-                    text : '密碼變更',
-                    leaf : true
-                } ]
-            }, {
-                text : '客戶資料',
-                children : [ {
-                    text : '客戶基本資料查詢維護',
-                    leaf : true
-                }, {
-                    text : '客戶基本資料列印',
-                    leaf : true
-                } ]
-            }]
-        })
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>讀取 json 資料來源產生 tree</h2>
-
-<p>假設遠端的 json 資料來源：</p>
-
-<pre><code>[{
-    id: 1,
-    text: 'A leaf Node',
-    leaf: true
-},{
-    id: 2,
-    text: 'A folder Node',
-    children: [{
-        id: 3,
-        text: 'A child Node',
-        leaf: true
-    }]
-}]
-</code></pre>
-
-<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
-
-<pre><code>Ext.onReady(function() {
-    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
-    var tree = new Ext.tree.TreePanel({
-        el: 't',
-        width: 150,
-        autoHeight: true,
-        root: root,
-        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
-    });
-    tree.render();
-});
-</code></pre>
-
-<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
-
-<h2>讀取 xml 資料來源產生 tree</h2>
-
-<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
-
-<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
-
-<ul>
-<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
-</ul>
-
-
-<h2>tree 的操作與參照</h2>
-
-<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
-
-<ul>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
-
-<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
-<li><p>selectPath( path, [attr], [callback] )</p>
-
-<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
-
-<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
-</ul>
-
-
-<p>其他請參照 API，以下有實際使用飯例：</p>
-
-<pre><code>Ext.onReady( function() {
-  var viewport = new Ext.tree.TreePanel( {
-    title : "系統相關",
-    width : 200,
-    height : 500,
-    rootVisible : true,//root結點顯不顯示
-    root : new Ext.tree.AsyncTreeNode( {
-      text : '根',
-      id:'r',
-
-      children : [ {
-        text : '個人資料',
-        id:'c1',
-        children : [ {
-            text : '個人資料維護',
-            id:'c1c1',
-            leaf : true
-
-        }, {
-            text : '密碼變更',
-            myid:'c1c2',
-            leaf : true
-        } ]
-      }, {
-        text : '客戶資料',
-        id:'c2',
-        children : [ {
-            text : '客戶基本資料查詢維護',
-            leaf : true,
-            id:'c2c1'
-        }, {
-            text : '客戶基本資料列印',
-            leaf : true,
-            id:'c2c2'
-        } ]
-      } ]
-    })
-
-  });
-
-  viewport.render('toolbar');
-  viewport.doLayout();
-
-  var btn=new Ext.Button({
-    renderTo:"btn",
-    id:'test',
-    text:'test',
-    handler:function(){
-
-        // selectPath 可以做到 expand 之後在進行 select
-      viewport.selectPath('/r/c2/c2c1');
-
-      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 一旦開啟過節點，再次 findChild 就會取得實體。
-      viewport.expandPath('/r/c1/c1c1');
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 除了 id 之外，我們也可以用別的屬性來做搜尋
-      viewport.root.findChild( 'myid', 'c1c2', true ).select();
-    }
-  });
-
-});
-</code></pre>
-
-<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
-
-<iframe style="width: 100%; height: 600px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-19T18:40:00+08:00" pubdate data-updated="true">Feb 19<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/19/extjs-tree/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/19/extjs-tree/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2997,11 +2801,15 @@ sudo /etc/init.d/apache2 restart   #restart apache
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
       <li>
-        <a href="/blog/2013/04/30/extjs-4-intro/">extjs 4 的新特性與基本概念</a>
+        <a href="/blog/2013/04/30/extjs4-intro/">extjs 4 的新特性與基本概念</a>
       </li>
     
       <li>
@@ -3010,10 +2818,6 @@ sudo /etc/init.d/apache2 restart   #restart apache
     
       <li>
         <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/28/study-coding/">學 web 開發以及 sql 語法的好地方</a>
       </li>
     
   </ul>

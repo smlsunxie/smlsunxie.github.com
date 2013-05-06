@@ -310,6 +310,136 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/15/intrduction-grails/">Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，以及複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
+
+<p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
+
+<ul>
+<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
+<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
+<li>URLMappings：Don’t Repeat Yourself</li>
+<li>約定優於配置：Convention over Configuration</li>
+<li>自動產生 CRUD 維護畫面：scaffold</li>
+</ul>
+
+
+<p>使用 Groovy，做為 grails 開發的基礎，其特性就是大量簡化 java 語言繁瑣的程式指令步驟。</p>
+
+<p>可以看到 Grails 算是集目前 java 世界許多成熟的套件，這些原本單獨使用很繁瑣的套件，在 Grails 上都有某種程度的簡化，簡單到一開始很難直覺想像，往後會會在詳細介紹，這邊不多談。</p>
+
+<p>接著就是設定的部份，在傳統的 java 開發我們常常需要設定像是 jdbc config 、 spring aop 設定的位置等，在 Grails 中，是基於「約定優於配置」的精神，也就是只要放對位置，設定就會生效。</p>
+
+<p>以及 Don’t Repeat Yourself 的精神，在網路應用程式的開發，假設有用到 restful 的技術，在傳統的 JAVA 開發，總要為每個 class 設定 url 規則，如果一多是很繁瑣的。</p>
+
+<p>最後就是自動產生 CRUD 維護畫面，在開發初期，常常需要快速的建立測試資料，以往要是前端與後端程式開發是分開的，總是需要等到後端工程師將 API 開出來後才能開始進行資料庫操作，在 grails 效法 ruby rails 也提供了快速產生維護畫面的功能。</p>
+
+<p>以上是 grails 的特性簡介，不過！絕對不只如此其他還有很多特性，往後會在一一介紹，完全改變對於 Java 開發的習慣。</p>
+
+<p>再來就要在簡單介紹，在 grails 各種不同用途的 Class(groovy) 介紹：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-qgBQ7bBJaDg/UPVP_UtqoxI/AAAAAAAALfQ/rPBPRd5iLXk/s223/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-15+%E4%B8%8B%E5%8D%888.46.39.jpg" alt="img" /></p>
+
+<p>在「約定優於配置」的精神下，grails 本身就針對不同責任的程式進行分類，可以看到如上圖幾種，這邊將簡單介紹各個項目所有處理的事情：</p>
+
+<ul>
+<li>domain: 簡單來講就是原本 hibernate 的 DAO 物件，如果沒有用過類似 O/R MAPPING 的技術可以以把它想像成每個不同的 table 的定義，屬於 MVC 架構中的 Model</li>
+<li>controllers: 也就是 MVC 架構中的 control，用來操作 Model，以及將運算結果呈現給 view</li>
+<li>view: MVC 架構中的 view，在 grails 的世界，是用 gsp ，可以想像成 jsp</li>
+<li>taglib: 可以在 view 中使用一些已經定義好的 tag ，原本在傳統的 j2ee 是非常繁瑣的技術，在 grails 可以很方便使用。</li>
+<li>services: 商業邏輯放置的位置，這部份的程式可任意在 domain、controllers、taglib中直接宣告，將利用 spring 進行注入，有 scope 以及 transaction 交易安全的屬性可以進行操作</li>
+<li>utils: 檢查數值或資料是否符合特定的規格運算程式放置的地方，比如說 email</li>
+<li>scripts: 可以撰寫在 terminal 或是 command line 下可以執行的程式，搭配 <code>grails create-script execute-report</code> 使用。</li>
+<li>i18n: 也就是多語系啦，可以搭配 taglib 在 view 層進行語系的轉換</li>
+<li>src/java: 在 grails 如果你要寫傳統 java 也是 ok 的只要放在這個資料夾，就會編譯成 class</li>
+<li>src/groovy: 上述分類中無法歸屬，或著原本有寫過純 groovy 的程式碼就放在這</li>
+<li>test/utils: 單元測試，只要放在這資料夾的測試程式，都會被執行</li>
+<li>test/integration: 整合測試，也就是會將上述所有的不同功能都載入進行測試。</li>
+</ul>
+
+
+<p>大致上上面所說的就是 grails 中一開始需要習慣的地方，與以往的 free style 的開發雖然多了些限制，但有了約定，基本上程式也不會亂放導致東一塊西一塊，並且透過了解上面的結構，對於程式初學也可以較清楚知道一個完整的程式，必須包含哪些不同責任的元件。</p>
+
+<p>也許有些專案成員沒有辦法立即現有的工作換到新的開發框架，不過！找時間玩玩看，相信可以更了解程式的責任釐清，像我就是！陸續會在根據不同責任的程式使用的方式個別進行詳細說明，文章就到這啦！</p>
+
+<p>這篇花了我一小時的時間，寫文章還是不夠快速，要在加油…</p>
+
+<p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-15T20:17:00+08:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/15/intrduction-grails/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/15/intrduction-grails/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/14/video-man/">Video Man - 『尊重』的重要，與『沒關係』的可怕</a>
 
 </h1>
@@ -1416,113 +1546,6 @@ git submodule update
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/25/taiwan-china-Korea/">大陸韓國看台灣-我們應該更有自信</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>寫這篇文章不只給大家看，也給自己看，因為想創業，所以離開了我熟悉得工作內容，最近在摸索的期間，有時會焦慮，有時候覺得能力不足，看的不夠廣，或是態度還沒準備好，總覺得需要學習的還有很多，除了自身以外，相信現在台灣的年輕人對於台灣環境的憂慮我想大家都不是很看好，不管是經濟，或者是政治，有時候我們也真的不要都看自己人的說詞，也看別人怎麼看台灣，特別台灣媒體政治人物特別喜歡唱衰，應該也是因為沒自信造成的。</p>
-
-<p>先看看韓國人怎麼說，下面的連結：</p>
-
-<blockquote><p><a href="http://cpaper-blog.blogspot.tw/2012/12/life-is-good.html">泡菜與番薯，Life is good？</a></p></blockquote>
-
-<p>我想最近大家都覺得韓國人來勢洶洶，不管在經濟或是偶像娛樂事業，沒錯～在競爭力來看，韓國確實很強，但另一方面，國家人民不太有選擇，因為大財團，還有國家的民族性，讓他們沒有什麼選擇，也因此他們很羨慕台灣的多元性，我們可以選擇我們想要的，如果我們朝韓國的方向前進，其實就是犧牲自由的選擇，之前看過一本書叫做<a href="http://www.books.com.tw/exep/prod/booksfile.php?item=0010556027">怪咖時代</a>，裡面有說到因為有選擇權，才會造就更極致的事業，怪咖才能崛起，可以想想如果真的都定型了，我們有有什麼自由意志可言，每個人都往大企業跑，又怎麼會像美國，有這麼多令人讚賞的創意，從韓國人的角度看台灣，其實我們擁有的更加可貴！</p>
-
-<p>再來是從經濟的角度：</p>
-
-<blockquote><p><a href="http://blog.udn.com/sscorp/7150517">給所有台灣人一點自信，台灣的真實地位</a></p></blockquote>
-
-<p>台灣媒體總是喜歡用聳動的標題或是單一的舉證來說明一個事實，有時候不夠客觀，比如說最近常在講，我們是亞洲四小龍之末，但從數據來看，其實台灣還是很有競爭力，從失業率來看，外國動扎兩位數的失業率，在西班牙甚至高於50%，相較起來台灣真的好多了，要是我們總是因為錯誤的報導，認為台灣的環境不好，其實也更間接讓一些有能力的人，認為台灣沒有發展，因此海外人才就不來台灣，我們不只在嚇自己也在嚇別人！其實這樣是不對的，我們應該要更有自信，台灣是寶島不是鬼島，住在上面是寶貴的，不是鬼在住的！勇於接受外來的刺激，跳出舒適圈，之前看到個很不錯的slogan</p>
-
-<blockquote><p>全世界最笨的是每天做一樣的事卻希望有不一樣的未來！</p></blockquote>
-
-<p>共勉～</p>
-
-<p>最後從大陸人的眼光來看台灣</p>
-
-<p><a href="http://www.chinanews.com/tw/2012/12-18/4415974.shtml">大陆人看台湾：建立两岸互信 台湾首先要自信</a></p>
-
-<p>我想這篇文章的重點</p>
-
-<blockquote><p>所有的互信都是從自信開始的，因著自信而願意去主動瞭解對方。與主動的瞭解探尋相比，被動接受的信息往往單一而平面，只有好壞兩個維度的座標</p></blockquote>
-
-<p>在沒有自信的情況下，我們會害怕我們不了解的事物，其實就像前面講得因為沒自信我們害怕了解，只看片面之詞，如果我們有自信，對於一些不實的報導，我們就會比較，我們有這麼差嗎？如果有自信，我們就不會害怕嘗試，害怕失敗，因為有自信，會相信從失敗中我們能夠變得更強！</p>
-
-<p>當然最後還要強調自信並不是要目中無人，自信中帶著謙遜，可以看到成功並且令人尊敬的人仕都有這樣的特質，時時提醒自己：</p>
-
-<blockquote><p>自信中不要忘了謙遜</p></blockquote>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-25T11:14:00+08:00" pubdate data-updated="true">Dec 25<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/25/taiwan-china-Korea/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/25/taiwan-china-Korea/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1600,11 +1623,15 @@ git submodule update
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
       <li>
-        <a href="/blog/2013/04/30/extjs-4-intro/">extjs 4 的新特性與基本概念</a>
+        <a href="/blog/2013/04/30/extjs4-intro/">extjs 4 的新特性與基本概念</a>
       </li>
     
       <li>
@@ -1613,10 +1640,6 @@ git submodule update
     
       <li>
         <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/28/study-coding/">學 web 開發以及 sql 語法的好地方</a>
       </li>
     
   </ul>

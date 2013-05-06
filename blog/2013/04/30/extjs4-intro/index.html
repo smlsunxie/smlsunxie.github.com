@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2013/04/30/extjs-4-intro/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/04/30/extjs4-intro/">
 
 
 
@@ -449,7 +449,7 @@ Extjs 4 的新特性與基本概念
 
 <h2>新增的 Config 設定</h2>
 
-<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 ConfigItem 之處理程式碼(set/get/apply三種)，如需自行客製化時，則可以自行設計同名 function:{set/get/apply}+ConfigName，用文字描述可能很難理解，來看一個簡單的範例：</p>
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -578,9 +578,11 @@ Extjs 4 的新特性與基本概念
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {Appname}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
 
-<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念</p>
+<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
 
 <h2>ExtJS中的基本概念</h2>
 
@@ -664,7 +666,7 @@ Extjs 4 的新特性與基本概念
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/04/30/extjs-4-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/04/30/extjs-4-intro/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/04/30/extjs4-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/04/30/extjs4-intro/" target="_blank" >Tweet</a>
     
   
   
@@ -782,11 +784,15 @@ Extjs 4 的新特性與基本概念
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
       <li>
-        <a href="/blog/2013/04/30/extjs-4-intro/">extjs 4 的新特性與基本概念</a>
+        <a href="/blog/2013/04/30/extjs4-intro/">extjs 4 的新特性與基本概念</a>
       </li>
     
       <li>
@@ -795,10 +801,6 @@ Extjs 4 的新特性與基本概念
     
       <li>
         <a href="/blog/2013/03/01/grails-taggable/">grails taggable plugin 搭配 jquery tagit 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/02/28/study-coding/">學 web 開發以及 sql 語法的好地方</a>
       </li>
     
   </ul>
@@ -832,7 +834,7 @@ Extjs 4 的新特性與基本概念
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/04/30/extjs-4-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/04/30/extjs-4-intro/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/04/30/extjs4-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/04/30/extjs4-intro/" target="_blank" >Tweet</a>
     
   
   
@@ -984,8 +986,8 @@ Extjs 4 的新特性與基本概念
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2013/04/30/extjs-4-intro/';
-        var disqus_url = 'http://smlsun.com/blog/2013/04/30/extjs-4-intro/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/04/30/extjs4-intro/';
+        var disqus_url = 'http://smlsun.com/blog/2013/04/30/extjs4-intro/';
         var disqus_script = 'embed.js';
       
     (function () {
