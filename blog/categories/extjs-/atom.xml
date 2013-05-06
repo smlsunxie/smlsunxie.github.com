@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs, | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs-/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-06T18:29:37+08:00</updated>
+  <updated>2013-05-06T18:32:43+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -54,7 +54,7 @@
 
 <p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
 
-<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神工護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
+<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神功護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
 
 <p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
 ]]></content>
