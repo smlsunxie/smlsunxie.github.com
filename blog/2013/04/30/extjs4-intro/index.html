@@ -28,7 +28,7 @@
   
   <meta name="description" content="說明 extjs 4 的新特性與基本概念">
   
-  <meta name="keywords" content="javascriptextjsextjs 4">
+  <meta name="keywords" content="javascriptextjsextjs4">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -351,7 +351,7 @@ Extjs 4 的新特性與基本概念
 
 <h2>類別定義</h2>
 
-<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於類不存在報出的錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
+<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於定義的類別不存在產生錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
 
 <p>舉個簡單的例子：</p>
 
@@ -602,10 +602,6 @@ Extjs 4 的新特性與基本概念
 
 <p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
 
-<h2>Render</h2>
-
-<p>一般來說，我們在傳統 html 中要定義樣式需要透過 css 來進行定義並且將結果呈現在網頁上，extjs 的 render 也是同樣的道理，不同的是一般 css 我們需要從 server 或是網路下載，在extjs 是透過他的引擎完成樣式的呈現，理解這點在開發 extjs 將能夠更了解其運作原理</p>
-
 <h2>Model 與 Store</h2>
 
 <p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
@@ -651,7 +647,7 @@ Extjs 4 的新特性與基本概念
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/4/'>4</a>, <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/extjs-/'>extjs,</a>, <a class='category' href='/blog/categories/javascript-/'>javascript,</a>
+    <a class='category' href='/blog/categories/extjs-/'>extjs,</a>, <a class='category' href='/blog/categories/extjs4/'>extjs4</a>, <a class='category' href='/blog/categories/javascript-/'>javascript,</a>
   
 </span></span>
 

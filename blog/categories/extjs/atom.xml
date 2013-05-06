@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-06T18:32:43+08:00</updated>
+  <updated>2013-05-06T18:36:23+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,277 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[使用 extjs 必須了解的 js 技巧與知識]]></title>
-    <link href="http://smlsun.com/blog/2013/05/02/extjs4-with-js/"/>
-    <updated>2013-05-02T09:15:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/05/02/extjs4-with-js</id>
-    <content type="html"><![CDATA[<p>在使用類似 extjs 這樣的 framework 時，一定會被他的方便性還有物件化所吸引，但是如果你對 javascript 的一些基礎或是進階技巧不了解，可能會錯用造成無法預知的麻煩，甚至錯把 javascript 原生當做 extjs 特有的以致於在進行程式開發時扼殺了一些變化的可能性，這些問題也都是筆者曾經經歷過的問題，本篇將就一些在使用 extjs 時一定要知道的觀念與 javascript 的技巧進行介紹。</p>
-
-<p>也許熟手會覺得這是基本中的基本，實際上在業界還不會走路就要會飛的例子比比皆是…不是每個人都是東尼，為了不要摔的太大力，馬步還是蹲好一點。</p>
-
-<hr />
-
-<p>雖說是為了 extjs 而介紹，基本上就算是使用其他的 js 框架，也是需要這些技巧與知識的，就讓我們一個一個來，下面的文章連接皆從我的 blog 而來，歡迎大家進來參觀。</p>
-
-<h2>this</h2>
-
-<p>在使用 extjs 時，很多時候妳必須存取物件的屬性來進行顯示或判斷，特別在物件導向的世界，為了能夠更完美封裝，有些時候妳必須從操作物件的本體來取得相關的物件或屬性，因此，搞懂 this 的對象就非常重要，對於 this 的原理與特性，連結中將有介紹：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">What Is This?</a></p>
-
-<h2>Scope</h2>
-
-<p>Scope 也就是所謂的作用域，了解作用域特性相關的知識在使用 extjs 這樣的框架是很有幫助的，在 extjs 物件導向的特性中很多時候需要利用 Scope 的特性來達成，甚至是在使用 javascript 時，若有效能上的問題，理解 scope 也是個改善方向：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">Scope</a></p>
-
-<h2>callback</h2>
-
-<p>寫 javascript 不得不知道什麼是 callback，extjs 建構於 javascript，使用 extjs 也必須了解，特別是使用 ajax 向後端取得資料時所產生的延遲，為了確保函式執行的順序，callback 就是你要使用的技巧，在使用 extjs 時，可不要認為 callback 形式的函數是 extjs 特有得的：<a href="http://smlsun.com/blog/2013/02/04/javascript-callback/">Callback</a></p>
-
-<h2>Closure</h2>
-
-<p>閉包，是個很強大的特性，但確也是兩面刃，需要花一些時間理解，對於初階開發者也許沒辦法靈活應用，但其特性不得不知，特別是在使用 extjs 這樣的框架，大量使用了閉包的特性來封裝物件，也因此，了解閉包將有助於理解 extjs：<a href="http://smlsun.com/blog/2013/02/01/javascript-closure/">Closure</a></p>
-
-<h2>setTimeout</h2>
-
-<p>從 javascript 原生函式 setTimeout 的運作可以一窺 javascript 在瀏覽器引擎中如何處理接踵而來的任務，雖然與 extjs 沒有直接的關係，但是，在 javascript 的世界裡開車，怎能不了解引擎的運作原理呢：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">setTimeout</a></p>
-
-<h2>Performance</h2>
-
-<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道將能才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
-
-<h2>Memory Leaks 偵測</h2>
-
-<p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
-
-<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神功護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
-
-<p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs 4 的新特性與基本概念]]></title>
-    <link href="http://smlsun.com/blog/2013/04/30/extjs4-intro/"/>
-    <updated>2013-04-30T10:28:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/04/30/extjs4-intro</id>
-    <content type="html"><![CDATA[<p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
-
-<p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
-
-<p>當然雖然 extjs 對當時的我來說是那麼的美好，說實在的如果有些基礎 javascript 不熟悉，使用起來常常不知所以然，以致於寫出來的 code 總是讓人覺得「不是一般人寫的出來的」…糟糕，那是個青澀的年代(遠望~)，</p>
-
-<p>時至今日 extjs 來到 4.x，一個新的境界，與以往版本有著更大的不同，希望透過一系列的文章能夠讓剛接觸 extjs 讀者快速了解他的特性，少走一些冤枉路，快速完成公司交辦的工作，早早下班享受人生～</p>
-
-<hr />
-
-<p>系列文章的一開始希望能夠讓大家對 extjs 的基本特性以及原理做個基本介紹，本文將參考下列文章內容節錄重要的部份，有需要更深入了解的讀者可以跳轉參考</p>
-
-<ul>
-<li><a href="http://book.51cto.com/art/201109/291474.htm">ExtJS Web應用程序開發指南</a></li>
-<li><a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html">Ext JS 4 First Look 翻譯：新特性</a></li>
-</ul>
-
-
-<p>首先在使用 extjs 時，不得不被他得物件導向特性所吸引到，如果對 javascript 有些開發經驗了解他的特性，可以知道 javascript 是函數式語言，沒有直接的物件導向特性。通常，要將 javascript 設計為物件導向的開發方式不是不行，但相信那不時是初階開發人員可以做到的，實務上物件導向設計確實可以有效的分工，對於多人開發以及程式重覆使用已有多年的驗證，但硬是要將函數語言改為物件語言，沒有深厚的功力，恐怕沒那簡單，也因此第一個要介紹 extjs 的部份，就是其物件導向的設計，讓我們可以很輕易的用  javascript 進行物件導向式的開發。</p>
-
-<h1>動態加載和新的物件導向特性</h1>
-
-<p>JavaScript 沒有真正的物件導向設計，但 ExtJS 自己設計了物件導向式的結構，從而讓開發者可以利用物件導向的精神來開發前端 javascript。</p>
-
-<p>與以往版本的不同，ExtJS 4.0對舊的物件系統進行了全面的更新，進而讓開發更簡單、更靈活。</p>
-
-<p>ExtJS 4 推出4個新的物件導向特性：類別定義、mixins(混合複數classes)、更方便的物件屬性定義及動態加載，下面將針對上述特性做個簡單介紹</p>
-
-<h2>類別定義</h2>
-
-<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於類不存在報出的錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
-
-<p>舉個簡單的例子：</p>
-
-<p>``` javascript</p>
-
-<pre><code>Ext.define('Argicloud.view.ReadBtn', {
-    extend: 'Ext.button.Button',
-    alias: 'widget.readbtn',
-
-    itemId: 'readBtn',
-    text: 'Read',
-
-    initComponent: function() {
-        var me = this;
-
-        me.callParent(arguments);
-    }
-
-});
-</code></pre>
-
-<p>```</p>
-
-<p>上述的例子讓我們可以輕易的繼承 extjs 原生的 Button 定義客製的屬性，如此就可做到前端元件重覆使用，並且抽出共用的部分，方便後續維護，這邊先點到為止，後續會有更詳細的文章介紹，接著來看 mixins</p>
-
-<h2>mixins (混合複數classes)</h2>
-
-<p>許多動態語言都支援 mixins 的特性，比如 Ruby、Python。而JavaScript 在語法上並無 mixins 的特性，但 ExtJS 4 自己實現了 mixins 的功能，類似於多重繼承，是種更細的程式碼重覆使用特性，如果一個類別需要某個特性，只需要將擁有該特性的類別類混入目標類別中即可。同樣的先來看一下簡單範例：</p>
-
-<p>``` javascript</p>
-
-<pre><code>Ext.define("MyClass.Engine", {
-     operate: function(){
-          console.log("1000 rpm");
-     }
-});
-Ext.define("MyClass.Wheel", {
-     scroll: function(){
-          console.log("go");
-     }
-});
-Ext.define("MyClass.Car", {
-     mixins: {
-          Engine: "MyClass.Engine",
-          Wheel: "MyClass.Wheel"
-     },
-     dirve: function(){
-          console.log("forward");
-     }
-});
-var objCar = Ext.create("MyClass.C");
-objCar.operate(); // 1000 rpm
-objCar.scroll(); // go
-objCar.dirve(); // forward
-</code></pre>
-
-<p>```
-如此我們可以很簡單的將一個應用拆分成多個不同的小類別，最後再將各個類別像積木一樣主合成一最後要使用的物件。除了物件導向的特性外 extjs 4 也提供新的物件屬性定義方式。</p>
-
-<h2>新增的 Config 設定</h2>
-
-<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
-
-<p>``` javascript</p>
-
-<pre><code>Ext.define('My.awesome.Class', {
-    // The default config
-    config: {
-        name: 'Awesome',
-        isAwesome: true
-    },
-    constructor: function(config) {
-        this.initConfig(config);
-        return this;
-    }
-});
-
-var awesome = new My.awesome.Class({
-    name: 'Super Awesome'
-});
-
-alert(awesome.getName()); // 'Super Awesome'
-</code></pre>
-
-<p>```</p>
-
-<p>可以看到在類別定義中 config.name 定義好了，但未特別定義 getName 這樣的函數，但我們卻可以直接呼叫，這樣的特性正是 extjs 幫我們完成的，讓我們可以更專注在最重要的邏輯上。</p>
-
-<h2>動態載入(dynamic loading)</h2>
-
-<p>不管你有沒有用過類似 extjs 的框架，或者是寫過大型的 web 應用程式，一旦您的頁面需要載入大量的 resource 或著 .js 檔時，將會造成載入時間過長，很多不需要的腳本其實可以不用載入甚至在需要時載入，但實務上一個人開發時要管控還算簡單，多人就麻煩了！</p>
-
-<p>也因為 extjs 在舊版時沒有很漂亮的解決此問題，我也算是有切身之痛，所幸，extjs 發展到現在也該是時候了，動態載入功能將根據你對類別定義需要的類別引入相關的 js 檔，通過動態載入可以有效地減少客戶端載入的腳本體積，也因此在 html page 你只要載入 extjs 的 lib 以及 application.js（後續 mvc 會介紹），之後所有的 js 檔會在你使用類別時進行動態載入，希望可以讓讀者更清楚知道該屬性，我們來看一下範例：</p>
-
-<p>``` html</p>
-
-<pre><code>&lt;html&gt;
-    &lt;head&gt;
-    &lt;title&gt;My ExtJS MVC&lt;/title&gt;
-    &lt;link rel="stylesheet" type="text/css" href="extjs-4.1.0/resources/css/ext-all.css" /&gt;
-    &lt;script src="extjs-4.1.0/ext-all.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;script src="init.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;/head&gt;
-
-&lt;body&gt;
-
-
-&lt;/body&gt;
-
-&lt;/html&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>上面程式碼我們只有載入 extjs lib 以及初始的 init.js</p>
-
-<p>接著來看 init.js 的內容</p>
-
-<p>``` javascript</p>
-
-<p>Ext.Loader.setConfig({</p>
-
-<pre><code>enabled: true
-</code></pre>
-
-<p>});</p>
-
-<p>Ext.application({</p>
-
-<pre><code>models: [
-    'Item',
-],
-stores: [
-    'ItemStore',
-],
-views: [
-    'ItemGrid'
-],
-autoCreateViewport: true, //set as true - 將尋找 Viewport.js 自動載入
-
-controllers: [
-    'MainController'
-],
-name: 'Argicloud'
-</code></pre>
-
-<p>});</p>
-
-<p>```</p>
-
-<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
-
-<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
-
-<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
-
-<h2>ExtJS中的基本概念</h2>
-
-<p>ExtJS 和傳統的前端 Web 開發的不一樣，不用在 HTML 和 CSS 中打轉，就像筆者當年對兩者都不甚了解，還是用的很開心一樣，可以想像你是在使用 JavaSwing 這樣的技術呈現的結果是在網頁上一樣，不用管介面的樣式以及如何呈現，只要負責操作類別間的互動以及事件的定義，其他就交由 extjs 幫你處理。一但透過目前瀏覽器提供的開發者工具，可以發現 extjs 只是把你宣告的元件轉化成 html dom element，基本上與 html 還是脫不了關係，有這層了解後在使用 extjs 可以更容易理解，在這裡將介紹幾個 extjs 較重要的元件</p>
-
-<h2>Container</h2>
-
-<p>extjs 中 Container 顧名思義就是容器，你可以把它想像成 html 中的 div，在 extjs Container 是一些類別的父類別，比如說：panel，在開始開發 extjs 時，你可以先用繼承於 Cotainer 的類別進行介面的分塊把你想要的呈現方式定義好，之後在放上你要的元件即可。</p>
-
-<h2>Layout</h2>
-
-<p>每個 container 都有個屬性：layout。透過該屬性的定義來對 container 裡所擁有的元件進行擺放，開發者不需要在自行定義 css 或者 html dom 巢狀結構來擺放相關元件，可以更快速的將介面呈現定義好，在開發人員技術不純熟的情況下，可以保證介面呈現的一置性。</p>
-
-<h2>Component</h2>
-
-<p>當你開始製作 extjs 應用程式時，一旦拉好框架，定義好 layout 後，接著你要做的就是將元件放入，舉凡按鈕，欄位，表單以及資料表在 extjs 都是繼承於 Component，透過繼承於 Component 除了 extjs 原生的元件外，你也可以製作你自己的元件，甚至是第三方元件等，大大提昇 extjs 在前端呈現的豐富性。</p>
-
-<p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
-
-<h2>Render</h2>
-
-<p>一般來說，我們在傳統 html 中要定義樣式需要透過 css 來進行定義並且將結果呈現在網頁上，extjs 的 render 也是同樣的道理，不同的是一般 css 我們需要從 server 或是網路下載，在extjs 是透過他的引擎完成樣式的呈現，理解這點在開發 extjs 將能夠更了解其運作原理</p>
-
-<h2>Model 與 Store</h2>
-
-<p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
-
-<p>除此之外，ExtJS 4.0 提供了 關聯 API，可以定義不同 model 間多對多或一對多等的資歷關係，通過關聯 API 將模型關聯起來後，將可以更容易存取相關的資料模型。</p>
-
-<p>透過上述的介紹希望讀者們可以對 extjs 有個初步的了解，如果看完後還算有興趣，下一篇將介紹 extjs 使用到的進階 js 技巧，所謂萬丈高樓平地起，像 extjs 這樣複雜的框架，也是從基本 javascript 建構而來，理解該框架所使用到的 js 進階技巧，將有助於您在使用 extjs 時的理解進而變化運用</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs4: mvc 使用簡介與範例介紹]]></title>
@@ -1166,6 +895,285 @@ w.theFormPanel.saveButton.on('click', function() {
 <p>詳細註解與說明都在上面程式的註解裡，這邊就不多做說明，可以看到透過 ref 的使用，我們可以更加方變得操作 extjs 裡的元件。除了 id 以及 itemid 之外也多了一個可以更方便敘述物件關係的方式。</p>
 
 <p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
+    <link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
+    <updated>2013-02-18T19:12:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
+    <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 ...</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 ...</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[extjs: DOM、Element 以及 Component 的差別]]></title>
+    <link href="http://smlsun.com/blog/2013/02/18/extjs-dom-element-component/"/>
+    <updated>2013-02-18T12:32:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/02/18/extjs-dom-element-component</id>
+    <content type="html"><![CDATA[<p>資料來源：</p>
+
+<ul>
+<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
+</ul>
+
+
+<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
+
+<p>而在 extjs 中就有個專門用來處理 DOM 的類別 ...</p>
+
+<h2>Ext.DomHelper</h2>
+
+<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
+
+<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
+
+<pre><code>var dh = Ext.DomHelper; // create shorthand alias
+// specification object
+var spec = {
+    id: 'my-ul',
+    tag: 'ul',
+    cls: 'my-list',
+    // append children after creating
+    children: [     // may also specify 'cn' instead of 'children'
+        {tag: 'li', id: 'item0', html: 'List Item 0'},
+        {tag: 'li', id: 'item1', html: 'List Item 1'},
+        {tag: 'li', id: 'item2', html: 'List Item 2'}
+    ]
+};
+var list = dh.append(
+    'my-div', // the context element 'my-div' can either be the id or the actual node
+    spec      // the specification object
+);
+</code></pre>
+
+<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
+
+<ul>
+<li>append</li>
+<li>insertBefore</li>
+<li>insertAfter</li>
+<li>overwrite</li>
+<li>createTemplate</li>
+<li>insertHtml</li>
+</ul>
+
+
+<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
+
+<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
+
+<pre><code>// gets dom node based on id
+var elDom = Ext.getDom('elId');
+// gets dom node based on the dom node
+var elDom1 = Ext.getDom(elDom);
+
+// If we don't know if we are working with an
+// Ext.Element or a dom node use Ext.getDom
+function(el){
+    var dom = Ext.getDom(el);
+    // do something with the dom node
+}
+</code></pre>
+
+<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 ...</p>
+
+<h2>Ext.Element</h2>
+
+<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
+
+<pre><code>// by id
+var el = Ext.get("my-div");
+
+// by DOM element reference
+var el = Ext.get(myDivElement);
+</code></pre>
+
+<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
+
+<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
+
+<pre><code>var el = Ext.get("my-div");
+
+// no animation
+el.setWidth(100);
+</code></pre>
+
+<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
+
+<pre><code>// default animation
+el.setWidth(100, true);
+</code></pre>
+
+<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
+
+<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
+
+<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
+
+<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
+
+<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
+
+<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 ...</p>
+
+<h2>Ext.Component</h2>
+
+<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
+
+<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
+
+<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
+
+<p>而下面範例說明實際上的使用狀況：</p>
+
+<pre><code>var view=new Ext.Viewport();                
+//建立了一個組件 Component 
+view.el.setOpacity(.5);                     
+//呼叫 Element 的 setOpacity 方法
+view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
+</code></pre>
+
+<p>以及如何分別取得 dom、element 以及 component</p>
+
+<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
+win .show(); 
+var c=Ext.getCmp("win1");           //得到 win 
+var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
+var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
+</code></pre>
+
+<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>
+
+<h2>深入 extjs</h2>
+
+<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，需要 extend extjs 的元件作為自定義的元件時，如何實作有時就要從原始碼找答案。</p>
+
+<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器 Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是蠻重要的。</p>
 ]]></content>
   </entry>
   
