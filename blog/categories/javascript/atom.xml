@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-07T17:06:12+08:00</updated>
+  <updated>2013-05-07T17:11:44+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -1173,15 +1173,15 @@ initComponent: function() {
 
 <p><img src="https://lh4.googleusercontent.com/-GK2_yMQlCVM/UYi_vpyUXEI/AAAAAAAALpw/KpxVYWZNrwU/w603-h540-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-07+%25E4%25B8%258B%25E5%258D%25884.47.25.jpg" alt="image" /></p>
 
-<p>這樣的例子中，可以看到，在底下有兩個 panel，如果我們要操作第二個 form，在上面的程式碼中我們將其 itemid 設為 form1，因此我們可以利用下列程式來取得參照</p>
+<p>這樣的例子中，可以看到，在底下有兩個 panel，如果我們要操作第二個 form，在上面的程式碼中我們將其 itemid 設為 form2，如此一來我們可以利用下列程式來取得參照</p>
 
 <p><code>Ext.ComponentQuery.query('panel[itemId=form1]');</code></p>
 
-<p>當然除了 itemid 屬於該物件的屬性皆可以拿來進行查詢，比如說我們自定一個屬性為 <code>cls:form2-cls</code>，那我們就可以依樣畫葫蘆：</p>
+<p>當然除了 itemid，只要是屬於該物件的屬性皆可以拿來進行查詢，比如說我們自定一個屬性為 <code>cls:form2-cls</code>，那我們就可以依樣畫葫蘆：</p>
 
 <p><code>Ext.ComponentQuery.query('panel[cls=form2-cls]');</code></p>
 
-<p>就是如此方便簡單！除了 Ext.ComponentQuery.query 另外還有提供兩個好用的方法 <code>up()</code>，<code>down()</code>，同樣以上面為例子，來進行 remove 的實作，一旦點選 remove 時要將在 grid 中選中的 record 移除，程式碼如下：</p>
+<p>就是如此方便！除了 Ext.ComponentQuery.query 另外還有提供兩個好用的方法 <code>up()</code>，<code>down()</code>，同樣以上面為例子，來進行 remove 的實作，一旦點選 remove 按鈕時要將在 grid 中選中的 record 移除，程式碼如下：</p>
 
 <p>``` javascript
 {</p>
@@ -1203,7 +1203,9 @@ text: 'remove'
 <p>}
 ```</p>
 
-<p>之前有提到 extjs 會記住使用到的各個 Component 之間的關係，因此一旦能夠存取到事件發動的物件妳就可以從該物件找到互動的物件，就如同上面的程式碼，元件結構上為 grid > toolbar > button，因此一旦我點選了 button 我要找到 grid 只要往上兩層 <code>button.up().up()</code> 即可，<code>down()</code> 的部份同理，除此之外還可以搭配 ComponentQuery 使用，假設妳目前已可以存取 grid，要取得 button 的參照，妳可以這樣做：</p>
+<p>文章中有提到 extjs 會記住使用到的各個 Component 以及之間的關係，因此一旦能夠存取到事件發動的物件妳就可以從該物件找到互動的物件，參考範例的介面，元件結構上為 grid > toolbar > button，因此一旦我點選了 button 我要找到 grid 只要往上兩層 <code>button.up().up()</code> 即可，<code>down()</code> 的部份同理。</p>
+
+<p>除了單純的使用之外，還可以搭配 ComponentQuery 語法使用，假設妳目前已可以存取 grid，要取得 button 的參照，妳可以這樣做：</p>
 
 <p>``` javascript
 grid.down("button[itemId=updateBtn]")</p>
