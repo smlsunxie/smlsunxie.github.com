@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs, | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs-/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-06T18:36:23+08:00</updated>
+  <updated>2013-05-07T17:06:12+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -48,7 +48,7 @@
 
 <h2>Performance</h2>
 
-<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道將能才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
+<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
 
 <h2>Memory Leaks 偵測</h2>
 

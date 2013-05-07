@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-06T18:36:23+08:00</updated>
+  <updated>2013-05-07T17:06:12+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -769,7 +769,7 @@ Ext.define('Frontend.controller.MN.MNM001', {
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同]]></title>
+    <title type="html"><![CDATA[extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 的不同]]></title>
     <link href="http://smlsun.com/blog/2013/02/19/extjs-component/"/>
     <updated>2013-02-19T14:47:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/02/19/extjs-component</id>
@@ -969,9 +969,9 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 
 <p>除了上述 id 以及 itemid 可用於索引元件取得參照之外，我們還可以使用以下方法</p>
 
-<h2>ref</h2>
+<h2>ref (extjs 3.x)</h2>
 
-<p>使用 ref 可以更加方便得取得 container 底下的 Component，連 getComponent 都可以免了。</p>
+<p>如果你所使用的 extjs 版本為 3.x，利用 ref 可以更加方便得取得 container 底下的 Component，連 getComponent 都可以免了。</p>
 
 <p>參考官方文件 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-ref">Ext.Component-cfg-ref</a></p>
 
@@ -1059,6 +1059,158 @@ w.theFormPanel.saveButton.on('click', function() {
 <p>詳細註解與說明都在上面程式的註解裡，這邊就不多做說明，可以看到透過 ref 的使用，我們可以更加方變得操作 extjs 裡的元件。除了 id 以及 itemid 之外也多了一個可以更方便敘述物件關係的方式。</p>
 
 <p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
+
+<p>另外 ref 在 extjs 3.x 還存在，但在 extjs 4.x 已拿掉此屬性，不過別擔心，官方有給我們更好的物件選擇方式，up，down，以及 ComponentQuery</p>
+
+<h2>up，down，以及 ComponentQuery</h2>
+
+<p>使用 ComponentQuery，妳可以利用類似 jquery 的語法來進行查詢 extjs 元件，舉例來看，假設我們有個元件宣告如下：</p>
+
+<p>``` javascript
+Ext.define('MyApp.view.MyViewport', {</p>
+
+<pre><code>extend: 'Ext.container.Viewport',
+
+id: 'mainvp',
+layout: {
+    align: 'stretch',
+    type: 'vbox'
+},
+
+initComponent: function() {
+    var me = this;
+
+    Ext.applyIf(me, {
+        items: [
+            {
+                xtype: 'gridpanel',
+                flex: 1,
+                title: 'My Grid Panel',
+                store: 'MyArrayStore',
+                dockedItems: [
+                    {
+                        xtype: 'toolbar',
+                        dock: 'top',
+                        items: [
+                            {
+                                xtype: 'button',
+                                text: 'remove'
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'add'
+                            }
+                        ]
+                    }
+                ],
+
+                columns: [
+                    {
+                        xtype: 'gridcolumn',
+                        dataIndex: 'id',
+                        text: 'Id',
+                        editor: {
+                            xtype: 'textfield'
+                        }
+                    },
+                    ...
+                ],
+                listeners: {
+                    select: {
+                        fn: me.onGridpanelSelect,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'form',
+                flex: 1,
+                itemId: 'form1',
+                bodyPadding: 10,
+                title: 'form1',
+                items: [
+                    {
+                        xtype: 'textfield',
+                        anchor: '100%',
+                        fieldLabel: 'id',
+                        name: 'id'
+                    },
+                    {
+                        xtype: 'textfield',
+                        anchor: '100%',
+                        fieldLabel: 'name',
+                        name: 'name'
+                    }
+                ]
+            },
+            {
+                xtype: 'form',
+                flex: 1,
+                itemId: 'form2',
+                bodyPadding: 10,
+                title: 'form2',
+                items: [
+                    {
+                        xtype: 'textfield',
+                        anchor: '100%',
+                        fieldLabel: 'title',
+                        name: 'title'
+                    }
+                ]
+            }
+        ]
+    });
+
+    me.callParent(arguments);
+}
+</code></pre>
+
+<p>});</p>
+
+<p>```</p>
+
+<p>呈現畫面如下：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-GK2_yMQlCVM/UYi_vpyUXEI/AAAAAAAALpw/KpxVYWZNrwU/w603-h540-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-07+%25E4%25B8%258B%25E5%258D%25884.47.25.jpg" alt="image" /></p>
+
+<p>這樣的例子中，可以看到，在底下有兩個 panel，如果我們要操作第二個 form，在上面的程式碼中我們將其 itemid 設為 form1，因此我們可以利用下列程式來取得參照</p>
+
+<p><code>Ext.ComponentQuery.query('panel[itemId=form1]');</code></p>
+
+<p>當然除了 itemid 屬於該物件的屬性皆可以拿來進行查詢，比如說我們自定一個屬性為 <code>cls:form2-cls</code>，那我們就可以依樣畫葫蘆：</p>
+
+<p><code>Ext.ComponentQuery.query('panel[cls=form2-cls]');</code></p>
+
+<p>就是如此方便簡單！除了 Ext.ComponentQuery.query 另外還有提供兩個好用的方法 <code>up()</code>，<code>down()</code>，同樣以上面為例子，來進行 remove 的實作，一旦點選 remove 時要將在 grid 中選中的 record 移除，程式碼如下：</p>
+
+<p>``` javascript
+{</p>
+
+<pre><code>xtype: 'button',
+handler: function(button, event) {
+        var grid = button.up().up();
+    var sm = grid.getSelectionModel();
+
+    button.up().up().store.remove(sm.getSelection());
+
+    if (button.up().up().store.getCount() &gt; 0) {
+        sm.select(0);
+    }
+},
+text: 'remove'
+</code></pre>
+
+<p>}
+```</p>
+
+<p>之前有提到 extjs 會記住使用到的各個 Component 之間的關係，因此一旦能夠存取到事件發動的物件妳就可以從該物件找到互動的物件，就如同上面的程式碼，元件結構上為 grid > toolbar > button，因此一旦我點選了 button 我要找到 grid 只要往上兩層 <code>button.up().up()</code> 即可，<code>down()</code> 的部份同理，除此之外還可以搭配 ComponentQuery 使用，假設妳目前已可以存取 grid，要取得 button 的參照，妳可以這樣做：</p>
+
+<p>``` javascript
+grid.down("button[itemId=updateBtn]")</p>
+
+<p>```</p>
+
+<p>即使層級上不只一層，透過妳下的條件，extjs 會找出符合條件最接近的物件，如此一來妳就可以輕鬆遊走各個元件之間了！</p>
 ]]></content>
   </entry>
   

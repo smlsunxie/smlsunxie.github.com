@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 以及 ref 的不同 - 蹤影</title>
+  <title>extjs: component 的使用，找尋 parent & child，以及區別 id、itemid 的不同 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -310,7 +310,7 @@
     
 <h1 class="entry-title">
 
-Extjs: Component 的使用，找尋 Parent & Child，以及區別 Id、itemid 以及 Ref 的不同
+Extjs: Component 的使用，找尋 Parent & Child，以及區別 Id、itemid 的不同
 
 </h1>
 
@@ -532,9 +532,9 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 
 <p>除了上述 id 以及 itemid 可用於索引元件取得參照之外，我們還可以使用以下方法</p>
 
-<h2>ref</h2>
+<h2>ref (extjs 3.x)</h2>
 
-<p>使用 ref 可以更加方便得取得 container 底下的 Component，連 getComponent 都可以免了。</p>
+<p>如果你所使用的 extjs 版本為 3.x，利用 ref 可以更加方便得取得 container 底下的 Component，連 getComponent 都可以免了。</p>
 
 <p>參考官方文件 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-cfg-ref">Ext.Component-cfg-ref</a></p>
 
@@ -688,6 +688,263 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 <p>詳細註解與說明都在上面程式的註解裡，這邊就不多做說明，可以看到透過 ref 的使用，我們可以更加方變得操作 extjs 裡的元件。除了 id 以及 itemid 之外也多了一個可以更方便敘述物件關係的方式。</p>
 
 <p>在這篇文章寫好之前，上面的差異我從來都不知道，也這樣用了好幾年… 說來慚愧，使用一個新的語言或框架基礎還是很重要的。</p>
+
+<p>另外 ref 在 extjs 3.x 還存在，但在 extjs 4.x 已拿掉此屬性，不過別擔心，官方有給我們更好的物件選擇方式，up，down，以及 ComponentQuery</p>
+
+<h2>up，down，以及 ComponentQuery</h2>
+
+<p>使用 ComponentQuery，妳可以利用類似 jquery 的語法來進行查詢 extjs 元件，舉例來看，假設我們有個元件宣告如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;MyApp.view.MyViewport&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.container.Viewport&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;mainvp&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">layout</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;vbox&#39;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;gridpanel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;My Grid Panel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">store</span><span class="o">:</span> <span class="s1">&#39;MyArrayStore&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">dockedItems</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;toolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">dock</span><span class="o">:</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                                <span class="p">{</span>
+</span><span class='line'>                                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+</span><span class='line'>                                    <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;remove&#39;</span>
+</span><span class='line'>                                <span class="p">},</span>
+</span><span class='line'>                                <span class="p">{</span>
+</span><span class='line'>                                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+</span><span class='line'>                                    <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;add&#39;</span>
+</span><span class='line'>                                <span class="p">}</span>
+</span><span class='line'>                            <span class="p">]</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;gridcolumn&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;Id&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">editor</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                                <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span>
+</span><span class='line'>                            <span class="p">}</span>
+</span><span class='line'>                        <span class="p">},</span>
+</span><span class='line'>                        <span class="p">...</span>
+</span><span class='line'>                    <span class="p">],</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">select</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onGridpanelSelect</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;form1&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">bodyPadding</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;form1&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">anchor</span><span class="o">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">fieldLabel</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
+</span><span class='line'>                        <span class="p">},</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">anchor</span><span class="o">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">fieldLabel</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;form2&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">bodyPadding</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;form2&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">anchor</span><span class="o">:</span> <span class="s1">&#39;100%&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">fieldLabel</span><span class="o">:</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;title&#39;</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>呈現畫面如下：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-GK2_yMQlCVM/UYi_vpyUXEI/AAAAAAAALpw/KpxVYWZNrwU/w603-h540-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-07+%25E4%25B8%258B%25E5%258D%25884.47.25.jpg" alt="image" /></p>
+
+<p>這樣的例子中，可以看到，在底下有兩個 panel，如果我們要操作第二個 form，在上面的程式碼中我們將其 itemid 設為 form1，因此我們可以利用下列程式來取得參照</p>
+
+<p><code>Ext.ComponentQuery.query('panel[itemId=form1]');</code></p>
+
+<p>當然除了 itemid 屬於該物件的屬性皆可以拿來進行查詢，比如說我們自定一個屬性為 <code>cls:form2-cls</code>，那我們就可以依樣畫葫蘆：</p>
+
+<p><code>Ext.ComponentQuery.query('panel[cls=form2-cls]');</code></p>
+
+<p>就是如此方便簡單！除了 Ext.ComponentQuery.query 另外還有提供兩個好用的方法 <code>up()</code>，<code>down()</code>，同樣以上面為例子，來進行 remove 的實作，一旦點選 remove 時要將在 grid 中選中的 record 移除，程式碼如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;button&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">grid</span> <span class="o">=</span> <span class="nx">button</span><span class="p">.</span><span class="nx">up</span><span class="p">().</span><span class="nx">up</span><span class="p">();</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">sm</span> <span class="o">=</span> <span class="nx">grid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">button</span><span class="p">.</span><span class="nx">up</span><span class="p">().</span><span class="nx">up</span><span class="p">().</span><span class="nx">store</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">sm</span><span class="p">.</span><span class="nx">getSelection</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">up</span><span class="p">().</span><span class="nx">up</span><span class="p">().</span><span class="nx">store</span><span class="p">.</span><span class="nx">getCount</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">sm</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;remove&#39;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之前有提到 extjs 會記住使用到的各個 Component 之間的關係，因此一旦能夠存取到事件發動的物件妳就可以從該物件找到互動的物件，就如同上面的程式碼，元件結構上為 grid > toolbar > button，因此一旦我點選了 button 我要找到 grid 只要往上兩層 <code>button.up().up()</code> 即可，<code>down()</code> 的部份同理，除此之外還可以搭配 ComponentQuery 使用，假設妳目前已可以存取 grid，要取得 button 的參照，妳可以這樣做：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">grid</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s2">&quot;button[itemId=updateBtn]&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>即使層級上不只一層，透過妳下的條件，extjs 會找出符合條件最接近的物件，如此一來妳就可以輕鬆遊走各個元件之間了！</p>
 
   </div>
 
