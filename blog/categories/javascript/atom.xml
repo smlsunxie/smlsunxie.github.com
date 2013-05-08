@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T21:21:54+08:00</updated>
+  <updated>2013-05-08T21:39:42+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,13 +18,13 @@
     <link href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"/>
     <updated>2013-05-09T10:45:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
-    <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗，如果是純文字開發除錯是非常費時的。</p>
+    <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗純文字開發除錯是非常費時的。</p>
 
-<p>早在 Sencha Architect 前一代 desingner 時，筆者就有使用過，那時候真的只能拿來 mockup，不過也許長大後也長知識，現在覺得好使用許多，廢話不多說，就讓我們看下去。</p>
+<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，那時候真的只能拿來 mockup，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
 
 <hr />
 
-<p>利用 Sencha Architect 他會幫你檢查一些常見的錯誤，包括 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所拉出來的畫面，幾乎都可以正常運作，說這麼多就讓我們來看看如何使用此軟體，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
+<p>使用 Sencha Architect 來開發 extjs 的好處，除了他會幫你檢查一些常見的問題，比如 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所組合出來的畫面，幾乎就是實際運行的結果，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
 
 <p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
 
@@ -42,7 +42,7 @@
 
 <p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
 
-<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理</p>
+<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理，在妳需要時組合成妳想的介面。</p>
 
 <h2>toolbox</h2>
 
@@ -60,6 +60,8 @@
 
 <p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
 
+<p>如此一來，除了 grid 的欄位顯示，我們也可以透過 Architect 知道實際呈現時資料內容是否正確。</p>
+
 <h2>進階屬性定義</h2>
 
 <p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
@@ -70,7 +72,7 @@
 
 <h2>介面 layout 定義</h2>
 
-<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成，我們希望正確確認 layout 的情形，舉個例子：</p>
+<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成我們希望的介面呈現，舉個例子：</p>
 
 <p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
 
