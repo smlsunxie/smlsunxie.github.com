@@ -36,7 +36,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2013/03/21/extjs-oo/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/05/08/extjs-oo/">
 
 
 
@@ -607,7 +607,7 @@ Extjs Mvc 架構：繼承與模組重覆使用
 </ul>
 
 
-<p>大致上解釋一下設計概念後，粗糙一點我們可以把上面三個功能都定義在 ItemEditor，但如果 ItemGrid 以及 ItemViewer 會作為獨立功能，或者組合到不同的介面，這時候我們就必須要寫兩個同樣的 function，這不是個好辦法，因此我們可以利用 extjs 提供的令一個特性：混和(mixsins)，在系列文章的<a href="http://ithelp.ithome.com.tw/question/10120091">第一篇</a>有提到，一旦我們個別定義好 ItemGrid，ItemViewer 的邏輯函式，我們可以將他混和入 ItemEditor 如此一來就可以各自專注各自的責任，除了可以組合在一起，也可以各自獨立運作，是不是很美好呢！接著我們就來看範例程式碼與結構：</p>
+<p>大致上解釋一下設計概念後，粗糙一點我們可以把上面三個功能都定義在 ItemEditor，但如果 ItemGrid 以及 ItemViewer 會作為獨立功能，或者組合到不同的介面，這時候我們就必須要寫兩個同樣的 function，這不是個好辦法，因此我們可以利用 extjs 提供的另一個特性：混和(mixsins)，在系列文章的<a href="http://ithelp.ithome.com.tw/question/10120091">第一篇</a>有提到，一旦我們個別定義好 ItemGrid，ItemViewer 的邏輯函式，我們可以將他混和入 ItemEditor 如此一來就可以各自專注各自的責任，除了可以組合在一起，也可以各自獨立運作，是不是很美好呢！接著我們就來看範例程式碼與結構：</p>
 
 <p><img src="https://lh4.googleusercontent.com/--nSzi3U1WrQ/UYnJG2grGnI/AAAAAAAALqo/SA-TwLD_zg4/w215-h289-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.48.04.jpg" alt="image" /></p>
 
@@ -754,7 +754,7 @@ Extjs Mvc 架構：繼承與模組重覆使用
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2013-03-21T08:42:00+08:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-05-08T08:42:00+08:00" pubdate data-updated="true">May 8<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
@@ -774,7 +774,7 @@ Extjs Mvc 架構：繼承與模組重覆使用
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/03/21/extjs-oo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/03/21/extjs-oo/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/08/extjs-oo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/08/extjs-oo/" target="_blank" >Tweet</a>
     
   
   
@@ -795,10 +795,8 @@ Extjs Mvc 架構：繼承與模組重覆使用
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2013/03/01/grails-taggable/" title="Previous Post: grails taggable plugin 搭配 jquery tagit 的完美組合"><li>&laquo; grails taggable plugin 搭配 jquery tagit 的完美組合</li></a>
+            <a class="left" href="/blog/2013/05/02/extjs4-with-js/" title="Previous Post: 使用 extjs 必須了解的 js 技巧與知識"><li>&laquo; 使用 extjs 必須了解的 js 技巧與知識</li></a>
           
-          
-            <a class="right" href="/blog/2013/03/21/extjs4-mvc/" title="Next Post: extjs4: mvc 使用簡介與範例介紹"><li>extjs4: mvc 使用簡介與範例介紹 &raquo;</li></a>
           
         </ul>
 
@@ -892,6 +890,10 @@ Extjs Mvc 架構：繼承與模組重覆使用
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
       </li>
     
@@ -905,10 +907,6 @@ Extjs Mvc 架構：繼承與模組重覆使用
     
       <li>
         <a href="/blog/2013/03/21/extjs4-mvc/">extjs4: mvc 使用簡介與範例介紹</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/03/21/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
       </li>
     
   </ul>
@@ -942,7 +940,7 @@ Extjs Mvc 架構：繼承與模組重覆使用
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/03/21/extjs-oo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/03/21/extjs-oo/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/08/extjs-oo/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/08/extjs-oo/" target="_blank" >Tweet</a>
     
   
   
@@ -1094,8 +1092,8 @@ Extjs Mvc 架構：繼承與模組重覆使用
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2013/03/21/extjs-oo/';
-        var disqus_url = 'http://smlsun.com/blog/2013/03/21/extjs-oo/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/05/08/extjs-oo/';
+        var disqus_url = 'http://smlsun.com/blog/2013/05/08/extjs-oo/';
         var disqus_script = 'embed.js';
       
     (function () {
