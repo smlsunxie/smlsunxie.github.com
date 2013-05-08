@@ -902,17 +902,7 @@
 </ul>
 </blockquote>
 
-<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。
- 注點分離* 個原則，</p>
-
-<p>h）*
-  inder_etjs.model.Item&#8217;,</p>
-
-<pre><code>  getterName: 'tItem'  
-}
-</code></pre>
-
-<p>});</p>
+<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
 
 <h2>Application</h2>
 
@@ -1548,7 +1538,7 @@
 
 <p>為了能夠設計出可以重覆使用的類別，將針對三種不同的課題，繼承，混和以及 model 關連建立，就讓我們從 mvc 中的 model 資料模型開始。</p>
 
-<h2>model-關連建立</h2>
+<h2>model - 關連建立</h2>
 
 <p>假設我們設計一個應用程式，其資料模型如下：</p>
 
@@ -1788,20 +1778,22 @@
 
 <p>上圖的結構是利用 sencha Architect 所呈現的，可以看到元件 StdEditorToolbar 就是獨立的類別，藍色線代表作為連結使用在另外兩個自定元件裡面，如此一來相同的元件與 ID 定義，就不需要重覆多次，在索引時也較一致性，如果讀者有看我上一篇 <a href="http://smlsun.com/blog/2013/02/19/extjs-component/">ID 與 itemId 的不同</a>，就會知道這樣是可行的，而因為 extjs 4 在這次多了 controller 的類別，所以我們的 view 層都是單純的介面元件，沒有特殊的邏輯，所以可以重覆使用，除此之外，我們也可以交由多人協助完成相關的元件，最後在將他們組合成最終要呈現的畫面，參考上一張圖片的樹狀結構，最終的呈現將由三個主要元件組成，ItemGrid，ItemViewer，ItemEdtor，步驟上就可以先將 ItemGrid，ItemViewer 完成以後，ItemEdtor 作為 tabpanel 連結 ItemGrid，ItemViewer 完成整個畫面，如下圖：</p>
 
-<p>就是如此簡單愉快，上面所完成的自定元件都使用到了在物件導向中繼承的特性，基本上都是經由繼承 extjs 的元件加以客製化，當然自定元件同樣也可以作為別人的父類別，端看如何設計。mvc 中的前兩項完成了，接著我們就來看最後一個 C，controller 的部份。
-<img src="https://lh5.googleusercontent.com/-XKtk5cWSqsk/UYnJFiXo1CI/AAAAAAAALqY/qYUtCJjeKrM/w603-h285-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.55.jpg" alt="image" /></p>
+<p><img src="https://lh5.googleusercontent.com/-XKtk5cWSqsk/UYnJFiXo1CI/AAAAAAAALqY/qYUtCJjeKrM/w603-h285-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.55.jpg" alt="image" /></p>
 
 <p><img src="https://lh4.googleusercontent.com/-_P3Jgg56zw4/UYnJGQ8iwFI/AAAAAAAALqg/sHmkQdYRubo/w603-h397-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.03.16.jpg" alt="image" /></p>
+
+<p>就是如此簡單愉快，上面所完成的自定元件都使用到了在物件導向中繼承的特性，基本上都是經由繼承 extjs 的元件加以客製化，當然自定元件同樣也可以作為別人的父類別，端看如何設計。mvc 中的前兩項完成了，接著我們就來看最後一個 C，controller 的部份。</p>
 
 <h2>Controller - 混和</h2>
 
 <p>作為 view 與 model 的溝通橋樑，與操作 view 中元件的互動，Controller 扮演的角色是很重要的，他必須要很方便存取以及定義欲操作的元件，extjs 在這邊也確實做到了，還記得上一篇最提到的關於 extjs 如何查詢 component，當你在撰寫 Controller 將會大量使用到，延續上一節的 view 中三個元件：ItemGrid，ItemViewer，ItemEdtor，來進行說明。</p>
 
-<p>ItemGrid：如果是作為 grid 單獨存在，將只會有讀取資料的功能，因此在 controller 中，我們只需要定義 read 的功能實作。</p>
+<ul>
+<li>ItemGrid：如果是作為 grid 單獨存在，將只會有讀取資料的功能，因此在 controller 中，我們只需要定義 read 的功能實作。</li>
+<li>ItemViewer：作為 Viewer 本身只是個空殼，需要由外部傳入資料後進行資料呈現，因此我們需要定義得是 display 的功能</li>
+<li>ItemEditor：組合了 ItemGrid 與 ItemViewer，兩個介面，也因此實作的內容就為兩者之間的互動，一旦點選 ItemGrid 中的資料，就將其作為 ItemViewer 的資料來源進行呈現，因此我們要實作的是 readItem。</li>
+</ul>
 
-<p>ItemViewer：作為 Viewer 本身只是個空殼，需要由外部傳入資料後進行資料呈現，因此我們需要定義得是 display 的功能</p>
-
-<p>ItemEditor：組合了 ItemGrid 與 ItemViewer，兩個介面，也因此實作的內容就為兩者之間的互動，一旦點選 ItemGrid 中的資料，就將其作為 ItemViewer 的資料來源進行呈現，因此我們要實作的是 readItem。</p>
 
 <p>大致上解釋一下設計概念後，粗糙一點我們可以把上面三個功能都定義在 ItemEditor，但如果 ItemGrid 以及 ItemViewer 會作為獨立功能，或者組合到不同的介面，這時候我們就必須要寫兩個同樣的 function，這不是個好辦法，因此我們可以利用 extjs 提供的令一個特性：混和(mixsins)，在系列文章的<a href="http://ithelp.ithome.com.tw/question/10120091">第一篇</a>有提到，一旦我們個別定義好 ItemGrid，ItemViewer 的邏輯函式，我們可以將他混和入 ItemEditor 如此一來就可以各自專注各自的責任，除了可以組合在一起，也可以各自獨立運作，是不是很美好呢！接著我們就來看範例程式碼與結構：</p>
 
