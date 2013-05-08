@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T21:03:09+08:00</updated>
+  <updated>2013-05-08T21:21:54+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -50,11 +50,11 @@
 
 <p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
 
-<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用使，拖拉至妳需要放置的位置即可。</p>
+<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用時，拖拉至妳需要放置的位置即可。</p>
 
-<h2>model 連結真實資料</h2>
+<h2>model 資料表令 Store 連結真實資料</h2>
 
-<p>除了在一開始基礎操作連結可以定義 model 的欄位之外，妳也可以連真實的資料來進行呈現。</p>
+<p>除了在一開始基礎操作連結中有說明到可以定義 model 之外，妳也可以連真實的資料來進行呈現。</p>
 
 <p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
 
@@ -74,8 +74,7 @@
 
 <p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
 
-<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過<br/>
-Architect：</p>
+<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過 Architect：</p>
 
 <p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
 
@@ -87,11 +86,11 @@ Architect：</p>
 
 <p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
 
-<p>所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
+<p>那是因為沒有設置 Flex，所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
 
 <p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
 
-<p>此時如果我們要看其他 layout 將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
+<p>此時如果我們要看其他 layout 情形將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
 
 <p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
 
