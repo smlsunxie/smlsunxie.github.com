@@ -310,6 +310,350 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/17/java-pointer/">Java OCP 題目解析：關於 Java 指標的運作觀念</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
+
+<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
+
+<p>Given:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">Foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setX</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Gamma</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What is the output?</p>
+
+<pre><code>A. 300-100-100-100-100
+B. 300-300-100-100-100
+C. 300-300-300-100-100
+D. 300-300-300-300-100
+</code></pre>
+
+<p>答案：</p>
+
+<pre><code>B
+</code></pre>
+
+<p>解析：</p>
+
+<pre><code>做這題頭腦不夠清楚可能會被搞混喔
+這題是考JAVA 隱藏的指標觀念，其實規則很容易：
+1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
+2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
+    2.1. 等號處理基本資料型態時是傳值
+    2.2. 等號處理物件時是傳位址
+</code></pre>
+
+<p>依照題目的情況來模擬一下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
+</span><span class='line'><span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td>main:foo</td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
+
+<p>方法第三行回傳了fooBar: foo指標</p>
+
+<p>後來在主方法執行了這一行</p>
+
+<pre><code>foo = fooBar(fooFoo);
+</code></pre>
+
+<p>之後記憶體狀況會變成</p>
+
+<table class="table">
+
+  <tbody>
+    <tr>
+      <td>指標</td>
+      <td></td>
+      <td></td>
+      <td>fooBar:foo</td>
+    </tr>
+    <tr>
+      <td>內容</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=300</td>
+      <td>Foo物件:X=100</td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
+
+<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
+
+<p>Given:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KungFu</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Integer</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">400</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">Integer</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">x</span><span class="o">++;</span>
+</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb2</span> <span class="o">=</span> <span class="n">sb1</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">sb1</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;5&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">sb1</span> <span class="o">==</span> <span class="n">sb2</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What is the result?</p>
+
+<pre><code>A. true true
+B. false true
+C. true false
+D. false false
+E. Compilation fails.
+F. An exception is thrown at runtime.
+</code></pre>
+
+<p>答案：</p>
+
+<pre><code>B
+</code></pre>
+
+<p>解析：</p>
+
+<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
+
+<p>一般物件的話當然做等於運算就是傳指標了</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-17T11:44:00+08:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/17/java-pointer/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/17/java-pointer/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/16/android-vm/">androVM - Run Android in VirtualBox and Deploy App</a>
 
 </h1>
@@ -1518,97 +1862,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2012/12/25/the-ultimate-form-of-slob/">懶漢的終極型態</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>今日看了一篇中英文對照新聞，有篇有趣的報導，叫做：</p>
-
-<blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/english.php?engno=640137&amp;day=2012-12-22">日本女性穿成人紙尿褲成新潮流</a></p></blockquote>
-
-<p>也算是世界奇觀了，一般得觀念會穿紙尿褲都是因沒辦法控制才需要，但在日本得女性，卻是因為懶惰去穿紙尿褲，只為了節省時間與去洗手間得麻煩，實在是太神了！</p>
-
-<p>應該會想說工作就算了，那跟男朋友出去應該不會穿了吧，錯了～即使是跟男朋友出去也會穿，但是要穿裙子才不會被發現，我的天！</p>
-
-<p>不過這也帶動了另一種經濟，在日本尿布應該賣的比別的國家來的好，因為他們的適用年齡比較廣，實在是太特別了～</p>
-
-<p>難怪文章下了一個標題叫做 『懶漢的終極型態』 這世界真是無奇不有，更何況這狀況是出現在日本。</p>
-
-<p>可以常上來看看，順便學習英文！</p>
-
-<blockquote><p><a href="http://iservice.libertytimes.com.tw/Service/english/">《中英對照讀新聞 總覽</a></p></blockquote>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2012-12-25T13:19:00+08:00" pubdate data-updated="true">Dec 25<span>th</span>, 2012</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/12/25/the-ultimate-form-of-slob/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/12/25/the-ultimate-form-of-slob/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1686,6 +1939,10 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
       </li>
     
@@ -1699,10 +1956,6 @@
     
       <li>
         <a href="/blog/2013/04/30/extjs4-intro/">extjs 4 的新特性與基本概念</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/03/21/extjs4-mvc/">extjs4: mvc 使用簡介與範例介紹</a>
       </li>
     
   </ul>

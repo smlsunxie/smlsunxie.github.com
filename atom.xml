@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T11:56:06+08:00</updated>
+  <updated>2013-05-08T21:03:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,12 +18,118 @@
 
 
 
+<title type="html"><![CDATA[利用 Sencha Architect 快速開發 extjs]]></title>
+<link href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"/>
+<updated>2013-05-09T10:45:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
+
+      <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗，如果是純文字開發除錯是非常費時的。</p>
+
+<p>早在 Sencha Architect 前一代 desingner 時，筆者就有使用過，那時候真的只能拿來 mockup，不過也許長大後也長知識，現在覺得好使用許多，廢話不多說，就讓我們看下去。</p>
+
+<hr />
+
+<p>利用 Sencha Architect 他會幫你檢查一些常見的錯誤，包括 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所拉出來的畫面，幾乎都可以正常運作，說這麼多就讓我們來看看如何使用此軟體，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
+
+<p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
+
+<p>假設妳已經讀過上面連結，最好還能夠實際操作看看，相信有些概念後會更容易吸收。</p>
+
+<p>並且可以先了解一下 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs 中的 mvc 還有物件導向的特性</a>，在 Sencha Architect 中，妳將可以很輕易做到，一些基礎的使用方式筆者就不贅述，本篇將介紹進階使用技巧。</p>
+
+<h2>物件導向：元件重覆使用</h2>
+
+<p>拜 extjs 所賜，讓前端純 javascript 的開發也能用物件導向的方式來進行，我們可以將一些常用的元件重覆使用，一旦我們需要調整時，只要調整基礎元件，就可以同時影響所有有使用到的元件，參考下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-r6dKsDsjny8/UYoJTVdWbrI/AAAAAAAALq4/ZcWWw55l13s/w295-h351-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.13.42.jpg" alt="image" /></p>
+
+<p>可以看到 saveBtn 同時出現在三個自定元件，在 Sencha Architect 裡如果是屬於 link 元件將會用藍色線連結，讓你可以一目了然，一旦改了最原始的 saveBtn 將會連動其他的元件，如下圖</p>
+
+<p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
+
+<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理</p>
+
+<h2>toolbox</h2>
+
+<p>除了利用類別的方式，我們也可將我們自定義的元件加入 toolbox 以利重覆使用，使用上如下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
+
+<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用使，拖拉至妳需要放置的位置即可。</p>
+
+<h2>model 連結真實資料</h2>
+
+<p>除了在一開始基礎操作連結可以定義 model 的欄位之外，妳也可以連真實的資料來進行呈現。</p>
+
+<p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
+
+<h2>進階屬性定義</h2>
+
+<p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5ghG4LSpW68/UYoJVMRl7UI/AAAAAAAALrQ/jaTUxgolSD4/w301-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.31.02.jpg" alt="image" /></p>
+
+<p>一旦妳輸入的屬性不存在，妳可以點選 add，就會加入下方的屬性，並且可選取該屬性的資料型態，根據妳所選的資料屬性 Architect 會幫你進行資料型態檢查。</p>
+
+<h2>介面 layout 定義</h2>
+
+<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成，我們希望正確確認 layout 的情形，舉個例子：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
+
+<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過<br/>
+Architect：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
+
+<p>圖中可以看到使用的 layout 為 vbox，結構上如下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-ZSGWB1J0R-0/UYo62Dv1_mI/AAAAAAAALsA/i6lYouhtbQU/w225-h110-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.03.16.jpg" alt="image" /></p>
+
+<p>由 listToolbar 以及 itemGrid 組成，在這邊希望能夠將下方得 itemGrid 填滿全部，如下圖，實際呈現上 grid 並沒有填滿：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
+
+<p>所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
+
+<p>此時如果我們要看其他 layout 將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
+
+<p>只有 toolbar 被填滿，grid 不見了，所以，妳可以省下寶貴生命快速確認介面的呈現。</p>
+
+<h2>方便進行測試與開發</h2>
+
+<p>在 extjs 的 application.js 中可以定義一個屬性為 <code>autoCreateViewport</code>，一旦定義此屬性為 true，extjs 會在 view 底下自動顯示檔案為 Viewport.js 定義的內容，而在 Architect 中每一個 view 類別都可以標示為 Initial View，如下圖中的 Mark as Initial View：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-uGliPz2sLMU/UYo60ILc2WI/AAAAAAAALro/RM6EnhQDGjk/w259-h249-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.45.47.jpg" alt="image" /></p>
+
+<p>這樣有什麼好處？在開發 extjs 時，如果應用程式是需要進行登入的，每次更新程式後要進行測試，免不了需要經過登入步驟以及點選功能來開啟需要測試的功能，次數少還好，如果反覆測試的情況下，著實浪費時間，更甚者，假設應用程式是多人開發，可能在執行某應用程式前，需要經過別的應用程式，但如果前面步驟尚未完成，就無法進行測試，這時候這樣的功能就很方便，因為我們可以針對單一元件進行單元功能開發與測試，大大降低功能間的相依性，一旦各自元件開發完成，就可以進行組合最終在進行整合功能測試即可！</p>
+
+<p>Sencha Architect 確實有他存在及使用的價值，筆者使用純文字開發 extjs 多年，遇到很多介面上的問題，並且依靠經驗除過不少 bug，但是都沒有使用 Sencha Architect 來的快及準確，話雖這麼說，IDE 也沒有辦法幫你寫出「對」的程式，強烈建議使用 Sencha Architect 務必先了解 extjs 的原理，如此才能夠讓你駕馭 Architect，就像開車一樣，沒有先了解如何開車就上路，開的不好錯怪車子，還有可能出車禍喔。</p>
+
+<p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
+
+<p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
 <title type="html"><![CDATA[extjs mvc 架構：繼承與模組重覆使用]]></title>
 <link href="http://smlsun.com/blog/2013/05/08/extjs-oo/"/>
 <updated>2013-05-08T08:42:00+08:00</updated>
 <id>http://smlsun.com/blog/2013/05/08/extjs-oo</id>
 
-      <content type="html"><![CDATA[<p>兩篇的對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
+      <content type="html"><![CDATA[<p>兩篇對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
 
 <hr />
 
@@ -4166,126 +4272,6 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 
 <blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/05/extjs-events/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[javascript: callback]]></title>
-<link href="http://smlsun.com/blog/2013/02/04/javascript-callback/"/>
-<updated>2013-02-04T22:27:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/04/javascript-callback</id>
-
-      <content type="html"><![CDATA[<h4>資料來源</h4>
-
-<p><a href="http://mao.li/javascript/javascript-callback-function/">JavaScript callback function 理解</a></p>
-
-<h2>定義</h2>
-
-<ul>
-<li><p>維基的Callback_(computer_programming):</p>
-
-<blockquote><p>In computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.</p></blockquote></li>
-<li><p>jQuery文檔How jQuery Works#Callback_and_Functio…：</p>
-
-<blockquote><p>A callback is a function that is passed as an argument to another function and is <strong>executed after its parent function has completed</strong>. The special thing about a callback is that functions that appear after the &#8220;parent&#8221; can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.</p></blockquote></li>
-<li><p>百科： callback 函數</p>
-
-<blockquote><p>callback 函數就是一個通過函數指針調用的函數。如果你把函數的指針（地址）作為參數傳遞給另一個函數，當這個指針被用為調用它所指向的函數時，我們就說這是 callback 函數。</p>
-
-<p>callback 函數不是由該函數的實現方直接調用，而是在特定的事件或條件發生時由另外的一方調用的，用於對該事件或條件進行響應。</p></blockquote></li>
-</ul>
-
-
-<p>因此， callback 本質上是一種設計模式，並且jQuery(包括其他框架)的設計原則遵循了這個模式。</p>
-
-<p>在JavaScript中，callback 函數具體的定義為：函數A作為參數(函數引用)傳遞到另一個函數B中，並且這個函數B執行函數A。我們就說函數A叫做 callback 函數。如果沒有名稱(函數表達式)，就叫做匿名 callback 函數。</p>
-
-<p>因此 callback 不一定用於非同步的狀況，一般同步(blocking)的場景下也經常用到 callback ，比如要求執行某些操作後執行 callback 函數。</p>
-
-<h2>範例</h2>
-
-<p>一個同步(blocking)中使用 callback 的例子，目的是在func1代碼執行完成後執行func2。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">func1</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
-</span><span class='line'>    <span class="c1">//do something.</span>
-</span><span class='line'>    <span class="p">(</span><span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">func1</span><span class="p">(</span><span class="nx">func2</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">func2</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;func2 run!&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>非同步 callback 的例子：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-</span><span class='line'>  <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;test.html&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">context</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span>
-</span><span class='line'><span class="p">})</span>
-</span><span class='line'><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">})</span>
-</span><span class='line'><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">})</span>
-</span><span class='line'><span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;complete&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上述例子為非同步 ajax 請求，當request 有 response 時,如果先前已定義 callback ,將會觸動相關的函數進行執行。</p>
-
-<h2>callback 什麼時候執行</h2>
-
-<p> callback 函數，一般在同步情境下是最後執行的，而在非同步情境下有可能不執行，因為事件沒有被觸發或者條件不滿足。</p>
-
-<h2>callback 函數的使用場合</h2>
-
-<ul>
-<li>函數需要同步處理時</li>
-<li>setTimeout的延遲時間為0，這經常被用到，settimeout 呼叫的函數其實就是一個callback 的實作，類似範例可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a></li>
-<li>method chain：可參考：<a href="http://ithelp.ithome.com.tw/question/10090856">jQuery method chain review</a></li>
-</ul>
-
-
-<p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
-(callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
-
-<h2>使用上的技巧</h2>
-
-<p>因為 callback 的特性，如果你的函數傳入的參數不一致時將變得難以維護，建議函數在設計時應該盡量保持只有一個參數，若要傳入多參數則使用 json 來組合多個參數，然後統一有另一個參數用來傳入 callback 的函式。需注意在執行 callback 時需要先判斷該該參數是否為 function 若是才執行。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/04/javascript-callback/"></a></p>]]></content>
     </entry>
   
 </feed>

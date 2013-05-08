@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mvc | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/mvc/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T11:56:06+08:00</updated>
+  <updated>2013-05-08T21:03:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,7 +18,7 @@
     <link href="http://smlsun.com/blog/2013/05/08/extjs-oo/"/>
     <updated>2013-05-08T08:42:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/05/08/extjs-oo</id>
-    <content type="html"><![CDATA[<p>兩篇的對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
+    <content type="html"><![CDATA[<p>兩篇對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
 
 <hr />
 

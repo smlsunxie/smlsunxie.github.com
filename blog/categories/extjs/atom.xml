@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T11:56:06+08:00</updated>
+  <updated>2013-05-08T21:03:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,11 +14,111 @@
 
   
   <entry>
+    <title type="html"><![CDATA[利用 Sencha Architect 快速開發 extjs]]></title>
+    <link href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"/>
+    <updated>2013-05-09T10:45:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
+    <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗，如果是純文字開發除錯是非常費時的。</p>
+
+<p>早在 Sencha Architect 前一代 desingner 時，筆者就有使用過，那時候真的只能拿來 mockup，不過也許長大後也長知識，現在覺得好使用許多，廢話不多說，就讓我們看下去。</p>
+
+<hr />
+
+<p>利用 Sencha Architect 他會幫你檢查一些常見的錯誤，包括 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所拉出來的畫面，幾乎都可以正常運作，說這麼多就讓我們來看看如何使用此軟體，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
+
+<p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
+
+<p>假設妳已經讀過上面連結，最好還能夠實際操作看看，相信有些概念後會更容易吸收。</p>
+
+<p>並且可以先了解一下 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs 中的 mvc 還有物件導向的特性</a>，在 Sencha Architect 中，妳將可以很輕易做到，一些基礎的使用方式筆者就不贅述，本篇將介紹進階使用技巧。</p>
+
+<h2>物件導向：元件重覆使用</h2>
+
+<p>拜 extjs 所賜，讓前端純 javascript 的開發也能用物件導向的方式來進行，我們可以將一些常用的元件重覆使用，一旦我們需要調整時，只要調整基礎元件，就可以同時影響所有有使用到的元件，參考下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-r6dKsDsjny8/UYoJTVdWbrI/AAAAAAAALq4/ZcWWw55l13s/w295-h351-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.13.42.jpg" alt="image" /></p>
+
+<p>可以看到 saveBtn 同時出現在三個自定元件，在 Sencha Architect 裡如果是屬於 link 元件將會用藍色線連結，讓你可以一目了然，一旦改了最原始的 saveBtn 將會連動其他的元件，如下圖</p>
+
+<p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
+
+<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理</p>
+
+<h2>toolbox</h2>
+
+<p>除了利用類別的方式，我們也可將我們自定義的元件加入 toolbox 以利重覆使用，使用上如下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
+
+<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用使，拖拉至妳需要放置的位置即可。</p>
+
+<h2>model 連結真實資料</h2>
+
+<p>除了在一開始基礎操作連結可以定義 model 的欄位之外，妳也可以連真實的資料來進行呈現。</p>
+
+<p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
+
+<h2>進階屬性定義</h2>
+
+<p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5ghG4LSpW68/UYoJVMRl7UI/AAAAAAAALrQ/jaTUxgolSD4/w301-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.31.02.jpg" alt="image" /></p>
+
+<p>一旦妳輸入的屬性不存在，妳可以點選 add，就會加入下方的屬性，並且可選取該屬性的資料型態，根據妳所選的資料屬性 Architect 會幫你進行資料型態檢查。</p>
+
+<h2>介面 layout 定義</h2>
+
+<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成，我們希望正確確認 layout 的情形，舉個例子：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
+
+<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過<br/>
+Architect：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
+
+<p>圖中可以看到使用的 layout 為 vbox，結構上如下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-ZSGWB1J0R-0/UYo62Dv1_mI/AAAAAAAALsA/i6lYouhtbQU/w225-h110-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.03.16.jpg" alt="image" /></p>
+
+<p>由 listToolbar 以及 itemGrid 組成，在這邊希望能夠將下方得 itemGrid 填滿全部，如下圖，實際呈現上 grid 並沒有填滿：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
+
+<p>所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
+
+<p>此時如果我們要看其他 layout 將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
+
+<p>只有 toolbar 被填滿，grid 不見了，所以，妳可以省下寶貴生命快速確認介面的呈現。</p>
+
+<h2>方便進行測試與開發</h2>
+
+<p>在 extjs 的 application.js 中可以定義一個屬性為 <code>autoCreateViewport</code>，一旦定義此屬性為 true，extjs 會在 view 底下自動顯示檔案為 Viewport.js 定義的內容，而在 Architect 中每一個 view 類別都可以標示為 Initial View，如下圖中的 Mark as Initial View：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-uGliPz2sLMU/UYo60ILc2WI/AAAAAAAALro/RM6EnhQDGjk/w259-h249-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.45.47.jpg" alt="image" /></p>
+
+<p>這樣有什麼好處？在開發 extjs 時，如果應用程式是需要進行登入的，每次更新程式後要進行測試，免不了需要經過登入步驟以及點選功能來開啟需要測試的功能，次數少還好，如果反覆測試的情況下，著實浪費時間，更甚者，假設應用程式是多人開發，可能在執行某應用程式前，需要經過別的應用程式，但如果前面步驟尚未完成，就無法進行測試，這時候這樣的功能就很方便，因為我們可以針對單一元件進行單元功能開發與測試，大大降低功能間的相依性，一旦各自元件開發完成，就可以進行組合最終在進行整合功能測試即可！</p>
+
+<p>Sencha Architect 確實有他存在及使用的價值，筆者使用純文字開發 extjs 多年，遇到很多介面上的問題，並且依靠經驗除過不少 bug，但是都沒有使用 Sencha Architect 來的快及準確，話雖這麼說，IDE 也沒有辦法幫你寫出「對」的程式，強烈建議使用 Sencha Architect 務必先了解 extjs 的原理，如此才能夠讓你駕馭 Architect，就像開車一樣，沒有先了解如何開車就上路，開的不好錯怪車子，還有可能出車禍喔。</p>
+
+<p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
+
+<p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[extjs mvc 架構：繼承與模組重覆使用]]></title>
     <link href="http://smlsun.com/blog/2013/05/08/extjs-oo/"/>
     <updated>2013-05-08T08:42:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/05/08/extjs-oo</id>
-    <content type="html"><![CDATA[<p>兩篇的對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
+    <content type="html"><![CDATA[<p>兩篇對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
 
 <hr />
 
@@ -1327,138 +1427,6 @@ grid.down("button[itemId=updateBtn]")</p>
 <p>```</p>
 
 <p>即使層級上不只一層，透過妳下的條件，extjs 會找出符合條件最接近的物件，如此一來妳就可以輕鬆遊走各個元件之間了！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
-    <link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
-    <updated>2013-02-18T19:12:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
-    <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
-
-<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 ...</p>
-
-<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
-
-<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
-
-<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
-
-    constructor: function(cfg){
-        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
-        this.renderer = function(value, p, r){
-            return tpl.apply(r.data);
-        };
-        this.tpl = tpl;
-    }
-});
-</code></pre>
-
-<p>其中</p>
-
-<pre><code>this.renderer = function(value, p, r){
-    return tpl.apply(r.data);
-};
-</code></pre>
-
-<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
-
-<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
-
-<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
-constructor: function(cfg){
-    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
-
-    this.renderer = function(value, p, r, rowIndex, colIndex){
-
-            //第一種方法 
-            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
-            return tpl.apply(newData);
-
-            //第二種方法
-            //r.data.rowIndex = rowIndex;
-            //r.data.colIndex = colIndex;
-            //return tpl.apply(r.data);
-
-            //未修改前
-            //return tpl.apply(r.data);
-        };
-
-        this.tpl = tpl;
-}
-});
-</code></pre>
-
-<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
-
-<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
-
-<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
-
-<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
-
-<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
-
-<p>實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
-
-<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
-
-var myColumn==new Ext.grid.CusTemplateColumn({ 
-    ...
-tpl:template     
-});
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
-
-<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 ...</p>
-
-<h2>透過 grid 欄位之 renderer</h2>
-
-<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
-
-<pre><code>var myColumn={ 
-    ...
-    renderer : function(value, p, r, rowIndex, colIndex){
-        r.data.rowIndex = rowIndex;
-        r.data.colIndex = colIndex;
-        return template.apply(r.data);
-    }
-}
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<h2>實際在使用上該選擇哪種方式？</h2>
-
-<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
 ]]></content>
   </entry>
   

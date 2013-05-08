@@ -1,0 +1,846 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>利用 Sencha Architect 快速開發 extjs - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  <meta name="description" content="介紹如何利用 Sencha Architect 快速開發 extjs">
+  
+  <meta name="keywords" content="extjs, javascript, Sencha, Architect">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+<hr>
+
+<div class="row">
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+<hr>
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+利用 Sencha Architect 快速開發 Extjs
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗，如果是純文字開發除錯是非常費時的。</p>
+
+<p>早在 Sencha Architect 前一代 desingner 時，筆者就有使用過，那時候真的只能拿來 mockup，不過也許長大後也長知識，現在覺得好使用許多，廢話不多說，就讓我們看下去。</p>
+
+<hr />
+
+<p>利用 Sencha Architect 他會幫你檢查一些常見的錯誤，包括 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所拉出來的畫面，幾乎都可以正常運作，說這麼多就讓我們來看看如何使用此軟體，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
+
+<p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
+
+<p>假設妳已經讀過上面連結，最好還能夠實際操作看看，相信有些概念後會更容易吸收。</p>
+
+<p>並且可以先了解一下 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs 中的 mvc 還有物件導向的特性</a>，在 Sencha Architect 中，妳將可以很輕易做到，一些基礎的使用方式筆者就不贅述，本篇將介紹進階使用技巧。</p>
+
+<h2>物件導向：元件重覆使用</h2>
+
+<p>拜 extjs 所賜，讓前端純 javascript 的開發也能用物件導向的方式來進行，我們可以將一些常用的元件重覆使用，一旦我們需要調整時，只要調整基礎元件，就可以同時影響所有有使用到的元件，參考下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-r6dKsDsjny8/UYoJTVdWbrI/AAAAAAAALq4/ZcWWw55l13s/w295-h351-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.13.42.jpg" alt="image" /></p>
+
+<p>可以看到 saveBtn 同時出現在三個自定元件，在 Sencha Architect 裡如果是屬於 link 元件將會用藍色線連結，讓你可以一目了然，一旦改了最原始的 saveBtn 將會連動其他的元件，如下圖</p>
+
+<p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
+
+<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理</p>
+
+<h2>toolbox</h2>
+
+<p>除了利用類別的方式，我們也可將我們自定義的元件加入 toolbox 以利重覆使用，使用上如下圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
+
+<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用使，拖拉至妳需要放置的位置即可。</p>
+
+<h2>model 連結真實資料</h2>
+
+<p>除了在一開始基礎操作連結可以定義 model 的欄位之外，妳也可以連真實的資料來進行呈現。</p>
+
+<p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
+
+<h2>進階屬性定義</h2>
+
+<p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5ghG4LSpW68/UYoJVMRl7UI/AAAAAAAALrQ/jaTUxgolSD4/w301-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.31.02.jpg" alt="image" /></p>
+
+<p>一旦妳輸入的屬性不存在，妳可以點選 add，就會加入下方的屬性，並且可選取該屬性的資料型態，根據妳所選的資料屬性 Architect 會幫你進行資料型態檢查。</p>
+
+<h2>介面 layout 定義</h2>
+
+<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成，我們希望正確確認 layout 的情形，舉個例子：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
+
+<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過<br/>
+Architect：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
+
+<p>圖中可以看到使用的 layout 為 vbox，結構上如下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-ZSGWB1J0R-0/UYo62Dv1_mI/AAAAAAAALsA/i6lYouhtbQU/w225-h110-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.03.16.jpg" alt="image" /></p>
+
+<p>由 listToolbar 以及 itemGrid 組成，在這邊希望能夠將下方得 itemGrid 填滿全部，如下圖，實際呈現上 grid 並沒有填滿：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
+
+<p>所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
+
+<p>此時如果我們要看其他 layout 將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
+
+<p>只有 toolbar 被填滿，grid 不見了，所以，妳可以省下寶貴生命快速確認介面的呈現。</p>
+
+<h2>方便進行測試與開發</h2>
+
+<p>在 extjs 的 application.js 中可以定義一個屬性為 <code>autoCreateViewport</code>，一旦定義此屬性為 true，extjs 會在 view 底下自動顯示檔案為 Viewport.js 定義的內容，而在 Architect 中每一個 view 類別都可以標示為 Initial View，如下圖中的 Mark as Initial View：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-uGliPz2sLMU/UYo60ILc2WI/AAAAAAAALro/RM6EnhQDGjk/w259-h249-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.45.47.jpg" alt="image" /></p>
+
+<p>這樣有什麼好處？在開發 extjs 時，如果應用程式是需要進行登入的，每次更新程式後要進行測試，免不了需要經過登入步驟以及點選功能來開啟需要測試的功能，次數少還好，如果反覆測試的情況下，著實浪費時間，更甚者，假設應用程式是多人開發，可能在執行某應用程式前，需要經過別的應用程式，但如果前面步驟尚未完成，就無法進行測試，這時候這樣的功能就很方便，因為我們可以針對單一元件進行單元功能開發與測試，大大降低功能間的相依性，一旦各自元件開發完成，就可以進行組合最終在進行整合功能測試即可！</p>
+
+<p>Sencha Architect 確實有他存在及使用的價值，筆者使用純文字開發 extjs 多年，遇到很多介面上的問題，並且依靠經驗除過不少 bug，但是都沒有使用 Sencha Architect 來的快及準確，話雖這麼說，IDE 也沒有辦法幫你寫出「對」的程式，強烈建議使用 Sencha Architect 務必先了解 extjs 的原理，如此才能夠讓你駕馭 Architect，就像開車一樣，沒有先了解如何開車就上路，開的不好錯怪車子，還有可能出車禍喔。</p>
+
+<p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
+
+<p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-05-09T10:45:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/architect/'>Architect</a>, <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/05/08/extjs-oo/" title="Previous Post: extjs mvc 架構：繼承與模組重覆使用"><li>&laquo; extjs mvc 架構：繼承與模組重覆使用</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+  <div class="span12">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/04/30/extjs4-intro/">extjs 4 的新特性與基本概念</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2013 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/';
+        var disqus_url = 'http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>
