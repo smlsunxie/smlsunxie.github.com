@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T21:24:40+08:00</updated>
+  <updated>2013-05-09T21:28:06+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -87,7 +87,7 @@ import finder.*</p>
 
 <h2>以 RESTful 進行前後端溝通</h2>
 
-<p>extjs 4 有個新的 proxy type：rest，一但定義為 rest proxy，在資料操作上將會根據你對前端資料的更新動作給予不同的 http mathod，如下：</p>
+<p>extjs 4 有個新的 proxy type：rest，一但定義為 rest proxy，在資料操作上將會根據你對前端資料的更新動作給予不同的 http method，如下：</p>
 
 <ul>
 <li>新增：POST</li>
@@ -97,7 +97,7 @@ import finder.*</p>
 </ul>
 
 
-<p>在 grails 中我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http mathod 導入至對定的後端 controller mathod，該檔案設定如下：</p>
+<p>在 grails 中我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http method 導入至對定的後端 controller method，該檔案設定如下：</p>
 
 <p>``` groovy
 class UrlMappings {</p>
@@ -147,7 +147,7 @@ constraints {
 <p>}
 ```</p>
 
-<p>代表如果有傳入 id，根據 http mathod 的不同對應到不同的 controller 的 mathod，若沒有 id 則進行不一樣的配置，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 mathod，範例如下：</p>
+<p>代表如果有傳入 id，根據 http method 的不同對應到不同的 controller 的 method，若沒有 id 則進行不一樣的配置，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 method，範例如下：</p>
 
 <p>``` groovy
 package finder
@@ -188,11 +188,11 @@ def delete={
 <p>}
 ```</p>
 
-<p>剛剛提到對應的 controller mathod 就如同上面程式碼中的 listAll，show 等等，到這邊，後端的 server 算是已經準備好，可以開始進行測試，是否發現跟一般 java 比，簡潔很多，寫起來還有點像 javascript？實際上 Grails 骨子裡還是 java，執行時會編譯為 class，因為搭配了 java 中的動態語言 groovy 才有這樣的效果，且並沒有捨棄 java 多年累積廣大的第三方套件，當你需要時皆可以引入，不需重新造輪。</p>
+<p>剛剛提到對應的 controller method 就如同上面程式碼中的 listAll，show 等等，到這邊，後端的 server 算是已經準備好，可以開始進行測試，是否發現跟一般 java 比，簡潔很多，寫起來還有點像 javascript？實際上 Grails 骨子裡還是 java，執行時會編譯為 class，因為搭配了 java 中的動態語言 groovy 才有這樣的效果，且並沒有捨棄 java 多年累積廣大的第三方套件，當你需要時皆可以引入，不需重新造輪。</p>
 
 <h2>extjs store 類別提供的 sync</h2>
 
-<p>後端 server 快速準備好後，在 extjs 更加簡化呼叫更新資料請求的程序，在 store 的類別提供一個 mathod 為 sync()，作用在於一旦 store 載入後，只要對 store 執行 insert，remove，insert 確定更新完成後，一旦執行就會對後端 server 發出 http request，所以，你不用勞你費心，extjs 已幫你完成相關程序，範例 controller 如下：</p>
+<p>後端 server 快速準備好後，在 extjs 更加簡化呼叫更新資料請求的程序，在 store 的類別提供一個 method 為 sync()，作用在於一旦 store 載入後，只要對 store 執行 insert，remove，insert 確定更新完成後，一旦執行就會對後端 server 發出 http request，所以，你不用勞你費心，extjs 已幫你完成相關程序，範例 controller 如下：</p>
 
 <p>``` javascript
 Ext.define('Frontend.controller.common.Standard', {</p>
