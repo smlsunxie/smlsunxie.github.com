@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T21:39:42+08:00</updated>
+  <updated>2013-05-09T21:22:18+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -20,7 +20,7 @@
     <id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
     <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗純文字開發除錯是非常費時的。</p>
 
-<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，那時候真的只能拿來 mockup，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
+<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
 
 <hr />
 
@@ -111,6 +111,331 @@
 <p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
 
 <p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[企業級開發框架：extjs 與 grails 的完美組合]]></title>
+    <link href="http://smlsun.com/blog/2013/05/08/extjs-with-grails/"/>
+    <updated>2013-05-08T21:44:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/05/08/extjs-with-grails</id>
+    <content type="html"><![CDATA[<p>本篇的重點在於說明 extjs 作為 web 應用程式前端的 framework，如何與目前常用的 full stack framework 進行整合，在此將以 grails 為例，當然不只可以跟 grails 整合，其他像 RoR 或者 .net，甚至是 node.js 都可以作為 extjs 的後端服務提供者。</p>
+
+<p>透過 grails 這樣的整合範例，希望可以讓讀者體會不只能夠快速開發，一旦應用程式大到一定程度，也可以很方便的維護，並且在開發流程中的循環都可以順暢的不停轉動。</p>
+
+<hr />
+
+<h2>前後端分工</h2>
+
+<p>開發大型軟體，或是時程上較趕的時候最怕等來等去，在開發應用程式時，最需要確認的是資料庫的設計，一旦定義好之後，如何快速完成 model 並且將測試資料建立完成，以便進行測試，透過 grails 與 extjs 剛好可以完美的解決此問題，前幾篇介紹到的關於 extjs model 類別的使用，其概念與 grails 剛好一拍即合，同樣以之前 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs mvc 為例</a> 裡面用到的 Item，batch，以及 itemImage，在 grails 中宣告如下：</p>
+
+<p>``` groovy
+package finder
+class Item {</p>
+
+<pre><code>    String name
+    String title=""
+    String description=""
+    static hasMany=[itemImages:ItemImage]
+</code></pre>
+
+<p>}</p>
+
+<p>package finder
+class Batch {</p>
+
+<pre><code>    String name
+    static belongsTo =[item:Item]
+</code></pre>
+
+<p>}</p>
+
+<p>package finder
+class ItemImage {</p>
+
+<pre><code>Item item
+String name
+</code></pre>
+
+<p>}
+```</p>
+
+<p>grails 可以把它看做 java 中的 RoR，因此也有「約定優於配置」的特性以往在傳統 java 對於 O/R mapping 這樣的技術，往往需要大量的 xml 定義，在 grails 中三個資料表的設定，就像上面的程式碼一樣，輕鬆簡單！不需要在對資料庫進行資料表建立，一旦 grails 啟動就會檢查資料庫是否有對應的資料表，判斷若是 develop mode 將會使用虛擬資料庫，在記憶體中就會建立好三個 table，不需要有實體就可以開始對你的應用程式開始進行測試，一旦開發完成，只要進行設定轉換為實體資料庫即可，接著在 grails 中有個類別 BootStrap 在這裡可以定義你要測試的初始資料，以便進行相關應用開發，如下：</p>
+
+<p>``` groovy
+import finder.*</p>
+
+<p>class BootStrap {</p>
+
+<p>  def init = { servletContext -></p>
+
+<pre><code>    environments {
+        development {
+            def item1 = new Item(name:"item1").save(failOnError: true, flush: true)
+            def batch1 = new Batch(name:"batch1",item:item1).save(failOnError: true, flush: true)
+            def itemImage1 = new ItemImage(name:"itemImage1.jpg",item:item1).save(failOnError: true, flush: true)
+        }
+    }
+</code></pre>
+
+<p>  }
+  def destroy = {
+  }
+}
+```</p>
+
+<p>一旦伺服器啟動就會執行在 BootStrap 中的程式碼，如果我們在此區塊撰寫新增資料的程式，每次啟動 grails 都會有新的資料可以進行測試，反覆測試的過程中將免去每次都要建立測試資料的麻煩，並且有預設的設定值也可以在此定義，資料準備好了，前後端就可以分開進行，接著來看如何快速定義好 extjs 與 grails 的溝通橋樑。</p>
+
+<h2>以 RESTful 進行前後端溝通</h2>
+
+<p>extjs 4 有個新的 proxy type：rest，一但定義為 rest proxy，在資料操作上將會根據你對前端資料的更新動作給予不同的 http mathod，如下：</p>
+
+<ul>
+<li>新增：POST</li>
+<li>修改：UPDATE</li>
+<li>刪除：DELETE</li>
+<li>查詢：GET</li>
+</ul>
+
+
+<p>在 grails 中我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http mathod 導入至對定的後端 controller mathod，該檔案設定如下：</p>
+
+<p>``` groovy
+class UrlMappings {</p>
+
+<pre><code>static mappings = {
+    "/$controller/$action?/$id?"{
+        constraints {
+        }
+    }
+    "/rest/$controller/$id"{
+        action = [GET: "show", PUT:"update", DELETE:"delete"]
+        constraints {
+        }
+    }
+    "/rest/$controller"{
+        action = [GET:"listAll", POST: "create"]
+        constraints {
+        }
+    }
+    "/"(view:"/home/index")
+    "500"(view:'/error')
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>可以看到在 routeing 的設定中：</p>
+
+<p>``` grovvy
+"/rest/$controller/$id"{</p>
+
+<pre><code>action = [GET: "show", PUT:"update", DELETE:"delete"]
+constraints {
+}
+</code></pre>
+
+<p>}</p>
+
+<p>"/rest/$controller"{</p>
+
+<pre><code>action = [GET:"listAll", POST: "create"]
+constraints {
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>代表如果有傳入 id，根據 http mathod 的不同對應到不同的 controller 的 mathod，若沒有 id 則進行不一樣的配置，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 mathod，範例如下：</p>
+
+<p>``` groovy
+package finder
+import grails.converters.JSON
+class ItemController {</p>
+
+<pre><code>def listAll = {
+    def items=Item.list()
+    render (contentType: 'text/json') {
+  [
+            items: items,
+            total: items.size()
+        ]
+    }
+}
+
+def show = { Long id -&gt;
+    def item=Item.findById(id)
+    render (contentType: 'text/json') {
+  [
+            item: item
+        ]
+    }
+
+}
+
+def create = {
+    ...
+}
+def update = {
+    ...
+}
+def delete={
+    ...
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>剛剛提到對應的 controller mathod 就如同上面程式碼中的 listAll，show 等等，到這邊，後端的 server 算是已經準備好，可以開始進行測試，是否發現跟一般 java 比，簡潔很多，寫起來還有點像 javascript？實際上 Grails 骨子裡還是 java，執行時會編譯為 class，因為搭配了 java 中的動態語言 groovy 才有這樣的效果，且並沒有捨棄 java 多年累積廣大的第三方套件，當你需要時皆可以引入，不需重新造輪。</p>
+
+<h2>extjs store 類別提供的 sync</h2>
+
+<p>後端 server 快速準備好後，在 extjs 更加簡化呼叫更新資料請求的程序，在 store 的類別提供一個 mathod 為 sync()，作用在於一旦 store 載入後，只要對 store 執行 insert，remove，insert 確定更新完成後，一旦執行就會對後端 server 發出 http request，所以，你不用勞你費心，extjs 已幫你完成相關程序，範例 controller 如下：</p>
+
+<p>``` javascript
+Ext.define('Frontend.controller.common.Standard', {</p>
+
+<pre><code>extend: 'Ext.app.Controller',
+
+doRead: function() {
+    this.store.load();
+},
+doCreate: function() {
+    this.store.insert(0, this.model);
+},
+doDelete:function(){
+    var selection = this.grid.getSelectionModel().getSelection()[0];
+    if (selection) {
+        this.store.remove(selection);
+    }
+},
+doUpdate: function() {
+        //更新對 store 的異動
+    this.store.sync({
+        success : function(){
+            console.log("success");
+            Ext.Msg.alert('Status', '更新成功');
+        },
+        failure : function(response, options){
+            console.log("failure");
+            Ext.Msg.alert('Status', '更新失敗');
+        }  
+    });
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<h2>快速前端元件建立</h2>
+
+<p>即使使用像 grails 這樣的 full stack framework 對於前端介面還是需要自己重頭刻起，若是搭配 sencha architect 將可以補齊這方面的不足：快速建立前端介面，並且為了敏捷快速的開發，一旦介面拉好，就可以儘快確認需求與操作介面，一旦沒問題所完成的介面就可以開始著手開發，介面的變動也可以在 architect 中完成，還記得之前有介紹過在 extjs 中的每個小元件都可以作為類別存在，並且 controller 若以每個元件為目標設計，透過混和（mixins）的特性組合 controller 就可以快速調整介面的呈現與互動。</p>
+
+<h2>extjs develop mode &amp; test</h2>
+
+<p>一個好的框架，必須還要能夠方便測試與開發，在 extjs 中可以很方便的指定某個類別作為初始的 view，可以參考上一篇 <a href="http://ithelp.ithome.com.tw/question/10120289">Sencha Architect 快速開發 extjs</a>中「方便進行測試與開發」的介紹，即使你沒有用 Architect，也可以自行定義，別忘了利用這樣的特性對開發中的介面進行測試。</p>
+
+<h2>extjs production mode</h2>
+
+<p>應用程式開發到一個階段，就會從 develop 進階到所謂的 production mode，其目的就是要盡量加速資源的載入，在前端的世界就是要將所有的 js 檔最小化，並且合為一個 js 檔，雖然 extjs 有動態載入，實際在 production 模式這樣是很耗效能的，如果我們要自行利用 minify 工具進行壓縮，在 extjs 中各類別的相依性就無法顧慮到，並且可能因為組成檔案順序不正確造成衝突，所幸，extjs 也注意到這樣的問題，提供 Sencha cmd 來處理 minify js 的程序，並且可以搭配 Architect 使用，步驟如下：</p>
+
+<ol>
+<li><p>利用 sencha cmd 產生 extjs 專案</p>
+
+<pre><code> sencha -sdk {extjs_home} generate app {projectName} {projectLocation}
+</code></pre></li>
+<li><p>修改 sencha 設定檔：修改 {projectLocation}/.sencha/app/sencha.cfg，加入下面兩行 ：</p>
+
+<pre><code> app.dir={projectLocation}
+ app.classpath=${app.dir}/app.js,${app.dir}/app
+</code></pre></li>
+<li><p>進到 {projectLocation} 執行 production 編譯</p>
+
+<pre><code> sencha app build production
+</code></pre></li>
+</ol>
+
+
+<p>如此一來就會將執行完的結果產出在 {projectLocation}/build 底下，就是這們簡單！</p>
+
+<h2>resource 控管</h2>
+
+<p>extjs 所完成的介面在 grails 中將作為 resource 存在，且對 grails 而言屬於靜態檔案，因此可以進行快取來加速資源載入，而在 grails 有一設定檔 ApplicationResources 專門在定義要載入的 resource，在設定時必須考慮 develop 與 production 的不同，設定方式如下:</p>
+
+<p>``` groovy
+import org.codehaus.groovy.grails.web.context.ServletContextHolder as SCH
+modules = {</p>
+
+<pre><code>// develop mode 使用
+extjs4_dev {
+    defaultBundle 'finder_dev'
+
+    resource url: 'extjs4_dev/resources/ext-theme-neptune/ext-theme-neptune-all.css'        
+    resource url: 'ext/ext-all.js'
+    resource url: 'ext/ext-theme-neptune.js'
+    resource url: 'app.js'
+
+    getFilesForPath('app').each {
+        resource url: it
+    }
+}   
+// production mode 使用
+</code></pre>
+
+<p>  extjs4 {</p>
+
+<pre><code>    defaultBundle 'finder'
+    resource url: 'extjs4/resources/finder_extjs-all.css'
+    resource url: 'extjs4/all-classes.js'
+}   
+</code></pre>
+
+<p>}</p>
+
+<p>// 載入 path 參數底下所有的檔案作為 resource
+def getFilesForPath(path) {</p>
+
+<pre><code>def webFileCachePaths = []
+def servletContext = SCH.getServletContext()
+
+if(!servletContext) return webFileCachePaths
+def realPath = servletContext.getRealPath('/')
+def appDir = new File("$realPath/$path")
+appDir.eachFileRecurse {File file -&gt;
+    if (file.isDirectory() || file.isHidden()) return
+    webFileCachePaths &lt;&lt; file.path.replace(realPath, '')
+}
+webFileCachePaths
+</code></pre>
+
+<p>}
+```
+經由這樣的設定，grails 會自動將 block 中所定義的 js 檔自動合為單一 js 檔，接著我們只要在 grails 中特有的 gsp 加入下列判斷：</p>
+
+<p>```
+&lt;g:if env='development'></p>
+
+<pre><code>&lt;r:require modules="extjs4_dev"/&gt;
+</code></pre>
+
+<p>&lt;/g:if>
+&lt;g:else></p>
+
+<pre><code>&lt;r:require modules="extjs4"/&gt;
+</code></pre>
+
+<p>&lt;/g:else>
+```
+就會根據不同的開發模式載入不同的 resource 組合。</p>
+
+<h2>打完收工，期待下次在相會！</h2>
+
+<p>這是個想法，目前我們也正在投入這樣的應用，預期可以帶來不一樣的開發方式，軟體開發方式不停的在進步，也許還有很多團隊還在使用老舊的方法，這樣的組合，除了可以敏捷快速的開發，利用 extjs 所提供的方便性，相信可以帶來效率的提升，特別是前端的物件建立與操作，表單式的應用程式非常適合，筆者也曾在企業進行 extjs 的教育訓練，歡迎有興趣的讀者可以互相切磋。</p>
+
+<p>系列文章到此告一段落，期待下次在與大家分享！</p>
 ]]></content>
   </entry>
   
@@ -899,251 +1224,6 @@ Ext.define('Frontend.controller.MN.MNM001', {
 <p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
 
 <p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: tree 的建立與使用]]></title>
-    <link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
-    <updated>2013-02-19T18:40:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
-    <content type="html"><![CDATA[<p>資料來源：</p>
-
-<ul>
-<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
-<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
-</ul>
-
-
-<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
-
-<p>這裡將介紹兩種 tree 的建立方式：</p>
-
-<h1>利用物件來產生 tree</h1>
-
-<pre><code>Ext.onReady( function() {
-
-    var root = new Ext.tree.TreeNode( {
-        text : '根'
-    });
-
-    var node1Child1 = new Ext.tree.TreeNode( {
-        text : '個人資料維護',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-    var node1Child2 = new Ext.tree.TreeNode( {
-        text : '密碼變更',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-
-    var node1 = new Ext.tree.TreeNode( {
-        text : '個人資料'
-    });
-    node1.appendChild(node1Child1);
-    node1.appendChild(node1Child2);
-
-    root.appendChild(node1);
-
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : root
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
-
-<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
-
-<pre><code>Ext.onReady( function() {
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : new Ext.tree.AsyncTreeNode( {
-            text : '根',
-
-            children : [ {
-                text : '個人資料',
-                children : [ {
-                    text : '個人資料維護',
-                    leaf : true
-                }, {
-                    text : '密碼變更',
-                    leaf : true
-                } ]
-            }, {
-                text : '客戶資料',
-                children : [ {
-                    text : '客戶基本資料查詢維護',
-                    leaf : true
-                }, {
-                    text : '客戶基本資料列印',
-                    leaf : true
-                } ]
-            }]
-        })
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>讀取 json 資料來源產生 tree</h2>
-
-<p>假設遠端的 json 資料來源：</p>
-
-<pre><code>[{
-    id: 1,
-    text: 'A leaf Node',
-    leaf: true
-},{
-    id: 2,
-    text: 'A folder Node',
-    children: [{
-        id: 3,
-        text: 'A child Node',
-        leaf: true
-    }]
-}]
-</code></pre>
-
-<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
-
-<pre><code>Ext.onReady(function() {
-    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
-    var tree = new Ext.tree.TreePanel({
-        el: 't',
-        width: 150,
-        autoHeight: true,
-        root: root,
-        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
-    });
-    tree.render();
-});
-</code></pre>
-
-<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
-
-<h2>讀取 xml 資料來源產生 tree</h2>
-
-<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
-
-<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
-
-<ul>
-<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
-</ul>
-
-
-<h2>tree 的操作與參照</h2>
-
-<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
-
-<ul>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
-
-<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
-<li><p>selectPath( path, [attr], [callback] )</p>
-
-<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
-
-<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
-</ul>
-
-
-<p>其他請參照 API，以下有實際使用飯例：</p>
-
-<pre><code>Ext.onReady( function() {
-  var viewport = new Ext.tree.TreePanel( {
-    title : "系統相關",
-    width : 200,
-    height : 500,
-    rootVisible : true,//root結點顯不顯示
-    root : new Ext.tree.AsyncTreeNode( {
-      text : '根',
-      id:'r',
-
-      children : [ {
-        text : '個人資料',
-        id:'c1',
-        children : [ {
-            text : '個人資料維護',
-            id:'c1c1',
-            leaf : true
-
-        }, {
-            text : '密碼變更',
-            myid:'c1c2',
-            leaf : true
-        } ]
-      }, {
-        text : '客戶資料',
-        id:'c2',
-        children : [ {
-            text : '客戶基本資料查詢維護',
-            leaf : true,
-            id:'c2c1'
-        }, {
-            text : '客戶基本資料列印',
-            leaf : true,
-            id:'c2c2'
-        } ]
-      } ]
-    })
-
-  });
-
-  viewport.render('toolbar');
-  viewport.doLayout();
-
-  var btn=new Ext.Button({
-    renderTo:"btn",
-    id:'test',
-    text:'test',
-    handler:function(){
-
-        // selectPath 可以做到 expand 之後在進行 select
-      viewport.selectPath('/r/c2/c2c1');
-
-      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 一旦開啟過節點，再次 findChild 就會取得實體。
-      viewport.expandPath('/r/c1/c1c1');
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 除了 id 之外，我們也可以用別的屬性來做搜尋
-      viewport.root.findChild( 'myid', 'c1c2', true ).select();
-    }
-  });
-
-});
-</code></pre>
-
-<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
-
-<iframe style="width: 100%; height: 600px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-
 ]]></content>
   </entry>
   

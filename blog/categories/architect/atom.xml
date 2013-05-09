@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Architect | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/architect/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-08T21:39:42+08:00</updated>
+  <updated>2013-05-09T21:22:18+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -20,7 +20,7 @@
     <id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
     <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗純文字開發除錯是非常費時的。</p>
 
-<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，那時候真的只能拿來 mockup，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
+<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
 
 <hr />
 
