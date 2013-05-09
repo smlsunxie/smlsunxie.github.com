@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T22:09:26+08:00</updated>
+  <updated>2013-05-09T22:11:26+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -190,7 +190,7 @@ def delete={
 
 <p>剛剛提到對應的 controller method 就如同上面程式碼中的 listAll，show 等等，到這邊，後端的 server 算是已經準備好，可以開始進行測試，是否發現跟一般 java 比，簡潔很多，寫起來還有點像 javascript？實際上 Grails 骨子裡還是 java，執行時會編譯為 class，因為搭配了 java 中的動態語言 groovy 才有這樣的效果，且並沒有捨棄 java 多年累積廣大的第三方套件，當你需要時皆可以引入，不需重新造輪。</p>
 
-<h2>extjs store 類別提供的 sync</h2>
+<h2>extjs store 類別提供的 sync()：簡化更新</h2>
 
 <p>後端 server 快速準備好後，在 extjs 更加簡化呼叫更新資料請求的程序，在 store 的類別提供一個 method 為 sync()，作用在於一旦 store 載入後，只要對 store 執行 insert，remove，insert 確定更新完成後，一旦執行就會對後端 server 發出 http request，所以，你不用勞你費心，extjs 已幫你完成相關程序，範例 controller 如下：</p>
 
