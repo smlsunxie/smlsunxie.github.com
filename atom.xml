@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T21:28:06+08:00</updated>
+  <updated>2013-05-09T21:59:21+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -172,7 +172,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>可以看到在 routeing 的設定中：</p>
+<p>可以看到在 URLMappings 的設定中：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -199,7 +199,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>代表如果有傳入 id，根據 http method 的不同對應到不同的 controller 的 method，若沒有 id 則進行不一樣的配置，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 method，範例如下：</p>
+<p>代表如果有傳入 id 則是上述的第一種 mapping 方式，根據 http method 的不同對應到不同的 controller 的 method；若沒有 id 則是第二種，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 method，範例如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
