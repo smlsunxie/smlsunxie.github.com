@@ -1,0 +1,1206 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>企業級開發框架：extjs 與 grails 的完美組合 - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  <meta name="description" content="介紹如何利用 extjs 搭配 grails 作為企業級敏捷快速開發框架">
+  
+  <meta name="keywords" content="extjs, javascript, java, grails">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2013/05/09/extjs-with-grails/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+<hr>
+
+<div class="row">
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+<hr>
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+企業級開發框架：extjs 與 Grails 的完美組合
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>本篇的重點在於說明 extjs 作為 web 應用程式前端的 framework，如何與目前常用的 full stack framework 進行整合，在此將以 grails 為例，當然不只可以跟 grails 整合，其他像 RoR 或者 .net，甚至是 node.js 都可以作為 extjs 的後端服務提供者。</p>
+
+<p>透過 grails 這樣的整合範例，希望可以讓讀者體會不只能夠快速開發，一旦應用程式大到一定程度，也可以很方便的維護，並且在開發流程中的循環都可以順暢的不停轉動。</p>
+
+<hr />
+
+<h2>前後端分工</h2>
+
+<p>開發大型軟體，或是時程上較趕的時候最怕等來等去，在開發應用程式時，最需要確認的是資料庫的設計，一旦定義好之後，如何快速完成 model 並且將測試資料建立完成，以便進行測試，透過 grails 與 extjs 剛好可以完美的解決此問題，前幾篇介紹到的關於 extjs model 類別的使用，其概念與 grails 剛好一拍即合，同樣以之前 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs mvc 為例</a> 裡面用到的 Item，batch，以及 itemImage，在 grails 中宣告如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kn">package</span> <span class="n">finder</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">Item</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">String</span> <span class="n">name</span>
+</span><span class='line'>      <span class="n">String</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>      <span class="n">String</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'>      <span class="kd">static</span> <span class="n">hasMany</span><span class="o">=[</span><span class="nl">itemImages:</span><span class="n">ItemImage</span><span class="o">]</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">package</span> <span class="n">finder</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">Batch</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">String</span> <span class="n">name</span>
+</span><span class='line'>      <span class="kd">static</span> <span class="n">belongsTo</span> <span class="o">=[</span><span class="nl">item:</span><span class="n">Item</span><span class="o">]</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">package</span> <span class="n">finder</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">ItemImage</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Item</span> <span class="n">item</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">name</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>grails 可以把它看做 java 中的 RoR，因此也有「約定優於配置」的特性以往在傳統 java 對於 O/R mapping 這樣的技術，往往需要大量的 xml 定義，在 grails 中三個資料表的設定，就像上面的程式碼一樣，輕鬆簡單！不需要在對資料庫進行資料表建立，一旦 grails 啟動就會檢查資料庫是否有對應的資料表，判斷若是 develop mode 將會使用虛擬資料庫，在記憶體中就會建立好三個 table，不需要有實體就可以開始對你的應用程式開始進行測試，一旦開發完成，只要進行設定轉換為實體資料庫即可，接著在 grails 中有個類別 BootStrap 在這裡可以定義你要測試的初始資料，以便進行相關應用開發，如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kn">import</span> <span class="nn">finder.*</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">BootStrap</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">init</span> <span class="o">=</span> <span class="o">{</span> <span class="n">servletContext</span> <span class="o">-&gt;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">environments</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">development</span> <span class="o">{</span>
+</span><span class='line'>              <span class="kt">def</span> <span class="n">item1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Item</span><span class="o">(</span><span class="nl">name:</span><span class="s2">&quot;item1&quot;</span><span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="nl">failOnError:</span> <span class="kc">true</span><span class="o">,</span> <span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>              <span class="kt">def</span> <span class="n">batch1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Batch</span><span class="o">(</span><span class="nl">name:</span><span class="s2">&quot;batch1&quot;</span><span class="o">,</span><span class="nl">item:</span><span class="n">item1</span><span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="nl">failOnError:</span> <span class="kc">true</span><span class="o">,</span> <span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>              <span class="kt">def</span> <span class="n">itemImage1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ItemImage</span><span class="o">(</span><span class="nl">name:</span><span class="s2">&quot;itemImage1.jpg&quot;</span><span class="o">,</span><span class="nl">item:</span><span class="n">item1</span><span class="o">).</span><span class="na">save</span><span class="o">(</span><span class="nl">failOnError:</span> <span class="kc">true</span><span class="o">,</span> <span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">destroy</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦伺服器啟動就會執行在 BootStrap 中的程式碼，如果我們在此區塊撰寫新增資料的程式，每次啟動 grails 都會有新的資料可以進行測試，反覆測試的過程中將免去每次都要建立測試資料的麻煩，並且有預設的設定值也可以在此定義，資料準備好了，前後端就可以分開進行，接著來看如何快速定義好 extjs 與 grails 的溝通橋樑。</p>
+
+<h2>以 RESTful 進行前後端溝通</h2>
+
+<p>extjs 4 有個新的 proxy type：rest，一但定義為 rest proxy，在資料操作上將會根據你對前端資料的更新動作給予不同的 http mathod，如下：</p>
+
+<ul>
+<li>新增：POST</li>
+<li>修改：UPDATE</li>
+<li>刪除：DELETE</li>
+<li>查詢：GET</li>
+</ul>
+
+
+<p>在 grails 中我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http mathod 導入至對定的後端 controller mathod，該檔案設定如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">UrlMappings</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">static</span> <span class="n">mappings</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="s2">&quot;/$controller/$action?/$id?&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="s2">&quot;/rest/$controller/$id&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span> <span class="s2">&quot;show&quot;</span><span class="o">,</span> <span class="nl">PUT:</span><span class="s2">&quot;update&quot;</span><span class="o">,</span> <span class="nl">DELETE:</span><span class="s2">&quot;delete&quot;</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="s2">&quot;/rest/$controller&quot;</span><span class="o">{</span>
+</span><span class='line'>          <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span><span class="s2">&quot;listAll&quot;</span><span class="o">,</span> <span class="nl">POST:</span> <span class="s2">&quot;create&quot;</span><span class="o">]</span>
+</span><span class='line'>          <span class="n">constraints</span> <span class="o">{</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="s2">&quot;/&quot;</span><span class="o">(</span><span class="nl">view:</span><span class="s2">&quot;/home/index&quot;</span><span class="o">)</span>
+</span><span class='line'>      <span class="s2">&quot;500&quot;</span><span class="o">(</span><span class="nl">view:</span><span class="s1">&#39;/error&#39;</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到在 routeing 的設定中：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="s2">&quot;/rest/$controller/$id&quot;</span><span class="o">{</span>
+</span><span class='line'>  <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span> <span class="s2">&quot;show&quot;</span><span class="o">,</span> <span class="nl">PUT:</span><span class="s2">&quot;update&quot;</span><span class="o">,</span> <span class="nl">DELETE:</span><span class="s2">&quot;delete&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">constraints</span> <span class="o">{</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="s2">&quot;/rest/$controller&quot;</span><span class="o">{</span>
+</span><span class='line'>  <span class="n">action</span> <span class="o">=</span> <span class="o">[</span><span class="nl">GET:</span><span class="s2">&quot;listAll&quot;</span><span class="o">,</span> <span class="nl">POST:</span> <span class="s2">&quot;create&quot;</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">constraints</span> <span class="o">{</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>代表如果有傳入 id，根據 http mathod 的不同對應到不同的 controller 的 mathod，若沒有 id 則進行不一樣的配置，實際代表的網址可能為 <code>http://localhost/rest/item/1</code> 或者 <code>http://localhost/rest/batch/</code>，就會根據 UrlMappings 的定義觸動在 controller 中的 mathod，範例如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kn">package</span> <span class="n">finder</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">grails.converters.JSON</span>
+</span><span class='line'><span class="kd">class</span> <span class="nc">ItemController</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">listAll</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="kt">def</span> <span class="n">items</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="na">list</span><span class="o">()</span>
+</span><span class='line'>      <span class="n">render</span> <span class="o">(</span><span class="nl">contentType:</span> <span class="s1">&#39;text/json&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">[</span>
+</span><span class='line'>              <span class="nl">items:</span> <span class="n">items</span><span class="o">,</span>
+</span><span class='line'>              <span class="nl">total:</span> <span class="n">items</span><span class="o">.</span><span class="na">size</span><span class="o">()</span>
+</span><span class='line'>          <span class="o">]</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">show</span> <span class="o">=</span> <span class="o">{</span> <span class="n">Long</span> <span class="n">id</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="kt">def</span> <span class="n">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+</span><span class='line'>      <span class="n">render</span> <span class="o">(</span><span class="nl">contentType:</span> <span class="s1">&#39;text/json&#39;</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">[</span>
+</span><span class='line'>              <span class="nl">item:</span> <span class="n">item</span>
+</span><span class='line'>          <span class="o">]</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kt">def</span> <span class="n">create</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">...</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">update</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">...</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="kt">def</span> <span class="n">delete</span><span class="o">={</span>
+</span><span class='line'>      <span class="o">...</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>剛剛提到對應的 controller mathod 就如同上面程式碼中的 listAll，show 等等，到這邊，後端的 server 算是已經準備好，可以開始進行測試，是否發現跟一般 java 比，簡潔很多，寫起來還有點像 javascript？實際上 Grails 骨子裡還是 java，執行時會編譯為 class，因為搭配了 java 中的動態語言 groovy 才有這樣的效果，且並沒有捨棄 java 多年累積廣大的第三方套件，當你需要時皆可以引入，不需重新造輪。</p>
+
+<h2>extjs store 類別提供的 sync</h2>
+
+<p>後端 server 快速準備好後，在 extjs 更加簡化呼叫更新資料請求的程序，在 store 的類別提供一個 mathod 為 sync()，作用在於一旦 store 載入後，只要對 store 執行 insert，remove，insert 確定更新完成後，一旦執行就會對後端 server 發出 http request，所以，你不用勞你費心，extjs 已幫你完成相關程序，範例 controller 如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.controller.common.Standard&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">doRead</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doCreate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doDelete</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">selection</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">getSelection</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">selection</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">selection</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//更新對 store 的異動</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新成功&#39;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">failure</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">options</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;failure&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新失敗&#39;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>快速前端元件建立</h2>
+
+<p>即使使用像 grails 這樣的 full stack framework 對於前端介面還是需要自己重頭刻起，若是搭配 sencha architect 將可以補齊這方面的不足：快速建立前端介面，並且為了敏捷快速的開發，一旦介面拉好，就可以儘快確認需求與操作介面，一旦沒問題所完成的介面就可以開始著手開發，介面的變動也可以在 architect 中完成，還記得之前有介紹過在 extjs 中的每個小元件都可以作為類別存在，並且 controller 若以每個元件為目標設計，透過混和（mixins）的特性組合 controller 就可以快速調整介面的呈現與互動。</p>
+
+<h2>extjs develop mode &amp; test</h2>
+
+<p>一個好的框架，必須還要能夠方便測試，在 extjs 中可以很方便的指定某個類別作為初始的 view，可以參考上一篇 <a href="http://ithelp.ithome.com.tw/question/10120289">Sencha Architect 快速開發 extjs</a>中「方便進行測試與開發」的介紹，即使你沒有用 Architect，也可以自行定義，別忘了利用這樣的特性對開發中的介面進行測試。</p>
+
+<h2>extjs production mode</h2>
+
+<p>應用程式開發到一個階段，就會從 develop 進階到所謂的 production mode，其目的就是要盡量加速資源的載入，在前端的世界就是要將所有的 js 檔最小化，並且合為一個 js 檔，雖然 extjs 有動態載入，實際在 production 模式這樣是很耗效能的，如果我們要自行利用 minify 工具進行壓縮，在 extjs 中各類別的相依性就無法顧慮到，並且可能因為組成檔案順序不正確造成衝突，所幸，extjs 也注意到這樣的問題，提供 Sencha cmd 來處理 minify js 的程序，並且可以搭配 Architect 使用，步驟如下：</p>
+
+<ol>
+<li><p>利用 sencha cmd 產生 extjs 專案</p>
+
+<pre><code> sencha -sdk {extjs_home} generate app {projectName} {projectLocation}
+</code></pre></li>
+<li><p>修改 sencha 設定檔：修改 {projectLocation}/.sencha/app/sencha.cfg，加入下面兩行 ：</p>
+
+<pre><code> app.dir={projectLocation}
+ app.classpath=${app.dir}/app.js,${app.dir}/app
+</code></pre></li>
+<li><p>進到 {projectLocation} 執行 production 編譯</p>
+
+<pre><code> sencha app build production
+</code></pre></li>
+</ol>
+
+
+<p>如此一來就會將執行完的結果產出在 {projectLocation}/build 底下，就是這們簡單！</p>
+
+<h2>resource 控管</h2>
+
+<p>extjs 所完成的介面在 grails 中將作為 resource 存在，且對 grails 而言屬於靜態檔案，因此可以進行快取來加速資源載入，而在 grails 有一設定檔 ApplicationResources 專門在定義要載入的 resource，在設定時必須考慮 develop 與 production 的不同，設定方式如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kn">import</span> <span class="nn">org.codehaus.groovy.grails.web.context.ServletContextHolder</span> <span class="k">as</span> <span class="n">SCH</span>
+</span><span class='line'><span class="n">modules</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>  <span class="c1">// develop mode 使用</span>
+</span><span class='line'>  <span class="n">extjs4_dev</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">defaultBundle</span> <span class="s1">&#39;finder_dev&#39;</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;extjs4_dev/resources/ext-theme-neptune/ext-theme-neptune-all.css&#39;</span>     
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;ext/ext-all.js&#39;</span>
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;ext/ext-theme-neptune.js&#39;</span>
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;app.js&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">getFilesForPath</span><span class="o">(</span><span class="s1">&#39;app&#39;</span><span class="o">).</span><span class="na">each</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">resource</span> <span class="nl">url:</span> <span class="n">it</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>    
+</span><span class='line'>  <span class="c1">// production mode 使用</span>
+</span><span class='line'>  <span class="n">extjs4</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">defaultBundle</span> <span class="s1">&#39;finder&#39;</span>
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;extjs4/resources/finder_extjs-all.css&#39;</span>
+</span><span class='line'>      <span class="n">resource</span> <span class="nl">url:</span> <span class="s1">&#39;extjs4/all-classes.js&#39;</span>
+</span><span class='line'>  <span class="o">}</span>    
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 載入 path 參數底下所有的檔案作為 resource</span>
+</span><span class='line'><span class="kt">def</span> <span class="nf">getFilesForPath</span><span class="o">(</span><span class="n">path</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">webFileCachePaths</span> <span class="o">=</span> <span class="o">[]</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">servletContext</span> <span class="o">=</span> <span class="n">SCH</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span><span class="o">(!</span><span class="n">servletContext</span><span class="o">)</span> <span class="k">return</span> <span class="n">webFileCachePaths</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">realPath</span> <span class="o">=</span> <span class="n">servletContext</span><span class="o">.</span><span class="na">getRealPath</span><span class="o">(</span><span class="s1">&#39;/&#39;</span><span class="o">)</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">appDir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s2">&quot;$realPath/$path&quot;</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">appDir</span><span class="o">.</span><span class="na">eachFileRecurse</span> <span class="o">{</span><span class="n">File</span> <span class="n">file</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">isDirectory</span><span class="o">()</span> <span class="o">||</span> <span class="n">file</span><span class="o">.</span><span class="na">isHidden</span><span class="o">())</span> <span class="k">return</span>
+</span><span class='line'>        <span class="n">webFileCachePaths</span> <span class="o">&lt;&lt;</span> <span class="n">file</span><span class="o">.</span><span class="na">path</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="n">realPath</span><span class="o">,</span> <span class="s1">&#39;&#39;</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="n">webFileCachePaths</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>經由這樣的設定，grails 會自動將 block 中所定義的 js 檔自動合為單一 js 檔，接著我們只要在 grails 中特有的 gsp 加入下列判斷：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="o">&lt;</span><span class="nl">g:</span><span class="k">if</span> <span class="n">env</span><span class="o">=</span><span class="s1">&#39;development&#39;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nl">r:</span><span class="n">require</span> <span class="n">modules</span><span class="o">=</span><span class="s2">&quot;extjs4_dev&quot;</span><span class="s">/&gt;</span>
+</span><span class='line'><span class="s">&lt;/</span><span class="nl">g:</span><span class="k">if</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nl">g:</span><span class="k">else</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nl">r:</span><span class="n">require</span> <span class="n">modules</span><span class="o">=</span><span class="s2">&quot;extjs4&quot;</span><span class="s">/&gt;</span>
+</span><span class='line'><span class="s">&lt;/</span><span class="nl">g:</span><span class="k">else</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>就會根據不同的開發模式載入不同的 resource 組合。</p>
+
+<h2>打完收工，期待下次在相會！</h2>
+
+<p>這是個想法，目前我們也正在投入這樣的應用，預期可以帶來不一樣的開發方式，軟體開發方式不停的在進步，也許還有很多團隊還在使用老舊的方法，這樣的組合，除了可以敏捷快速的開發，利用 extjs 所提供的方便性，相信可以帶來效率的提升，特別是前端的物件建立與操作，表單式的應用程式非常適合，筆者也曾在企業進行 extjs 的教育訓練，歡迎有興趣的讀者可以互相切磋。</p>
+
+<p>系列文章到此告一段落，期待下次在與大家分享！</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-05-09T21:44:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/grails/'>grails</a>, <a class='category' href='/blog/categories/java/'>java</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/09/extjs-with-grails/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/09/extjs-with-grails/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/05/09/extjs4-sencha-architect-intro/" title="Previous Post: 利用 Sencha Architect 快速開發 extjs"><li>&laquo; 利用 Sencha Architect 快速開發 extjs</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+  <div class="span12">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/05/09/extjs-with-grails/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/05/09/extjs-with-grails/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2013 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/05/09/extjs-with-grails/';
+        var disqus_url = 'http://smlsun.com/blog/2013/05/09/extjs-with-grails/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>
