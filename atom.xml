@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T21:59:21+08:00</updated>
+  <updated>2013-05-09T22:09:26+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -74,7 +74,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>grails 可以把它看做 java 中的 RoR，因此也有「約定優於配置」的特性以往在傳統 java 對於 O/R mapping 這樣的技術，往往需要大量的 xml 定義，在 grails 中三個資料表的設定，就像上面的程式碼一樣，輕鬆簡單！不需要在對資料庫進行資料表建立，一旦 grails 啟動就會檢查資料庫是否有對應的資料表，判斷若是 develop mode 將會使用虛擬資料庫，在記憶體中就會建立好三個 table，不需要有實體就可以開始對你的應用程式開始進行測試，一旦開發完成，只要進行設定轉換為實體資料庫即可，接著在 grails 中有個類別 BootStrap 在這裡可以定義你要測試的初始資料，以便進行相關應用開發，如下：</p>
+<p>grails 可以把它看做 java 中的 RoR，因此也有「約定優於配置」的特性，以往在傳統 java 對於 O/R mapping 這樣的技術，往往需要大量的 xml 定義，在 grails 只要將寫好的 model 放在 grails 下的 model 資料夾，而三個資料表定義就像上面的程式碼一樣，輕鬆簡單！不需要在對資料庫進行 table create，一旦 grails 啟動就會檢查資料庫是否有對應的資料表，判斷若是 develop mode 將會使用虛擬資料庫，在記憶體中就會建立好三個 table，不需要有實體就可以開始對你的應用程式開始進行測試，一旦開發完成，只要進行設定轉換為實體資料庫即可，接著在 grails 中有個類別 BootStrap 在這裡可以定義你要測試的初始資料，以便進行相關應用開發，如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
