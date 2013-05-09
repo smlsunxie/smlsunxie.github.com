@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T22:18:45+08:00</updated>
+  <updated>2013-05-09T22:21:32+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -97,7 +97,7 @@ import finder.*</p>
 </ul>
 
 
-<p>在 grails 中我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http method 導入至對定的後端 controller method，該檔案設定如下：</p>
+<p>我們會用到另一個敏捷開發特性：Don’t Repeat Yourself(DRY)，在 Grails 有另一個設定檔 URLMappings 可以讓我們設定根據前端 request 的 http method 導入至特定後端 controller method，該檔案設定如下：</p>
 
 <p>``` groovy
 class UrlMappings {</p>
