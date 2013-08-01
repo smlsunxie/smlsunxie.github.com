@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-01T22:48:40+08:00</updated>
+  <updated>2013-08-01T22:50:09+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -50,7 +50,7 @@ instance.</p></blockquote>
 
 <p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
 
-<p>/$controller/$action?/$id?"(<strong>parseRequest: true</strong>) {}</p>
+<p>"/$controller/$action?/$id?"(<strong>parseRequest: true</strong>) {...}</p>
 
 <p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
 
