@@ -310,6 +310,119 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/01/24/qemu/">Lightweight and Portable Virtual Machine: Qemu</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在研究 qemu 虛擬機器的應用，期望能夠在 windows 下能夠將事先製作好的 Live CD 將其放在 usb，當使用者需要使用時，只要插入 usb 隨即可以在 windows 底下開啟製作好的 Live CD，透過這樣的結合，可以很方便的讓你客製的 os 被使用者所使用，且不用安裝一堆軟體，檔案也很小，只要 6 mb 左右就可以啦，下面就來說明相關資源。</p>
+
+<p>在使用 qemu 時，如果單獨使用 qemu，他本身啟動速度很慢，必須加裝加速器才算堪用，所以除了 qemu 還需要 kqemu，相關網站如下:</p>
+
+<p><a href="http://homepage3.nifty.com/takeda-toshiya/">qemu for windows</a></p>
+
+<p><a href="http://www.h6.dion.ne.jp/~kazuw/qemu-win/Kqemu-1.3.0pre11-install.exe">kqemu</a></p>
+
+<p>使用步驟可以參考下列網站：</p>
+
+<p><a href="http://milky.manishsinha.net/2008/07/10/using-qemu-on-windows/">Using qemu on Windows</a></p>
+
+<p>在研究過程中，我只能說非常撞牆，原本在 linux 很理所當然的運行，在 windows 下一切都不是那樣，搞了很久不是視訊有問題，不然就是滑鼠不能動，最後總算找到懶人包，其中包括了 kqemu portable 加速，算是非常方便了，連結如下：</p>
+
+<p><a href="http://code.google.com/p/kqemu-portable-win/">kqemu-portable-win</a></p>
+
+<p>使用方式非常簡單，將你製作好的 iso 或者 img 放到解開的資料夾，然後開啟 <code>qemu-win.bat</code> 在底下就可以定義你要開啟檔案的路徑，以及要開啟的方式，範例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>kqemu\USB-Kqemu.exe
+</span><span class='line'>qemu.exe -L . -cdrom *.iso -localtime -m 512 -boot d -kernel-kqemu -std-vga
+</span><span class='line'>kqemu\USB-Kqemu-Halt.exe</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到開始時執行開啟 Kqemu，接著就是要啟動 qemu，我這邊啟動的是 *.iso，也就是只要偵測到有 iso 檔就會執行開啟， <code>-m 512</code> 表示使用記憶體為 512 mb， <code>-kernel-kqemu</code> 則表示啟動 kqemu 加速器，接著我們只要點兩下 <code>qemu-win.bat</code> 就可以啟動虛擬機器了，執行畫面如下：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-ZFEChwFRwVA/UQCd1AtcqxI/AAAAAAAALg4/xd03fBbDwjU/s721/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.13.jpg" alt="image" /></p>
+
+<p>並且可以確認一下加速器是否有正確被啟動，在 qemu 啟動視窗輸入 <code>ctrl + alt + 2</code>，輸入 <code>info kqemu</code> 可以看到下列畫面：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-ca81YlxugiY/UQCd1srHU8I/AAAAAAAALg8/1KQb3V9KpS0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-24+%E4%B8%8A%E5%8D%8810.31.48.jpg" alt="image" /></p>
+
+<p>就表示加速器已經正確被啟動了！</p>
+
+<p>希望這篇文章可以幫助有需要的人，不要像我一樣花很多時間在撞牆了～</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-24T09:52:00+08:00" pubdate data-updated="true">Jan 24<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/24/qemu/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/24/qemu/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/22/ubuntu-mac-keyboard-config/">HOWTO: Apple Keyboard Mapping for Ubuntu</a>
 
 </h1>
@@ -1607,117 +1720,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/05/mongodb-import-csv/">Mongodb 匯入 Csv 方法介紹- 透過mongohub 以及 Command</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在使用database 要進行初始資料insert，相信大家在使用時不會想要一筆筆資料慢慢打，最快的方式就是使用大家熟悉的excel，或者csv進行初始資料的建立，之後在用db提供的dataimport工具，將整理好的資料進行匯入，網路上關於ms sqlserver，或是mysql相關資料已經很多，今天要介紹的是如何將cvs的文字資料匯入到mongodb。</p>
-
-<p>首先在開始時我們可以先申請一個免費的mongodb來玩玩，介紹大家一個免費空間又大的線上mongodb網站</p>
-
-<p><a href="https://mongolab.com/welcome/">mongolab</a></p>
-
-<p>提供免費的 500 mb空間，比<a href="https://www.mongohq.com/home">mongohq</a> 大上十倍，非常的夠用了。</p>
-
-<p>接著如果如果要進行CVS匯入我們可以有兩種方式，一種是透過mongodb提供的指令進行匯入，安裝方式可參考下列網址:<a href="http://docs.mongodb.org/manual/installation/">Installing MongoDB</a></p>
-
-<p>範例指令</p>
-
-<div><script src='https://gist.github.com/4452313.js?file='></script>
-<noscript><pre><code>mongoimport --host mongolab.com --port 40000 --username user --password db --collection store --db dbname --type csv --file ~/gdata.csv --headerline</code></pre></noscript></div>
-
-
-<p>可以參考下面網址的個參數說明：<a href="http://docs.mongodb.org/manual/administration/import-export/">Importing and Exporting MongoDB Data</a></p>
-
-<p>另外一個就是使用gui介面進行資料匯入，在這邊使用 <a href="http://mongohub.todayclose.com/">mongohub</a>，介紹可參考 <a href="http://blog.lyhdev.com/2012/03/mongohub-mongodb-mac.html">MongoHub 簡單易用的 MongoDB 圖形化管理工具</a></p>
-
-<p>再來就要介紹如何使用gui進行mongodb的批次cvs資料匯入，可以點選mongohub中你要匯入的collection就是類是一般sql的table，這邊選取的是motostore這個collection，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-jg9hJXlb5Ig/UOesHMhFQGI/AAAAAAAALc0/4pAZgjilePU/s739/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.17.20.jpg" alt="img" /></p>
-
-<p>選取之後在點選上方放大鏡，query那個圖示，會開啟下面的畫面：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9YnPsJEa2Yk/UOesIOm6_YI/AAAAAAAALc4/EKUPvTuAIyw/s562/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7%25202013-01-05%2520%25E4%25B8%258B%25E5%258D%258812.19.10.jpg" alt="img" /></p>
-
-<p>點選新開啟的視窗上面的import按鈕，接著選取你要匯入的檔案，type選取cvs，下方Headerline需打勾，表示資料的第一行為欄位邊號，接著點選import按鈕就完成資料的匯入了，是不是很簡單，至少不用去記很多的指令，不過有一個重點！</p>
-
-<blockquote><p>cvs 的檔案編碼請記得要用utf-8</p></blockquote>
-
-<p>如果沒有用utf-8編碼會造成mongohub會跟你說資料匯入成功，但是實際上卻是失敗，我在嘗試匯入時，先用mongohub，結果就一直搞不定，後來改用command的方式才知道原來是檔案編碼錯誤造成無法匯入，後來編碼正確後，再一次使用mongohub就可以正常匯入啦！</p>
-
-<p>匯入cvs的檔案編碼方式要注意阿！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-05T11:55:00+08:00" pubdate data-updated="true">Jan 5<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/05/mongodb-import-csv/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/05/mongodb-import-csv/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1795,6 +1797,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
       </li>
     
@@ -1808,10 +1814,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T22:23:31+08:00</updated>
+  <updated>2013-08-01T22:42:45+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
+    <link href="http://smlsun.com/blog/2013/08/01/extjs-1-30/"/>
+    <updated>2013-08-01T21:49:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/01/extjs-1-30</id>
+    <content type="html"><![CDATA[<p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
+
+<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
+
+<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
+
+<p>而在筆者目前開發的專案中使用 extjs + grails 的組合，前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，必須符合 rest 的規範來進行資料的增修改查。</p>
+
+<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
+
+<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
+
+<p>節錄裡面的重點：</p>
+
+<blockquote><blockquote><p>It's possible that the servlet container will not parse PUT data as if
+it's POST data. I assume that if you use the URL:</p>
+
+<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
+
+<p>then "userId" will appear in the "params" object. However, Grails
+handles the parsing of XML and JSON requests, so it you were to send
+your parameters as XML, they would probably appear in the "params"
+instance.</p></blockquote></blockquote>
+
+<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，當然希望可以更漂亮的解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
+
+<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
+
+<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
+
+<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
+
+<p>/$controller/$action?/$id?"(<strong>parseRequest: true</strong>) {}</p>
+
+<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
+
+<p>此問題與我的夥伴<a href="http://blog.lyhdev.com/p/by-lyhcode.html">彥宏</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
+</a></p>
+
+<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[企業級開發框架：extjs 與 grails 的完美組合]]></title>
@@ -1060,251 +1108,6 @@ Ext.define('Frontend.controller.MN.MNM001', {
 
 
 <p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs: tree 的建立與使用]]></title>
-    <link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
-    <updated>2013-02-19T18:40:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
-    <content type="html"><![CDATA[<p>資料來源：</p>
-
-<ul>
-<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
-<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
-</ul>
-
-
-<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
-
-<p>這裡將介紹兩種 tree 的建立方式：</p>
-
-<h1>利用物件來產生 tree</h1>
-
-<pre><code>Ext.onReady( function() {
-
-    var root = new Ext.tree.TreeNode( {
-        text : '根'
-    });
-
-    var node1Child1 = new Ext.tree.TreeNode( {
-        text : '個人資料維護',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-    var node1Child2 = new Ext.tree.TreeNode( {
-        text : '密碼變更',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-
-    var node1 = new Ext.tree.TreeNode( {
-        text : '個人資料'
-    });
-    node1.appendChild(node1Child1);
-    node1.appendChild(node1Child2);
-
-    root.appendChild(node1);
-
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : root
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
-
-<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
-
-<pre><code>Ext.onReady( function() {
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : new Ext.tree.AsyncTreeNode( {
-            text : '根',
-
-            children : [ {
-                text : '個人資料',
-                children : [ {
-                    text : '個人資料維護',
-                    leaf : true
-                }, {
-                    text : '密碼變更',
-                    leaf : true
-                } ]
-            }, {
-                text : '客戶資料',
-                children : [ {
-                    text : '客戶基本資料查詢維護',
-                    leaf : true
-                }, {
-                    text : '客戶基本資料列印',
-                    leaf : true
-                } ]
-            }]
-        })
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>讀取 json 資料來源產生 tree</h2>
-
-<p>假設遠端的 json 資料來源：</p>
-
-<pre><code>[{
-    id: 1,
-    text: 'A leaf Node',
-    leaf: true
-},{
-    id: 2,
-    text: 'A folder Node',
-    children: [{
-        id: 3,
-        text: 'A child Node',
-        leaf: true
-    }]
-}]
-</code></pre>
-
-<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
-
-<pre><code>Ext.onReady(function() {
-    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
-    var tree = new Ext.tree.TreePanel({
-        el: 't',
-        width: 150,
-        autoHeight: true,
-        root: root,
-        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
-    });
-    tree.render();
-});
-</code></pre>
-
-<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
-
-<h2>讀取 xml 資料來源產生 tree</h2>
-
-<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
-
-<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
-
-<ul>
-<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
-</ul>
-
-
-<h2>tree 的操作與參照</h2>
-
-<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
-
-<ul>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
-
-<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
-<li><p>selectPath( path, [attr], [callback] )</p>
-
-<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
-
-<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
-</ul>
-
-
-<p>其他請參照 API，以下有實際使用飯例：</p>
-
-<pre><code>Ext.onReady( function() {
-  var viewport = new Ext.tree.TreePanel( {
-    title : "系統相關",
-    width : 200,
-    height : 500,
-    rootVisible : true,//root結點顯不顯示
-    root : new Ext.tree.AsyncTreeNode( {
-      text : '根',
-      id:'r',
-
-      children : [ {
-        text : '個人資料',
-        id:'c1',
-        children : [ {
-            text : '個人資料維護',
-            id:'c1c1',
-            leaf : true
-
-        }, {
-            text : '密碼變更',
-            myid:'c1c2',
-            leaf : true
-        } ]
-      }, {
-        text : '客戶資料',
-        id:'c2',
-        children : [ {
-            text : '客戶基本資料查詢維護',
-            leaf : true,
-            id:'c2c1'
-        }, {
-            text : '客戶基本資料列印',
-            leaf : true,
-            id:'c2c2'
-        } ]
-      } ]
-    })
-
-  });
-
-  viewport.render('toolbar');
-  viewport.doLayout();
-
-  var btn=new Ext.Button({
-    renderTo:"btn",
-    id:'test',
-    text:'test',
-    handler:function(){
-
-        // selectPath 可以做到 expand 之後在進行 select
-      viewport.selectPath('/r/c2/c2c1');
-
-      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 一旦開啟過節點，再次 findChild 就會取得實體。
-      viewport.expandPath('/r/c1/c1c1');
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 除了 id 之外，我們也可以用別的屬性來做搜尋
-      viewport.root.findChild( 'myid', 'c1c2', true ).select();
-    }
-  });
-
-});
-</code></pre>
-
-<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
-
-<iframe style="width: 100%; height: 600px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-
 ]]></content>
   </entry>
   

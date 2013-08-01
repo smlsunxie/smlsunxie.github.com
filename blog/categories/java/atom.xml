@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-05-09T22:23:31+08:00</updated>
+  <updated>2013-08-01T22:42:45+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,54 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
+    <link href="http://smlsun.com/blog/2013/08/01/extjs-1-30/"/>
+    <updated>2013-08-01T21:49:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/01/extjs-1-30</id>
+    <content type="html"><![CDATA[<p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
+
+<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
+
+<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
+
+<p>而在筆者目前開發的專案中使用 extjs + grails 的組合，前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，必須符合 rest 的規範來進行資料的增修改查。</p>
+
+<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
+
+<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
+
+<p>節錄裡面的重點：</p>
+
+<blockquote><blockquote><p>It's possible that the servlet container will not parse PUT data as if
+it's POST data. I assume that if you use the URL:</p>
+
+<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
+
+<p>then "userId" will appear in the "params" object. However, Grails
+handles the parsing of XML and JSON requests, so it you were to send
+your parameters as XML, they would probably appear in the "params"
+instance.</p></blockquote></blockquote>
+
+<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，當然希望可以更漂亮的解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
+
+<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
+
+<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
+
+<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
+
+<p>/$controller/$action?/$id?"(<strong>parseRequest: true</strong>) {}</p>
+
+<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
+
+<p>此問題與我的夥伴<a href="http://blog.lyhdev.com/p/by-lyhcode.html">彥宏</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
+</a></p>
+
+<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[企業級開發框架：extjs 與 grails 的完美組合]]></title>
@@ -774,68 +822,6 @@ F. An exception is thrown at runtime.
 <p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
 
 <p>一般物件的話當然做等於運算就是傳指標了</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹]]></title>
-    <link href="http://smlsun.com/blog/2013/01/15/intrduction-grails/"/>
-    <updated>2013-01-15T20:17:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/01/15/intrduction-grails</id>
-    <content type="html"><![CDATA[<p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，以及複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
-
-<p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
-
-<ul>
-<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
-<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
-<li>URLMappings：Don’t Repeat Yourself</li>
-<li>約定優於配置：Convention over Configuration</li>
-<li>自動產生 CRUD 維護畫面：scaffold</li>
-</ul>
-
-
-<p>使用 Groovy，做為 grails 開發的基礎，其特性就是大量簡化 java 語言繁瑣的程式指令步驟。</p>
-
-<p>可以看到 Grails 算是集目前 java 世界許多成熟的套件，這些原本單獨使用很繁瑣的套件，在 Grails 上都有某種程度的簡化，簡單到一開始很難直覺想像，往後會會在詳細介紹，這邊不多談。</p>
-
-<p>接著就是設定的部份，在傳統的 java 開發我們常常需要設定像是 jdbc config 、 spring aop 設定的位置等，在 Grails 中，是基於「約定優於配置」的精神，也就是只要放對位置，設定就會生效。</p>
-
-<p>以及 Don’t Repeat Yourself 的精神，在網路應用程式的開發，假設有用到 restful 的技術，在傳統的 JAVA 開發，總要為每個 class 設定 url 規則，如果一多是很繁瑣的。</p>
-
-<p>最後就是自動產生 CRUD 維護畫面，在開發初期，常常需要快速的建立測試資料，以往要是前端與後端程式開發是分開的，總是需要等到後端工程師將 API 開出來後才能開始進行資料庫操作，在 grails 效法 ruby rails 也提供了快速產生維護畫面的功能。</p>
-
-<p>以上是 grails 的特性簡介，不過！絕對不只如此其他還有很多特性，往後會在一一介紹，完全改變對於 Java 開發的習慣。</p>
-
-<p>再來就要在簡單介紹，在 grails 各種不同用途的 Class(groovy) 介紹：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-qgBQ7bBJaDg/UPVP_UtqoxI/AAAAAAAALfQ/rPBPRd5iLXk/s223/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-15+%E4%B8%8B%E5%8D%888.46.39.jpg" alt="img" /></p>
-
-<p>在「約定優於配置」的精神下，grails 本身就針對不同責任的程式進行分類，可以看到如上圖幾種，這邊將簡單介紹各個項目所有處理的事情：</p>
-
-<ul>
-<li>domain: 簡單來講就是原本 hibernate 的 DAO 物件，如果沒有用過類似 O/R MAPPING 的技術可以以把它想像成每個不同的 table 的定義，屬於 MVC 架構中的 Model</li>
-<li>controllers: 也就是 MVC 架構中的 control，用來操作 Model，以及將運算結果呈現給 view</li>
-<li>view: MVC 架構中的 view，在 grails 的世界，是用 gsp ，可以想像成 jsp</li>
-<li>taglib: 可以在 view 中使用一些已經定義好的 tag ，原本在傳統的 j2ee 是非常繁瑣的技術，在 grails 可以很方便使用。</li>
-<li>services: 商業邏輯放置的位置，這部份的程式可任意在 domain、controllers、taglib中直接宣告，將利用 spring 進行注入，有 scope 以及 transaction 交易安全的屬性可以進行操作</li>
-<li>utils: 檢查數值或資料是否符合特定的規格運算程式放置的地方，比如說 email</li>
-<li>scripts: 可以撰寫在 terminal 或是 command line 下可以執行的程式，搭配 <code>grails create-script execute-report</code> 使用。</li>
-<li>i18n: 也就是多語系啦，可以搭配 taglib 在 view 層進行語系的轉換</li>
-<li>src/java: 在 grails 如果你要寫傳統 java 也是 ok 的只要放在這個資料夾，就會編譯成 class</li>
-<li>src/groovy: 上述分類中無法歸屬，或著原本有寫過純 groovy 的程式碼就放在這</li>
-<li>test/utils: 單元測試，只要放在這資料夾的測試程式，都會被執行</li>
-<li>test/integration: 整合測試，也就是會將上述所有的不同功能都載入進行測試。</li>
-</ul>
-
-
-<p>大致上上面所說的就是 grails 中一開始需要習慣的地方，與以往的 free style 的開發雖然多了些限制，但有了約定，基本上程式也不會亂放導致東一塊西一塊，並且透過了解上面的結構，對於程式初學也可以較清楚知道一個完整的程式，必須包含哪些不同責任的元件。</p>
-
-<p>也許有些專案成員沒有辦法立即現有的工作換到新的開發框架，不過！找時間玩玩看，相信可以更了解程式的責任釐清，像我就是！陸續會在根據不同責任的程式使用的方式個別進行詳細說明，文章就到這啦！</p>
-
-<p>這篇花了我一小時的時間，寫文章還是不夠快速，要在加油…</p>
-
-<p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
 ]]></content>
   </entry>
   

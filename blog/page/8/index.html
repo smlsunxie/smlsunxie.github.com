@@ -310,6 +310,112 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/">Chrome 本地檔案網頁 Ajax 請求失敗處理</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h1>發生問題環境</h1>
+
+<ol>
+<li><p>開啟本地檔案如：</p>
+
+<pre><code> file://localhost/Users/Spooky/git/MotoExpress-andoid/assets/        www/index.html
+</code></pre></li>
+<li><p>使用jquery之ajax請求如使用者驗證</p></li>
+<li>chrome 在送出ajax的請求後無法取得response</li>
+<li>一般的form有指定action進行submit又可以</li>
+</ol>
+
+
+<h1>需求原因</h1>
+
+<p>期望利用本地網頁驗證在手機上的運作測試，若是都在手機上運作，依次修改到測試將花費很多時間</p>
+
+<h1>解決方式</h1>
+
+<p>chrome 需開啟 &#8211;disable-web-security，利用終端機執行下列指令</p>
+
+<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-web-security
+</code></pre>
+
+<h1>其他事項</h1>
+
+<p>有一說是開啟 &#8211;allow-file-access-from-files即可，經測試ajax請求還是無法正確運作，不信邪可以試試看</p>
+
+<pre><code>/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files
+</code></pre>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-02T21:37:00+08:00" pubdate data-updated="true">Nov 2<span>nd</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/02/chrome-ben-di-dang-an-wang-ye-ajax-qing-qiu-shi-bai-chu-li/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/11/02/jing-shi-chuang-ye-du-hou-xin-de-zhong-dian/">精實創業讀後 心得重點</a>
 
 </h1>
@@ -778,6 +884,10 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
       </li>
     
@@ -791,10 +901,6 @@
     
       <li>
         <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
   </ul>

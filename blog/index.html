@@ -310,6 +310,122 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/08/01/extjs-1-30/">Extjs 1/30:extjs Form 表單之 Submit 透過 Rest 與後端 Grails 的整合</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
+
+<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
+
+<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
+
+<p>而在筆者目前開發的專案中使用 extjs + grails 的組合，前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，必須符合 rest 的規範來進行資料的增修改查。</p>
+
+<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
+
+<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
+
+<p>節錄裡面的重點：</p>
+
+<blockquote><blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
+it&#8217;s POST data. I assume that if you use the URL:</p>
+
+<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
+
+<p>then &#8220;userId&#8221; will appear in the &#8220;params&#8221; object. However, Grails
+handles the parsing of XML and JSON requests, so it you were to send
+your parameters as XML, they would probably appear in the &#8220;params&#8221;
+instance.</p></blockquote></blockquote>
+
+<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，當然希望可以更漂亮的解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
+
+<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
+
+<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
+
+<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
+
+<p>/$controller/$action?/$id?&#8221;(<strong>parseRequest: true</strong>) {}</p>
+
+<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
+
+<p>此問題與我的夥伴<a href="http://blog.lyhdev.com/p/by-lyhcode.html">彥宏</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
+</a></p>
+
+<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-08-01T21:49:00+08:00" pubdate data-updated="true">Aug 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/01/extjs-1-30/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/01/extjs-1-30/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 Grails 的完美組合</a>
 
 </h1>
@@ -3072,328 +3188,6 @@ class Post implements Taggable {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/23/javascript-sync/">Javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在開發網站應用程式時，假設有用到與後端的 server 透過 ajax 互動交換資料，為了確保當 ajax 執行完成後，能夠循序的執行之後的資料呈現，一般來說我們會使用 callback 來確保順序是正確的，不過 callback 一多程式是比較多層一點，對與我以往的經驗有是用過 DWR 提供的 setAsync(false) 來達到同樣的效果，不過該作法有個缺點，如果某個函數執行時間過長，會感覺好像整個瀏覽器都當掉一樣，因此我們需要更好的作法。</p>
-
-<p>在找相關資料時，剛好有的不錯的參考介紹給大家：<a href="http://book.nodejs.tw/zh-tw/node_javascript.html#id1">JavaScript 與 NodeJS - 流程控制</a>，雖然該篇文章是以 NodeJS 為主，但實際上NodeJS 就是利用 javascript 來進行程式撰寫，所以概念上相當類似，其中關於流程控制章節，就是我們要參考的內容。</p>
-
-<h2>並發與等待</h2>
-
-<p>所謂的併發就是有點像多執行續，而等待就是等所有執行續都完成後在執行指定的函式，簡單來說假設你有 a, b, c 三個函式，其中你必須等待 a, b 兩個函式都執行完成後在執行 c 這個函式，最直覺的作法就是使用 callback 一個一個執行，但實際上如果一多的話程式會變得很難閱讀，所以換個方式來處理這樣的問題，我們來看一下下面的範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">wait</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">callbacks</span><span class="p">,</span> <span class="nx">done</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;wait start&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">counter</span> <span class="o">=</span> <span class="nx">callbacks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">results</span> <span class="o">=</span> <span class="p">[];</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">next</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span><span class="c1">//接收函數執行結果，並判斷是否結束執行</span>
-</span><span class='line'>      <span class="c1">//closure </span>
-</span><span class='line'>      <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="o">--</span><span class="nx">counter</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">done</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span><span class="c1">//如果結束執行，就把所有執行結果傳給指定的callback處理</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">callbacks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="c1">//依次呼叫所有要執行的函數</span>
-</span><span class='line'>      <span class="c1">//每個 callback 皆呼叫 next 函式，一旦 counter 歸 0 則執行 done 函式。</span>
-</span><span class='line'>      <span class="nx">callbacks</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;wait end&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的 wait 函式實作了多函數 callbacks 執行完後在執行 done 的函式，透過每個函數執行完後就將 counter 減一，檢查 counter 是否歸 0，而下面就是實際應用的範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
-</span><span class='line'>  <span class="p">[</span>
-</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>              <span class="c1">// callback 呼叫 next 函數</span>
-</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done a&#39;</span><span class="p">);</span>
-</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
-</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
-</span><span class='line'>          <span class="p">},</span><span class="mi">500</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done b&#39;</span><span class="p">);</span>
-</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
-</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
-</span><span class='line'>          <span class="p">},</span><span class="mi">1000</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>              <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done c&#39;</span><span class="p">);</span>
-</span><span class='line'>              <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">1500</span><span class="p">;</span>
-</span><span class='line'>              <span class="nx">next</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
-</span><span class='line'>          <span class="p">},</span><span class="mi">1500</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>    
-</span><span class='line'>  <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
-</span><span class='line'>  <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">ret</span> <span class="o">+=</span> <span class="nx">results</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;done all. result: &#39;</span><span class="o">+</span><span class="nx">ret</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如上面的例子，我們就可以很簡單的處理需要同步執行的狀況啦！</p>
-
-<p>在舉個例子假設我們要使用 extjs 的 msg box 一旦確定完成後才執行後續程式，我們可以改寫成：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
-</span><span class='line'>    <span class="p">[</span>
-</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>            <span class="nx">next</span><span class="p">(</span><span class="s2">&quot; hello!&quot;</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
-</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>就是這麼簡單！而在進階一點如果我們需要連續兩次 confirm 該怎麼做？直覺上，如果應該會如此處理：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
-</span><span class='line'>    <span class="p">[</span>
-</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>             <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理</span>
-</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">results</span><span class="p">){</span>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但是！實際上只會有一個 confirm 跳出來，因為是同時執行對於 ext 而言 Ext.MessageBox 是同一個物件，所以最後一個執行的會把前述的 confirm 蓋掉，因此就只會有一個 confirm，正確來說我們可以在  done 在執行一個 wait，如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">wait</span><span class="p">(</span>
-</span><span class='line'>    <span class="p">[</span>
-</span><span class='line'>        <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>            <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">function</span><span class="p">(</span><span class="nx">resultsA</span><span class="p">){</span>
-</span><span class='line'>        <span class="nx">wait</span><span class="p">(</span>
-</span><span class='line'>            <span class="p">[</span>
-</span><span class='line'>                <span class="kd">function</span><span class="p">(</span><span class="nx">next</span><span class="p">){</span>
-</span><span class='line'>                    <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">confirm</span><span class="p">(</span><span class="s1">&#39;Confirm&#39;</span><span class="p">,</span> <span class="s1">&#39;Are you sure you want to do that?&#39;</span><span class="p">,</span> <span class="nx">next</span><span class="p">);</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="kd">function</span><span class="p">(</span><span class="nx">resultsB</span><span class="p">){</span>
-</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">MessageBox</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;results id &#39;</span><span class="o">+</span> <span class="nx">resultsA</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39; and &#39;</span><span class="o">+</span> <span class="nx">resultsB</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
-
-<p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-23T13:50:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/23/javascript-sync/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/23/javascript-sync/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -3469,6 +3263,10 @@ class Post implements Taggable {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
       </li>
     
@@ -3482,10 +3280,6 @@ class Post implements Taggable {
     
       <li>
         <a href="/blog/2013/05/02/extjs4-with-js/">使用 extjs 必須了解的 js 技巧與知識</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/04/30/abovetaiwan/">台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走</a>
       </li>
     
   </ul>
