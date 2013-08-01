@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-01T22:47:12+08:00</updated>
+  <updated>2013-08-01T22:48:40+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -42,7 +42,7 @@ handles the parsing of XML and JSON requests, so it you were to send
 your parameters as XML, they would probably appear in the "params"
 instance.</p></blockquote>
 
-<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，當然希望可以更漂亮的解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
+<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，為了要解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
 
 <p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
 
@@ -54,7 +54,7 @@ instance.</p></blockquote>
 
 <p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
 
-<p>此問題與我的夥伴<a href="http://blog.lyhdev.com/p/by-lyhcode.html">彥宏</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
+<p>此問題與我的夥伴 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">lyhcode</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
 </a></p>
 
 <p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
