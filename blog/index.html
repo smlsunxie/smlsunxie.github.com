@@ -327,7 +327,7 @@
 
 <p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
 
-<p>而在筆者目前開發的專案中使用 extjs + grails 的組合，前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，必須符合 rest 的規範來進行資料的增修改查。</p>
+<p>而在筆者目前開發的專案中使用 extjs + grails 的組合並且前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，根據文章中建議的 http method 所對應的不同方法來進行資料的增修改查。</p>
 
 <p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
 
@@ -335,7 +335,7 @@
 
 <p>節錄裡面的重點：</p>
 
-<blockquote><blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
+<blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
 it&#8217;s POST data. I assume that if you use the URL:</p>
 
 <p><code>http://localhost:8080/app/api/users?userId=5</code></p>
@@ -343,7 +343,7 @@ it&#8217;s POST data. I assume that if you use the URL:</p>
 <p>then &#8220;userId&#8221; will appear in the &#8220;params&#8221; object. However, Grails
 handles the parsing of XML and JSON requests, so it you were to send
 your parameters as XML, they would probably appear in the &#8220;params&#8221;
-instance.</p></blockquote></blockquote>
+instance.</p></blockquote>
 
 <p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，當然希望可以更漂亮的解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
 
