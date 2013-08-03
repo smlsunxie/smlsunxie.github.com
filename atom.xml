@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-01T22:50:09+08:00</updated>
+  <updated>2013-08-03T08:23:06+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,7 +18,24 @@
 
 
 
-<title type="html"><![CDATA[extjs 1/30:extjs form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
+<title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
+<link href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"/>
+<updated>2013-08-01T22:52:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
+
+      <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是夠過 architect 在存檔時一寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟原始的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
+
+<p>但是如果</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
 <link href="http://smlsun.com/blog/2013/08/01/extjs-1-30/"/>
 <updated>2013-08-01T21:49:00+08:00</updated>
 <id>http://smlsun.com/blog/2013/08/01/extjs-1-30</id>
@@ -4504,39 +4521,6 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 
 <p>因此，雖然不知道新版的 IE 是否已沒有上述問題，保險起見，避免上述狀況的程式撰寫風格才是上上策。</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs 3.x: 本地資料 PagingStore 的使用]]></title>
-<link href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"/>
-<updated>2013-02-15T18:04:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/15/extjs-pagingstore</id>
-
-      <content type="html"><![CDATA[<p>extjs 3.x 再原生的 PagingStore 只支援遠端 paging，也就是分頁處理必須交由遠端的 server，透過傳入起始頁數以及每頁顯示的筆數，這樣的結構上會造成對 server request 次數大增，有些時候將所資料都載入前端，分散 server loading 是提高效能以及使用體驗的手段之一。</p>
-
-<p>當然文章一開始有提到 extjs 3 原生未支援這樣處理的方式，好家在網路上的大神已經有幫我們開發出外掛，讓我們可以很方便去使用，該外掛相關說明以及下載地址：</p>
-
-<p><a href="http://www.sencha.com/forum/showthread.php?71532-Ext.ux.data.PagingStore-v0.5">Ext.ux.data.PagingStore [v0.5]</a></p>
-
-<p>使用是需要注意的重點：</p>
-
-<ul>
-<li>根據資料來源的不同會有不同的 store</li>
-<li>在分頁 toolbar 的使用，記得也要使用 ux 的版本 <code>Ext.ux.PagingToolbar</code></li>
-<li>可以使用 <code>Ext.data.MemoryProxy</code> 當畫面 render 完成後在進行 store.load</li>
-</ul>
-
-
-<p>最後提供一個已經寫好的小範例讓大家參考一下，希望可以讓需要的人快速上手囉！</p>
-
-<iframe style="width: 100%; height: 500px" src="http://jsfiddle.net/smlsun/pw9EK/4/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/15/extjs-pagingstore/"></a></p>]]></content>
     </entry>
   
 </feed>
