@@ -319,9 +319,28 @@ Extjs 2/30:使用 Sencha Architect 開發注意事項
 
 
   <div class="post-description">
-    <p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是夠過 architect 在存檔時一寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟原始的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
+    <p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 在存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟原始的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
 
-<p>但是如果</p>
+<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於，但是一旦你是多人開發，加上有使用版本控管，問題就來了，xds 檔裡面似乎是記著你在 architect 所建立的元件之間的關聯，因此若是多人同時開發不同的功能，在版本控管的情況下，該檔案很容易有衝突，在編修衝突時，基本上你是不知道應該要如何下手，因為那是只有 IDE 才看的懂得內容，如果該檔案無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
+
+<p>就筆者的經驗，一般的元件基本上都比較不會有問題，最容易產生異常的點通常是在 Application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要是因為假設多人開發不同功能的情況下，若是新增物件，對版本控管在比對檔案差異時，程式碼區塊是明確的，但在使用 architect 時，若你新增元件時，IDE 將會自動將你新增的元件載入到 Application.js 中，因此多人開發情形下，Application.js 就會是所有人的交集，衝突的情形就會變多，在 xds 檔中衝突只要一發生，編修衝突時一不小心讓 IDE 不認得 Application.js，造成 Application.js 變為最原始的狀態，也就是沒有任何元件載入，導致於系統運作異常。</p>
+
+<p>上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作，需要哪些類別配合，一旦你有定義設定，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中定義所需要的 js 的麻煩，進一步的減少元件忘記或是載入錯誤不必要的浪費時間。</p>
+
+<p>而前面有提到 Application.js 是多人開發時的交集，我們該如何減少 Application.js 的變動？我們可以用到 extjs 自動載入元件的特性，將我們需一要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 Application.js 異常，我們知道只要將所有 controller 載入即可恢復 Application.js 定義，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，讓各個 controller 去清楚說明他在運行時需要用到的元件，在維護時也比較明確。</p>
+
+<p>上述的解法，是我筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人解省一點時間。</p>
+
+<p>綜合上述的內容，整理出重點如下：</p>
+
+<ol>
+<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
+<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
+<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
+<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
+<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
+</ol>
+
 
   </div>
 
@@ -357,6 +376,12 @@ Extjs 2/30:使用 Sencha Architect 開發注意事項
 
 <i class="mini-ico-calendar"></i><time datetime="2013-08-01T22:52:00+08:00" pubdate data-updated="true">Aug 1<span>st</span>, 2013</time>
 
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/ide/'>IDE</a>, <a class='category' href='/blog/categories/architect/'>architect</a>, <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span></span>
 
 
 

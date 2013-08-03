@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: architect | 蹤影]]></title>
-  <link href="http://smlsun.com/blog/categories/architect/atom.xml" rel="self"/>
+  <title><![CDATA[Category: IDE | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/ide/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
   <updated>2013-08-03T16:30:12+08:00</updated>
   <id>http://smlsun.com/</id>

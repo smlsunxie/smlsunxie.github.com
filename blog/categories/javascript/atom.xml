@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-03T08:27:35+08:00</updated>
+  <updated>2013-08-03T16:30:12+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
+    <link href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"/>
+    <updated>2013-08-01T22:52:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
+    <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 在存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟原始的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
+
+<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於，但是一旦你是多人開發，加上有使用版本控管，問題就來了，xds 檔裡面似乎是記著你在 architect 所建立的元件之間的關聯，因此若是多人同時開發不同的功能，在版本控管的情況下，該檔案很容易有衝突，在編修衝突時，基本上你是不知道應該要如何下手，因為那是只有 IDE 才看的懂得內容，如果該檔案無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
+
+<p>就筆者的經驗，一般的元件基本上都比較不會有問題，最容易產生異常的點通常是在 Application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要是因為假設多人開發不同功能的情況下，若是新增物件，對版本控管在比對檔案差異時，程式碼區塊是明確的，但在使用 architect 時，若你新增元件時，IDE 將會自動將你新增的元件載入到 Application.js 中，因此多人開發情形下，Application.js 就會是所有人的交集，衝突的情形就會變多，在 xds 檔中衝突只要一發生，編修衝突時一不小心讓 IDE 不認得 Application.js，造成 Application.js 變為最原始的狀態，也就是沒有任何元件載入，導致於系統運作異常。</p>
+
+<p>上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作，需要哪些類別配合，一旦你有定義設定，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中定義所需要的 js 的麻煩，進一步的減少元件忘記或是載入錯誤不必要的浪費時間。</p>
+
+<p>而前面有提到 Application.js 是多人開發時的交集，我們該如何減少 Application.js 的變動？我們可以用到 extjs 自動載入元件的特性，將我們需一要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 Application.js 異常，我們知道只要將所有 controller 載入即可恢復 Application.js 定義，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，讓各個 controller 去清楚說明他在運行時需要用到的元件，在維護時也比較明確。</p>
+
+<p>上述的解法，是我筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人解省一點時間。</p>
+
+<p>綜合上述的內容，整理出重點如下：</p>
+
+<ol>
+<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
+<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
+<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
+<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
+<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[企業級開發框架：extjs 與 grails 的完美組合]]></title>
@@ -1060,170 +1090,6 @@ Ext.define('Frontend.controller.MN.MNM001', {
 
 
 <p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[javascript: 流程控制 - 並發(類多執行續)與等待(類循序程序)]]></title>
-    <link href="http://smlsun.com/blog/2013/02/23/javascript-sync/"/>
-    <updated>2013-02-23T13:50:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/23/javascript-sync</id>
-    <content type="html"><![CDATA[<p>在開發網站應用程式時，假設有用到與後端的 server 透過 ajax 互動交換資料，為了確保當 ajax 執行完成後，能夠循序的執行之後的資料呈現，一般來說我們會使用 callback 來確保順序是正確的，不過 callback 一多程式是比較多層一點，對與我以往的經驗有是用過 DWR 提供的 setAsync(false) 來達到同樣的效果，不過該作法有個缺點，如果某個函數執行時間過長，會感覺好像整個瀏覽器都當掉一樣，因此我們需要更好的作法。</p>
-
-<p>在找相關資料時，剛好有的不錯的參考介紹給大家：<a href="http://book.nodejs.tw/zh-tw/node_javascript.html#id1">JavaScript 與 NodeJS - 流程控制</a>，雖然該篇文章是以 NodeJS 為主，但實際上NodeJS 就是利用 javascript 來進行程式撰寫，所以概念上相當類似，其中關於流程控制章節，就是我們要參考的內容。</p>
-
-<h2>並發與等待</h2>
-
-<p>所謂的併發就是有點像多執行續，而等待就是等所有執行續都完成後在執行指定的函式，簡單來說假設你有 a, b, c 三個函式，其中你必須等待 a, b 兩個函式都執行完成後在執行 c 這個函式，最直覺的作法就是使用 callback 一個一個執行，但實際上如果一多的話程式會變得很難閱讀，所以換個方式來處理這樣的問題，我們來看一下下面的範例：</p>
-
-<p>``` javascript</p>
-
-<pre><code>var wait = function(callbacks, done) {
-    console.log('wait start');
-    var counter = callbacks.length;
-    var results = [];
-
-    var next = function(result) {//接收函數執行結果，並判斷是否結束執行
-        //closure 
-        results.push(result);
-        if(--counter == 0) {
-            done(results);//如果結束執行，就把所有執行結果傳給指定的callback處理
-        }
-    };
-
-    for(var i = 0; i &lt; callbacks.length; i++) {//依次呼叫所有要執行的函數
-        //每個 callback 皆呼叫 next 函式，一旦 counter 歸 0 則執行 done 函式。
-        callbacks[i](next);
-    }
-    console.log('wait end');
-}
-</code></pre>
-
-<p>```</p>
-
-<p>上面的 wait 函式實作了多函數 callbacks 執行完後在執行 done 的函式，透過每個函數執行完後就將 counter 減一，檢查 counter 是否歸 0，而下面就是實際應用的範例：</p>
-
-<p>``` javascript</p>
-
-<pre><code>wait(
-    [
-        function(next){
-            setTimeout(function(){
-                // callback 呼叫 next 函數
-                console.log('done a');
-                var result = 500;
-                next(result)
-            },500);
-        },
-        function(next){
-            setTimeout(function(){
-                console.log('done b');
-                var result = 1000;
-                next(result)
-            },1000);
-        },
-        function(next){
-            setTimeout(function(){
-                console.log('done c');
-                var result = 1500;
-                next(1500)
-            },1500);
-        }   
-    ],
-
-    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
-    function(results){
-        var ret = 0, i=0;
-        for(; i&lt;results.length; i++) {
-            ret += results[i];
-        }
-        console.log('done all. result: '+ret);
-    }
-);
-</code></pre>
-
-<p>```</p>
-
-<p>如上面的例子，我們就可以很簡單的處理需要同步執行的狀況啦！</p>
-
-<p>在舉個例子假設我們要使用 extjs 的 msg box 一旦確定完成後才執行後續程式，我們可以改寫成：</p>
-
-<p>``` javascript</p>
-
-<pre><code>wait(
-    [
-        function(next){
-            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
-        },
-        function(next){
-            next(" hello!")
-        }  
-    ],
-
-    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
-    function(results){
-        Ext.MessageBox.alert('Status', 'results id '+ results[0]+' and '+ results[1]);
-    }
-);
-</code></pre>
-
-<p>```</p>
-
-<p>就是這麼簡單！而在進階一點如果我們需要連續兩次 confirm 該怎麼做？直覺上，如果應該會如此處理：</p>
-
-<p>``` javascript</p>
-
-<pre><code>wait(
-    [
-        function(next){
-            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
-        },
-        function(next){
-             Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
-        }  
-    ],
-
-    // 一旦上述函數皆執行完成，傳入每個函數執行完成的 results 進行處理
-    function(results){
-        Ext.MessageBox.alert('Status', 'results id '+ results[0]+' and '+ results[1]);
-    }
-);
-</code></pre>
-
-<p>```</p>
-
-<p>但是！實際上只會有一個 confirm 跳出來，因為是同時執行對於 ext 而言 Ext.MessageBox 是同一個物件，所以最後一個執行的會把前述的 confirm 蓋掉，因此就只會有一個 confirm，正確來說我們可以在  done 在執行一個 wait，如下：</p>
-
-<p>``` javascript</p>
-
-<pre><code>wait(
-    [
-        function(next){
-            Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
-        }
-    ],
-
-    function(resultsA){
-        wait(
-            [
-                function(next){
-                    Ext.MessageBox.confirm('Confirm', 'Are you sure you want to do that?', next);
-                }
-            ],
-
-            function(resultsB){
-                Ext.MessageBox.alert('Status', 'results id '+ resultsA[0]+' and '+ resultsB[0]);
-            }
-        );
-    }
-);
-</code></pre>
-
-<p>```</p>
-
-<p>如此一來，就可以正確擷取到兩次 confirm 的內容，基本上上述的函式在使用上必須注意，所謂的併發就是個函數之間不能有先後關係，只能與等待的函數有先後關係，透過上述的例子要操作相關的函數執行流程就不是問題了。</p>
-
-<p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
 ]]></content>
   </entry>
   

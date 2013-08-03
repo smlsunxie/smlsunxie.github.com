@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-03T08:27:35+08:00</updated>
+  <updated>2013-08-03T16:30:12+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
+    <link href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"/>
+    <updated>2013-08-01T22:52:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
+    <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 在存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟原始的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
+
+<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於，但是一旦你是多人開發，加上有使用版本控管，問題就來了，xds 檔裡面似乎是記著你在 architect 所建立的元件之間的關聯，因此若是多人同時開發不同的功能，在版本控管的情況下，該檔案很容易有衝突，在編修衝突時，基本上你是不知道應該要如何下手，因為那是只有 IDE 才看的懂得內容，如果該檔案無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
+
+<p>就筆者的經驗，一般的元件基本上都比較不會有問題，最容易產生異常的點通常是在 Application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要是因為假設多人開發不同功能的情況下，若是新增物件，對版本控管在比對檔案差異時，程式碼區塊是明確的，但在使用 architect 時，若你新增元件時，IDE 將會自動將你新增的元件載入到 Application.js 中，因此多人開發情形下，Application.js 就會是所有人的交集，衝突的情形就會變多，在 xds 檔中衝突只要一發生，編修衝突時一不小心讓 IDE 不認得 Application.js，造成 Application.js 變為最原始的狀態，也就是沒有任何元件載入，導致於系統運作異常。</p>
+
+<p>上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作，需要哪些類別配合，一旦你有定義設定，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中定義所需要的 js 的麻煩，進一步的減少元件忘記或是載入錯誤不必要的浪費時間。</p>
+
+<p>而前面有提到 Application.js 是多人開發時的交集，我們該如何減少 Application.js 的變動？我們可以用到 extjs 自動載入元件的特性，將我們需一要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 Application.js 異常，我們知道只要將所有 controller 載入即可恢復 Application.js 定義，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，讓各個 controller 去清楚說明他在運行時需要用到的元件，在維護時也比較明確。</p>
+
+<p>上述的解法，是我筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人解省一點時間。</p>
+
+<p>綜合上述的內容，整理出重點如下：</p>
+
+<ol>
+<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
+<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
+<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
+<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
+<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
@@ -762,352 +792,6 @@ readItem: function(obj, record, item, index, e, eOpts) {
 ```</p>
 
 <p>這篇文章中，說明了 MVC 的運作，以及個別利用了物件導向開發中的資料關連，繼承以及混和；當然不只這些，還有很多奇巧淫技等著學習並熟練，程式的世界是學也學不完，希望藉由這樣的說明，能夠讓讀者有個概念，在使用 extjs 這樣的物件導向設計時可以有個參考，文章進行到這裡，對於 extjs 的概念與使用，相信應該有些了解，不過如果有實際經歷過 extjs 開發的讀者應該可以體會，因為他是這樣的複雜，在除錯上有時並不是那麼容易，特別是物件導向式的開發方式會有很多獨立的類別，如何能夠快速開發減少不必要的錯誤，就要善用工具啦！幸好官方提供了 sencha architect，可以幫助我們減少開發中的錯誤，並且快速完成介面的建立，最後要強調的是，ide 只是輔助，請在熟練基礎過後在服用，不然...嘿嘿～</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs4: mvc 使用簡介與範例介紹]]></title>
-    <link href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/"/>
-    <updated>2013-03-21T08:42:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/03/21/extjs4-mvc</id>
-    <content type="html"><![CDATA[<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
-
-<p>引用上述文章的開頭：</p>
-
-<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類MVC的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種MVC架構，基本大同小異，ExtJS 4的定義如下：</p>
-
-<ul>
-<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
-<li>View: 用於界面展示– grid, tree, panel都是view</li>
-<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
-</ul>
-</blockquote>
-
-<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
-
-<h2>Application</h2>
-
-<p>每個 ExtJS 4 的應用都從一個 Application 開始，這個實例包含應用的全域配置（例應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS 4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.Loader.setConfig({
-    enabled: true,
-    //disableCaching: true //強制關閉 cache
-});
-
-Ext.application({
-    name: 'Frontend',   //app folder 別名為 Frontend
-    appFolder: 'app',   //檔案 root 存放位置
-    controllers: [
-
-    'SYS.SYS001',   //使用者登入
-    'SYS.SYS002',   //主畫面
-    'MN.MNM001',     //群組權限維護
-    'US.USM002'    //使用者群組維護
-    ],
-    launch: function() {
-        Ext.create('Ext.container.Viewport', {
-            id: 'mainVP',
-            layout: 'fit',
-            items: [{
-                xtype: 'sys001loginform',
-                url: 'http://localhost:8080/agricloud/user/login.json'
-            }]
-        });
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Model</h2>
-
-<p>定義來源資料的 mapping 以及資料型態</p>
-
-<p>```javascript</p>
-
-<pre><code>// app/model/MN/MNM001/MenuGroup.js
-Ext.define('Frontend.model.MN.MNM001.MenuGroup', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'menuId', type: 'string'},
-        {name: 'menuDes',  type: 'string'},
-        {name: 'userGroupId',  type: 'string'},
-        {name: 'userGroupDes',  type: 'string'}
-    ]
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Store</h2>
-
-<p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
-
-<p>```javascript</p>
-
-<pre><code>// app.store.MN.MNM001.Store.js
-Ext.define('Frontend.store.MN.MNM001.Store' ,{
-    model:'Frontend.model.MN.MNM001.MenuGroup', 
-    extend: 'Ext.data.Store',
-    alias : 'widget.mnm001store',
-    autoLoad: true,
-    proxy: {
-        type: 'rest',   // 使用 rest 來與後端 server 溝通
-        url: 'http://localhost:8080/agricloud/rest/menuGroup/',
-        reader: {
-            type: 'json',
-            root: 'items'
-        },
-        writer: {
-            type: 'json'
-        },
-        afterRequest:function(request,success){
-            var operation = request.operation;
-            var response = operation.response; 
-            if(success){
-            }else{}
-        }
-    },
-    listeners: {
-        // 讀取完資料後，進行 load 
-        write: function(store, operation) {
-            store.load();
-        }
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Controller</h2>
-
-<p>用於整合 model 的資料讓 view 可以使用，並且定義 view 各個事件要執行的內容，如此一來 view 將可以被獨立設計，一旦 view 被使用於別的功能也不會有衝突的事件定義。在使用上 Controller 也可以進行繼承，下面的 parent Controller 範例實作一些常用的事件，因為對於 controller 而言，所載入的各個 store 都視為 controller 的屬性，故只要繼承至 parent Controller 都有給定要求的變數內容，所定義的事件將會運作正常</p>
-
-<h3>parent Controller</h3>
-
-<p>```javascript</p>
-
-<pre><code>/**
- * std Controller
- */
-Ext.define('Frontend.controller.common.Standard', {
-    extend: 'Ext.app.Controller',
-    execute: function(params) {
-        var tab = Ext.getCmp('mainTab');
-        tab.add({
-            id: params.id,
-            title: params.title,
-            closable: true,
-            layout:'fit',
-            items: {
-                xtype: params.tabXtype
-            }
-        });
-    },
-    doRead: function() {
-        console.log("doRead")
-        this.store.load();
-    },
-    doCreate: function() {
-        this.store.insert(0, this.model);
-    },
-    doDelete:function(){
-        var selection = this.grid.getSelectionModel().getSelection()[0];
-        if (selection) {
-            this.store.remove(selection);
-        }
-    },
-    doUpdate: function() {
-        this.store.sync({
-            success : function(){
-                console.log("success");
-                Ext.Msg.alert('Status', '更新成功');
-            },
-            failure : function(response, options){
-                console.log("failure");
-                Ext.Msg.alert('Status', '更新失敗');
-            }  
-        });
-    },
-    onGridSelection:function(selModel, selections,eOpts){
-        this.selections=selections;
-        this.selModel=selModel;
-
-        //必須利用refs 取得實體介面已 render的物件
-        this.deleteButton.setDisabled(selections.length === 0);
-
-    },
-    onPanelRendered: function() {
-        //將載入的 view 指定為此 controller 的屬性
-        this.grid=this.getGridPanel();
-        this.deleteButton=this.getDeleteButton();
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h3>main controller</h3>
-
-<p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
-
-<p>```javascript</p>
-
-<pre><code>// app.controller.MN.MNM001.js
-/**
- * 功能群組維護
- */
-Ext.define('Frontend.controller.MN.MNM001', {
-    extend: 'Frontend.controller.common.Standard',
-    views: [
-        'MN.MNM001.Panel'
-    ], 
-
-    refs: [{
-        ref: 'deleteButton',
-        selector: 'mnm001panel commonbuttondelete'
-    },{
-        ref: 'gridPanel',
-        selector: 'mnm001panel'
-    },{
-        ref: 'combobox',
-        selector: 'mnm001combobox'
-    }],
-    init: function() {
-
-        定義各個元件所要執行的事件以及相關的函數
-        this.control({
-            'mnm001panel commonbuttoncreate': {
-                click: this.doCreate
-            },
-            'mnm001panel commonbuttondelete': {
-                click: this.doDelete
-            },
-            'mnm001panel commonbuttonupdate': {
-                click: this.doUpdate
-            },
-            'mnm001panel commonbuttonread': {
-                click: this.doRead
-            },
-            'mnm001combobox': {
-                select:this.comboboxSelect
-            },
-            'mnm001panel': {
-                selectionchange: this.onGridSelection,
-                render: this.onPanelRendered
-            }
-        })
-        //ref 的使用對象為 Conpoment
-        //store 的取得直接用 this 
-        //在 view 所組成的 compoment 中有使用到的 store 皆可以在 controllr 中存取
-
-        this.store=this.getStore("MN.MNM001.Store");
-
-    },
-    execute: function(params) {
-        //定義此 contoller 所使用之屬性，controller 一旦被執行此事件將會最先被執行
-        params.tabXtype='mnm001panel';
-       //結果將透過下列程式呼叫繼承來的 controller 之 execute
-        this.callParent(arguments);
-    },
-    comboboxSelect: function( combo, records, eOpts ) {
-        this.selections[0].set('userGroupDes',records[0].get('description') );
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>View</h2>
-
-<p>view 的使用依賴於 controller 有載入的內容，在這邊只作為介面的呈現，不進行事件的定義，除非該事件為通用的事件。</p>
-
-<h3>Combobox</h3>
-
-<p>使用的第一個 store <code>US.USM002.Store</code></p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.define('Frontend.view.MN.MNM001.Combobox', {
-    extend: 'Ext.form.ComboBox',
-    alias : 'widget.mnm001combobox',
-    id:'mnm001combobox',
-    itemId:'mnm001combobox',
-    store: 'US.USM002.Store',
-    queryMode: 'local',
-    displayField: 'userGroupId',
-    valueField: 'userGroupId'
-});
-</code></pre>
-
-<p>```</p>
-
-<h3>Panel</h3>
-
-<p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.define('Frontend.view.MN.MNM001.Panel' ,{
-    extend: 'Frontend.view.common.gridpanel.standard',
-    alias : 'widget.mnm001panel',
-    requires:['Frontend.view.MN.MNM001.Combobox'],
-    columns: [
-        { 
-            header: 'menuId',  
-            dataIndex: 'menuId', 
-            flex: 1,
-            field: {
-                xtype: 'textfield'
-            }
-        },
-        { 
-            header: 'menuDes', 
-            dataIndex: 'menuDes'
-        },
-        { 
-            header: 'userGroupId', 
-            dataIndex: 'userGroupId',
-            field: {
-                xtype: 'mnm001combobox'
-            }
-        },
-        { 
-            header: 'userGroupDes', 
-            dataIndex: 'userGroupDes' 
-        }
-    ],
-    plugins: [{
-            ptype:'rowediting'
-    }],
-    store:'MN.MNM001.Store'
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>執行結果</h2>
-
-<h3>功能一</h3>
-
-<p><img src="https://lh5.googleusercontent.com/-lx8V6k3xoO8/UUp-XqNiMnI/AAAAAAAALmk/19RA9GS5zrE/s615/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.17.jpg" alt="image" /></p>
-
-<h3>功能二</h3>
-
-<p><img src="https://lh4.googleusercontent.com/-HjzcF7nh4y0/UUp-YUkVjUI/AAAAAAAALms/sls8kHck6LI/s614/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.28.jpg" alt="image" /></p>
-
-<p>可以看到兩個功能外框是類似的，差別在欄位的不同，其中共用的部分：</p>
-
-<ul>
-<li>功能二的 grid 與功能一的 userGroupId 的 combobox store 為同一個 <code>US.USM002.Store</code></li>
-<li>兩個功能之 panal 皆繼承於 <code>Frontend.view.common.gridpanel.standard</code></li>
-<li>controller 也繼承於 <code>Frontend.controller.common.Standard</code></li>
-</ul>
-
-
-<p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
 ]]></content>
   </entry>
   
