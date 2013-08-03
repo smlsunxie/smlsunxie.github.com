@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-03T22:50:40+08:00</updated>
+  <updated>2013-08-03T22:55:23+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -20,7 +20,7 @@
     <id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
     <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟一般的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
 
-<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於發生問題，但若是多人開發，再加上有使用版本控管，問題就來了；xds 檔所記錄的似乎是在 architect 建立 extjs 元件之間的關聯，因此若是多人開發不同的功能，並且在版本控管的情況下，該檔案很容易有衝突；而在編修衝突時，很多時候會不知道該如何下手，因為代表元件的想關檔案識別皆已編碼，只有 IDE 才看的懂對應的關係，如果 xds 的內容無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
+<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於發生問題，但若是多人開發，再加上有使用版本控管，問題就來了；xds 檔所記錄的似乎是在 architect 建立 extjs 元件之間的關聯，因此若是多人開發不同的功能，並且在版本控管的情況下，該檔案很容易有衝突；而在編修衝突時，很多時候會不知道該如何下手，因為代表元件的相關檔案識別皆已編碼，只有 IDE 才看的懂對應的關係，如果 xds 的內容無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
 
 <p>就筆者的經驗，一般 extjs 元件的建立或修改基本上都比較不會有問題，最容易產生異常的通常是在 application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要因為在使用 architect 時，當你新增元件時，IDE 將會自動將你新增的元件載入到 application.js 中，多人開發情形下，Application.js 就會是所有人的交集，不然照理分別開發新功能所新增的元件皆不同不應該會頻繁造成衝突，而因為 application.js 的多人異動，造成再 xds 中對 application.js 的檔案識別常常會有不同的代表造成衝突，一旦 xds 衝突一發生，編修時一不小心讓 IDE 不認得 Application.js，就會造成 Application.js 無法被識別，導致 IDE 認為沒有建立 Application.js，則以最原始的狀態 Application.js 作為預設，也就是沒有任何元件載入，導致於系統運作異常。</p>
 
