@@ -310,6 +310,1261 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/04/30/extjs4-intro/">Extjs 4 的新特性與基本概念</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
+
+<p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
+
+<p>當然雖然 extjs 對當時的我來說是那麼的美好，說實在的如果有些基礎 javascript 不熟悉，使用起來常常不知所以然，以致於寫出來的 code 總是讓人覺得「不是一般人寫的出來的」…糟糕，那是個青澀的年代(遠望~)，</p>
+
+<p>時至今日 extjs 來到 4.x，一個新的境界，與以往版本有著更大的不同，希望透過一系列的文章能夠讓剛接觸 extjs 讀者快速了解他的特性，少走一些冤枉路，快速完成公司交辦的工作，早早下班享受人生～</p>
+
+<hr />
+
+<p>系列文章的一開始希望能夠讓大家對 extjs 的基本特性以及原理做個基本介紹，本文將參考下列文章內容節錄重要的部份，有需要更深入了解的讀者可以跳轉參考</p>
+
+<ul>
+<li><a href="http://book.51cto.com/art/201109/291474.htm">ExtJS Web應用程序開發指南</a></li>
+<li><a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html">Ext JS 4 First Look 翻譯：新特性</a></li>
+</ul>
+
+
+<p>首先在使用 extjs 時，不得不被他得物件導向特性所吸引到，如果對 javascript 有些開發經驗了解他的特性，可以知道 javascript 是函數式語言，沒有直接的物件導向特性。通常，要將 javascript 設計為物件導向的開發方式不是不行，但相信那不時是初階開發人員可以做到的，實務上物件導向設計確實可以有效的分工，對於多人開發以及程式重覆使用已有多年的驗證，但硬是要將函數語言改為物件語言，沒有深厚的功力，恐怕沒那簡單，也因此第一個要介紹 extjs 的部份，就是其物件導向的設計，讓我們可以很輕易的用  javascript 進行物件導向式的開發。</p>
+
+<h1>動態加載和新的物件導向特性</h1>
+
+<p>JavaScript 沒有真正的物件導向設計，但 ExtJS 自己設計了物件導向式的結構，從而讓開發者可以利用物件導向的精神來開發前端 javascript。</p>
+
+<p>與以往版本的不同，ExtJS 4.0對舊的物件系統進行了全面的更新，進而讓開發更簡單、更靈活。</p>
+
+<p>ExtJS 4 推出4個新的物件導向特性：類別定義、mixins(混合複數classes)、更方便的物件屬性定義及動態加載，下面將針對上述特性做個簡單介紹</p>
+
+<h2>類別定義</h2>
+
+<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於定義的類別不存在產生錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
+
+<p>舉個簡單的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Argicloud.view.ReadBtn&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.button.Button&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.readbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>  
+</span><span class='line'>      <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;readBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;Read&#39;</span><span class="p">,</span>
+</span><span class='line'>  
+</span><span class='line'>      <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  
+</span><span class='line'>          <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述的例子讓我們可以輕易的繼承 extjs 原生的 Button 定義客製的屬性，如此就可做到前端元件重覆使用，並且抽出共用的部分，方便後續維護，這邊先點到為止，後續會有更詳細的文章介紹，接著來看 mixins</p>
+
+<h2>mixins (混合複數classes)</h2>
+
+<p>許多動態語言都支援 mixins 的特性，比如 Ruby、Python。而JavaScript 在語法上並無 mixins 的特性，但 ExtJS 4 自己實現了 mixins 的功能，類似於多重繼承，是種更細的程式碼重覆使用特性，如果一個類別需要某個特性，只需要將擁有該特性的類別類混入目標類別中即可。同樣的先來看一下簡單範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">operate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;1000 rpm&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Wheel&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">scroll</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;go&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Car&quot;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">Engine</span><span class="o">:</span> <span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">Wheel</span><span class="o">:</span> <span class="s2">&quot;MyClass.Wheel&quot;</span>
+</span><span class='line'>       <span class="p">},</span>
+</span><span class='line'>       <span class="nx">dirve</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;forward&quot;</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">objCar</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s2">&quot;MyClass.C&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">operate</span><span class="p">();</span> <span class="c1">// 1000 rpm</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">scroll</span><span class="p">();</span> <span class="c1">// go</span>
+</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">dirve</span><span class="p">();</span> <span class="c1">// forward</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此我們可以很簡單的將一個應用拆分成多個不同的小類別，最後再將各個類別像積木一樣主合成一最後要使用的物件。除了物件導向的特性外 extjs 4 也提供新的物件屬性定義方式。</p>
+
+<h2>新增的 Config 設定</h2>
+
+<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;My.awesome.Class&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// The default config</span>
+</span><span class='line'>      <span class="nx">config</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Awesome&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">isAwesome</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">awesome</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">My</span><span class="p">.</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">Class</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Super Awesome&#39;</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">getName</span><span class="p">());</span> <span class="c1">// &#39;Super Awesome&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到在類別定義中 config.name 定義好了，但未特別定義 getName 這樣的函數，但我們卻可以直接呼叫，這樣的特性正是 extjs 幫我們完成的，讓我們可以更專注在最重要的邏輯上。</p>
+
+<h2>動態載入(dynamic loading)</h2>
+
+<p>不管你有沒有用過類似 extjs 的框架，或者是寫過大型的 web 應用程式，一旦您的頁面需要載入大量的 resource 或著 .js 檔時，將會造成載入時間過長，很多不需要的腳本其實可以不用載入甚至在需要時載入，但實務上一個人開發時要管控還算簡單，多人就麻煩了！</p>
+
+<p>也因為 extjs 在舊版時沒有很漂亮的解決此問題，我也算是有切身之痛，所幸，extjs 發展到現在也該是時候了，動態載入功能將根據你對類別定義需要的類別引入相關的 js 檔，通過動態載入可以有效地減少客戶端載入的腳本體積，也因此在 html page 你只要載入 extjs 的 lib 以及 application.js（後續 mvc 會介紹），之後所有的 js 檔會在你使用類別時進行動態載入，希望可以讓讀者更清楚知道該屬性，我們來看一下範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'> <span class="nt">&lt;html&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;head&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;title&gt;</span>My ExtJS MVC<span class="nt">&lt;/title&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;extjs-4.1.0/resources/css/ext-all.css&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;extjs-4.1.0/ext-all.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;init.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/head&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面程式碼我們只有載入 extjs lib 以及初始的 init.js</p>
+
+<p>接著來看 init.js 的內容</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">Loader</span><span class="p">.</span><span class="nx">setConfig</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">application</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">models</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;Item&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">stores</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;ItemStore&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;ItemGrid&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">autoCreateViewport</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//set as true - 將尋找 Viewport.js 自動載入</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">controllers</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;MainController&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Argicloud&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
+
+<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
+
+<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
+
+<h2>ExtJS中的基本概念</h2>
+
+<p>ExtJS 和傳統的前端 Web 開發的不一樣，不用在 HTML 和 CSS 中打轉，就像筆者當年對兩者都不甚了解，還是用的很開心一樣，可以想像你是在使用 JavaSwing 這樣的技術呈現的結果是在網頁上一樣，不用管介面的樣式以及如何呈現，只要負責操作類別間的互動以及事件的定義，其他就交由 extjs 幫你處理。一但透過目前瀏覽器提供的開發者工具，可以發現 extjs 只是把你宣告的元件轉化成 html dom element，基本上與 html 還是脫不了關係，有這層了解後在使用 extjs 可以更容易理解，在這裡將介紹幾個 extjs 較重要的元件</p>
+
+<h2>Container</h2>
+
+<p>extjs 中 Container 顧名思義就是容器，你可以把它想像成 html 中的 div，在 extjs Container 是一些類別的父類別，比如說：panel，在開始開發 extjs 時，你可以先用繼承於 Cotainer 的類別進行介面的分塊把你想要的呈現方式定義好，之後在放上你要的元件即可。</p>
+
+<h2>Layout</h2>
+
+<p>每個 container 都有個屬性：layout。透過該屬性的定義來對 container 裡所擁有的元件進行擺放，開發者不需要在自行定義 css 或者 html dom 巢狀結構來擺放相關元件，可以更快速的將介面呈現定義好，在開發人員技術不純熟的情況下，可以保證介面呈現的一置性。</p>
+
+<h2>Component</h2>
+
+<p>當你開始製作 extjs 應用程式時，一旦拉好框架，定義好 layout 後，接著你要做的就是將元件放入，舉凡按鈕，欄位，表單以及資料表在 extjs 都是繼承於 Component，透過繼承於 Component 除了 extjs 原生的元件外，你也可以製作你自己的元件，甚至是第三方元件等，大大提昇 extjs 在前端呈現的豐富性。</p>
+
+<p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
+
+<h2>Model 與 Store</h2>
+
+<p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
+
+<p>除此之外，ExtJS 4.0 提供了 關聯 API，可以定義不同 model 間多對多或一對多等的資歷關係，通過關聯 API 將模型關聯起來後，將可以更容易存取相關的資料模型。</p>
+
+<p>透過上述的介紹希望讀者們可以對 extjs 有個初步的了解，如果看完後還算有興趣，下一篇將介紹 extjs 使用到的進階 js 技巧，所謂萬丈高樓平地起，像 extjs 這樣複雜的框架，也是從基本 javascript 建構而來，理解該框架所使用到的 js 進階技巧，將有助於您在使用 extjs 時的理解進而變化運用</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-04-30T10:28:00+08:00" pubdate data-updated="true">Apr 30<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/04/30/extjs4-intro/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/04/30/extjs4-intro/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/03/21/extjs4-mvc/">Extjs4: Mvc 使用簡介與範例介紹</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
+
+<p>引用上述文章的開頭：</p>
+
+<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類MVC的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種MVC架構，基本大同小異，ExtJS 4的定義如下：</p>
+
+<ul>
+<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
+<li>View: 用於界面展示– grid, tree, panel都是view</li>
+<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
+</ul>
+</blockquote>
+
+<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
+
+<h2>Application</h2>
+
+<p>每個 ExtJS 4 的應用都從一個 Application 開始，這個實例包含應用的全域配置（例應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS 4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">Loader</span><span class="p">.</span><span class="nx">setConfig</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="c1">//disableCaching: true //強制關閉 cache</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">application</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Frontend&#39;</span><span class="p">,</span> <span class="c1">//app folder 別名為 Frontend</span>
+</span><span class='line'>      <span class="nx">appFolder</span><span class="o">:</span> <span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="c1">//檔案 root 存放位置</span>
+</span><span class='line'>      <span class="nx">controllers</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="s1">&#39;SYS.SYS001&#39;</span><span class="p">,</span>   <span class="c1">//使用者登入</span>
+</span><span class='line'>        <span class="s1">&#39;SYS.SYS002&#39;</span><span class="p">,</span>   <span class="c1">//主畫面</span>
+</span><span class='line'>        <span class="s1">&#39;MN.MNM001&#39;</span><span class="p">,</span>     <span class="c1">//群組權限維護</span>
+</span><span class='line'>        <span class="s1">&#39;US.USM002&#39;</span>    <span class="c1">//使用者群組維護</span>
+</span><span class='line'>      <span class="p">],</span>
+</span><span class='line'>      <span class="nx">launch</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;Ext.container.Viewport&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>              <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;mainVP&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">layout</span><span class="o">:</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nx">items</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>                  <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;sys001loginform&#39;</span><span class="p">,</span>
+</span><span class='line'>                  <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8080/agricloud/user/login.json&#39;</span>
+</span><span class='line'>              <span class="p">}]</span>
+</span><span class='line'>          <span class="p">});</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Model</h2>
+
+<p>定義來源資料的 mapping 以及資料型態</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app/model/MN/MNM001/MenuGroup.js</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.model.MN.MNM001.MenuGroup&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Store</h2>
+
+<p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app.store.MN.MNM001.Store.js</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.store.MN.MNM001.Store&#39;</span> <span class="p">,{</span>
+</span><span class='line'>    <span class="nx">model</span><span class="o">:</span><span class="s1">&#39;Frontend.model.MN.MNM001.MenuGroup&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Store&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001store&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;rest&#39;</span><span class="p">,</span>   <span class="c1">// 使用 rest 來與後端 server 溝通</span>
+</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8080/agricloud/rest/menuGroup/&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">reader</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;items&#39;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">writer</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nx">afterRequest</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">success</span><span class="p">){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">operation</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">operation</span><span class="p">;</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">operation</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">success</span><span class="p">){</span>
+</span><span class='line'>            <span class="p">}</span><span class="k">else</span><span class="p">{}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// 讀取完資料後，進行 load </span>
+</span><span class='line'>        <span class="nx">write</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nx">operation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Controller</h2>
+
+<p>用於整合 model 的資料讓 view 可以使用，並且定義 view 各個事件要執行的內容，如此一來 view 將可以被獨立設計，一旦 view 被使用於別的功能也不會有衝突的事件定義。在使用上 Controller 也可以進行繼承，下面的 parent Controller 範例實作一些常用的事件，因為對於 controller 而言，所載入的各個 store 都視為 controller 的屬性，故只要繼承至 parent Controller 都有給定要求的變數內容，所定義的事件將會運作正常</p>
+
+<h3>parent Controller</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * std Controller</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.controller.common.Standard&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">execute</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">tab</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;mainTab&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">tab</span><span class="p">.</span><span class="nx">add</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">id</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">title</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">closable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">layout</span><span class="o">:</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">tabXtype</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doRead</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;doRead&quot;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doCreate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doDelete</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">selection</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">getSelection</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">selection</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">selection</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">doUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span>
+</span><span class='line'>            <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新成功&#39;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="nx">failure</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">options</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;failure&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新失敗&#39;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">onGridSelection</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">selModel</span><span class="p">,</span> <span class="nx">selections</span><span class="p">,</span><span class="nx">eOpts</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selections</span><span class="o">=</span><span class="nx">selections</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selModel</span><span class="o">=</span><span class="nx">selModel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//必須利用refs 取得實體介面已 render的物件</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">deleteButton</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="nx">selections</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">onPanelRendered</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//將載入的 view 指定為此 controller 的屬性</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getGridPanel</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">deleteButton</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getDeleteButton</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>main controller</h3>
+
+<p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app.controller.MN.MNM001.js</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * 功能群組維護</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.controller.MN.MNM001&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Frontend.controller.common.Standard&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;MN.MNM001.Panel&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;deleteButton&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001panel commonbuttondelete&#39;</span>
+</span><span class='line'>    <span class="p">},{</span>
+</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;gridPanel&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001panel&#39;</span>
+</span><span class='line'>    <span class="p">},{</span>
+</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;combobox&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001combobox&#39;</span>
+</span><span class='line'>    <span class="p">}],</span>
+</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="err">定義各個元件所要執行的事件以及相關的函數</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">control</span><span class="p">({</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttoncreate&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCreate</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttondelete&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doDelete</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttonupdate&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doUpdate</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttonread&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doRead</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001combobox&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">select</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">comboboxSelect</span>
+</span><span class='line'>            <span class="p">},</span>
+</span><span class='line'>            <span class="s1">&#39;mnm001panel&#39;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">selectionchange</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">onGridSelection</span><span class="p">,</span>
+</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">onPanelRendered</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'>        <span class="c1">//ref 的使用對象為 Conpoment</span>
+</span><span class='line'>        <span class="c1">//store 的取得直接用 this </span>
+</span><span class='line'>        <span class="c1">//在 view 所組成的 compoment 中有使用到的 store 皆可以在 controllr 中存取</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getStore</span><span class="p">(</span><span class="s2">&quot;MN.MNM001.Store&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">execute</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//定義此 contoller 所使用之屬性，controller 一旦被執行此事件將會最先被執行</span>
+</span><span class='line'>        <span class="nx">params</span><span class="p">.</span><span class="nx">tabXtype</span><span class="o">=</span><span class="s1">&#39;mnm001panel&#39;</span><span class="p">;</span>
+</span><span class='line'>       <span class="c1">//結果將透過下列程式呼叫繼承來的 controller 之 execute</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">comboboxSelect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">combo</span><span class="p">,</span> <span class="nx">records</span><span class="p">,</span> <span class="nx">eOpts</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selections</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>View</h2>
+
+<p>view 的使用依賴於 controller 有載入的內容，在這邊只作為介面的呈現，不進行事件的定義，除非該事件為通用的事件。</p>
+
+<h3>Combobox</h3>
+
+<p>使用的第一個 store <code>US.USM002.Store</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.view.MN.MNM001.Combobox&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.form.ComboBox&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001combobox&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">id</span><span class="o">:</span><span class="s1">&#39;mnm001combobox&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span><span class="s1">&#39;mnm001combobox&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">store</span><span class="o">:</span> <span class="s1">&#39;US.USM002.Store&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">queryMode</span><span class="o">:</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">displayField</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">valueField</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Panel</h3>
+
+<p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.view.MN.MNM001.Panel&#39;</span> <span class="p">,{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Frontend.view.common.gridpanel.standard&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001panel&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span><span class="p">[</span><span class="s1">&#39;Frontend.view.MN.MNM001.Combobox&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">field</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">field</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;mnm001combobox&#39;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>    <span class="nx">plugins</span><span class="o">:</span> <span class="p">[{</span>
+</span><span class='line'>          <span class="nx">ptype</span><span class="o">:</span><span class="s1">&#39;rowediting&#39;</span>
+</span><span class='line'>  <span class="p">}],</span>
+</span><span class='line'>    <span class="nx">store</span><span class="o">:</span><span class="s1">&#39;MN.MNM001.Store&#39;</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>執行結果</h2>
+
+<h3>功能一</h3>
+
+<p><img src="https://lh5.googleusercontent.com/-lx8V6k3xoO8/UUp-XqNiMnI/AAAAAAAALmk/19RA9GS5zrE/s615/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.17.jpg" alt="image" /></p>
+
+<h3>功能二</h3>
+
+<p><img src="https://lh4.googleusercontent.com/-HjzcF7nh4y0/UUp-YUkVjUI/AAAAAAAALms/sls8kHck6LI/s614/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.28.jpg" alt="image" /></p>
+
+<p>可以看到兩個功能外框是類似的，差別在欄位的不同，其中共用的部分：</p>
+
+<ul>
+<li>功能二的 grid 與功能一的 userGroupId 的 combobox store 為同一個 <code>US.USM002.Store</code></li>
+<li>兩個功能之 panal 皆繼承於 <code>Frontend.view.common.gridpanel.standard</code></li>
+<li>controller 也繼承於 <code>Frontend.controller.common.Standard</code></li>
+</ul>
+
+
+<p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-03-21T08:42:00+08:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/03/21/extjs4-mvc/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/03/21/extjs4-mvc/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/03/01/grails-taggable/">Grails Taggable Plugin 搭配 Jquery Tagit 的完美組合</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>引言：<a href="http://blog.lyhdev.com/2013/01/grails-22.html">快速瀏覽 Grails 2.2 新功能</a></p>
+
+<blockquote><p>Grails 是受到 Ruby on Rails (RoR) 啟發的 Java EE 開發框架，它利用 Java 世界的 Groovy Scripting 語言實現與 Rails MVC 架構相似的開發工具；因為基於 Java 豐富的企業元件基礎，可以同時獲得敏捷的開發效率，並且和既有的 Java 程式保持相容。</p></blockquote>
+
+<p>最近開始想要幫家裡開發一個資訊發佈平台，因為我本身習慣開發 java，這陣子經由 <a href="http://blog.lyhdev.com/">lyhcode</a> 的介紹開始使用 Grails，發現他真的是一個充滿驚奇的 framework，一開始可能會因為他的 <strong>精簡</strong> 讓你感到困惑，原本可能需要的步驟被省略後反而無法理解… 但一旦深入了解並且了解其習性後，才發現原來開發 java 也可以這麼快速！</p>
+
+<p>一旦使用 Grails 後，你就不想用原始的 java 開發程式，正所謂回不去了… 除了骨子裡是 java，外在的部分基本上已經完全不一樣了，是說變帥了嘛？（誤）</p>
+
+<p>回到正題，在一般 blog 的網站，很常用到的 tag (標籤)在實作上… 說實在的細節實在很多，我也不知道該怎麼實作… 在完全不知道怎麼實作光構思就可能花上一天，在加上開發運氣好的話或許 3 天解決，但今天我所要介紹的，只花你 1 小時，就完成 taggable 的實作！！很難想像嘛？就讓我們繼續看下去。</p>
+
+<p>此範例參考下列網站：<a href="http://blog.armbruster-it.de/2011/04/a-perfect-team-grails-taggable-plugin-and-jquery-tagit/">Grails Taggable plugin and JQuery Tagit</a>，在這個範例中用的 grails 版本：1.4；jquery-tagit 版本：1.5。</p>
+
+<p>而本文章撰寫時所使用的 grails 版本：2.2；jquery-tagit 版本：2.0。雖然版本不一樣但步驟上大致相同，首先我們必須安裝 taggable plugin。</p>
+
+<h1>taggable &amp; jquery-ui plugin install</h1>
+
+<p>在新版 2.2 grails 中已不建議使用 plugin install，根據官方的建議我們只要在 BuildConfig.groovy 新增下列：</p>
+
+<pre><code>compile ':spring-security-ui:latest.release'
+compile ":taggable:1.0.1"
+</code></pre>
+
+<p>一旦進入 grails 運行環境時將會自動安裝 plugin，就是這麼簡單，而 resources plugin 在 2.2 版已內建，所以不需要安裝，接著我們來處理…</p>
+
+<h1>jquery tagit install</h1>
+
+<p>下載 <a href="http://aehlke.github.com/tag-it/">jquery tagit</a></p>
+
+<p>解壓縮後將檔案放置於：</p>
+
+<ul>
+<li>jquery.tagit.css: &#8216;web-app/tagit/css/jquery.tagit.css&#8217;</li>
+<li>tagit.ui-zendesk.css: &#8216;web-app/tagit/css/tagit.ui-zendesk.css&#8217;</li>
+<li>tag-it.js: &#8216;web-app/tagit/js/tag-it.js&#8217;</li>
+</ul>
+
+
+<p>接著需要定義 ApplicationResourses.goovy</p>
+
+<pre><code>tagit {
+    dependsOn 'jquery-ui'
+    resource url: 'tagit/css/jquery.tagit.css'
+    resource url: 'tagit/css/tagit.ui-zendesk.css'
+    resource url: 'tagit/js/tag-it.js'
+}
+</code></pre>
+
+<p> 如此一來，基本環境與需要的套件都已經 ready 了，就讓我們開始實作 taggable 功能，就先從定義…</p>
+
+<h2>domain object</h2>
+
+<p>在 grails 中所謂的 domain object 就是所謂的資料表物件，定義資料結構的地方，假設我們是要開發自己的 blog 平台，那每一篇文章在資料庫中我們就可以定義 table 為 post，相關程式碼如下：</p>
+
+<pre><code>package sample
+
+class Post {
+    String title
+    String content
+}
+</code></pre>
+
+<p>我們所要做的就是將 <code>org.grails.taggable.Taggable</code> import 進去，並且實作 Taggable</p>
+
+<pre><code>package sample
+import org.grails.taggable.Taggable
+
+class Post implements Taggable {
+    String title
+    String content
+}
+</code></pre>
+
+<p>ok～我們的 domain object 準備好的，不需要額外的設定，而且完整的程式碼就是這樣而已，其他勒？沒有了… 詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
+
+<h2>view</h2>
+
+<p>在 view 的撰寫上，基本上與原文中一樣，這邊對重點的部份進行說明</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="o">...</span>
+</span><span class='line'>  <span class="o">&lt;%--</span> <span class="k">in</span> <span class="n">the</span> <span class="n">head</span> <span class="n">section</span> <span class="o">--%&gt;</span>
+</span><span class='line'>  <span class="o">&lt;%--</span> <span class="err">下面會將剛剛在</span> <span class="n">ApplicationResourses</span> <span class="err">所定義需要載入的</span> <span class="n">tagit</span> <span class="err">相關</span> <span class="n">js</span><span class="err">、</span><span class="n">css</span> <span class="err">載入</span> <span class="o">--%&gt;</span>
+</span><span class='line'>  <span class="o">&lt;</span><span class="nl">r:</span><span class="n">use</span> <span class="n">modules</span><span class="o">=</span><span class="s2">&quot;tagit&quot;</span><span class="s">/&gt;</span>
+</span><span class='line'><span class="s">  ...</span>
+</span><span class='line'><span class="s">  &lt;%-- in the form section --%&gt;</span>
+</span><span class='line'><span class="s">  &lt;fieldset class=&quot;form&quot;&gt;</span>
+</span><span class='line'><span class="s">    &lt;r:script&gt;</span>
+</span><span class='line'><span class="s">      $(function() {</span>
+</span><span class='line'><span class="s">        /</span><span class="o">*</span><span class="err">將</span><span class="n">$</span><span class="o">{</span><span class="n">g</span><span class="o">.</span><span class="na">createLink</span><span class="o">(</span><span class="nl">action:</span> <span class="s1">&#39;tags&#39;</span><span class="o">)}</span><span class="err">：產生</span> <span class="n">postController</span> <span class="n">action</span> <span class="err">為</span> <span class="n">tags</span> <span class="err">的連結</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">透過設定</span> <span class="n">jquery</span> <span class="n">tagit</span> <span class="err">的</span> <span class="n">tagSource</span> <span class="err">的網址，一旦當你輸入</span> <span class="n">tag</span> <span class="n">name</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">將會透過</span> <span class="n">ajax</span> <span class="err">的方式比對輸入的資料與資料庫中的</span> <span class="n">tag</span> <span class="err">來當做</span> <span class="n">auto</span><span class="o">-</span><span class="n">completion</span>
+</span><span class='line'>        <span class="o">*</span> <span class="err">的資料來源</span>
+</span><span class='line'>        <span class="o">*</span><span class="s">/</span>
+</span><span class='line'><span class="s">        $(&quot;ul[name=&#39;tags&#39;]&quot;).tagit({select:true, tagSource: &quot;${g.createLink(action: &#39;tags&#39;)}&quot;});</span>
+</span><span class='line'><span class="s">      });</span>
+</span><span class='line'><span class="s">    &lt;/</span><span class="nl">r:</span><span class="n">script</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Tags</span><span class="o">&lt;</span><span class="s">/h3&gt;</span>
+</span><span class='line'><span class="s">    &lt;div class=&quot;fieldcontain&quot;&gt;</span>
+</span><span class='line'><span class="s">      &lt;ul name=&quot;tags&quot;&gt;</span>
+</span><span class='line'><span class="s">         &lt;%-- 透過 ${post.tags} 取得 tags 的資料 --%&gt;</span>
+</span><span class='line'><span class="s">        &lt;g:each in=&quot;${post.tags}&quot;&gt;</span>
+</span><span class='line'><span class="s">          &lt;li&gt;${it}&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="o">&lt;</span><span class="s">/g:each&gt;</span>
+</span><span class='line'><span class="s">      &lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="s">/div&gt;</span>
+</span><span class='line'><span class="s">  &lt;/</span><span class="n">fieldset</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>view 的部分這樣就算完成啦，跟前面比起來稍微複雜一點，但還是挺簡單的，接著我們就需要定義 controller 的部份。</p>
+
+<h2>controller</h2>
+
+<p>首先我們先把 tag 的 auto-completion 實作完成，我們需要先將相關的套件載入</p>
+
+<p>  import org.grails.taggable.Tag
+  import grails.converters.JSON</p>
+
+<p>接著我們就可以新增 controller 中的 action</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="kt">def</span> <span class="n">tags</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">render</span> <span class="n">Tag</span><span class="o">.</span><span class="na">findAllByNameIlike</span><span class="o">(</span><span class="s2">&quot;${params.term}%&quot;</span><span class="o">).</span><span class="na">name</span> <span class="k">as</span> <span class="n">JSON</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
+
+<p>  render &#8230; as JSON</p>
+
+<p>指的是將查出來的結果轉為 JSON，接著看下面：</p>
+
+<p>  Tag.findAllByNameIlike(&#8220;${params.term}%&#8221;)</p>
+
+<p>根據 <a href="http://grails.org/doc/latest/guide/GORM.html#domainClasses">grails domainClasses API</a> 的說明，提到：</p>
+
+<blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
+
+<p>也就是區別大小寫，找出所有的 Name like &#8220;${params.term}%&#8221;，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
+
+<p>  [&#8220;test1&#8221;,&#8221;test2&#8221;]</p>
+
+<p>如此一來在 web 網頁輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
+
+<p>很棒吧！假設 tag 輸入完畢了，我們必須把 tag 的資料寫入資料庫我們定義 action 為 update，相關程式碼如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="kt">def</span> <span class="nf">update</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">def</span> <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">properties</span> <span class="o">=</span> <span class="n">params</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">tags</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="na">tags</span> <span class="c1">// 為了儲存 tags 只要新增這行</span>
+</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>就這樣完成 taggable 的開發，包括漂亮的介面、方便的輸入以及資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-03-01T18:34:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/03/01/grails-taggable/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/03/01/grails-taggable/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/28/study-coding/">學 Web 開發以及 Sql 語法的好地方</a>
 
 </h1>
@@ -2278,940 +3533,6 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">Extjs: Grid 中的欄位使用 Templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
-
-<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
-
-<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
-
-<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
-
-<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
-
-    constructor: function(cfg){
-        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
-        this.renderer = function(value, p, r){
-            return tpl.apply(r.data);
-        };
-        this.tpl = tpl;
-    }
-});
-</code></pre>
-
-<p>其中</p>
-
-<pre><code>this.renderer = function(value, p, r){
-    return tpl.apply(r.data);
-};
-</code></pre>
-
-<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
-
-<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
-
-<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
-constructor: function(cfg){
-    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
-
-    this.renderer = function(value, p, r, rowIndex, colIndex){
-
-            //第一種方法 
-            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
-            return tpl.apply(newData);
-
-            //第二種方法
-            //r.data.rowIndex = rowIndex;
-            //r.data.colIndex = colIndex;
-            //return tpl.apply(r.data);
-
-            //未修改前
-            //return tpl.apply(r.data);
-        };
-
-        this.tpl = tpl;
-}
-});
-</code></pre>
-
-<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
-
-<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
-
-<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
-
-<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
-
-<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
-
-<p>實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
-
-<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
-
-var myColumn==new Ext.grid.CusTemplateColumn({ 
-    ...
-tpl:template     
-});
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
-
-<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
-
-<h2>透過 grid 欄位之 renderer</h2>
-
-<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
-
-<pre><code>var myColumn={ 
-    ...
-    renderer : function(value, p, r, rowIndex, colIndex){
-        r.data.rowIndex = rowIndex;
-        r.data.colIndex = colIndex;
-        return template.apply(r.data);
-    }
-}
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<h2>實際在使用上該選擇哪種方式？</h2>
-
-<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-18T19:12:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/18/extjs-dom-element-component/">Extjs: DOM、Element 以及 Component 的差別</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>資料來源：</p>
-
-<ul>
-<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
-</ul>
-
-
-<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
-
-<p>而在 extjs 中就有個專門用來處理 DOM 的類別 &#8230;</p>
-
-<h2>Ext.DomHelper</h2>
-
-<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
-
-<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
-
-<pre><code>var dh = Ext.DomHelper; // create shorthand alias
-// specification object
-var spec = {
-    id: 'my-ul',
-    tag: 'ul',
-    cls: 'my-list',
-    // append children after creating
-    children: [     // may also specify 'cn' instead of 'children'
-        {tag: 'li', id: 'item0', html: 'List Item 0'},
-        {tag: 'li', id: 'item1', html: 'List Item 1'},
-        {tag: 'li', id: 'item2', html: 'List Item 2'}
-    ]
-};
-var list = dh.append(
-    'my-div', // the context element 'my-div' can either be the id or the actual node
-    spec      // the specification object
-);
-</code></pre>
-
-<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
-
-<ul>
-<li>append</li>
-<li>insertBefore</li>
-<li>insertAfter</li>
-<li>overwrite</li>
-<li>createTemplate</li>
-<li>insertHtml</li>
-</ul>
-
-
-<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
-
-<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
-
-<pre><code>// gets dom node based on id
-var elDom = Ext.getDom('elId');
-// gets dom node based on the dom node
-var elDom1 = Ext.getDom(elDom);
-
-// If we don't know if we are working with an
-// Ext.Element or a dom node use Ext.getDom
-function(el){
-    var dom = Ext.getDom(el);
-    // do something with the dom node
-}
-</code></pre>
-
-<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 &#8230;</p>
-
-<h2>Ext.Element</h2>
-
-<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
-
-<pre><code>// by id
-var el = Ext.get("my-div");
-
-// by DOM element reference
-var el = Ext.get(myDivElement);
-</code></pre>
-
-<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
-
-<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
-
-<pre><code>var el = Ext.get("my-div");
-
-// no animation
-el.setWidth(100);
-</code></pre>
-
-<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
-
-<pre><code>// default animation
-el.setWidth(100, true);
-</code></pre>
-
-<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
-
-<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
-
-<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
-
-<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
-
-<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
-
-<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 &#8230;</p>
-
-<h2>Ext.Component</h2>
-
-<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
-
-<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
-
-<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
-
-<p>而下面範例說明實際上的使用狀況：</p>
-
-<pre><code>var view=new Ext.Viewport();                
-//建立了一個組件 Component 
-view.el.setOpacity(.5);                     
-//呼叫 Element 的 setOpacity 方法
-view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
-</code></pre>
-
-<p>以及如何分別取得 dom、element 以及 component</p>
-
-<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
-win .show(); 
-var c=Ext.getCmp("win1");           //得到 win 
-var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
-var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
-</code></pre>
-
-<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>
-
-<h2>深入 extjs</h2>
-
-<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，需要 extend extjs 的元件作為自定義的元件時，如何實作有時就要從原始碼找答案。</p>
-
-<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器 Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是蠻重要的。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-18T12:32:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-dom-element-component/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-dom-element-component/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/17/javascript-memory-leaks/">Javascript: Memory Leaks 的情況以及如何解決與偵測</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>文章來源：</p>
-
-<ul>
-<li><a href="http://fred-zone.blogspot.tw/2012/05/javascript_22.html">簡單理解 JavaScript 的記憶體管理機制</a></li>
-<li><a href="http://www.ppzhang.com/?p=8">配合GC，JavaScript性能優化之：邪惡閉包，對象引用清除深入探究</a></li>
-</ul>
-
-
-<p>若要知曉如何避免 Memory Leaks 就要先了解 &#8230;</p>
-
-<h2>JavaScript 的記憶體管理機制</h2>
-
-<p>不像其他的語言，JavaScript 開發者永遠沒有辦法自己去釋放記憶體，頂多只能移除物件的 Reference （代表這物件已經沒有人在使用），而且這物件所佔的記憶體並不會馬上被釋放，而是 Garbage Collection 在滿足某些條件的情況下，才在背景自動去尋找沒有被使用的物件，然後釋放。若你嘗試過尋找釋放記憶體或移除物件 Reference 的方法，得到的解答，應該不外乎是使用 delete 關鍵字或是將變數設為 null，若在不瞭解的情況下使用它們，可能因此產生 Memory leaks 的狀況。JavaScript 的記憶體管理機制，更準確的說，是物件的管理機制。</p>
-
-<p>從 JavaScript 開發者角度來看，JavaScript Engine 在運作時，記憶體使用是呈現樹狀結構，也就是所有命名或建立的變數或物件，都是存放在一個全域(global)的 Object 中。</p>
-
-<p>我們可以做個實驗理解一下：</p>
-
-<pre><code>var myVar = 'Hello';
-function myFunc() {
-    return 123;
-}
-var myObj = {
-    a: 1,
-    b: 2
-};
-
-console.log(global);
-</code></pre>
-
-<p>執行以上程式，你應該可以從 global 中找到我們自己定義的變數和函式：</p>
-
-<pre><code>{
-    ...（已省略基本預設的環境變數）...
-    myVar: 'Hello',
-    myFunc: [function],
-    myObj: {
-        a: 1,
-        b: 2
-    },
-    ...
-}
-</code></pre>
-
-<p>從結果可以發現，所有的物件都以樹狀的形式被 global Object 保存著，無論是變數還是任何一種類型的物件，都是一組組 Key/Value 的存在。而 Value 就是各種不同形態的物件，如字串、函數、陣列、數值等。</p>
-
-<p>所以，移除某物件的 Reference，就意味著將把物件從這棵樹上拔除掉。因此，我們可以直接將該變數設為 null：</p>
-
-<pre><code>myVar = null;
-</code></pre>
-
-<p>由於該變數被設為 null，原本的字串（包含著『Hello』）物件就失去了依附的樹枝，如枯葉般從樹上掉下來，等著 Garbage Collection 來回收它。對於開發者而言，其實就是告訴 GC 我不需要這物件了，隨時可以把這個物件的記憶體釋放。</p>
-
-<p>然而，雖然變數被設為 null 後，原本的物件被釋放了，但該變數還是存在的，別忘了，他是一個在 global Object 中的 Key，現在只是沒有 Value 為 null 而已。要真正把這個變數給刪除，這時就要用到 delete 關鍵字。如果你去查一下 JavaScript 的 API 參考文獻，就會發現 delete 關鍵字其實是拿來刪除 Object 中的一組 Key/Value。因此，既然 JavaScript 所有的變數其實都只是一組存放在 global Object 的 Key/Value，我們理所當然可以用 delete 關鍵字去移除掉他：</p>
-
-<pre><code>delete myVar;
-</code></pre>
-
-<p>知曉了 JavaScript 的記憶體管理機制後，你就會了解使用 delete 關鍵字和將變數設為 null，其實並不是代表物件就會被釋放，只是砍樹枝去減少物件的 Reference。</p>
-
-<p>此外，如果一個物件有多個 Reference，只是單單刪其中一個也不會讓物件被 GC 釋放：</p>
-
-<pre><code>var myVar = 'Hello';
-var myVar1 = myVar;
-
-myVar = null;
-delete myVar;
-
-console.log(myVar1);
-</code></pre>
-
-<p>以上的程式會顯示『Hello』字串，該物件並不會因為失去 myVar 這 Reference 而被 GC 移除。若想要這一個字串被釋放，必需清空物件所有的 Reference（包括 myVar 和 myVar1），才能讓物件具有被 GC 回收的條件。所以，如果你不小心讓一個不明顯的變數勾搭上了物件，然後你忘記了這個變數的存在，很有可能就會造成 Memory Leaks，讓以為已經被釋放的物件，偷偷存活在於記憶體上。</p>
-
-<p>其中 Reference 是常見於各種系統的設計，主要做法是幫物件建立一個 Reference 計數器，當有人關聯或使用到他，就會讓這計數器加一，等到關聯被移除或使用完畢後，就會讓計數器減一。所以，一旦計數器為零時，代表現在沒有任何外部的物件在使用或關聯到它，是可以被釋放掉的狀態。</p>
-
-<p>對於記憶體的管理機制了解之後，接著看 &#8230;</p>
-
-<h2>GC 的判定方式</h2>
-
-<p>mark-and-sweep（標記清除）算法，即：</p>
-
-<p>（1）遍歷所有可訪問的對象。</p>
-
-<p>（2）回收已不可訪問的對象。</p>
-
-<p>實際運作上，就如同上一節有講到的，透過檢查計數器是否為 0 來確認是否可以進行 GC</p>
-
-<p>正常來說，如果有確實將全域變數的 Reference 正確清除的話，記憶體應該會被 GC。</p>
-
-<h2>如何避免無法 GC 的情形？</h2>
-
-<ol>
-<li>定義變數一定要用 var，否則預設宣告出來的變量都是全域變量，不是區域變數</li>
-<li>全域變數沒用時記得要指定為 null，確實將全域變數的 Reference 正確清除</li>
-<li>正確使用 delete ，刪除沒用的一些函數屬性；</li>
-<li>window.open 出來的視窗即使 close 了，它的 window 對象還是存在的，要記得刪除引用；</li>
-<li>frame 和 iframe 的情況和 window.open 的情況類似。</li>
-</ol>
-
-
-<h2>如何透過工具偵測 leaks 情形？</h2>
-
-<p>下面例子是全域變數之 Reference 沒有確實清除的情形：</p>
-
-<pre><code>function Library(name){
-    this.name = name;
-}
-var PIPI = {
-    Mapping : [],
-    get : function(){
-         return PIPI.Mapping[0];
-    }
-}
-var externLib = new Library("0000");
-PIPI.Mapping.push(externLib);
-(function(){
-    var lib = PIPI.get();
-    lib = null;
-    var lib2 = PIPI.Mapping[0];
-    lib2 = null;
-})();
-</code></pre>
-
-<p>一旦上面得程式碼執行後，可以透過 chrome 的開發者工具中的 Profiles 來觀看變數的使用情形，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-1I9sdsmLfxo/USCnHcVdzVI/AAAAAAAALhs/1udovkwXtfE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.43.34.jpg" alt="img" /></p>
-
-<p>可以看到，有兩個 library 對象：一個是函數宣告，另外一個才是 <code>new Library("0000")</code>，下面的 Retaining tree 呈現有哪些物件引用了 <code>new Library("0000")</code>，分別是外部變數 externLib 以及 <code>PIPI.Mapping[0]</code> (圖中樹狀從節點往 root)。</p>
-
-<p>透過該工具的協助既然知道了有哪些 Reference 沒有確實清除，要解決此問題就簡單多了只要加入：</p>
-
-<pre><code>PIPI.Mapping[0] = null ;
-externLib = null ;
-</code></pre>
-
-<p>將 Reference 清除，完成程式碼如下：</p>
-
-<pre><code>function  Library(name){
-        this .name = name;
-}
-var  PIPI = {
-    Mapping : [],
-    get : function (){
-         return  PIPI.Mapping[0];
-    }
-}
-var  externLib = new  Library( "0000" );
-PIPI.Mapping.push(externLib);
-//此時new Library("0000")對像有2個引用
-( function (){
-    var  lib = PIPI.get();
-    //引用數+1：3
-    lib = null ;
-    //引用數-1：2
-    var  lib2 = PIPI.Mapping[0];
-    //引用數+1：3
-    lib2 = null ;
-    //引用數-1：2
-    PIPI.Mapping[0] = null ;
-    //引用數-1：1
-    externLib = null ;
-    //引用數-1：0
-})();
-</code></pre>
-
-<p>接著我們在用 chrome 的開發者工具檢視，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-LMw8XLJlJBM/USCnHEzC08I/AAAAAAAALhk/RAo0i4Yi97k/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.31.45.jpg" alt="img" /></p>
-
-<p>可以看到原本除了宣告函數存在之外，另一個變數已消失，表示 leaks 的情形已被解決！當然上述的狀況說明的是關於全域變數如果要確實 GC 的方式，關於區域變數，照理來說一旦所屬函數被執行完之後，區域變數應該會馬上被回收，要注意的是如果是有 closure 的情形，如果 closure 未被執行，表示函數尚未完全執行結束，也就代表區域變數無法被正確回收，這點必須特別注意，也因此再次強調使用 closure 要特別小心 leaks 的情形。</p>
-
-<p>另外只要將游標指向你欲查看的變數上面，profiles 將顯示該變數被宣告的程式檔與行號，透過超連結，可以直接開啟，可以方便找出有問題的全域變數位置。</p>
-
-<p>其中針對圖中的欄位解釋如下:</p>
-
-<ul>
-<li><p>Shallow Size: 對象自身佔用的內存大小，不包括它引用的對象。</p>
-
-<p>  針對非數組類型的對象，它的大小就是對象與它所有的成員變量大小的總和。當然這裡面還會包括一些語言特性的數據存儲單元。針對數組類型的對象，它的大小是數組元素對象的大小總和。</p></li>
-<li><p>Retained Size: 當前對像大小 + 當前對象可直接或間接引用到的對象的大小總和。</p>
-
-<p>  間接引用的含義：A->B->C，B 是直接引用，C 就是間接引用；換句話說，Retained Size 就是當前對像被 GC 後，從 Heap 上總共能釋放掉的內存。</p></li>
-</ul>
-
-
-<blockquote><p>一旦客戶說速度變得異常的慢，記憶體標高時，就是時候分析客戶目前瀏覽器關於記憶體使用的 profile，麻煩使用者改用 chrome 在關鍵時刻，請他將瀏覽網頁 snapshot 起來分析一下囉！</p></blockquote>
-
-<p>所謂的 <strong>不正常</strong> leaks 情形，幾乎只有在 IE 瀏覽器中會出現，以下將詳細說明在 IE 中為什麼會造成 leaks，首先必須先了解在舊版 IE 中 GC 的運作與現在的瀏覽器有什麼不同。</p>
-
-<blockquote><p>如果所開發的產品不考慮 IE 的使用者，那可以直接跳過下面這段，以下所敘述的問題其實也只在舊版的 IE6 以前會有問題，不過&#8230; 基本上世界上還是有不少 IE 的舊版，了解一下並且盡量避免可以活的比較快樂&#8230;</p></blockquote>
-
-<h2>IE 中 Leaks</h2>
-
-<h3>JScript 與 Native Object(om、ActiveX Object) 交互參照，造成 leaks</h3>
-
-<p>在 IE6 中，對於 GC 的判定有兩種情形：</p>
-
-<ol>
-<li>javascript object內部：jscript使用的是mark-and-sweep（標記清除）算法</li>
-<li>javascript object與外部object：(包括native object和vbscript object等等)的引用時，IE 6使用的是計數器的算法。</li>
-</ol>
-
-
-<p>因為第 2 點的狀況GC算法是計數器，因此只碰到循環 引用就會造成 memory leakage，也就是說 IE6 中 JScript 的 GC 算法使用的是 nongeneration mark-and-sweep。</p>
-
-<p>對於 javascript 對算法的實現缺陷，也就是說，IE 6 對於純粹的 Script Objects 間的 Circular References 是可以正確處理的，可惜它處理不了的是 JScript 與 Native Object (例如Dom、ActiveX Object) 之間的 Circular References。</p>
-
-<p>所以，當我們出現Native對象 (例如Dom、ActiveX Object) 與 Javascript 對象間的循環引用時，內存泄露的問題就出現了。</p>
-
-<blockquote><p>好消息是，這個bug在 IE 7 中已經被修復了！</p></blockquote>
-
-<p>簡單的例子來重現這個問題：</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-            var  myGlobalObject;
-
-            function  SetupLeak(){  // 產生循環引用，因此會造成內存泄露 
-                //  First set up the script scope to element reference 
-                myGlobalObject  = 
-                    document.getElementById( " LeakedDiv " );
-
-                //  Next set up the element to script scope reference 
-                document.getElementById( " LeakedDiv " ).expandoProperty  = 
-                    myGlobalObject;
-            }
-
-
-            function  BreakLeak()  // 解開循環引用，解決內存泄露問題 
-            {
-                document.getElementById( " LeakedDiv " ).expandoProperty  = 
-                        null ;
-            }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
-         &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>上面這個例子，很簡單就能夠解決內存泄露的問題。可惜的是，當結構復雜了以後，造成循環引用的原因開始變得多樣，我們就沒法那麽容易觀察到了，這時候，我們必須對代碼進行仔細的檢查。尤其是當碰到&#8230;</p>
-
-<h3>Closure 中的 leaks</h3>
-
-<p>當我們針對 Native Object (例如Dom對象、ActiveX Object)上綁定事件時，一不小心就會制造出 Closure Memory Leak 。其關鍵原因，其實和前者是一樣的，也是一個跨 javascript object 和 native object 的交互引用。只是代碼更為隱蔽。但在使用類似內嵌函數的時候，內嵌的函數有擁有一 個 reference 指向外部函數的 scope ，包括外部函數的參數，因此也就很容易造成一個很隱蔽的循環引用</p>
-
-<p>下列例子可以說明該隱蔽性：</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-            function  AttachEvents(element){
-
-                //This structure causes element to ref ClickEventHandler  
-                //element有個引用指向函數ClickEventHandler()
-
-                element.attachEvent("onclick" , ClickEventHandler);
-
-                function  ClickEventHandler(){
-
-                    //This closure refs element  
-                    //該函數有個引用指向AttachEvents(element)調用Scope，也就是執行了參數 element。             element.click();
-
-                }
-            }
-
-            function  SetupLeak(){
-
-                //The leak happens all at once 
-                AttachEvents(document.getElementById( " LeakedDiv " ));
-            }
-
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
-        &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>還有這個例子在IE6 中同樣原因會引起 leaks</p>
-
-<pre><code>function  leakmaybe() {
-    var  elm  =  document.createElement( " DIV " );
-    elm.onclick  =   function () {
-        return   2   +   2 ;
-    }
-}
-
-for  ( var  i  =   0 ; i   10000 ; i ++ ) {
-    leakmaybe();
-}
-</code></pre>
-
-<p>當然既然已經知道問題，拜網路上的大大所助&#8230;</p>
-
-<h3>簡單的 leaks 解決方案</h3>
-
-<p>當離開網頁時，透過 onunload 事件綁定，清除所有與 DOM 綁定的事件，如下</p>
-
-<pre><code>if (window.attachEvent) {
-    var clearElementProps = [
-        'data',
-        'onmouseover',
-        'onmouseout',
-        'onmousedown',
-        'onmouseup',
-        'ondblclick',
-        'onclick',
-        'onselectstart',
-        'oncontextmenu'
-    ];
-
-    window.attachEvent("onunload", function() {
-        var el;
-        for(var d = document.all.length;d--;){
-            el = document.all[d];
-            for(var c = clearElementProps.length;c--;){
-                el[clearElementProps[c]] = null;
-            }
-        }
-    });
-}
-</code></pre>
-
-<p>由上面的程式碼可以了解到關於 leak 的解決方式，當然也有更嚴謹的解決方式可參考下列文章：</p>
-
-<ul>
-<li><a href="http://novemberborn.net/javascript/event-cache">event-cache</a></li>
-<li><a href="http://talideon.com/weblog/2005/03/js-memory-leaks.cfm">js-memory-leaks</a></li>
-<li><a href="http://birdshome.cnblogs.com/archive/2005/02/16/104967.html">用innerHTML 代替 appendChild，避開互相參照</a></li>
-</ul>
-
-
-<p>接著介紹其他幾種特別的 leaks 類型，同樣的也只有 IE 會遇到</p>
-
-<h3>Cross-Page Leaks</h3>
-
-<p>直接看以下例子:</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-        function  LeakMemory()  // 這個函數會引發Cross-Page Leaks 
-        {
-            var  hostElement  =  document.getElementById( " hostElement " );
-
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                var  parentDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
-                var  childDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
-
-                //  This will leak a temporary object 
-                parentDiv.appendChild(childDiv);
-                hostElement.appendChild(parentDiv);
-                hostElement.removeChild(parentDiv);
-                parentDiv.removeChild(childDiv);
-                parentDiv  =   null ;
-                childDiv  =   null ;
-            }
-            hostElement  =   null ;
-        }
-
-
-        function  CleanMemory()  // 而這個函數不會引發Cross-Page Leaks 
-        {
-            var  hostElement  =  document.getElementById( " hostElement " );
-
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                var  parentDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
-                var  childDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
-
-                //  Changing the order is important, this won't leak 
-                hostElement.appendChild(parentDiv);
-                parentDiv.appendChild(childDiv);
-                hostElement.removeChild(parentDiv);
-                parentDiv.removeChild(childDiv);
-                parentDiv  =   null ;
-                childDiv  =   null ;
-            }
-            hostElement  =   null ;
-        }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body &gt; 
-        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
-        &lt; button onclick = " CleanMemory() " &gt; Clean Insert &lt;/ button &gt; 
-        &lt; div id = " hostElement " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>LeakMemory 和 CleanMemory 這兩段函數的唯一區別就在於他們的代碼的循序，從代碼上看，兩段代碼的邏輯都沒有錯。</p>
-
-<p>但 LeakMemory 卻會造成泄露。原因是 LeakMemory() 會先建立起 parentDiv 和 childDiv 之間的連接，這時候，為了讓 childDiv 能夠獲知 parentDiv 的信息，因此 IE 需要先建立一個臨時的 scope 對象。而後 parentDiv 建立了和 hostElement 對象的聯系， parentDiv 和 childDiv 直接使用頁面 document 的 scope 。可惜的是，IE 不會釋放剛才那個臨時的 scope 對象的內存空間，直到我們跳轉頁面，這塊空間才能被釋放。而 CleanMemory 函數不同，他先把 parentDiv 和 hostElement 建立聯系，而後再把 childDiv 和 parentDiv 建立聯系，這個過程不需要單獨建立臨時的 scope ，只要直接使用頁面 document 的 scope 就可以了， 所以也就不會造成內存泄露了</p>
-
-<p>詳細可參考：<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/IETechCol/dnwebgen/ie_leak_patterns.asp">ie_leak_patterns</a></p>
-
-<h3>Pseudo-Leaks (秀逗 Leaks)</h3>
-
-<p>看看這個例子:</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-        function  LeakMemory()
-        {
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                hostElement.text  =   " function foo() { } " ;／／看內存會不斷增加
-            }
-        }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body &gt; 
-        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
-        &lt; script id = " hostElement " &gt; function  foo() { } &lt;/ script &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>從上面的程式碼來看，不停的更新 hostElement.text 照理來說都是同一個位置不應該會有 leaks 的問題但MS是這麽解釋的:</p>
-
-<blockquote><p>這不是內存泄漏。如果您創建了許多無法獲得也無法釋放的對象，那才是內存泄漏。在這裏，您將創建許多元素，Internet Explorer 需要保存它們以正確呈現頁面。Internet Explorer 並不知道您以後不會運行操縱您剛剛創建的所有這些對象的腳本。當頁面消失時（當您瀏覽完，離開瀏覽器時）會釋放內存。它不會泄漏。當銷毀頁面時，會中斷循環引用。</p></blockquote>
-
-<p>因此，雖然不知道新版的 IE 是否已沒有上述問題，保險起見，避免上述狀況的程式撰寫風格才是上上策。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-17T13:40:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/17/javascript-memory-leaks/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/17/javascript-memory-leaks/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -3289,23 +3610,23 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/05/extjs-5-30/">extjs-5-30 事件宣告的建議</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-4-30/">extjs-4-30 精簡程式碼案例分享</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-3-30/">extjs-3-30 mixins(混和) 特性說明</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/08/01/extjs-2-30/">extjs 2/30:使用 sencha architect 開發注意事項</a>
       </li>
     
       <li>
         <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
       </li>
     
   </ul>

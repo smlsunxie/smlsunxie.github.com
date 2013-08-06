@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-06T09:55:08+08:00</updated>
+  <updated>2013-08-06T10:07:10+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,7 +18,33 @@
     <link href="http://smlsun.com/blog/2013/08/05/extjs-5-30/"/>
     <updated>2013-08-05T23:18:00+08:00</updated>
     <id>http://smlsun.com/blog/2013/08/05/extjs-5-30</id>
-    <content type="html"><![CDATA[Liquid error: invalid byte sequence in UTF-8]]></content>
+    <content type="html"><![CDATA[<p>在使用 extjs 時，我們有幾個地方可以宣告事件的處理：</p>
+
+<ol>
+<li>在 controller 下宣告</li>
+<li>在 component 下宣告</li>
+</ol>
+
+
+<p>一般剛開始使用 extjs 會搞不清楚什麼時候該使用 mvc 中的 controller 來定義，又或者直接宣告在 component 上，特別是 extjs 4 一大特性 mvc，會讓使用者覺得宣告在 controller 是第一選擇，這樣架構上比較符合官方建議，其實不然，既然 extjs 也支援在 component 上宣告事件，自然有其意義。</p>
+
+<p>既然兩個方式都可以宣告事件，我們該如何區別事件的歸屬呢？筆者認為可以從事件發生關係到的元件或者元件特性（特定功能或是共用元件）來做區別，在明確的說，假設事件所操作的對象所涵蓋的範圍只有該元件以及元件 item 屬性底下所掛載的其他元件，那就應該定義在元件上，若是事件處理涵蓋多個元件的組合互動，那就應該要使用 controller 來定義。</p>
+
+<p>另一個角度，如果該功能屬於共用元件，那事件應該定義在元件底下，屬於特定的功能事件，那應該使用 controller 來處理。</p>
+
+<p>如此一來，如果是定義在元件上的事件，只要某功能有引入該元件，就不需要重覆定義，該元件就有基本的事件互動，一旦需要調整，也不需要一一去改有用到的元件，只要修改宣告事件的元件即可，這樣的情形就像通用元件的狀況，相反地，定義在 controller 的事件就是個別功能的特性了。</p>
+
+<p>舉例來說，如筆者上一篇 <a href="http://">精簡程式碼案例分享</a> 中的範例是一個標準的功能工具列，事件的定義就是宣告在元件定義上，之後只要有引入使用該標準工具列，就不需要在定義相關的事件。</p>
+
+<p>最後根據上述的內容，整理出建議的事件定義對象</p>
+
+<ol>
+<li>如果事件的處理需要整合多個元件那應該定義在 controller 底下</li>
+<li>如果該元件屬於特定功能才有的元件就算事件範圍只在某元件底下，事件還是要要定義在 controller 底下。</li>
+<li>如果事件處理範圍只屬於某個元件底下並且屬於公用元件，那事件應該定義在元件</li>
+</ol>
+
+]]></content>
   </entry>
   
   <entry>
@@ -36,7 +62,7 @@
 
 <p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
 
-<p>```
+<p>``` javascript
 Ext.define('foodprint.view. ', {</p>
 
 <pre><code>extend: 'Ext.toolbar.Toolbar',
@@ -158,9 +184,8 @@ onUpdateBtnClick: function(button, e, eOpts) {
 
 <p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
 
-<p>```</p>
-
-<p>Ext.define('foodprint.view.StdEditorToolbar', {</p>
+<p>``` javascript
+Ext.define('foodprint.view.StdEditorToolbar', {</p>
 
 <pre><code>extend: 'Ext.toolbar.Toolbar',
 alias: 'widget.stdeditortoolbar',
@@ -268,6 +293,116 @@ onStdEditorToolbarRender: function(component, eOpts) {
 <p>```</p>
 
 <p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-3-30 mixins(混和) 特性說明]]></title>
+    <link href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"/>
+    <updated>2013-08-05T11:56:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/05/extjs-3-30</id>
+    <content type="html"><![CDATA[<p>extjs4 中的 mixsins 是 extjs4 的新特性，在筆者之前寫過的文章中<a href="http://ithelp.ithome.com.tw/question/10120091">extjs 4 系列 1/5：新特性與基本概念</a> mixins (混合複數classes) 章節，有做過簡單介紹，讀者可以參考相關說明，了解 mixsins 的特性，官方 API 可參考連結：<a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>，在 extjs 中屬於 Ext.Class 的函式，也就等於所有不管 mvc 或是元件，都可以使用 mixins 的特性。</p>
+
+<p>接著，想要知道 mixins 在不同狀況下的處理方式可參考 <a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html#o1.3.3.">Ext JS 4 First Look 中文翻譯</a> mixins 章節，在使用上就必須要注意什麼情況下函式或屬性在捨麼情況下會被保留，什麼會被覆蓋。</p>
+
+<p>舉個例子，假設我們有兩個 controller 分別如下：</p>
+
+<p>共用元件之 controller：</p>
+
+<p>``` javascript
+Ext.define('foodprint.controller.StdController', {</p>
+
+<pre><code>extend: 'Ext.app.Controller',
+
+views: [
+    'StdEditorToolbar'
+],
+
+refs: [
+    {
+        ref: 'stdEditorToolbar',
+        selector: 'stdeditortoolbar'
+    }
+],
+
+initial: function(tbar) {
+    ...
+},
+
+onCreateBtnClick: function(btn) {
+ ... 
+}
+</code></pre>
+
+<p>});</p>
+
+<p>```</p>
+
+<p>另一個別功能之 controller:</p>
+
+<p>``` javascript
+Ext.define('foodprint.controller.AController', {</p>
+
+<pre><code>extend: 'Ext.app.Controller',
+
+mixins: {
+    StdEditorToolbarCtrl: 'foodprint.controller.StdController'
+},
+
+views: [
+    'BatchEditor'
+],
+
+refs: [
+    {
+        ref: 'batchGrid',
+        selector: 'batchgrid'
+    }
+],
+
+init: function(application) {
+    ...
+},
+
+readBatch: function(obj, record, item, index, e, eOpts) {
+    ...
+},
+</code></pre>
+
+<p>});
+```</p>
+
+<p>在上述的使用情境中，StdController 中的 refs 將會失效，保留 AController 中的 refs，因此在這樣狀況下，若要在 AController 也要能夠有 StdController 中 refs 定義的元件，勢必要在 AController 再次定義一次 StdController 的 refs。</p>
+
+<p>另一種使用情境：假設被 mixins 的類別跟基礎類別有同名的函式，但是我們希望兩個個別實作同名函式<strong>都可以被執行</strong>可以參考 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>的範例：</p>
+
+<p>``` javascript</p>
+
+<p>Ext.define('CanSing', {</p>
+
+<pre><code> sing: function() {
+     alert("I'm on the highway to hell...")
+ }
+</code></pre>
+
+<p>});</p>
+
+<p>Ext.define('Musician', {</p>
+
+<pre><code> mixins: {
+     canSing: 'CanSing'
+ },
+
+ sing: function() {
+     // delegate singing operation to mixin
+     this.mixins.canSing.sing.call(this);
+ }
+</code></pre>
+
+<p>})
+```</p>
+
+<p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
 ]]></content>
   </entry>
   
@@ -623,107 +758,6 @@ webFileCachePaths
 <p>這是個想法，目前我們也正在投入這樣的應用，預期可以帶來不一樣的開發方式，軟體開發方式不停的在進步，也許還有很多團隊還在使用老舊的方法，這樣的組合，除了可以敏捷快速的開發，利用 extjs 所提供的方便性，相信可以帶來效率的提升，特別是前端的物件建立與操作，表單式的應用程式非常適合，筆者也曾在企業進行 extjs 的教育訓練，歡迎有興趣的讀者可以互相切磋。</p>
 
 <p>系列文章到此告一段落，期待下次在與大家分享！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[利用 Sencha Architect 快速開發 extjs]]></title>
-    <link href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"/>
-    <updated>2013-05-09T10:45:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
-    <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗純文字開發除錯是非常費時的。</p>
-
-<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
-
-<hr />
-
-<p>使用 Sencha Architect 來開發 extjs 的好處，除了他會幫你檢查一些常見的問題，比如 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所組合出來的畫面，幾乎就是實際運行的結果，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
-
-<p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
-
-<p>假設妳已經讀過上面連結，最好還能夠實際操作看看，相信有些概念後會更容易吸收。</p>
-
-<p>並且可以先了解一下 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs 中的 mvc 還有物件導向的特性</a>，在 Sencha Architect 中，妳將可以很輕易做到，一些基礎的使用方式筆者就不贅述，本篇將介紹進階使用技巧。</p>
-
-<h2>物件導向：元件重覆使用</h2>
-
-<p>拜 extjs 所賜，讓前端純 javascript 的開發也能用物件導向的方式來進行，我們可以將一些常用的元件重覆使用，一旦我們需要調整時，只要調整基礎元件，就可以同時影響所有有使用到的元件，參考下圖：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-r6dKsDsjny8/UYoJTVdWbrI/AAAAAAAALq4/ZcWWw55l13s/w295-h351-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.13.42.jpg" alt="image" /></p>
-
-<p>可以看到 saveBtn 同時出現在三個自定元件，在 Sencha Architect 裡如果是屬於 link 元件將會用藍色線連結，讓你可以一目了然，一旦改了最原始的 saveBtn 將會連動其他的元件，如下圖</p>
-
-<p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
-
-<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理，在妳需要時組合成妳想的介面。</p>
-
-<h2>toolbox</h2>
-
-<p>除了利用類別的方式，我們也可將我們自定義的元件加入 toolbox 以利重覆使用，使用上如下圖：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
-
-<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用時，拖拉至妳需要放置的位置即可。</p>
-
-<h2>model 資料表令 Store 連結真實資料</h2>
-
-<p>除了在一開始基礎操作連結中有說明到可以定義 model 之外，妳也可以連真實的資料來進行呈現。</p>
-
-<p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
-
-<p>如此一來，除了 grid 的欄位顯示，我們也可以透過 Architect 知道實際呈現時資料內容是否正確。</p>
-
-<h2>進階屬性定義</h2>
-
-<p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-5ghG4LSpW68/UYoJVMRl7UI/AAAAAAAALrQ/jaTUxgolSD4/w301-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.31.02.jpg" alt="image" /></p>
-
-<p>一旦妳輸入的屬性不存在，妳可以點選 add，就會加入下方的屬性，並且可選取該屬性的資料型態，根據妳所選的資料屬性 Architect 會幫你進行資料型態檢查。</p>
-
-<h2>介面 layout 定義</h2>
-
-<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成我們希望的介面呈現，舉個例子：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
-
-<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過 Architect：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
-
-<p>圖中可以看到使用的 layout 為 vbox，結構上如下圖：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-ZSGWB1J0R-0/UYo62Dv1_mI/AAAAAAAALsA/i6lYouhtbQU/w225-h110-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.03.16.jpg" alt="image" /></p>
-
-<p>由 listToolbar 以及 itemGrid 組成，在這邊希望能夠將下方得 itemGrid 填滿全部，如下圖，實際呈現上 grid 並沒有填滿：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
-
-<p>那是因為沒有設置 Flex，所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
-
-<p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
-
-<p>此時如果我們要看其他 layout 情形將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
-
-<p>只有 toolbar 被填滿，grid 不見了，所以，妳可以省下寶貴生命快速確認介面的呈現。</p>
-
-<h2>方便進行測試與開發</h2>
-
-<p>在 extjs 的 application.js 中可以定義一個屬性為 <code>autoCreateViewport</code>，一旦定義此屬性為 true，extjs 會在 view 底下自動顯示檔案為 Viewport.js 定義的內容，而在 Architect 中每一個 view 類別都可以標示為 Initial View，如下圖中的 Mark as Initial View：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-uGliPz2sLMU/UYo60ILc2WI/AAAAAAAALro/RM6EnhQDGjk/w259-h249-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.45.47.jpg" alt="image" /></p>
-
-<p>這樣有什麼好處？在開發 extjs 時，如果應用程式是需要進行登入的，每次更新程式後要進行測試，免不了需要經過登入步驟以及點選功能來開啟需要測試的功能，次數少還好，如果反覆測試的情況下，著實浪費時間，更甚者，假設應用程式是多人開發，可能在執行某應用程式前，需要經過別的應用程式，但如果前面步驟尚未完成，就無法進行測試，這時候這樣的功能就很方便，因為我們可以針對單一元件進行單元功能開發與測試，大大降低功能間的相依性，一旦各自元件開發完成，就可以進行組合最終在進行整合功能測試即可！</p>
-
-<p>Sencha Architect 確實有他存在及使用的價值，筆者使用純文字開發 extjs 多年，遇到很多介面上的問題，並且依靠經驗除過不少 bug，但是都沒有使用 Sencha Architect 來的快及準確，話雖這麼說，IDE 也沒有辦法幫你寫出「對」的程式，強烈建議使用 Sencha Architect 務必先了解 extjs 的原理，如此才能夠讓你駕馭 Architect，就像開車一樣，沒有先了解如何開車就上路，開的不好錯怪車子，還有可能出車禍喔。</p>
-
-<p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
-
-<p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
 ]]></content>
   </entry>
   

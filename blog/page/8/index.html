@@ -310,6 +310,375 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2012/11/28/octopress-slide-advanced/">Octopress Slide Advanced</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>之前為了讓octopress可以根據layout的改變為slide，後續加上了nav bar，以及footer bar，可以使用share功能</p>
+
+<h3>不過！！</h3>
+
+<p>後來看到網路上的大大做了更好的實作</p>
+
+<ul>
+<li><a href="http://kmees.github.com/blog/2012/07/07/html-presentations-with-octopress-and-deck-dot-js/">HTML Presentations With Octopress and deck.js</a></li>
+<li><a href="http://kmees.github.com/blog/2012/07/16/html-presentations-with-octopress-and-deck-dot-js-part-ii/">HTML Presentations With Octopress and deck.js - Part II</a></li>
+</ul>
+
+
+<p>呈現出來的結果如下：<a href="http://kmees.github.com/slides/rugsaar-octopress.html">octopress with slide advanced</a></p>
+
+<p>與 octopress 整合的更好，而且分類與設定更加的完善</p>
+
+<p>於是乎，我把該位大大的<a href="https://github.com/kmees/kmees.github.com">github.com/kmees</a> clone 回來調整了一下</p>
+
+<p>有幾個不錯的特性</p>
+
+<ul>
+<li>支援 rake new_slides</li>
+</ul>
+
+
+<p>與now_post類似，new_slides會將新的slides文章新增在 <code>source/slides</code> 下，同樣當你執行rake generate deploy preview 時都會幫你進行轉換，方便吧！</p>
+
+<ul>
+<li>根據post的title屬性來變更silde的佈景，以及換頁動畫，如下：</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>---
+</span><span class='line'>layout: slides
+</span><span class='line'>title: "Demo Slides"
+</span><span class='line'>sidebar: false
+</span><span class='line'>deck_scale: false
+</span><span class='line'>deck_theme: web-2.0
+</span><span class='line'>deck_transition: fade
+</span><span class='line'>---</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>在silde區隔的部份更方便，使用custom <code>Liquid::Block</code>，來產生html code，like that:</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% slide %}
+</span><span class='line'>  ## Title
+</span><span class='line'>  content
+</span><span class='line'>{% endslide $}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>這部份我覺得可以在方便點改成下列樣式，實際用時常常會漏掉div tag 的開始或結束</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{% slideFirst %}
+</span><span class='line'>  ## Title
+</span><span class='line'>  content
+</span><span class='line'>{% slide $}
+</span><span class='line'>  ## Title
+</span><span class='line'>  content
+</span><span class='line'>{% slide $}
+</span><span class='line'>  ## Title
+</span><span class='line'>  content
+</span><span class='line'>{% slideEnd $}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 slideFirst 替換成 <code>&lt;div class='slide'&gt;</code></p>
+
+<p>slide 替換成 <code>&lt;/div&gt;&lt;div class='slide'&gt;</code></p>
+
+<p>最後 slideEnd 替換成 <code>&lt;/div&gt;</code></p>
+
+<p>呈現起來也不錯，剛剛好這禮拜要去講一個talk，實際完成品 <a href="http://smlsunxie.github.com/slides/java-with-node.html">nodejs+java</a>，整體更一致了！</p>
+
+<p>how about that??試試看囉！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-28T15:46:00+08:00" pubdate data-updated="true">Nov 28<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/28/octopress-slide-advanced/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/28/octopress-slide-advanced/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2012/11/22/Dumb-Ways-to-Die/">笨笨的死法 Dumb Ways to Die</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>剛剛在查資料時，看到一個有趣的影片</p>
+
+<iframe width="560" height="315" src="http://www.youtube.com/embed/JKZ27ZPMrRo" frameborder="0" allowfullscreen></iframe>
+
+
+<p>配著輕快的音樂，輕鬆的把各種死法，輕輕帶過～</p>
+
+<p>呵～做傻事不得不慎阿</p>
+
+<p>話又說回來，這宣導短片真的很有創意！</p>
+
+<p>主要宣導鐵路平交道的安全，用幽默的方式讓人印象深刻，可說是大人小孩都愛</p>
+
+<p>同樣是鐵路公司在做事，也希望台鐵能夠學習一下，用口號宣導，不如特別一點讓人印象深刻阿！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-22T16:13:00+08:00" pubdate data-updated="true">Nov 22<span>nd</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/22/Dumb-Ways-to-Die/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/22/Dumb-Ways-to-Die/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/">Ireport系列-安裝篇</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h1>ireport下載</h1>
+
+<p><a href="http://sourceforge.net/projects/ireport/files/iReport/">ireport 下載網址</a></p>
+
+<p>文章撰寫時，最新版本為 iReport-4.8.0</p>
+
+<p>for ubuntu 請下載 <a href="http://sourceforge.net/projects/ireport/files/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz/download">iReport-4.8.0.tar.gz</a></p>
+
+<h1>ireport指令安裝</h1>
+
+<ul>
+<li><p>安裝java</p>
+
+<pre><code>  sudo apt-get install openjdk-7-jdk
+</code></pre></li>
+<li><p>下載ireport</p>
+
+<pre><code>  wget http://downloads.sourceforge.net/project/ireport/iReport/iReport-4.8.0/iReport-4.8.0.tar.gz
+</code></pre></li>
+<li><p>解壓縮</p>
+
+<pre><code>  tar zxvf iReport-4.8.0.tar.gz
+</code></pre></li>
+<li><p>執行ireport</p>
+
+<pre><code>  sh ~/iReport-4.8.0/bin/./ireport
+</code></pre></li>
+</ul>
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2012-11-12T21:52:00+08:00" pubdate data-updated="true">Nov 12<span>th</span>, 2012</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2012/11/12/ireportxi-lie-an-zhuang-pian/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2012/11/05/rework-gong-zuo-da-jie-fang-du-hou-xin-de/">Rework 工作大解放 讀後心得</a>
 
 </h1>
@@ -966,23 +1335,23 @@
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/05/extjs-5-30/">extjs-5-30 事件宣告的建議</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-4-30/">extjs-4-30 精簡程式碼案例分享</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-3-30/">extjs-3-30 mixins(混和) 特性說明</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/08/01/extjs-2-30/">extjs 2/30:使用 sencha architect 開發注意事項</a>
       </li>
     
       <li>
         <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
       </li>
     
   </ul>

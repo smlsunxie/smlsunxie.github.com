@@ -1,0 +1,1207 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>extjs-4-30 精簡程式碼案例分享 - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2013/08/05/extjs-4-30/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+<hr>
+
+<div class="row">
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+  <div class="span6">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+<hr>
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+Extjs-4-30 精簡程式碼案例分享
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
+
+<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
+
+<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
+
+<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
+
+<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view. &#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">btn</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.StdEditorToolbar&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">],</span>
+</span><span class='line'>            <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onStdEditorToolbarRender</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onStdEditorToolbarRender</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">crebtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-08-05T19:54:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/08/05/extjs-4-30/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/08/05/extjs-4-30/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2013/08/05/extjs-3-30/" title="Previous Post: extjs-3-30 mixins(混和) 特性說明"><li>&laquo; extjs-3-30 mixins(混和) 特性說明</li></a>
+          
+          
+            <a class="right" href="/blog/2013/08/05/extjs-5-30/" title="Next Post: extjs-5-30 事件宣告的建議"><li>extjs-5-30 事件宣告的建議 &raquo;</li></a>
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+    <div class="widget" >
+    <section>
+  <h1>Comments</h1>
+  
+
+  
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  
+</section>
+
+    </div>
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<div class="row">
+
+  <div class="span12">
+    <div class="icons-box box">
+      <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-6292358061841558";
+      /* 320 x 50-1 */
+      google_ad_slot = "5783905650";
+      google_ad_width = 320;
+      google_ad_height = 50;
+      //-->
+      </script>
+      <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+      </script>
+      <div class="clear"></div>
+    </div>
+  </div>
+
+</div>
+
+<hr>
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-5-30/">extjs-5-30 事件宣告的建議</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-4-30/">extjs-4-30 精簡程式碼案例分享</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-3-30/">extjs-3-30 mixins(混和) 特性說明</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/01/extjs-2-30/">extjs 2/30:使用 sencha architect 開發注意事項</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/08/05/extjs-4-30/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/08/05/extjs-4-30/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2013 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://smlsun.com/blog/2013/08/05/extjs-4-30/';
+        var disqus_url = 'http://smlsun.com/blog/2013/08/05/extjs-4-30/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-03T22:55:23+08:00</updated>
+  <updated>2013-08-06T10:07:10+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,685 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-5-30 事件宣告的建議]]></title>
+<link href="http://smlsun.com/blog/2013/08/05/extjs-5-30/"/>
+<updated>2013-08-05T23:18:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/05/extjs-5-30</id>
+
+      <content type="html"><![CDATA[<p>在使用 extjs 時，我們有幾個地方可以宣告事件的處理：</p>
+
+<ol>
+<li>在 controller 下宣告</li>
+<li>在 component 下宣告</li>
+</ol>
+
+
+<p>一般剛開始使用 extjs 會搞不清楚什麼時候該使用 mvc 中的 controller 來定義，又或者直接宣告在 component 上，特別是 extjs 4 一大特性 mvc，會讓使用者覺得宣告在 controller 是第一選擇，這樣架構上比較符合官方建議，其實不然，既然 extjs 也支援在 component 上宣告事件，自然有其意義。</p>
+
+<p>既然兩個方式都可以宣告事件，我們該如何區別事件的歸屬呢？筆者認為可以從事件發生關係到的元件或者元件特性（特定功能或是共用元件）來做區別，在明確的說，假設事件所操作的對象所涵蓋的範圍只有該元件以及元件 item 屬性底下所掛載的其他元件，那就應該定義在元件上，若是事件處理涵蓋多個元件的組合互動，那就應該要使用 controller 來定義。</p>
+
+<p>另一個角度，如果該功能屬於共用元件，那事件應該定義在元件底下，屬於特定的功能事件，那應該使用 controller 來處理。</p>
+
+<p>如此一來，如果是定義在元件上的事件，只要某功能有引入該元件，就不需要重覆定義，該元件就有基本的事件互動，一旦需要調整，也不需要一一去改有用到的元件，只要修改宣告事件的元件即可，這樣的情形就像通用元件的狀況，相反地，定義在 controller 的事件就是個別功能的特性了。</p>
+
+<p>舉例來說，如筆者上一篇 <a href="http://">精簡程式碼案例分享</a> 中的範例是一個標準的功能工具列，事件的定義就是宣告在元件定義上，之後只要有引入使用該標準工具列，就不需要在定義相關的事件。</p>
+
+<p>最後根據上述的內容，整理出建議的事件定義對象</p>
+
+<ol>
+<li>如果事件的處理需要整合多個元件那應該定義在 controller 底下</li>
+<li>如果該元件屬於特定功能才有的元件就算事件範圍只在某元件底下，事件還是要要定義在 controller 底下。</li>
+<li>如果事件處理範圍只屬於某個元件底下並且屬於公用元件，那事件應該定義在元件</li>
+</ol>
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-5-30/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-4-30 精簡程式碼案例分享]]></title>
+<link href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"/>
+<updated>2013-08-05T19:54:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/05/extjs-4-30</id>
+
+      <content type="html"><![CDATA[<p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
+
+<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
+
+<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
+
+<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
+
+<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view. &#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">btn</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//重覆</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.StdEditorToolbar&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">],</span>
+</span><span class='line'>            <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onStdEditorToolbarRender</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onStdEditorToolbarRender</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">crebtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-3-30 mixins(混和) 特性說明]]></title>
+<link href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"/>
+<updated>2013-08-05T11:56:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/05/extjs-3-30</id>
+
+      <content type="html"><![CDATA[<p>extjs4 中的 mixsins 是 extjs4 的新特性，在筆者之前寫過的文章中<a href="http://ithelp.ithome.com.tw/question/10120091">extjs 4 系列 1/5：新特性與基本概念</a> mixins (混合複數classes) 章節，有做過簡單介紹，讀者可以參考相關說明，了解 mixsins 的特性，官方 API 可參考連結：<a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>，在 extjs 中屬於 Ext.Class 的函式，也就等於所有不管 mvc 或是元件，都可以使用 mixins 的特性。</p>
+
+<p>接著，想要知道 mixins 在不同狀況下的處理方式可參考 <a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html#o1.3.3.">Ext JS 4 First Look 中文翻譯</a> mixins 章節，在使用上就必須要注意什麼情況下函式或屬性在捨麼情況下會被保留，什麼會被覆蓋。</p>
+
+<p>舉個例子，假設我們有兩個 controller 分別如下：</p>
+
+<p>共用元件之 controller：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.StdController&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;StdEditorToolbar&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;stdeditortoolbar&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initial</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tbar</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">...</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">btn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>     <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>另一個別功能之 controller:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.AController&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">StdEditorToolbarCtrl</span><span class="o">:</span> <span class="s1">&#39;foodprint.controller.StdController&#39;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s1">&#39;BatchEditor&#39;</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;batchGrid&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;batchgrid&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">],</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">application</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">...</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">readBatch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="p">...</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在上述的使用情境中，StdController 中的 refs 將會失效，保留 AController 中的 refs，因此在這樣狀況下，若要在 AController 也要能夠有 StdController 中 refs 定義的元件，勢必要在 AController 再次定義一次 StdController 的 refs。</p>
+
+<p>另一種使用情境：假設被 mixins 的類別跟基礎類別有同名的函式，但是我們希望兩個個別實作同名函式<strong>都可以被執行</strong>可以參考 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>的範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;CanSing&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>         <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m on the highway to hell...&quot;</span><span class="p">)</span>
+</span><span class='line'>     <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Musician&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>     <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>         <span class="nx">canSing</span><span class="o">:</span> <span class="s1">&#39;CanSing&#39;</span>
+</span><span class='line'>     <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>         <span class="c1">// delegate singing operation to mixin</span>
+</span><span class='line'>         <span class="k">this</span><span class="p">.</span><span class="nx">mixins</span><span class="p">.</span><span class="nx">canSing</span><span class="p">.</span><span class="nx">sing</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>     <span class="p">}</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3792,754 +4471,6 @@ p2 = p1.ownerCt.getComponent('p2'); // reference via a sibling
 
 <p>即使層級上不只一層，透過妳下的條件，extjs 會找出符合條件最接近的物件，如此一來妳就可以輕鬆遊走各個元件之間了！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/19/extjs-component/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs: grid 中的欄位使用 templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性]]></title>
-<link href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"/>
-<updated>2013-02-18T19:12:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex</id>
-
-      <content type="html"><![CDATA[<p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
-
-<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
-
-<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
-
-<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
-
-<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
-
-    constructor: function(cfg){
-        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
-        this.renderer = function(value, p, r){
-            return tpl.apply(r.data);
-        };
-        this.tpl = tpl;
-    }
-});
-</code></pre>
-
-<p>其中</p>
-
-<pre><code>this.renderer = function(value, p, r){
-    return tpl.apply(r.data);
-};
-</code></pre>
-
-<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
-
-<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
-
-<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
-constructor: function(cfg){
-    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
-        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
-
-    this.renderer = function(value, p, r, rowIndex, colIndex){
-
-            //第一種方法 
-            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
-            return tpl.apply(newData);
-
-            //第二種方法
-            //r.data.rowIndex = rowIndex;
-            //r.data.colIndex = colIndex;
-            //return tpl.apply(r.data);
-
-            //未修改前
-            //return tpl.apply(r.data);
-        };
-
-        this.tpl = tpl;
-}
-});
-</code></pre>
-
-<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
-
-<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
-
-<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
-
-<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
-
-<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
-
-<p>實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
-
-<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
-
-var myColumn==new Ext.grid.CusTemplateColumn({ 
-    ...
-tpl:template     
-});
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
-
-<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
-
-<h2>透過 grid 欄位之 renderer</h2>
-
-<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
-
-<pre><code>var myColumn={ 
-    ...
-    renderer : function(value, p, r, rowIndex, colIndex){
-        r.data.rowIndex = rowIndex;
-        r.data.colIndex = colIndex;
-        return template.apply(r.data);
-    }
-}
-
-var grid = new Ext.grid.GridPanel({
-    ...
-columns: [
-    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
-    myColumn     
-],
-});
-</code></pre>
-
-<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-<h2>實際在使用上該選擇哪種方式？</h2>
-
-<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs: DOM、Element 以及 Component 的差別]]></title>
-<link href="http://smlsun.com/blog/2013/02/18/extjs-dom-element-component/"/>
-<updated>2013-02-18T12:32:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/18/extjs-dom-element-component</id>
-
-      <content type="html"><![CDATA[<p>資料來源：</p>
-
-<ul>
-<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
-</ul>
-
-
-<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
-
-<p>而在 extjs 中就有個專門用來處理 DOM 的類別 &#8230;</p>
-
-<h2>Ext.DomHelper</h2>
-
-<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
-
-<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
-
-<pre><code>var dh = Ext.DomHelper; // create shorthand alias
-// specification object
-var spec = {
-    id: 'my-ul',
-    tag: 'ul',
-    cls: 'my-list',
-    // append children after creating
-    children: [     // may also specify 'cn' instead of 'children'
-        {tag: 'li', id: 'item0', html: 'List Item 0'},
-        {tag: 'li', id: 'item1', html: 'List Item 1'},
-        {tag: 'li', id: 'item2', html: 'List Item 2'}
-    ]
-};
-var list = dh.append(
-    'my-div', // the context element 'my-div' can either be the id or the actual node
-    spec      // the specification object
-);
-</code></pre>
-
-<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
-
-<ul>
-<li>append</li>
-<li>insertBefore</li>
-<li>insertAfter</li>
-<li>overwrite</li>
-<li>createTemplate</li>
-<li>insertHtml</li>
-</ul>
-
-
-<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
-
-<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
-
-<pre><code>// gets dom node based on id
-var elDom = Ext.getDom('elId');
-// gets dom node based on the dom node
-var elDom1 = Ext.getDom(elDom);
-
-// If we don't know if we are working with an
-// Ext.Element or a dom node use Ext.getDom
-function(el){
-    var dom = Ext.getDom(el);
-    // do something with the dom node
-}
-</code></pre>
-
-<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 &#8230;</p>
-
-<h2>Ext.Element</h2>
-
-<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
-
-<pre><code>// by id
-var el = Ext.get("my-div");
-
-// by DOM element reference
-var el = Ext.get(myDivElement);
-</code></pre>
-
-<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
-
-<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
-
-<pre><code>var el = Ext.get("my-div");
-
-// no animation
-el.setWidth(100);
-</code></pre>
-
-<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
-
-<pre><code>// default animation
-el.setWidth(100, true);
-</code></pre>
-
-<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
-
-<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
-
-<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
-
-<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
-
-<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
-
-<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 &#8230;</p>
-
-<h2>Ext.Component</h2>
-
-<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
-
-<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
-
-<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
-
-<p>而下面範例說明實際上的使用狀況：</p>
-
-<pre><code>var view=new Ext.Viewport();                
-//建立了一個組件 Component 
-view.el.setOpacity(.5);                     
-//呼叫 Element 的 setOpacity 方法
-view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
-</code></pre>
-
-<p>以及如何分別取得 dom、element 以及 component</p>
-
-<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
-win .show(); 
-var c=Ext.getCmp("win1");           //得到 win 
-var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
-var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
-</code></pre>
-
-<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>
-
-<h2>深入 extjs</h2>
-
-<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，需要 extend extjs 的元件作為自定義的元件時，如何實作有時就要從原始碼找答案。</p>
-
-<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器 Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是蠻重要的。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/18/extjs-dom-element-component/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[javascript: Memory Leaks 的情況以及如何解決與偵測]]></title>
-<link href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"/>
-<updated>2013-02-17T13:40:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/17/javascript-memory-leaks</id>
-
-      <content type="html"><![CDATA[<p>文章來源：</p>
-
-<ul>
-<li><a href="http://fred-zone.blogspot.tw/2012/05/javascript_22.html">簡單理解 JavaScript 的記憶體管理機制</a></li>
-<li><a href="http://www.ppzhang.com/?p=8">配合GC，JavaScript性能優化之：邪惡閉包，對象引用清除深入探究</a></li>
-</ul>
-
-
-<p>若要知曉如何避免 Memory Leaks 就要先了解 &#8230;</p>
-
-<h2>JavaScript 的記憶體管理機制</h2>
-
-<p>不像其他的語言，JavaScript 開發者永遠沒有辦法自己去釋放記憶體，頂多只能移除物件的 Reference （代表這物件已經沒有人在使用），而且這物件所佔的記憶體並不會馬上被釋放，而是 Garbage Collection 在滿足某些條件的情況下，才在背景自動去尋找沒有被使用的物件，然後釋放。若你嘗試過尋找釋放記憶體或移除物件 Reference 的方法，得到的解答，應該不外乎是使用 delete 關鍵字或是將變數設為 null，若在不瞭解的情況下使用它們，可能因此產生 Memory leaks 的狀況。JavaScript 的記憶體管理機制，更準確的說，是物件的管理機制。</p>
-
-<p>從 JavaScript 開發者角度來看，JavaScript Engine 在運作時，記憶體使用是呈現樹狀結構，也就是所有命名或建立的變數或物件，都是存放在一個全域(global)的 Object 中。</p>
-
-<p>我們可以做個實驗理解一下：</p>
-
-<pre><code>var myVar = 'Hello';
-function myFunc() {
-    return 123;
-}
-var myObj = {
-    a: 1,
-    b: 2
-};
-
-console.log(global);
-</code></pre>
-
-<p>執行以上程式，你應該可以從 global 中找到我們自己定義的變數和函式：</p>
-
-<pre><code>{
-    ...（已省略基本預設的環境變數）...
-    myVar: 'Hello',
-    myFunc: [function],
-    myObj: {
-        a: 1,
-        b: 2
-    },
-    ...
-}
-</code></pre>
-
-<p>從結果可以發現，所有的物件都以樹狀的形式被 global Object 保存著，無論是變數還是任何一種類型的物件，都是一組組 Key/Value 的存在。而 Value 就是各種不同形態的物件，如字串、函數、陣列、數值等。</p>
-
-<p>所以，移除某物件的 Reference，就意味著將把物件從這棵樹上拔除掉。因此，我們可以直接將該變數設為 null：</p>
-
-<pre><code>myVar = null;
-</code></pre>
-
-<p>由於該變數被設為 null，原本的字串（包含著『Hello』）物件就失去了依附的樹枝，如枯葉般從樹上掉下來，等著 Garbage Collection 來回收它。對於開發者而言，其實就是告訴 GC 我不需要這物件了，隨時可以把這個物件的記憶體釋放。</p>
-
-<p>然而，雖然變數被設為 null 後，原本的物件被釋放了，但該變數還是存在的，別忘了，他是一個在 global Object 中的 Key，現在只是沒有 Value 為 null 而已。要真正把這個變數給刪除，這時就要用到 delete 關鍵字。如果你去查一下 JavaScript 的 API 參考文獻，就會發現 delete 關鍵字其實是拿來刪除 Object 中的一組 Key/Value。因此，既然 JavaScript 所有的變數其實都只是一組存放在 global Object 的 Key/Value，我們理所當然可以用 delete 關鍵字去移除掉他：</p>
-
-<pre><code>delete myVar;
-</code></pre>
-
-<p>知曉了 JavaScript 的記憶體管理機制後，你就會了解使用 delete 關鍵字和將變數設為 null，其實並不是代表物件就會被釋放，只是砍樹枝去減少物件的 Reference。</p>
-
-<p>此外，如果一個物件有多個 Reference，只是單單刪其中一個也不會讓物件被 GC 釋放：</p>
-
-<pre><code>var myVar = 'Hello';
-var myVar1 = myVar;
-
-myVar = null;
-delete myVar;
-
-console.log(myVar1);
-</code></pre>
-
-<p>以上的程式會顯示『Hello』字串，該物件並不會因為失去 myVar 這 Reference 而被 GC 移除。若想要這一個字串被釋放，必需清空物件所有的 Reference（包括 myVar 和 myVar1），才能讓物件具有被 GC 回收的條件。所以，如果你不小心讓一個不明顯的變數勾搭上了物件，然後你忘記了這個變數的存在，很有可能就會造成 Memory Leaks，讓以為已經被釋放的物件，偷偷存活在於記憶體上。</p>
-
-<p>其中 Reference 是常見於各種系統的設計，主要做法是幫物件建立一個 Reference 計數器，當有人關聯或使用到他，就會讓這計數器加一，等到關聯被移除或使用完畢後，就會讓計數器減一。所以，一旦計數器為零時，代表現在沒有任何外部的物件在使用或關聯到它，是可以被釋放掉的狀態。</p>
-
-<p>對於記憶體的管理機制了解之後，接著看 &#8230;</p>
-
-<h2>GC 的判定方式</h2>
-
-<p>mark-and-sweep（標記清除）算法，即：</p>
-
-<p>（1）遍歷所有可訪問的對象。</p>
-
-<p>（2）回收已不可訪問的對象。</p>
-
-<p>實際運作上，就如同上一節有講到的，透過檢查計數器是否為 0 來確認是否可以進行 GC</p>
-
-<p>正常來說，如果有確實將全域變數的 Reference 正確清除的話，記憶體應該會被 GC。</p>
-
-<h2>如何避免無法 GC 的情形？</h2>
-
-<ol>
-<li>定義變數一定要用 var，否則預設宣告出來的變量都是全域變量，不是區域變數</li>
-<li>全域變數沒用時記得要指定為 null，確實將全域變數的 Reference 正確清除</li>
-<li>正確使用 delete ，刪除沒用的一些函數屬性；</li>
-<li>window.open 出來的視窗即使 close 了，它的 window 對象還是存在的，要記得刪除引用；</li>
-<li>frame 和 iframe 的情況和 window.open 的情況類似。</li>
-</ol>
-
-
-<h2>如何透過工具偵測 leaks 情形？</h2>
-
-<p>下面例子是全域變數之 Reference 沒有確實清除的情形：</p>
-
-<pre><code>function Library(name){
-    this.name = name;
-}
-var PIPI = {
-    Mapping : [],
-    get : function(){
-         return PIPI.Mapping[0];
-    }
-}
-var externLib = new Library("0000");
-PIPI.Mapping.push(externLib);
-(function(){
-    var lib = PIPI.get();
-    lib = null;
-    var lib2 = PIPI.Mapping[0];
-    lib2 = null;
-})();
-</code></pre>
-
-<p>一旦上面得程式碼執行後，可以透過 chrome 的開發者工具中的 Profiles 來觀看變數的使用情形，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-1I9sdsmLfxo/USCnHcVdzVI/AAAAAAAALhs/1udovkwXtfE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.43.34.jpg" alt="img" /></p>
-
-<p>可以看到，有兩個 library 對象：一個是函數宣告，另外一個才是 <code>new Library("0000")</code>，下面的 Retaining tree 呈現有哪些物件引用了 <code>new Library("0000")</code>，分別是外部變數 externLib 以及 <code>PIPI.Mapping[0]</code> (圖中樹狀從節點往 root)。</p>
-
-<p>透過該工具的協助既然知道了有哪些 Reference 沒有確實清除，要解決此問題就簡單多了只要加入：</p>
-
-<pre><code>PIPI.Mapping[0] = null ;
-externLib = null ;
-</code></pre>
-
-<p>將 Reference 清除，完成程式碼如下：</p>
-
-<pre><code>function  Library(name){
-        this .name = name;
-}
-var  PIPI = {
-    Mapping : [],
-    get : function (){
-         return  PIPI.Mapping[0];
-    }
-}
-var  externLib = new  Library( "0000" );
-PIPI.Mapping.push(externLib);
-//此時new Library("0000")對像有2個引用
-( function (){
-    var  lib = PIPI.get();
-    //引用數+1：3
-    lib = null ;
-    //引用數-1：2
-    var  lib2 = PIPI.Mapping[0];
-    //引用數+1：3
-    lib2 = null ;
-    //引用數-1：2
-    PIPI.Mapping[0] = null ;
-    //引用數-1：1
-    externLib = null ;
-    //引用數-1：0
-})();
-</code></pre>
-
-<p>接著我們在用 chrome 的開發者工具檢視，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-LMw8XLJlJBM/USCnHEzC08I/AAAAAAAALhk/RAo0i4Yi97k/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.31.45.jpg" alt="img" /></p>
-
-<p>可以看到原本除了宣告函數存在之外，另一個變數已消失，表示 leaks 的情形已被解決！當然上述的狀況說明的是關於全域變數如果要確實 GC 的方式，關於區域變數，照理來說一旦所屬函數被執行完之後，區域變數應該會馬上被回收，要注意的是如果是有 closure 的情形，如果 closure 未被執行，表示函數尚未完全執行結束，也就代表區域變數無法被正確回收，這點必須特別注意，也因此再次強調使用 closure 要特別小心 leaks 的情形。</p>
-
-<p>另外只要將游標指向你欲查看的變數上面，profiles 將顯示該變數被宣告的程式檔與行號，透過超連結，可以直接開啟，可以方便找出有問題的全域變數位置。</p>
-
-<p>其中針對圖中的欄位解釋如下:</p>
-
-<ul>
-<li><p>Shallow Size: 對象自身佔用的內存大小，不包括它引用的對象。</p>
-
-<p>  針對非數組類型的對象，它的大小就是對象與它所有的成員變量大小的總和。當然這裡面還會包括一些語言特性的數據存儲單元。針對數組類型的對象，它的大小是數組元素對象的大小總和。</p></li>
-<li><p>Retained Size: 當前對像大小 + 當前對象可直接或間接引用到的對象的大小總和。</p>
-
-<p>  間接引用的含義：A->B->C，B 是直接引用，C 就是間接引用；換句話說，Retained Size 就是當前對像被 GC 後，從 Heap 上總共能釋放掉的內存。</p></li>
-</ul>
-
-
-<blockquote><p>一旦客戶說速度變得異常的慢，記憶體標高時，就是時候分析客戶目前瀏覽器關於記憶體使用的 profile，麻煩使用者改用 chrome 在關鍵時刻，請他將瀏覽網頁 snapshot 起來分析一下囉！</p></blockquote>
-
-<p>所謂的 <strong>不正常</strong> leaks 情形，幾乎只有在 IE 瀏覽器中會出現，以下將詳細說明在 IE 中為什麼會造成 leaks，首先必須先了解在舊版 IE 中 GC 的運作與現在的瀏覽器有什麼不同。</p>
-
-<blockquote><p>如果所開發的產品不考慮 IE 的使用者，那可以直接跳過下面這段，以下所敘述的問題其實也只在舊版的 IE6 以前會有問題，不過&#8230; 基本上世界上還是有不少 IE 的舊版，了解一下並且盡量避免可以活的比較快樂&#8230;</p></blockquote>
-
-<h2>IE 中 Leaks</h2>
-
-<h3>JScript 與 Native Object(om、ActiveX Object) 交互參照，造成 leaks</h3>
-
-<p>在 IE6 中，對於 GC 的判定有兩種情形：</p>
-
-<ol>
-<li>javascript object內部：jscript使用的是mark-and-sweep（標記清除）算法</li>
-<li>javascript object與外部object：(包括native object和vbscript object等等)的引用時，IE 6使用的是計數器的算法。</li>
-</ol>
-
-
-<p>因為第 2 點的狀況GC算法是計數器，因此只碰到循環 引用就會造成 memory leakage，也就是說 IE6 中 JScript 的 GC 算法使用的是 nongeneration mark-and-sweep。</p>
-
-<p>對於 javascript 對算法的實現缺陷，也就是說，IE 6 對於純粹的 Script Objects 間的 Circular References 是可以正確處理的，可惜它處理不了的是 JScript 與 Native Object (例如Dom、ActiveX Object) 之間的 Circular References。</p>
-
-<p>所以，當我們出現Native對象 (例如Dom、ActiveX Object) 與 Javascript 對象間的循環引用時，內存泄露的問題就出現了。</p>
-
-<blockquote><p>好消息是，這個bug在 IE 7 中已經被修復了！</p></blockquote>
-
-<p>簡單的例子來重現這個問題：</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-            var  myGlobalObject;
-
-            function  SetupLeak(){  // 產生循環引用，因此會造成內存泄露 
-                //  First set up the script scope to element reference 
-                myGlobalObject  = 
-                    document.getElementById( " LeakedDiv " );
-
-                //  Next set up the element to script scope reference 
-                document.getElementById( " LeakedDiv " ).expandoProperty  = 
-                    myGlobalObject;
-            }
-
-
-            function  BreakLeak()  // 解開循環引用，解決內存泄露問題 
-            {
-                document.getElementById( " LeakedDiv " ).expandoProperty  = 
-                        null ;
-            }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
-         &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>上面這個例子，很簡單就能夠解決內存泄露的問題。可惜的是，當結構復雜了以後，造成循環引用的原因開始變得多樣，我們就沒法那麽容易觀察到了，這時候，我們必須對代碼進行仔細的檢查。尤其是當碰到&#8230;</p>
-
-<h3>Closure 中的 leaks</h3>
-
-<p>當我們針對 Native Object (例如Dom對象、ActiveX Object)上綁定事件時，一不小心就會制造出 Closure Memory Leak 。其關鍵原因，其實和前者是一樣的，也是一個跨 javascript object 和 native object 的交互引用。只是代碼更為隱蔽。但在使用類似內嵌函數的時候，內嵌的函數有擁有一 個 reference 指向外部函數的 scope ，包括外部函數的參數，因此也就很容易造成一個很隱蔽的循環引用</p>
-
-<p>下列例子可以說明該隱蔽性：</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-            function  AttachEvents(element){
-
-                //This structure causes element to ref ClickEventHandler  
-                //element有個引用指向函數ClickEventHandler()
-
-                element.attachEvent("onclick" , ClickEventHandler);
-
-                function  ClickEventHandler(){
-
-                    //This closure refs element  
-                    //該函數有個引用指向AttachEvents(element)調用Scope，也就是執行了參數 element。             element.click();
-
-                }
-            }
-
-            function  SetupLeak(){
-
-                //The leak happens all at once 
-                AttachEvents(document.getElementById( " LeakedDiv " ));
-            }
-
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
-        &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>還有這個例子在IE6 中同樣原因會引起 leaks</p>
-
-<pre><code>function  leakmaybe() {
-    var  elm  =  document.createElement( " DIV " );
-    elm.onclick  =   function () {
-        return   2   +   2 ;
-    }
-}
-
-for  ( var  i  =   0 ; i   10000 ; i ++ ) {
-    leakmaybe();
-}
-</code></pre>
-
-<p>當然既然已經知道問題，拜網路上的大大所助&#8230;</p>
-
-<h3>簡單的 leaks 解決方案</h3>
-
-<p>當離開網頁時，透過 onunload 事件綁定，清除所有與 DOM 綁定的事件，如下</p>
-
-<pre><code>if (window.attachEvent) {
-    var clearElementProps = [
-        'data',
-        'onmouseover',
-        'onmouseout',
-        'onmousedown',
-        'onmouseup',
-        'ondblclick',
-        'onclick',
-        'onselectstart',
-        'oncontextmenu'
-    ];
-
-    window.attachEvent("onunload", function() {
-        var el;
-        for(var d = document.all.length;d--;){
-            el = document.all[d];
-            for(var c = clearElementProps.length;c--;){
-                el[clearElementProps[c]] = null;
-            }
-        }
-    });
-}
-</code></pre>
-
-<p>由上面的程式碼可以了解到關於 leak 的解決方式，當然也有更嚴謹的解決方式可參考下列文章：</p>
-
-<ul>
-<li><a href="http://novemberborn.net/javascript/event-cache">event-cache</a></li>
-<li><a href="http://talideon.com/weblog/2005/03/js-memory-leaks.cfm">js-memory-leaks</a></li>
-<li><a href="http://birdshome.cnblogs.com/archive/2005/02/16/104967.html">用innerHTML 代替 appendChild，避開互相參照</a></li>
-</ul>
-
-
-<p>接著介紹其他幾種特別的 leaks 類型，同樣的也只有 IE 會遇到</p>
-
-<h3>Cross-Page Leaks</h3>
-
-<p>直接看以下例子:</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-        function  LeakMemory()  // 這個函數會引發Cross-Page Leaks 
-        {
-            var  hostElement  =  document.getElementById( " hostElement " );
-
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                var  parentDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
-                var  childDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
-
-                //  This will leak a temporary object 
-                parentDiv.appendChild(childDiv);
-                hostElement.appendChild(parentDiv);
-                hostElement.removeChild(parentDiv);
-                parentDiv.removeChild(childDiv);
-                parentDiv  =   null ;
-                childDiv  =   null ;
-            }
-            hostElement  =   null ;
-        }
-
-
-        function  CleanMemory()  // 而這個函數不會引發Cross-Page Leaks 
-        {
-            var  hostElement  =  document.getElementById( " hostElement " );
-
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                var  parentDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
-                var  childDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
-
-                //  Changing the order is important, this won't leak 
-                hostElement.appendChild(parentDiv);
-                parentDiv.appendChild(childDiv);
-                hostElement.removeChild(parentDiv);
-                parentDiv.removeChild(childDiv);
-                parentDiv  =   null ;
-                childDiv  =   null ;
-            }
-            hostElement  =   null ;
-        }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body &gt; 
-        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
-        &lt; button onclick = " CleanMemory() " &gt; Clean Insert &lt;/ button &gt; 
-        &lt; div id = " hostElement " &gt;&lt;/ div &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>LeakMemory 和 CleanMemory 這兩段函數的唯一區別就在於他們的代碼的循序，從代碼上看，兩段代碼的邏輯都沒有錯。</p>
-
-<p>但 LeakMemory 卻會造成泄露。原因是 LeakMemory() 會先建立起 parentDiv 和 childDiv 之間的連接，這時候，為了讓 childDiv 能夠獲知 parentDiv 的信息，因此 IE 需要先建立一個臨時的 scope 對象。而後 parentDiv 建立了和 hostElement 對象的聯系， parentDiv 和 childDiv 直接使用頁面 document 的 scope 。可惜的是，IE 不會釋放剛才那個臨時的 scope 對象的內存空間，直到我們跳轉頁面，這塊空間才能被釋放。而 CleanMemory 函數不同，他先把 parentDiv 和 hostElement 建立聯系，而後再把 childDiv 和 parentDiv 建立聯系，這個過程不需要單獨建立臨時的 scope ，只要直接使用頁面 document 的 scope 就可以了， 所以也就不會造成內存泄露了</p>
-
-<p>詳細可參考：<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/IETechCol/dnwebgen/ie_leak_patterns.asp">ie_leak_patterns</a></p>
-
-<h3>Pseudo-Leaks (秀逗 Leaks)</h3>
-
-<p>看看這個例子:</p>
-
-<pre><code>&lt; html &gt; 
-    &lt; head &gt; 
-        &lt; script language = " JScript " &gt; 
-
-        function  LeakMemory()
-        {
-            //  Do it a lot, look at Task Manager for memory response 
-
-            for (i  =   0 ; i  &lt;   5000 ; i ++ )
-            {
-                hostElement.text  =   " function foo() { } " ;／／看內存會不斷增加
-            }
-        }
-        &lt;/ script &gt; 
-    &lt;/ head &gt; 
-
-    &lt; body &gt; 
-        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
-        &lt; script id = " hostElement " &gt; function  foo() { } &lt;/ script &gt; 
-    &lt;/ body &gt; 
-&lt;/ html &gt;
-</code></pre>
-
-<p>從上面的程式碼來看，不停的更新 hostElement.text 照理來說都是同一個位置不應該會有 leaks 的問題但MS是這麽解釋的:</p>
-
-<blockquote><p>這不是內存泄漏。如果您創建了許多無法獲得也無法釋放的對象，那才是內存泄漏。在這裏，您將創建許多元素，Internet Explorer 需要保存它們以正確呈現頁面。Internet Explorer 並不知道您以後不會運行操縱您剛剛創建的所有這些對象的腳本。當頁面消失時（當您瀏覽完，離開瀏覽器時）會釋放內存。它不會泄漏。當銷毀頁面時，會中斷循環引用。</p></blockquote>
-
-<p>因此，雖然不知道新版的 IE 是否已沒有上述問題，保險起見，避免上述狀況的程式撰寫風格才是上上策。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/"></a></p>]]></content>
     </entry>
   
 </feed>

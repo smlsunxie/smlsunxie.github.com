@@ -310,6 +310,940 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/">Extjs: Grid 中的欄位使用 Templete 並且能夠呼叫 rowIndex 以及 colIndex 屬性</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在 grid 中的 column 使用 templete 除了顯示自定的欄位內容外，有些時候我們希望可以存取資料行的索引，如此一來才可以對資料內容進行相對定的事件處理並且能夠正確操作相關的物件。</p>
+
+<p>但是原生的 templete 並沒有對應的 rowIndex 或者事件定義可以讓我們存取，所以我們必須轉個彎來達到這目的，有兩個方式 &#8230;</p>
+
+<h2>透過對 Ext.grid.TemplateColumn 進行繼承改寫</h2>
+
+<p>開始說明作法之前需先了解在 extjs 中 Ext.grid.TemplateColumn 的運作方式，原始碼如下：</p>
+
+<pre><code>Ext.grid.TemplateColumn = Ext.extend(Ext.grid.Column, {
+
+    constructor: function(cfg){
+        Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);
+        this.renderer = function(value, p, r){
+            return tpl.apply(r.data);
+        };
+        this.tpl = tpl;
+    }
+});
+</code></pre>
+
+<p>其中</p>
+
+<pre><code>this.renderer = function(value, p, r){
+    return tpl.apply(r.data);
+};
+</code></pre>
+
+<p>可以看到其實他的實作方式就是利用 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.grid.Column">Ext.grid.Column 中的 renderer</a> config 來自動呼叫 tpl.apply，其實在官方文件中 renderer 還有後面的參數可以使用，分別是 rowIndex，colIndex，store，完整可以參考 API。</p>
+
+<p>既然原生的 renderer 就有 rowIndex，colIndex 我們只要 extent Ext.grid.TemplateColumn 並且改寫 renderer 令 templete 新增參數即可，所以我們可以這樣做：</p>
+
+<pre><code>Ext.grid.CusTemplateColumn = Ext.extend(Ext.grid.TemplateColumn, {
+constructor: function(cfg){
+    Ext.grid.TemplateColumn.superclass.constructor.call(this, cfg);
+        var tpl = (!Ext.isPrimitive(this.tpl) &amp;&amp; this.tpl.compile) ? this.tpl : new Ext.XTemplate(this.tpl);    
+
+    this.renderer = function(value, p, r, rowIndex, colIndex){
+
+            //第一種方法 
+            var newData=Ext.apply({rowIndex: rowIndex, colIndex: colIndex}, r.data);
+            return tpl.apply(newData);
+
+            //第二種方法
+            //r.data.rowIndex = rowIndex;
+            //r.data.colIndex = colIndex;
+            //return tpl.apply(r.data);
+
+            //未修改前
+            //return tpl.apply(r.data);
+        };
+
+        this.tpl = tpl;
+}
+});
+</code></pre>
+
+<p>在上面程式碼中， Ext.apply 所做的就是將目前的物件與傳進來的物件屬性進行合併，如 API 中的敘述</p>
+
+<blockquote><p>Copies all the properties of config to obj. apply</p></blockquote>
+
+<p>其中，tpl 所使用的 tpl.apply 與 Ext.apply 是不一樣的，他是 applyTemplate 的別名</p>
+
+<blockquote><p>Alias for applyTemplate Returns an HTML fragment of this template with the specified values applied.</p></blockquote>
+
+<p>最主要的概念就是針對 tpl.apply 參數所需傳入的物件加上 rowIndex，colIndex 就可以令 temlete 中 html可以存取該屬性，如此一來一旦 grid 有分頁的狀況或者改變排序，在 templete 中的 rowindex 也會隨著改變。</p>
+
+<p>實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/TfnRS/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<p>接著我們就可以將其應用於 grid 的欄位建立：</p>
+
+<pre><code>var template = new Ext.XTemplate('&lt;input type="checkbox" name="check{rowIndex}" id="checkbox" value="{title}"/&gt;');
+
+var myColumn==new Ext.grid.CusTemplateColumn({ 
+    ...
+tpl:template     
+});
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>一旦 grid render 時就會觸動在剛剛所實作的 renderer，在 templete 中的 {rowIndex} 也會正確取得對應的值。</p>
+
+<p>有了上面的概念，其實換個方法可以不用 extent TemplateColumn 也可以做到相同效果 &#8230;</p>
+
+<h2>透過 grid 欄位之 renderer</h2>
+
+<p>我們可以在 renderer 中直接使用定義好的 template 如下面程式碼：</p>
+
+<pre><code>var myColumn={ 
+    ...
+    renderer : function(value, p, r, rowIndex, colIndex){
+        r.data.rowIndex = rowIndex;
+        r.data.colIndex = colIndex;
+        return template.apply(r.data);
+    }
+}
+
+var grid = new Ext.grid.GridPanel({
+    ...
+columns: [
+    { id: 'title-col', header: "Title", width: 225, dataIndex: 'title' },
+    myColumn     
+],
+});
+</code></pre>
+
+<p>效果是一樣的，可以更直接做到相同的效果，實際上範例的運作如下：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/smlsun/A2eUb/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+
+<h2>實際在使用上該選擇哪種方式？</h2>
+
+<p>方法有很多種，只要能夠達到目的都是可用的方法，但總是有較適合的，一個簡單的判斷方式：如果有很多地方需要用到 extend 的 template 那建議用第一個方法，只要寫一次任何時候需要用到只要引入該客製元件即可，一旦往後有需要在對該元件進行修改調整，只要修正一個地方即可；但如果只有一處用會用到那就用第二種方法，避免過度設計，對於資源載入更加精簡。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T19:12:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-grid-column-use-templete-get-rowindex-and-colindex/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/18/extjs-dom-element-component/">Extjs: DOM、Element 以及 Component 的差別</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>資料來源：</p>
+
+<ul>
+<li><a href="http://hi.baidu.com/andriond/item/757d24dcb1b8f139e3108f8a">理解Html DOM、Ext Element及Component</a></li>
+</ul>
+
+
+<p>學習及應用 extjs，需要理解 Html DOM、Ext Element及Component 三者的區別。extjs 是 Wed 前端框架，基於標準 W3C 構建設的，使用到的都是HTML、CSS、DIV 等相關技術。無論元件有多少屬性、還是事件、方法等，其最終都會轉化為 HTML 在瀏覽器上顯示出來，而每一個 HTML 頁面都有 DOM，瀏覽器中的所有內容都有相應的 DOM，動態改變頁面的內容正是透過 javascript 來操作 DOM 進行實現。</p>
+
+<p>而在 extjs 中就有個專門用來處理 DOM 的類別 &#8230;</p>
+
+<h2>Ext.DomHelper</h2>
+
+<p>DOM其實就是 W3C 標準定義的原始 API，在 extjs 中對 dom 進行強化，製作了 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.DomHelper">Ext.DomHelper</a></p>
+
+<p>在官方 API 中可以看到該類別屬於 singleton，所謂的 singleton 就是所謂的整個程式在運行時只有一份，且不需宣告即已被實體化，官方文件中的範例：</p>
+
+<pre><code>var dh = Ext.DomHelper; // create shorthand alias
+// specification object
+var spec = {
+    id: 'my-ul',
+    tag: 'ul',
+    cls: 'my-list',
+    // append children after creating
+    children: [     // may also specify 'cn' instead of 'children'
+        {tag: 'li', id: 'item0', html: 'List Item 0'},
+        {tag: 'li', id: 'item1', html: 'List Item 1'},
+        {tag: 'li', id: 'item2', html: 'List Item 2'}
+    ]
+};
+var list = dh.append(
+    'my-div', // the context element 'my-div' can either be the id or the actual node
+    spec      // the specification object
+);
+</code></pre>
+
+<p>可以看到 <code>var dh = Ext.DomHelper;</code> 並未透過 new 來進行建立實體，而在 Ext.DomHelper 特別針對了原生 javascript 的 Insertion methods 進行封裝，如下：</p>
+
+<ul>
+<li>append</li>
+<li>insertBefore</li>
+<li>insertAfter</li>
+<li>overwrite</li>
+<li>createTemplate</li>
+<li>insertHtml</li>
+</ul>
+
+
+<p>當然 extjs 不只是單純的進行封裝那麼簡單，他還避免了一些在效能上容易造成問題的地方，比如說在我另一篇文章<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance &amp; Tip</a> 有提到的 『9. DOM』 使用 DocumentFragment 避免 ReFlow 的問題，在 extjs 中已採用此作法，可以從原始碼<a href="http://docs.sencha.com/ext-js/3-4/source/DomHelper-more.html#Ext-DomHelper">DomHelper-more</a> 中的 <code>createDom</code> 看到 <code>el = doc.createDocumentFragment();</code> 使用了 DocumentFragment。</p>
+
+<p>而DOM是W3C標準定義的原始API，如果我們要取得 dom 可以透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.getDom(el)</a>，除了用 dom id 來索引之外，也可以傳入 Element，如：</p>
+
+<pre><code>// gets dom node based on id
+var elDom = Ext.getDom('elId');
+// gets dom node based on the dom node
+var elDom1 = Ext.getDom(elDom);
+
+// If we don't know if we are working with an
+// Ext.Element or a dom node use Ext.getDom
+function(el){
+    var dom = Ext.getDom(el);
+    // do something with the dom node
+}
+</code></pre>
+
+<p>接著來看在 extjs 對 DOM 進行封裝後的物件帶來什麼樣的功能 &#8230;</p>
+
+<h2>Ext.Element</h2>
+
+<p>Ext.Element 是Ext的底層API，主要是由Ext或自定義組件來進行呼叫。並且將 DOM 進行封裝，使用方式如下：</p>
+
+<pre><code>// by id
+var el = Ext.get("my-div");
+
+// by DOM element reference
+var el = Ext.get(myDivElement);
+</code></pre>
+
+<p>可以看到只要透過 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext-method-getDom">Ext.get</a> 取得的物件，將會作為 Ext.Element 回傳。</p>
+
+<p>透過 extjs 將 DOM 封裝為 Ext.Element，通過其操作 DOM 來實現頁面的效果顯示，可以方便做到若要把頁面中的某一個節點移到其它位置，要給某一個節點添加陰影效果，要隱藏或顯示某一個節點等，可以很輕易的執行相關的動畫特效，主要是因為在 Ext.Element 中包含了專門處理特效的類別：<a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Fx">Ext.Fx</a>，而以往都需要通過幾句 javascript 才能完成。舉例來說，下面這段取得 DOM 的語法：</p>
+
+<pre><code>var el = Ext.get("my-div");
+
+// no animation
+el.setWidth(100);
+</code></pre>
+
+<p>只是單純的將寬度設為 100 ，若要有類似特效的效果，很簡單：</p>
+
+<pre><code>// default animation
+el.setWidth(100, true);
+</code></pre>
+
+<p>修改為上面的程式碼即可，詳細可參照 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Element">API-Ext.Element</a></p>
+
+<p>因此，Ext 在 DOM 的基礎上創建了 Ext.Element，可以使用 Element 來包裝任何 DOM；Element 類別中添加了一系列快捷、簡便的實用方法。其中對於事件上的使用，不像 Component 中的事件是屬於 Ext events，在 Element 中的事件是屬於 browser events，在 extjs 官方 api 中有提到：</p>
+
+<blockquote><p>Note that the events documented in this class are not Ext events, they encapsulate browser events.</p></blockquote>
+
+<p>其中因為是屬於原生的 browser events 所以不是所有的事件在較舊的 browser 中都有支援，不過如果是屬於 Ext events 的範圍則都有支援。如官方所言：</p>
+
+<blockquote><p>Some older browsers may not support the full range of events. Which events are supported is beyond the control of ExtJs.</p></blockquote>
+
+<p>extjs 實作了 Element 來對原生的 dom 操作進行了強化，並且透過 Element 的使用可以不必擔心跨瀏覽器的相容性，解決前端令人困擾的問題，但對於終端用戶來說，僅僅有Element是不夠的，也因此 extjs 最強大的部份就是 &#8230;</p>
+
+<h2>Ext.Component</h2>
+
+<p>假設我們需要在開發時要顯示一個表格、樹狀結構或者彈出一個視窗等，為了方便建立相關的元件，除了 Element 以外，Extjs 還建立了一系列的前端顯示元件 Component，我們在撰寫程式時，只要使用這些組件 Componet 即可實現相關數據展示及交互等，而 Component 是較高層次的抽象，每一個組件在渲染 render 的時候，都會依次通過 Element、DOM 來生成最終的頁面效果。</p>
+
+<p>在Ext中，組件 render 以後可以通過存取 Component 的 properties <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.Component-property-el">api-el</a> 屬性來得到 Component 對應的 Element ，通過存取 Element 的 dom 屬性可以得到其下面的 DOM。</p>
+
+<p>其中如果要取得某元件可以透過 Ext.getCmp 來得到，相關詳細說明可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/05/extjs-component/">Extjs: Component 的使用，找尋 Parent &amp; Child</a></p>
+
+<p>而下面範例說明實際上的使用狀況：</p>
+
+<pre><code>var view=new Ext.Viewport();                
+//建立了一個組件 Component 
+view.el.setOpacity(.5);                     
+//呼叫 Element 的 setOpacity 方法
+view.el.dom.innerHTML="Hello Ext";  //透過 Element 的 dom 屬性操作 DOM
+</code></pre>
+
+<p>以及如何分別取得 dom、element 以及 component</p>
+
+<pre><code>var win=new Ext.Window({id:"win1",title:"my window",width:200,height:200}); 
+win .show(); 
+var c=Ext.getCmp("win1");           //得到 win 
+var e=Ext.get("win1");              //根據 id 得到 win 相應的 Element 
+var dom=Ext .getDom("win1");        //得到 id 為 win1 的 DOM 節點
+</code></pre>
+
+<p>若要進一步了解 extjs 的 Class Diagram 可參考下列網址：<a href="http://d.hatena.ne.jp/Tommy1/searchdiary?word=%2A%5BExtJS%5D">Ext JS 3.0 - Class Diagram</a></p>
+
+<h2>深入 extjs</h2>
+
+<p>如果要想深入應用 Ext，那麼閱讀Ext項目的原始碼是必要的，該原始碼非常值的學習，一些 js 技巧，以及應該要避免的 js 陷阱都有考慮到，透過閱讀原始碼可以更加深刻的了解 javascript 的程式開發，其包含了很多精巧的 js 開發與設計模式。在使用Ext的過程中，需要 extend extjs 的元件作為自定義的元件時，如何實作有時就要從原始碼找答案。</p>
+
+<p>當然 Ext 的原始碼是很龐大的，並不需要從頭開始看，建議可以從元件 Component.js、容器 Container.js 以及 Panel.js；而核心中的 Element.js 以及 Ext.js 等也是蠻重要的。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-18T12:32:00+08:00" pubdate data-updated="true">Feb 18<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/18/extjs-dom-element-component/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/18/extjs-dom-element-component/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/17/javascript-memory-leaks/">Javascript: Memory Leaks 的情況以及如何解決與偵測</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>文章來源：</p>
+
+<ul>
+<li><a href="http://fred-zone.blogspot.tw/2012/05/javascript_22.html">簡單理解 JavaScript 的記憶體管理機制</a></li>
+<li><a href="http://www.ppzhang.com/?p=8">配合GC，JavaScript性能優化之：邪惡閉包，對象引用清除深入探究</a></li>
+</ul>
+
+
+<p>若要知曉如何避免 Memory Leaks 就要先了解 &#8230;</p>
+
+<h2>JavaScript 的記憶體管理機制</h2>
+
+<p>不像其他的語言，JavaScript 開發者永遠沒有辦法自己去釋放記憶體，頂多只能移除物件的 Reference （代表這物件已經沒有人在使用），而且這物件所佔的記憶體並不會馬上被釋放，而是 Garbage Collection 在滿足某些條件的情況下，才在背景自動去尋找沒有被使用的物件，然後釋放。若你嘗試過尋找釋放記憶體或移除物件 Reference 的方法，得到的解答，應該不外乎是使用 delete 關鍵字或是將變數設為 null，若在不瞭解的情況下使用它們，可能因此產生 Memory leaks 的狀況。JavaScript 的記憶體管理機制，更準確的說，是物件的管理機制。</p>
+
+<p>從 JavaScript 開發者角度來看，JavaScript Engine 在運作時，記憶體使用是呈現樹狀結構，也就是所有命名或建立的變數或物件，都是存放在一個全域(global)的 Object 中。</p>
+
+<p>我們可以做個實驗理解一下：</p>
+
+<pre><code>var myVar = 'Hello';
+function myFunc() {
+    return 123;
+}
+var myObj = {
+    a: 1,
+    b: 2
+};
+
+console.log(global);
+</code></pre>
+
+<p>執行以上程式，你應該可以從 global 中找到我們自己定義的變數和函式：</p>
+
+<pre><code>{
+    ...（已省略基本預設的環境變數）...
+    myVar: 'Hello',
+    myFunc: [function],
+    myObj: {
+        a: 1,
+        b: 2
+    },
+    ...
+}
+</code></pre>
+
+<p>從結果可以發現，所有的物件都以樹狀的形式被 global Object 保存著，無論是變數還是任何一種類型的物件，都是一組組 Key/Value 的存在。而 Value 就是各種不同形態的物件，如字串、函數、陣列、數值等。</p>
+
+<p>所以，移除某物件的 Reference，就意味著將把物件從這棵樹上拔除掉。因此，我們可以直接將該變數設為 null：</p>
+
+<pre><code>myVar = null;
+</code></pre>
+
+<p>由於該變數被設為 null，原本的字串（包含著『Hello』）物件就失去了依附的樹枝，如枯葉般從樹上掉下來，等著 Garbage Collection 來回收它。對於開發者而言，其實就是告訴 GC 我不需要這物件了，隨時可以把這個物件的記憶體釋放。</p>
+
+<p>然而，雖然變數被設為 null 後，原本的物件被釋放了，但該變數還是存在的，別忘了，他是一個在 global Object 中的 Key，現在只是沒有 Value 為 null 而已。要真正把這個變數給刪除，這時就要用到 delete 關鍵字。如果你去查一下 JavaScript 的 API 參考文獻，就會發現 delete 關鍵字其實是拿來刪除 Object 中的一組 Key/Value。因此，既然 JavaScript 所有的變數其實都只是一組存放在 global Object 的 Key/Value，我們理所當然可以用 delete 關鍵字去移除掉他：</p>
+
+<pre><code>delete myVar;
+</code></pre>
+
+<p>知曉了 JavaScript 的記憶體管理機制後，你就會了解使用 delete 關鍵字和將變數設為 null，其實並不是代表物件就會被釋放，只是砍樹枝去減少物件的 Reference。</p>
+
+<p>此外，如果一個物件有多個 Reference，只是單單刪其中一個也不會讓物件被 GC 釋放：</p>
+
+<pre><code>var myVar = 'Hello';
+var myVar1 = myVar;
+
+myVar = null;
+delete myVar;
+
+console.log(myVar1);
+</code></pre>
+
+<p>以上的程式會顯示『Hello』字串，該物件並不會因為失去 myVar 這 Reference 而被 GC 移除。若想要這一個字串被釋放，必需清空物件所有的 Reference（包括 myVar 和 myVar1），才能讓物件具有被 GC 回收的條件。所以，如果你不小心讓一個不明顯的變數勾搭上了物件，然後你忘記了這個變數的存在，很有可能就會造成 Memory Leaks，讓以為已經被釋放的物件，偷偷存活在於記憶體上。</p>
+
+<p>其中 Reference 是常見於各種系統的設計，主要做法是幫物件建立一個 Reference 計數器，當有人關聯或使用到他，就會讓這計數器加一，等到關聯被移除或使用完畢後，就會讓計數器減一。所以，一旦計數器為零時，代表現在沒有任何外部的物件在使用或關聯到它，是可以被釋放掉的狀態。</p>
+
+<p>對於記憶體的管理機制了解之後，接著看 &#8230;</p>
+
+<h2>GC 的判定方式</h2>
+
+<p>mark-and-sweep（標記清除）算法，即：</p>
+
+<p>（1）遍歷所有可訪問的對象。</p>
+
+<p>（2）回收已不可訪問的對象。</p>
+
+<p>實際運作上，就如同上一節有講到的，透過檢查計數器是否為 0 來確認是否可以進行 GC</p>
+
+<p>正常來說，如果有確實將全域變數的 Reference 正確清除的話，記憶體應該會被 GC。</p>
+
+<h2>如何避免無法 GC 的情形？</h2>
+
+<ol>
+<li>定義變數一定要用 var，否則預設宣告出來的變量都是全域變量，不是區域變數</li>
+<li>全域變數沒用時記得要指定為 null，確實將全域變數的 Reference 正確清除</li>
+<li>正確使用 delete ，刪除沒用的一些函數屬性；</li>
+<li>window.open 出來的視窗即使 close 了，它的 window 對象還是存在的，要記得刪除引用；</li>
+<li>frame 和 iframe 的情況和 window.open 的情況類似。</li>
+</ol>
+
+
+<h2>如何透過工具偵測 leaks 情形？</h2>
+
+<p>下面例子是全域變數之 Reference 沒有確實清除的情形：</p>
+
+<pre><code>function Library(name){
+    this.name = name;
+}
+var PIPI = {
+    Mapping : [],
+    get : function(){
+         return PIPI.Mapping[0];
+    }
+}
+var externLib = new Library("0000");
+PIPI.Mapping.push(externLib);
+(function(){
+    var lib = PIPI.get();
+    lib = null;
+    var lib2 = PIPI.Mapping[0];
+    lib2 = null;
+})();
+</code></pre>
+
+<p>一旦上面得程式碼執行後，可以透過 chrome 的開發者工具中的 Profiles 來觀看變數的使用情形，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-1I9sdsmLfxo/USCnHcVdzVI/AAAAAAAALhs/1udovkwXtfE/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.43.34.jpg" alt="img" /></p>
+
+<p>可以看到，有兩個 library 對象：一個是函數宣告，另外一個才是 <code>new Library("0000")</code>，下面的 Retaining tree 呈現有哪些物件引用了 <code>new Library("0000")</code>，分別是外部變數 externLib 以及 <code>PIPI.Mapping[0]</code> (圖中樹狀從節點往 root)。</p>
+
+<p>透過該工具的協助既然知道了有哪些 Reference 沒有確實清除，要解決此問題就簡單多了只要加入：</p>
+
+<pre><code>PIPI.Mapping[0] = null ;
+externLib = null ;
+</code></pre>
+
+<p>將 Reference 清除，完成程式碼如下：</p>
+
+<pre><code>function  Library(name){
+        this .name = name;
+}
+var  PIPI = {
+    Mapping : [],
+    get : function (){
+         return  PIPI.Mapping[0];
+    }
+}
+var  externLib = new  Library( "0000" );
+PIPI.Mapping.push(externLib);
+//此時new Library("0000")對像有2個引用
+( function (){
+    var  lib = PIPI.get();
+    //引用數+1：3
+    lib = null ;
+    //引用數-1：2
+    var  lib2 = PIPI.Mapping[0];
+    //引用數+1：3
+    lib2 = null ;
+    //引用數-1：2
+    PIPI.Mapping[0] = null ;
+    //引用數-1：1
+    externLib = null ;
+    //引用數-1：0
+})();
+</code></pre>
+
+<p>接著我們在用 chrome 的開發者工具檢視，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-LMw8XLJlJBM/USCnHEzC08I/AAAAAAAALhk/RAo0i4Yi97k/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-17+%E4%B8%8B%E5%8D%885.31.45.jpg" alt="img" /></p>
+
+<p>可以看到原本除了宣告函數存在之外，另一個變數已消失，表示 leaks 的情形已被解決！當然上述的狀況說明的是關於全域變數如果要確實 GC 的方式，關於區域變數，照理來說一旦所屬函數被執行完之後，區域變數應該會馬上被回收，要注意的是如果是有 closure 的情形，如果 closure 未被執行，表示函數尚未完全執行結束，也就代表區域變數無法被正確回收，這點必須特別注意，也因此再次強調使用 closure 要特別小心 leaks 的情形。</p>
+
+<p>另外只要將游標指向你欲查看的變數上面，profiles 將顯示該變數被宣告的程式檔與行號，透過超連結，可以直接開啟，可以方便找出有問題的全域變數位置。</p>
+
+<p>其中針對圖中的欄位解釋如下:</p>
+
+<ul>
+<li><p>Shallow Size: 對象自身佔用的內存大小，不包括它引用的對象。</p>
+
+<p>  針對非數組類型的對象，它的大小就是對象與它所有的成員變量大小的總和。當然這裡面還會包括一些語言特性的數據存儲單元。針對數組類型的對象，它的大小是數組元素對象的大小總和。</p></li>
+<li><p>Retained Size: 當前對像大小 + 當前對象可直接或間接引用到的對象的大小總和。</p>
+
+<p>  間接引用的含義：A->B->C，B 是直接引用，C 就是間接引用；換句話說，Retained Size 就是當前對像被 GC 後，從 Heap 上總共能釋放掉的內存。</p></li>
+</ul>
+
+
+<blockquote><p>一旦客戶說速度變得異常的慢，記憶體標高時，就是時候分析客戶目前瀏覽器關於記憶體使用的 profile，麻煩使用者改用 chrome 在關鍵時刻，請他將瀏覽網頁 snapshot 起來分析一下囉！</p></blockquote>
+
+<p>所謂的 <strong>不正常</strong> leaks 情形，幾乎只有在 IE 瀏覽器中會出現，以下將詳細說明在 IE 中為什麼會造成 leaks，首先必須先了解在舊版 IE 中 GC 的運作與現在的瀏覽器有什麼不同。</p>
+
+<blockquote><p>如果所開發的產品不考慮 IE 的使用者，那可以直接跳過下面這段，以下所敘述的問題其實也只在舊版的 IE6 以前會有問題，不過&#8230; 基本上世界上還是有不少 IE 的舊版，了解一下並且盡量避免可以活的比較快樂&#8230;</p></blockquote>
+
+<h2>IE 中 Leaks</h2>
+
+<h3>JScript 與 Native Object(om、ActiveX Object) 交互參照，造成 leaks</h3>
+
+<p>在 IE6 中，對於 GC 的判定有兩種情形：</p>
+
+<ol>
+<li>javascript object內部：jscript使用的是mark-and-sweep（標記清除）算法</li>
+<li>javascript object與外部object：(包括native object和vbscript object等等)的引用時，IE 6使用的是計數器的算法。</li>
+</ol>
+
+
+<p>因為第 2 點的狀況GC算法是計數器，因此只碰到循環 引用就會造成 memory leakage，也就是說 IE6 中 JScript 的 GC 算法使用的是 nongeneration mark-and-sweep。</p>
+
+<p>對於 javascript 對算法的實現缺陷，也就是說，IE 6 對於純粹的 Script Objects 間的 Circular References 是可以正確處理的，可惜它處理不了的是 JScript 與 Native Object (例如Dom、ActiveX Object) 之間的 Circular References。</p>
+
+<p>所以，當我們出現Native對象 (例如Dom、ActiveX Object) 與 Javascript 對象間的循環引用時，內存泄露的問題就出現了。</p>
+
+<blockquote><p>好消息是，這個bug在 IE 7 中已經被修復了！</p></blockquote>
+
+<p>簡單的例子來重現這個問題：</p>
+
+<pre><code>&lt; html &gt; 
+    &lt; head &gt; 
+        &lt; script language = " JScript " &gt; 
+
+            var  myGlobalObject;
+
+            function  SetupLeak(){  // 產生循環引用，因此會造成內存泄露 
+                //  First set up the script scope to element reference 
+                myGlobalObject  = 
+                    document.getElementById( " LeakedDiv " );
+
+                //  Next set up the element to script scope reference 
+                document.getElementById( " LeakedDiv " ).expandoProperty  = 
+                    myGlobalObject;
+            }
+
+
+            function  BreakLeak()  // 解開循環引用，解決內存泄露問題 
+            {
+                document.getElementById( " LeakedDiv " ).expandoProperty  = 
+                        null ;
+            }
+        &lt;/ script &gt; 
+    &lt;/ head &gt; 
+
+    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
+         &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
+    &lt;/ body &gt; 
+&lt;/ html &gt;
+</code></pre>
+
+<p>上面這個例子，很簡單就能夠解決內存泄露的問題。可惜的是，當結構復雜了以後，造成循環引用的原因開始變得多樣，我們就沒法那麽容易觀察到了，這時候，我們必須對代碼進行仔細的檢查。尤其是當碰到&#8230;</p>
+
+<h3>Closure 中的 leaks</h3>
+
+<p>當我們針對 Native Object (例如Dom對象、ActiveX Object)上綁定事件時，一不小心就會制造出 Closure Memory Leak 。其關鍵原因，其實和前者是一樣的，也是一個跨 javascript object 和 native object 的交互引用。只是代碼更為隱蔽。但在使用類似內嵌函數的時候，內嵌的函數有擁有一 個 reference 指向外部函數的 scope ，包括外部函數的參數，因此也就很容易造成一個很隱蔽的循環引用</p>
+
+<p>下列例子可以說明該隱蔽性：</p>
+
+<pre><code>&lt; html &gt; 
+    &lt; head &gt; 
+        &lt; script language = " JScript " &gt; 
+
+            function  AttachEvents(element){
+
+                //This structure causes element to ref ClickEventHandler  
+                //element有個引用指向函數ClickEventHandler()
+
+                element.attachEvent("onclick" , ClickEventHandler);
+
+                function  ClickEventHandler(){
+
+                    //This closure refs element  
+                    //該函數有個引用指向AttachEvents(element)調用Scope，也就是執行了參數 element。             element.click();
+
+                }
+            }
+
+            function  SetupLeak(){
+
+                //The leak happens all at once 
+                AttachEvents(document.getElementById( " LeakedDiv " ));
+            }
+
+        &lt;/ script &gt; 
+    &lt;/ head &gt; 
+
+    &lt; body onload = " SetupLeak() "  onunload = " BreakLeak() " &gt; 
+        &lt; div id = " LeakedDiv " &gt;&lt;/ div &gt; 
+    &lt;/ body &gt; 
+&lt;/ html &gt;
+</code></pre>
+
+<p>還有這個例子在IE6 中同樣原因會引起 leaks</p>
+
+<pre><code>function  leakmaybe() {
+    var  elm  =  document.createElement( " DIV " );
+    elm.onclick  =   function () {
+        return   2   +   2 ;
+    }
+}
+
+for  ( var  i  =   0 ; i   10000 ; i ++ ) {
+    leakmaybe();
+}
+</code></pre>
+
+<p>當然既然已經知道問題，拜網路上的大大所助&#8230;</p>
+
+<h3>簡單的 leaks 解決方案</h3>
+
+<p>當離開網頁時，透過 onunload 事件綁定，清除所有與 DOM 綁定的事件，如下</p>
+
+<pre><code>if (window.attachEvent) {
+    var clearElementProps = [
+        'data',
+        'onmouseover',
+        'onmouseout',
+        'onmousedown',
+        'onmouseup',
+        'ondblclick',
+        'onclick',
+        'onselectstart',
+        'oncontextmenu'
+    ];
+
+    window.attachEvent("onunload", function() {
+        var el;
+        for(var d = document.all.length;d--;){
+            el = document.all[d];
+            for(var c = clearElementProps.length;c--;){
+                el[clearElementProps[c]] = null;
+            }
+        }
+    });
+}
+</code></pre>
+
+<p>由上面的程式碼可以了解到關於 leak 的解決方式，當然也有更嚴謹的解決方式可參考下列文章：</p>
+
+<ul>
+<li><a href="http://novemberborn.net/javascript/event-cache">event-cache</a></li>
+<li><a href="http://talideon.com/weblog/2005/03/js-memory-leaks.cfm">js-memory-leaks</a></li>
+<li><a href="http://birdshome.cnblogs.com/archive/2005/02/16/104967.html">用innerHTML 代替 appendChild，避開互相參照</a></li>
+</ul>
+
+
+<p>接著介紹其他幾種特別的 leaks 類型，同樣的也只有 IE 會遇到</p>
+
+<h3>Cross-Page Leaks</h3>
+
+<p>直接看以下例子:</p>
+
+<pre><code>&lt; html &gt; 
+    &lt; head &gt; 
+        &lt; script language = " JScript " &gt; 
+
+        function  LeakMemory()  // 這個函數會引發Cross-Page Leaks 
+        {
+            var  hostElement  =  document.getElementById( " hostElement " );
+
+            //  Do it a lot, look at Task Manager for memory response 
+
+            for (i  =   0 ; i  &lt;   5000 ; i ++ )
+            {
+                var  parentDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
+                var  childDiv  = document.createElement( " &lt;div onClick='foo()'&gt; " );
+
+                //  This will leak a temporary object 
+                parentDiv.appendChild(childDiv);
+                hostElement.appendChild(parentDiv);
+                hostElement.removeChild(parentDiv);
+                parentDiv.removeChild(childDiv);
+                parentDiv  =   null ;
+                childDiv  =   null ;
+            }
+            hostElement  =   null ;
+        }
+
+
+        function  CleanMemory()  // 而這個函數不會引發Cross-Page Leaks 
+        {
+            var  hostElement  =  document.getElementById( " hostElement " );
+
+            //  Do it a lot, look at Task Manager for memory response 
+
+            for (i  =   0 ; i  &lt;   5000 ; i ++ )
+            {
+                var  parentDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
+                var  childDiv  =   document.createElement( " &lt;div onClick='foo()'&gt; " );
+
+                //  Changing the order is important, this won't leak 
+                hostElement.appendChild(parentDiv);
+                parentDiv.appendChild(childDiv);
+                hostElement.removeChild(parentDiv);
+                parentDiv.removeChild(childDiv);
+                parentDiv  =   null ;
+                childDiv  =   null ;
+            }
+            hostElement  =   null ;
+        }
+        &lt;/ script &gt; 
+    &lt;/ head &gt; 
+
+    &lt; body &gt; 
+        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
+        &lt; button onclick = " CleanMemory() " &gt; Clean Insert &lt;/ button &gt; 
+        &lt; div id = " hostElement " &gt;&lt;/ div &gt; 
+    &lt;/ body &gt; 
+&lt;/ html &gt;
+</code></pre>
+
+<p>LeakMemory 和 CleanMemory 這兩段函數的唯一區別就在於他們的代碼的循序，從代碼上看，兩段代碼的邏輯都沒有錯。</p>
+
+<p>但 LeakMemory 卻會造成泄露。原因是 LeakMemory() 會先建立起 parentDiv 和 childDiv 之間的連接，這時候，為了讓 childDiv 能夠獲知 parentDiv 的信息，因此 IE 需要先建立一個臨時的 scope 對象。而後 parentDiv 建立了和 hostElement 對象的聯系， parentDiv 和 childDiv 直接使用頁面 document 的 scope 。可惜的是，IE 不會釋放剛才那個臨時的 scope 對象的內存空間，直到我們跳轉頁面，這塊空間才能被釋放。而 CleanMemory 函數不同，他先把 parentDiv 和 hostElement 建立聯系，而後再把 childDiv 和 parentDiv 建立聯系，這個過程不需要單獨建立臨時的 scope ，只要直接使用頁面 document 的 scope 就可以了， 所以也就不會造成內存泄露了</p>
+
+<p>詳細可參考：<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/IETechCol/dnwebgen/ie_leak_patterns.asp">ie_leak_patterns</a></p>
+
+<h3>Pseudo-Leaks (秀逗 Leaks)</h3>
+
+<p>看看這個例子:</p>
+
+<pre><code>&lt; html &gt; 
+    &lt; head &gt; 
+        &lt; script language = " JScript " &gt; 
+
+        function  LeakMemory()
+        {
+            //  Do it a lot, look at Task Manager for memory response 
+
+            for (i  =   0 ; i  &lt;   5000 ; i ++ )
+            {
+                hostElement.text  =   " function foo() { } " ;／／看內存會不斷增加
+            }
+        }
+        &lt;/ script &gt; 
+    &lt;/ head &gt; 
+
+    &lt; body &gt; 
+        &lt; button onclick = " LeakMemory() " &gt; Memory Leaking Insert &lt;/ button &gt; 
+        &lt; script id = " hostElement " &gt; function  foo() { } &lt;/ script &gt; 
+    &lt;/ body &gt; 
+&lt;/ html &gt;
+</code></pre>
+
+<p>從上面的程式碼來看，不停的更新 hostElement.text 照理來說都是同一個位置不應該會有 leaks 的問題但MS是這麽解釋的:</p>
+
+<blockquote><p>這不是內存泄漏。如果您創建了許多無法獲得也無法釋放的對象，那才是內存泄漏。在這裏，您將創建許多元素，Internet Explorer 需要保存它們以正確呈現頁面。Internet Explorer 並不知道您以後不會運行操縱您剛剛創建的所有這些對象的腳本。當頁面消失時（當您瀏覽完，離開瀏覽器時）會釋放內存。它不會泄漏。當銷毀頁面時，會中斷循環引用。</p></blockquote>
+
+<p>因此，雖然不知道新版的 IE 是否已沒有上述問題，保險起見，避免上述狀況的程式撰寫風格才是上上策。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-17T13:40:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/17/javascript-memory-leaks/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/17/javascript-memory-leaks/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/15/extjs-pagingstore/">Extjs 3.x: 本地資料 PagingStore 的使用</a>
 
 </h1>
@@ -1636,993 +2570,6 @@ for ( var i =  1 ; i &lt;  1000 ; i ++)  {
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h4>參考來源</h4>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-</ul>
-
-
-<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
-
-<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
-
-<h2>函式是如何被初始化</h2>
-
-<ol>
-<li>先宣告函式參數，並設定參數的值</li>
-<li>所有函式內部的函式被宣告</li>
-<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
-<li>賦予變數值</li>
-</ol>
-
-
-<p>接著來看 scope</p>
-
-<h2>了解變數 scope 以及初始化</h2>
-
-<ol>
-<li>唯一的變數 scope 就是你所在的函式。</li>
-<li>還有全域的 scope，但並沒有區塊的 scope。</li>
-<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
-<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
-<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
-</ol>
-
-
-<h2>scope 的運作原理</h2>
-
-<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
-
-<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
-
-<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
-
-<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
-
-<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
-
-<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
-
-<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
-
-<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
-
-<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
-
-<h2>scope management</h2>
-
-<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
-
-<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
-
-<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
-
-<h2>效能改善相關</h2>
-
-<ol>
-<li>對那些常常會存取的變數，盡量把它放在 local</li>
-<li>避免使用 with</li>
-<li><p>小心使用 try / catch</p>
-
-<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
-<li><p>沒有必要的話不要用 closure</p></li>
-<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
-</ol>
-
-
-<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T12:07:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-about-scope/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-about-scope/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance & Tip</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>介紹幾篇關於效能的文章：</p>
-
-<ul>
-<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
-<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
-<li><a href="http://bonsaiden.github.com/JavaScript-Garden/zh/">JavaScript秘密花園</a></li>
-<li><a href="http://dev.opera.com/articles/view/efficient-javascript/">Efficient JavaScript</a></li>
-<li><a href="http://www.woiweb.net/efficient-javascript.html">Efficient JavaScript 中文</a></li>
-</ul>
-
-
-<p>節錄幾個重要的觀念：</p>
-
-<h2>1. 了解變數 scope 以及初始化</h2>
-
-<p>可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p>
-
-<h2>2. 避免寫與 HTML 混在一起(inline)的 JavaScript</h2>
-
-<ul>
-<li><p>錯誤示範：</p>
-
-<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
-</code></pre>
-
-<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
-<li><p>正確：</p>
-
-<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
-
-  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
-  initializePage();
-      // pretend that these functions are in /s/init.js
-      function initializePage() {
-          document.getElementById("my_btn")
-              .addEventListener("click", doThis);
-      }
-      function doThis(e) {
-          // do cool stuff here
-      }
-  // ]]&gt;&lt;/script&gt;
-</code></pre></li>
-</ul>
-
-
-<p>另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p>
-
-<h2>3. 找到對的 Event 去做 binding</h2>
-
-<p>比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p>
-
-<h2>4. 使用快速的 selectors</h2>
-
-<p>如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
-
-<p>如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p>
-
-<h2>5. 非必要的時候不要去動 document</h2>
-
-<p>這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
-
-<p>盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
-
-<p>如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p>
-
-<h2>6. 等值檢查與真值</h2>
-
-<p>JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
-
-<ul>
-<li>“5″ == 5 but “5″ !== 5</li>
-<li>0 == false but 0 !== false</li>
-<li>null == undefined but null !== undefined</li>
-</ul>
-
-
-<p>換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p>
-
-<h2>7. 資料存取方式</h2>
-
-<p>有四種存取資料的方式分別是：</p>
-
-<ul>
-<li>數值或字串  (literal value)</li>
-<li>變數</li>
-<li>物件屬性</li>
-<li>陣列</li>
-</ul>
-
-
-<p>在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
-
-<p>物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
-
-<p>在資料存取的建議是：</p>
-
-<ul>
-<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
-<li>盡量減低物件或是陣列存取的深度。</li>
-</ul>
-
-
-<h2>8. 迴圈</h2>
-
-<p>不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p>
-
-<h2>9. DOM</h2>
-
-<p>在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
-
-<p>透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
-
-<p>關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
-
-<p>關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
-
-<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote>
-
-<h2>10. 避免使用 eval 或 Function 構造函數</h2>
-
-<h3>為什麼不要使用eval</h3>
-
-<p>每次eval或Function構造函數作用於字符串表示的源代碼時，腳本引擎都需要將源代碼轉換成可執行代碼。這是很消耗資源的操作——通常比簡單的函數調用慢100倍以上。</p>
-
-<p>eval函數效率特別低，由於事先無法知曉傳給eval的字符串中的內容，eval在其上下文中解釋要處理的代碼，也就是說編譯器無法優化上下文，因此只能有瀏覽器在運行時解釋代碼。這對性能影響很大。</p>
-
-<h3>重寫eval</h3>
-
-<p>eval不僅效率低下，而且絕大部分情況下完全沒有使用的必要。很多情況下使用eval是因為信息以字符串形式提供，開發者誤認為只有eval能使用此信息。下例是一個典型的錯誤：</p>
-
-<p>function getProperty(oString) {
-  var oReference;
-  eval(&#8216;oReference = test.prop.&#8217;+oString);
-  return oReference;
-}</p>
-
-<p>下面的代碼執行完全相同的函數，但沒有使用eval：</p>
-
-<p>function getProperty(oString) {
-  return test.prop[oString];
-}</p>
-
-<h3>Function</h3>
-
-<p>用 Function 類直接創建函數的語法如下：</p>
-
-<pre><code>var function_name = new function(arg1, arg2, ..., argN, function_body)
-
-var doAdd = new Function("iNum", "alert(iNum + 10)"); 
-</code></pre>
-
-<p>可以看到其定義的方式與 eval 很像，因此也有類似 eval 的問題，只是 Function 構造函數比 eval 略好，因為使用此代碼不會影響周圍代碼；但其速度仍很慢。</p>
-
-<h3>偽裝的eval</h3>
-
-<p>定時函數 setTimeout和setInterval都可以接受字符串作為它們的第一個參數。這個字符串總是在全局作用域中執行，這個特性絕對不要使用，因為它在內部使用了eval。</p>
-
-<p>function foo ()  {</p>
-
-<pre><code>//將會被調用
-</code></pre>
-
-<p>}</p>
-
-<p>function bar ()  {</p>
-
-<pre><code>function foo ()  { 
-    //不會被調用
-} 
-setTimeout ( 'foo()' ,  1000 ); 
-</code></pre>
-
-<p>}
-bar ();</p>
-
-<p>由於eval在這種情況下不是被直接調用，因此傳遞到setTimeout的字符串會自全局作用域中執行；因此，上面的回調函數使用的不是定義在bar作用域中的局部變量foo。</p>
-
-<p>建議不要在調用定時器函數時，為了向回調函數傳遞參數而使用字符串的形式，這麼寫的代碼明顯質量很差。</p>
-
-<pre><code>function foo ( a , b , c )  {} 
-
-//不要這樣做
-setTimeout ( 'foo(1,2, 3)' ,  1000 ) 
-
-//可以使用匿名函數完成相同功能
-setTimeout ( function ()  { 
-    foo ( a , b , c ); 
-},  1000 )
-</code></pre>
-
-<p>當需要向回調函數傳遞參數時，可以創建一個匿名函數，如上例，在函數內執行真實的回調函數，如此一來可避免使用 eval。</p>
-
-<h3>安全問題</h3>
-
-<p>eval 也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
-
-<h3>結論</h3>
-
-<p>在任何情況下我們都應該避免使用eval函數。99.9%使用eval的場景都有不使用 eval的解決方案，任何使用它的代碼都會在它的工作方式，性能和安全性方面受到質疑。如果一些情況 ​​必須使用到eval才能正常工作，首先它的設計會受到質疑，這不應該是首選的解決方案，一個更好的不使用eval的解決方案應該得到充分考慮並優先採用。</p>
-
-<p>在Opera 9, Firefox, 和Internet Explorer 中後者比前者快95%，在Safari 中快85%。(注意此比較中不含函數本身調用時間。)</p>
-
-<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval 進行轉換，應該避免使用</p>
-
-<p>建議可使用下列 js lib: <a href="https://github.com/douglascrockford/JSON-js">JSON-js</a></p>
-
-<h2>11. 自動分號插入</h2>
-
-<p>儘管JavaScript有C的代碼風格，但是它不強制要求在代碼中使用分號，實際上可以省略它們。</p>
-
-<p>JavaScript不是一個沒有分號的語言，恰恰相反上它需要分號來就解析源代碼。因此JavaScript解析器在遇到由於缺少分號導致的解析錯誤時，會自動在源代碼中插入分號。</p>
-
-<p>自動的分號插入被認為是JavaScript語言最大的設計缺陷之一，因為它能改變代碼的行為。</p>
-
-<h3>運作原理</h3>
-
-<p>下面的代碼沒有分號，因此解析器需要自己判斷需要在哪些地方插入分號。</p>
-
-<pre><code>( function ( window ,  undefined )  { 
-    function test ( options )  { 
-        log ( 'testing!' ) 
-
-        ( options . list ||  []). forEach ( function ( i )  { 
-
-        }) 
-
-        options . value . test ( 
-            'long string to pass here' , 
-            'and another long string to pass' 
-        ) 
-
-        return 
-        { 
-            foo :  function ()  {} 
-        } 
-    } 
-    window . test = test 
-
-})( window ) 
-
-( function ( window )  { 
-    window . someLibrary =  {} 
-})( window )
-</code></pre>
-
-<p>下面是解析器&#8221;猜測&#8221;的結果。</p>
-
-<pre><code>( function ( window ,  undefined )  { 
-    function test ( options )  { 
-
-        //沒有插入分號，兩行被合併為一行
-        log ( 'testing!' )( options . list ||  []). forEach ( function ( i )  { 
-
-        });  // &lt;-插入分號
-
-        options . value . test ( 
-            'long string to pass here' , 
-            'and another long string to pass' 
-        );  // &lt;-插入分號
-
-        return ;  // &lt;-插入分號,改變了return表達式的行為
-        {  //作為一個代碼段處理
-            foo :  function ()  {}  
-        };  // &lt;-插入分號
-    } 
-    window . test = test ;  // &lt;-插入分號
-
-//兩行又被合併了
-})( window )( function ( window )  { 
-    window . someLibrary =  {};  // &lt;-插入分號
-})( window );  //&lt;-插入分號
-</code></pre>
-
-<p>建議絕對不要省略分號，同時也提倡將花括號和相應的表達式放在一行，對於只有一行代碼的if或者else表達式，也不應該省略花括號。這些良好的編程習慣不僅可以提到代碼的一致性，而且可以防止解析器改變代碼行為的錯誤處理，雖然 javascript 沒有強制檢查，但好的習慣可以避免不必要的麻煩。</p>
-
-<h2>12. 不要在影響性能的關鍵函數中使用try-catch-finally</h2>
-
-<p>try-catch-finally 結構比較特殊。和其他語法結構不同，它在 runtime 的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的 exception 對象賦給一個變量。這個變量不屬於任何腳本。它在 catch 語句開始時被創建，在結束時被銷毀。</p>
-
-<p>由於此函數比較特殊，且是在運行時動態創建動態銷毀，有些瀏覽器對其的處理並不高效。把catch 語句放在關鍵循環中將極大影響性能。</p>
-
-<p>如果可能，應在腳本中不頻繁被調用的地方進行異常處理，或通過檢查某種動作是否被支持來避免使用。下面的例子中，如果所需的屬性不存在，將在循環語句中拋出許多異常：</p>
-
-<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
-for( i = 0; i &lt; oProperties.length; i++ ) {
-  try {
-    test[oProperties[i]].someproperty = somevalue;
-  } catch(e) {
-    ...
-  }
-}
-</code></pre>
-
-<p>很多情況下，可把 try-catch-finally 結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
-有時可用屬性檢測或其他檢測代替 try-catch-finally 結構：</p>
-
-<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
-try {
-  for( i = 0; i &lt; oProperties.length; i++ ) {
-    test[oProperties[i]].someproperty = somevalue;
-  }
-} catch(e) {
-  ...
-}
-</code></pre>
-
-<h2>13. location.replace()控制歷史項</h2>
-
-<p>有時需要通過腳本修改頁面地址。常見的方法是給location.href賦新地址。這將和打開新鏈接一樣添加新歷史項、載入新頁面。
-有時不想添加新歷史項，因為用戶不需要回到前面的頁面。這在內存資源有限的設備中很有用。通過替換歷史項恢復當前頁面所使用的內存。可以通過location.replace()方法實現。</p>
-
-<p>注意頁面仍被保存在cache 中，仍佔用內存，但比保存在歷史中要少的多。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <h2>到底 this 是誰？</h2>
-
-<p>JavaScript 的 code 寫多了，你一定會碰到 this 這個關鍵字，是某個 object 下的 method 也好，或是 callback function 也好，關於 this 的用法常常會讓人搞混。</p>
-
-<p>以一句簡單的話來說：在 function 裡，this 所代表的就是呼叫這個 function 的東西。</p>
-
-<p>這樣講可能有點抽象，大家來看個實際的例子：</p>
-
-<h2>this 是 window 的情況</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;button&quot;</span>  <span class="nx">id</span> <span class="o">=</span><span class="s2">&quot;aButton&quot;</span>  <span class="nx">value</span> <span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
-</span><span class='line'>    <span class="kd">function</span>  <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span> <span class="p">.</span><span class="nx">value</span>  <span class="o">=</span>  <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
-
-<p>更進一步的來看簡單的例子：</p>
-
-<h2>this 不是 window 的情況</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span>  <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span>  <span class="nx">demo</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在此例中 this 代表的是 button，因為是透過函數指定的方式 button.onclick =  demo 來呼叫 demo()，他的上層是 button，所以也就有 value 的屬性</p>
-
-<p>對於 button.onclick 輸出得到的是：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>也就代表 demo() 屬於 button 的</p>
-
-<h2>this 又是 window 的情況</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;demo()&quot;</span> <span class="o">/&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">function</span> <span class="nx">demo</span> <span class="p">()</span>  <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>得到的輸出是：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">onclick</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">demo</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
-
-<p>接著我們來看另一個特殊的情形&#8230;</p>
-
-<h2>setTimeout 中的令人困惑的 this</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">TT</span><span class="p">();</span>
-</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 中的 lm 會被指向 window 而不是 TT 這個 object</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; lm 被正確建立於 TT 上</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
-</span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT(&#8220;the message&#8221;) 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
-
-<p>但是很不幸的 d.startT(); 執行時在 d.startT();裡面的 this.lm 會是 undefind…</p>
-
-<p>Why!!!…… 我死的不明不白阿！</p>
-
-<p>因為：</p>
-
-<p>setTimeout其實是 window.setTimeout() 函數，並不是某個物件觸發的事件，在這種情況下，this 就會指向 window，因為當你呼叫 setTimeout 時，該函數裡的任務會被加入執行對列等候執行，一旦時間到開始執行實際上並不是經由 TT 來觸發而是全域的 window。</p>
-
-<p>經由下列的測試可以證明：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">);</span> <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>又可以this.alert，又有this.document可用，表示 this 在當時指向的是 window。</p>
-
-<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
-
-<p>既然如此我們要怎麼解決此問題？？？</p>
-
-<blockquote><p>20130207 下面是錯誤的理解，感謝與我討論的朋友</p>
-
-<ol>
-<li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
-<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為  d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
-<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() >底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
-</ol>
-</blockquote>
-
-<h2>解決 setTimeout 中的 this 是 window 的情況</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// 重點！</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
-
-<blockquote><p>20120207 一樣是錯誤的理解，感謝與我討論的朋友</p>
-
-<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
-
-<p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
-
-<h2>call() 和 apply()</h2>
-
-<p><code>call()</code> 和 <code>apply()</code> 的差別主要在於 <code>call()</code> 只接受一個參數，即 <code>call(thisArg);</code>而 apply() 接受兩個參數，即 <code>apply(thisArg, argArray)</code> 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 <code>call()</code> 和 <code>apply()</code> 可以改變 this 名稱所指涉的對象。</p>
-
-<p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
-
-<blockquote><p>If thisArg is null or undefined, the called function is passed the global object as the this value. Otherwise, the called function is passed ToObject(thisArg) as the this value.</p></blockquote>
-
-<p>接著我們分別透過 <code>call()</code> 和 <code>apply()</code> 來驗證一下</p>
-
-<ul>
-<li>call()</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">myFunc</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">myFunc</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="nx">myFunc</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">hello</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>myFunc();</code>未指定的情狀下，this 輸出的是 window， <code>myFunc.call(hello);</code>則輸出 hello world</p>
-
-<ul>
-<li><p>apply()</p>
-
-<p>  以下面這段程式碼為例：</p></li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">foo</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span> <span class="p">};</span>
-</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">bar</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span><span class="s1">&#39;def&#39;</span><span class="p">]);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p>
-
-<p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
-
-<p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
-
-<ul>
-<li>call 呼叫的話會變成；<code>myFunc.call(hello,"abc","def");</code></li>
-<li>apply 的好處是可以先把陣列準備好，如 <code>foo.apply(bar, ['abc','def']);</code>，然後重覆使用。</li>
-</ul>
-
-
-<p>資料來源：</p>
-
-<ul>
-<li><a href="http://blog.roodo.com/rocksaying/archives/2532303.html">石頭閒語</a></li>
-<li><a href="http://www.cnblogs.com/ruxpinsp1/archive/2008/04/20/1162463.html">棕熊@Think Fast</a></li>
-<li><a href="http://blog.ericsk.org/archives/1360">ericsk.net</a></li>
-</ul>
-
-
-<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
-
-<blockquote><p>20130207 教學真的會相長阿！ ^_^</p></blockquote>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-31T13:12:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/31/javascript-what-is-this/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/31/javascript-what-is-this/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2700,23 +2647,23 @@ try {
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/05/extjs-5-30/">extjs-5-30 事件宣告的建議</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-4-30/">extjs-4-30 精簡程式碼案例分享</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-3-30/">extjs-3-30 mixins(混和) 特性說明</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/08/01/extjs-2-30/">extjs 2/30:使用 sencha architect 開發注意事項</a>
       </li>
     
       <li>
         <a href="/blog/2013/08/01/extjs-1-30/">extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs-with-grails/">企業級開發框架：extjs 與 grails 的完美組合</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/09/extjs4-sencha-architect-intro/">利用 Sencha Architect 快速開發 extjs</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/05/08/extjs-oo/">extjs mvc 架構：繼承與模組重覆使用</a>
       </li>
     
   </ul>
