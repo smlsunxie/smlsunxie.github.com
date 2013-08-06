@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-03T22:55:23+08:00</updated>
+  <updated>2013-08-06T09:55:08+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,264 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-5-30 事件宣告的建議]]></title>
+    <link href="http://smlsun.com/blog/2013/08/05/extjs-5-30/"/>
+    <updated>2013-08-05T23:18:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/05/extjs-5-30</id>
+    <content type="html"><![CDATA[Liquid error: invalid byte sequence in UTF-8]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-4-30 精簡程式碼案例分享]]></title>
+    <link href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"/>
+    <updated>2013-08-05T19:54:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/05/extjs-4-30</id>
+    <content type="html"><![CDATA[<p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
+
+<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
+
+<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
+
+<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
+
+<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
+
+<p>```
+Ext.define('foodprint.view. ', {</p>
+
+<pre><code>extend: 'Ext.toolbar.Toolbar',
+alias: 'widget.stdeditortoolbar',
+
+requires: [
+    'foodprint.view.CreateBtn',
+    'foodprint.view.DeleteBtn',
+    'foodprint.view.SaveBtn',
+    'foodprint.view.ReadBtn',
+    'foodprint.view.UpdateBtn'
+],
+
+itemId: 'stdEditorToolbar',
+
+initComponent: function() {
+    var me = this;
+
+    Ext.applyIf(me, {
+        items: [
+            {
+                xtype: 'createbtn',
+                listeners: {
+                    click: {
+                        fn: me.onCreateBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'deletebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onDeleteBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'savebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onSaveBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'readbtn'
+            },
+            {
+                xtype: 'updatebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onUpdateBtnClick,
+                        scope: me
+                    }
+                }
+            }
+        ]
+    });
+
+    me.callParent(arguments);
+},
+
+onCreateBtnClick: function(button, e, eOpts) {
+        //重覆
+    var crebtn=btn;
+    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
+    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
+    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
+    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
+
+    delbtn.setDisabled(true);
+    savbtn.setDisabled(false);
+    updbtn.setDisabled(true);
+    redbtn.setDisabled(true);
+},
+
+onDeleteBtnClick: function(button, e, eOpts) {
+        //重覆
+    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
+    var delbtn=button;
+    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
+    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
+    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
+
+    delbtn.setDisabled(true);
+},
+
+onSaveBtnClick: function(button, e, eOpts) {
+        //重覆
+    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
+    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
+    var savbtn=button;
+    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
+    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
+
+    savbtn.setDisabled(true);
+},
+
+onUpdateBtnClick: function(button, e, eOpts) {
+        //重覆
+    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
+    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
+    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
+    var updbtn=button;
+    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
+
+    updbtn.setDisabled(true);
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
+
+<p>```</p>
+
+<p>Ext.define('foodprint.view.StdEditorToolbar', {</p>
+
+<pre><code>extend: 'Ext.toolbar.Toolbar',
+alias: 'widget.stdeditortoolbar',
+
+requires: [
+    'foodprint.view.CreateBtn',
+    'foodprint.view.DeleteBtn',
+    'foodprint.view.SaveBtn',
+    'foodprint.view.ReadBtn',
+    'foodprint.view.UpdateBtn'
+],
+
+itemId: 'stdEditorToolbar',
+
+initComponent: function() {
+    var me = this;
+
+    Ext.applyIf(me, {
+        items: [
+            {
+                xtype: 'createbtn',
+                listeners: {
+                    click: {
+                        fn: me.onCreateBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'deletebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onDeleteBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'savebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onSaveBtnClick,
+                        scope: me
+                    }
+                }
+            },
+            {
+                xtype: 'readbtn'
+            },
+            {
+                xtype: 'updatebtn',
+                disabled: true,
+                listeners: {
+                    click: {
+                        fn: me.onUpdateBtnClick,
+                        scope: me
+                    }
+                }
+            }
+        ],
+        listeners: {
+            render: {
+                fn: me.onStdEditorToolbarRender,
+                scope: me
+            }
+        }
+    });
+
+    me.callParent(arguments);
+},
+
+onCreateBtnClick: function(button, e, eOpts) {
+    this.delbtn.setDisabled(true);
+    this.savbtn.setDisabled(false);
+    this.updbtn.setDisabled(true);
+    this.redbtn.setDisabled(true);
+},
+
+onDeleteBtnClick: function(button, e, eOpts) {
+    this.delbtn.setDisabled(true);
+},
+
+onSaveBtnClick: function(button, e, eOpts) {
+    this.savbtn.setDisabled(true);
+},
+
+onUpdateBtnClick: function(button, e, eOpts) {
+    this.updbtn.setDisabled(true);
+},
+
+onStdEditorToolbarRender: function(component, eOpts) {
+    this.crebtn=component.down('button[itemId=createBtn]');
+    this.delbtn=component.down('button[itemId=deleteBtn]');
+    this.savbtn=component.down('button[itemId=saveBtn]');
+    this.updbtn=component.down('button[itemId=updateBtn]');
+    this.redbtn=component.down('button[itemId=readBtn]');
+
+}
+</code></pre>
+
+<p>});</p>
+
+<p>```</p>
+
+<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
@@ -466,630 +724,6 @@ webFileCachePaths
 <p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
 
 <p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs mvc 架構：繼承與模組重覆使用]]></title>
-    <link href="http://smlsun.com/blog/2013/05/08/extjs-oo/"/>
-    <updated>2013-05-08T08:42:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/05/08/extjs-oo</id>
-    <content type="html"><![CDATA[<p>兩篇對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
-
-<hr />
-
-<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
-
-<p>引用上述文章的開頭：</p>
-
-<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4 帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類 MVC 的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種 MVC 架構，基本大同小異，ExtJS 4的定義如下：</p>
-
-<ul>
-<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
-<li>View: 用於界面展示– grid, tree, panel都是view</li>
-<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
-</ul>
-</blockquote>
-
-<p>在我早先的令一篇文章中也有引用到，<a href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/">Extjs4: Mvc 使用簡介與範例介紹</a>，在該篇文章中說明到較多的實作細節，本篇專注於 mvc 結構與特性，如果讀者有興趣也可以參考閱讀，在開始之前，先提一下兩個重要的物件導向觀念：</p>
-
-<ul>
-<li>單一責任原則（single responsibility principle:SRP）：當一個類別需要修改時應該只有一個理由。</li>
-<li>關注點分離（separation of conserns:SoC）：把應用程式功能分解成數個不重疊的模組。</li>
-</ul>
-
-
-<p>遵循這兩個原則，最重要的好處就是要能夠重覆使類別，令單一類別不要過於複雜，如此一來程式在設計上就可以比較接近組合積木，一個個零件完成後，可以根據不同的狀況組合。</p>
-
-<p>為了能夠設計出可以重覆使用的類別，將針對三種不同的課題，繼承，混和以及 model 關連建立，就讓我們從 mvc 中的 model 資料模型開始。</p>
-
-<h2>model - 關連建立</h2>
-
-<p>假設我們設計一個應用程式，其資料模型如下：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-0q850mONEZ0/UYnJDk0otZI/AAAAAAAALqA/sIPHKvaPjZs/w603-h115-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%25881.01.45.jpg" alt="image" /></p>
-
-<p>可以看到有三個 table：item（品項），itemImage（品項圖片），batch（批號），其中 item 可以有多張圖片，批號屬於 item，根據這樣的描述，可以整理出兩個關係：</p>
-
-<ul>
-<li>item 可以有多張圖片：item hasMany itemImage</li>
-<li>批號屬於 item：batch belongsTo item</li>
-</ul>
-
-
-<p>根據這樣的關係，我們可以利用 extjs 來建立對應的類別。</p>
-
-<p>三個資料表的基本宣告程式碼如下：</p>
-
-<p>``` javascript
-//品項
-Ext.define('finder_extjs.model.Item', {</p>
-
-<pre><code>extend: 'Ext.data.Model',
-
-fields: [
-    {
-        name: 'id'
-    },
-    {
-        name: 'name'
-    },
-    {
-        name: 'title'
-    }
-]
-</code></pre>
-
-<p>});</p>
-
-<p>//圖片
-Ext.define('finder_extjs.model.ItemImage', {</p>
-
-<pre><code>extend: 'Ext.data.Model',
-
-fields: [
-    {
-        name: 'id'
-    },
-    {
-        mapping: 'item.id',
-        name: 'item_id'
-    }
-]
-</code></pre>
-
-<p>});</p>
-
-<p>//批號
-Ext.define('finder_extjs.model.batch', {</p>
-
-<pre><code>extend: 'Ext.data.Model',
-
-fields: [
-    {
-        name: 'id'
-    },
-    {
-        mapping: 'item.id',
-        name: 'item_id'
-    },
-    {
-        name: 'name'
-    }
-]
-</code></pre>
-
-<p>});
-```</p>
-
-<p>如此一來，三個資料表算是建立完成，但是彼此之間都是獨立沒有關係的，為此，我們需要要在加上關連的定義。</p>
-
-<p>``` javascript
-//item hasMany itemImage
-Ext.define('finder_extjs.model.Item', {</p>
-
-<pre><code>extend: 'Ext.data.Model',
-//使用到的關連 model 務必引入  
-uses: [
-    'finder_extjs.model.ItemImage'
-],  
-...
-hasMany: {
-    associationKey: 'itemImages',
-    model: 'finder_extjs.model.ItemImage',
-
-    // 設定 foreignKey 將會作為查詢的 property name
-    foreignKey: 'item_id',
-    //跟據 name 將會產生對應的參照 function
-    name: 'itemImages' 
-}
-</code></pre>
-
-<p>});
-```</p>
-
-<p>多定義了關係一定要有用處，不然何必要花時間，實際在使用上我們可以：</p>
-
-<p>``` javascript
-//item hasMany itemImage</p>
-
-<p>var item = new finder_extjs.model.Item({id:1});</p>
-
-<p>// 一旦定義 hasMany extjs 將自動產生對應 name 的 function 回傳關連資料的 store 實體
-//取得關連資料
-item.itemImage().load();
-```</p>
-
-<p>在上面的程式碼中，如果你有定義 model 的連結方式，實際上將會透過 http request 向後端查詢資料，並且帶有參數為：<code>filter:[{"property":"item_id","value":1}]</code>，一旦結果回傳，會根據 model 的 fields mapping 相關的欄位資料，如此一來當你有存取相關的資料時，就可以很方便的使用，免去撰寫重覆 ajax request 的步驟，接著來看 belongsTo 的例子。</p>
-
-<p>``` javascript
-//batch belongsTo item
-Ext.define('finder_extjs.model.batch', {</p>
-
-<pre><code>extend: 'Ext.data.Model',
-uses: [
-    'finder_extjs.model.Item'
-],
-...
-belongsTo: {
-    model: 'finder_extjs.model.Item',
-    // 根據定義的 getterName 產生 function 來取得所屬 model 的參照
-    getterName: 'getItem'  
-}
-</code></pre>
-
-<p>});</p>
-
-<p>var batch = new finder_extjs.model.Batch({id:1});</p>
-
-<p>// 根據 getterName 的設定將自動產生對應 name 的 function 回傳關連資料的 record
-// 取得關連資料
-batch.getItem();
-```</p>
-
-<p>同樣的一旦呼叫了 <code>batch.getItem();</code> 也會向後端請求取得資料，如此一來，只要資料結構與關係定義好，往後在使用時，就可以很方便的取得，甚至妳也可以這樣使用：<code>batch.getItem().itemImages().load()</code></p>
-
-<p>在資料串查上，可以從關關連快速完成資料的取得，再來我們就來看看，mvc 中的 view 如何在 extjs 物件化，並且能夠重覆使用。</p>
-
-<h2>view - 繼承與連結</h2>
-
-<p>單純的建立 view 的元件這邊不多做說明，主要還是針對 extjs 物件導向特性來做說明，假設我們需要建立如同下圖的畫面：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-6uDmCuSY5vE/UYnJFCExBMI/AAAAAAAALqQ/wy7BAOoryi4/w603-h323-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.13.jpg" alt="image" /></p>
-
-<p>在圖片中可以看到主要是由 form 以及 grid 所組成，有個共同的地方，就是兩者皆有同樣的 toolbar，因此在設計的時候，我們可以將 toolbar 獨立成一個類別，在兩個地方引入，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-1IPFyWhNQRg/UYnJEl2Tk7I/AAAAAAAALqM/gry2WHV0LhU/w242-h393-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%25889.49.54.jpg" alt="image" /></p>
-
-<p>上圖的結構是利用 sencha Architect 所呈現的，可以看到元件 StdEditorToolbar 就是獨立的類別，藍色線代表作為連結使用在另外兩個自定元件裡面，如此一來相同的元件與 ID 定義，就不需要重覆多次，在索引時也較一致性，如果讀者有看我上一篇 <a href="http://smlsun.com/blog/2013/02/19/extjs-component/">ID 與 itemId 的不同</a>，就會知道這樣是可行的，而因為 extjs 4 在這次多了 controller 的類別，所以我們的 view 層都是單純的介面元件，沒有特殊的邏輯，所以可以重覆使用，除此之外，我們也可以交由多人協助完成相關的元件，最後在將他們組合成最終要呈現的畫面，參考上一張圖片的樹狀結構，最終的呈現將由三個主要元件組成，ItemGrid，ItemViewer，ItemEdtor，步驟上就可以先將 ItemGrid，ItemViewer 完成以後，ItemEdtor 作為 tabpanel 連結 ItemGrid，ItemViewer 完成整個畫面，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-XKtk5cWSqsk/UYnJFiXo1CI/AAAAAAAALqY/qYUtCJjeKrM/w603-h285-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.55.jpg" alt="image" /></p>
-
-<p><img src="https://lh4.googleusercontent.com/-_P3Jgg56zw4/UYnJGQ8iwFI/AAAAAAAALqg/sHmkQdYRubo/w603-h397-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.03.16.jpg" alt="image" /></p>
-
-<p>就是如此簡單愉快，上面所完成的自定元件都使用到了在物件導向中繼承的特性，基本上都是經由繼承 extjs 的元件加以客製化，當然自定元件同樣也可以作為別人的父類別，端看如何設計。mvc 中的前兩項完成了，接著我們就來看最後一個 C，controller 的部份。</p>
-
-<h2>Controller - 混和</h2>
-
-<p>作為 view 與 model 的溝通橋樑，與操作 view 中元件的互動，Controller 扮演的角色是很重要的，他必須要很方便存取以及定義欲操作的元件，extjs 在這邊也確實做到了，還記得上一篇最提到的關於 extjs 如何查詢 component，當你在撰寫 Controller 將會大量使用到，延續上一節的 view 中三個元件：ItemGrid，ItemViewer，ItemEdtor，來進行說明。</p>
-
-<ul>
-<li>ItemGrid：如果是作為 grid 單獨存在，將只會有讀取資料的功能，因此在 controller 中，我們只需要定義 read 的功能實作。</li>
-<li>ItemViewer：作為 Viewer 本身只是個空殼，需要由外部傳入資料後進行資料呈現，因此我們需要定義得是 display 的功能</li>
-<li>ItemEditor：組合了 ItemGrid 與 ItemViewer，兩個介面，也因此實作的內容就為兩者之間的互動，一旦點選 ItemGrid 中的資料，就將其作為 ItemViewer 的資料來源進行呈現，因此我們要實作的是 readItem。</li>
-</ul>
-
-
-<p>大致上解釋一下設計概念後，粗糙一點我們可以把上面三個功能都定義在 ItemEditor，但如果 ItemGrid 以及 ItemViewer 會作為獨立功能，或者組合到不同的介面，這時候我們就必須要寫兩個同樣的 function，這不是個好辦法，因此我們可以利用 extjs 提供的另一個特性：混和(mixsins)，在系列文章的<a href="http://ithelp.ithome.com.tw/question/10120091">第一篇</a>有提到，一旦我們個別定義好 ItemGrid，ItemViewer 的邏輯函式，我們可以將他混和入 ItemEditor 如此一來就可以各自專注各自的責任，除了可以組合在一起，也可以各自獨立運作，是不是很美好呢！接著我們就來看範例程式碼與結構：</p>
-
-<p><img src="https://lh4.googleusercontent.com/--nSzi3U1WrQ/UYnJG2grGnI/AAAAAAAALqo/SA-TwLD_zg4/w215-h289-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.48.04.jpg" alt="image" /></p>
-
-<p>參考上圖，可以看到我們為了三個介面分別做了三個 controller，就如同前面提到的三點，個別設定了三個函數，在這邊我就不詳述各個 controller 的實作，直接來看 ItemEditorController：</p>
-
-<p>``` javascript
-Ext.define('finder_extjs.controller.ItemEditorController', {</p>
-
-<pre><code>extend: 'Ext.app.Controller',
-
-// 混和： ItemViewerController 以及 ItemGridController
-mixins: {
-    itemViewerCtrl: 'finder_extjs.controller.ItemViewerController',
-    ItemGridCtrl: 'finder_extjs.controller.ItemGridController'
-},
-
-// 目標 views
-views: [
-    'ItemEditor'
-],
-
-// 定義操作對象
-refs: [
-    {
-        ref: 'itemViewer',
-        selector: 'itemviewer'
-    },
-    {
-        ref: 'itemGrid',
-        selector: 'itemgrid'
-    },
-    {
-        ref: 'itemEditor',
-        selector: 'itemeditor'
-    }
-],
-
-init: function(application) {
-        // event binding
-    this.control({
-        'itemeditor button[itemId=readBtn]':{
-            click:this.doRead
-        },
-        //一旦 grid 中的資料被雙擊，執行 readItem
-        'itemeditor grid[itemId=itemGrid]':{
-            itemdblclick:this.readItem
-        }
-    });
-},
-
-// 將傳入的目標資料，作為顯示的資料來源進行呈現
-readItem: function(obj, record, item, index, e, eOpts) {
-    this.getItemEditor().setActiveTab(this.getItemViewer().up());
-
-    //屬於 itemViewerController 所定義的函數
-    this.doDisplay(record);
-}
-</code></pre>
-
-<p>});
-```</p>
-
-<p>這篇文章中，說明了 MVC 的運作，以及個別利用了物件導向開發中的資料關連，繼承以及混和；當然不只這些，還有很多奇巧淫技等著學習並熟練，程式的世界是學也學不完，希望藉由這樣的說明，能夠讓讀者有個概念，在使用 extjs 這樣的物件導向設計時可以有個參考，文章進行到這裡，對於 extjs 的概念與使用，相信應該有些了解，不過如果有實際經歷過 extjs 開發的讀者應該可以體會，因為他是這樣的複雜，在除錯上有時並不是那麼容易，特別是物件導向式的開發方式會有很多獨立的類別，如何能夠快速開發減少不必要的錯誤，就要善用工具啦！幸好官方提供了 sencha architect，可以幫助我們減少開發中的錯誤，並且快速完成介面的建立，最後要強調的是，ide 只是輔助，請在熟練基礎過後在服用，不然...嘿嘿～</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs4: mvc 使用簡介與範例介紹]]></title>
-    <link href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/"/>
-    <updated>2013-03-21T08:42:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/03/21/extjs4-mvc</id>
-    <content type="html"><![CDATA[<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
-
-<p>引用上述文章的開頭：</p>
-
-<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類MVC的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種MVC架構，基本大同小異，ExtJS 4的定義如下：</p>
-
-<ul>
-<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
-<li>View: 用於界面展示– grid, tree, panel都是view</li>
-<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
-</ul>
-</blockquote>
-
-<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
-
-<h2>Application</h2>
-
-<p>每個 ExtJS 4 的應用都從一個 Application 開始，這個實例包含應用的全域配置（例應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS 4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.Loader.setConfig({
-    enabled: true,
-    //disableCaching: true //強制關閉 cache
-});
-
-Ext.application({
-    name: 'Frontend',   //app folder 別名為 Frontend
-    appFolder: 'app',   //檔案 root 存放位置
-    controllers: [
-
-    'SYS.SYS001',   //使用者登入
-    'SYS.SYS002',   //主畫面
-    'MN.MNM001',     //群組權限維護
-    'US.USM002'    //使用者群組維護
-    ],
-    launch: function() {
-        Ext.create('Ext.container.Viewport', {
-            id: 'mainVP',
-            layout: 'fit',
-            items: [{
-                xtype: 'sys001loginform',
-                url: 'http://localhost:8080/agricloud/user/login.json'
-            }]
-        });
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Model</h2>
-
-<p>定義來源資料的 mapping 以及資料型態</p>
-
-<p>```javascript</p>
-
-<pre><code>// app/model/MN/MNM001/MenuGroup.js
-Ext.define('Frontend.model.MN.MNM001.MenuGroup', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'menuId', type: 'string'},
-        {name: 'menuDes',  type: 'string'},
-        {name: 'userGroupId',  type: 'string'},
-        {name: 'userGroupDes',  type: 'string'}
-    ]
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Store</h2>
-
-<p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
-
-<p>```javascript</p>
-
-<pre><code>// app.store.MN.MNM001.Store.js
-Ext.define('Frontend.store.MN.MNM001.Store' ,{
-    model:'Frontend.model.MN.MNM001.MenuGroup', 
-    extend: 'Ext.data.Store',
-    alias : 'widget.mnm001store',
-    autoLoad: true,
-    proxy: {
-        type: 'rest',   // 使用 rest 來與後端 server 溝通
-        url: 'http://localhost:8080/agricloud/rest/menuGroup/',
-        reader: {
-            type: 'json',
-            root: 'items'
-        },
-        writer: {
-            type: 'json'
-        },
-        afterRequest:function(request,success){
-            var operation = request.operation;
-            var response = operation.response; 
-            if(success){
-            }else{}
-        }
-    },
-    listeners: {
-        // 讀取完資料後，進行 load 
-        write: function(store, operation) {
-            store.load();
-        }
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>Controller</h2>
-
-<p>用於整合 model 的資料讓 view 可以使用，並且定義 view 各個事件要執行的內容，如此一來 view 將可以被獨立設計，一旦 view 被使用於別的功能也不會有衝突的事件定義。在使用上 Controller 也可以進行繼承，下面的 parent Controller 範例實作一些常用的事件，因為對於 controller 而言，所載入的各個 store 都視為 controller 的屬性，故只要繼承至 parent Controller 都有給定要求的變數內容，所定義的事件將會運作正常</p>
-
-<h3>parent Controller</h3>
-
-<p>```javascript</p>
-
-<pre><code>/**
- * std Controller
- */
-Ext.define('Frontend.controller.common.Standard', {
-    extend: 'Ext.app.Controller',
-    execute: function(params) {
-        var tab = Ext.getCmp('mainTab');
-        tab.add({
-            id: params.id,
-            title: params.title,
-            closable: true,
-            layout:'fit',
-            items: {
-                xtype: params.tabXtype
-            }
-        });
-    },
-    doRead: function() {
-        console.log("doRead")
-        this.store.load();
-    },
-    doCreate: function() {
-        this.store.insert(0, this.model);
-    },
-    doDelete:function(){
-        var selection = this.grid.getSelectionModel().getSelection()[0];
-        if (selection) {
-            this.store.remove(selection);
-        }
-    },
-    doUpdate: function() {
-        this.store.sync({
-            success : function(){
-                console.log("success");
-                Ext.Msg.alert('Status', '更新成功');
-            },
-            failure : function(response, options){
-                console.log("failure");
-                Ext.Msg.alert('Status', '更新失敗');
-            }  
-        });
-    },
-    onGridSelection:function(selModel, selections,eOpts){
-        this.selections=selections;
-        this.selModel=selModel;
-
-        //必須利用refs 取得實體介面已 render的物件
-        this.deleteButton.setDisabled(selections.length === 0);
-
-    },
-    onPanelRendered: function() {
-        //將載入的 view 指定為此 controller 的屬性
-        this.grid=this.getGridPanel();
-        this.deleteButton=this.getDeleteButton();
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h3>main controller</h3>
-
-<p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
-
-<p>```javascript</p>
-
-<pre><code>// app.controller.MN.MNM001.js
-/**
- * 功能群組維護
- */
-Ext.define('Frontend.controller.MN.MNM001', {
-    extend: 'Frontend.controller.common.Standard',
-    views: [
-        'MN.MNM001.Panel'
-    ], 
-
-    refs: [{
-        ref: 'deleteButton',
-        selector: 'mnm001panel commonbuttondelete'
-    },{
-        ref: 'gridPanel',
-        selector: 'mnm001panel'
-    },{
-        ref: 'combobox',
-        selector: 'mnm001combobox'
-    }],
-    init: function() {
-
-        定義各個元件所要執行的事件以及相關的函數
-        this.control({
-            'mnm001panel commonbuttoncreate': {
-                click: this.doCreate
-            },
-            'mnm001panel commonbuttondelete': {
-                click: this.doDelete
-            },
-            'mnm001panel commonbuttonupdate': {
-                click: this.doUpdate
-            },
-            'mnm001panel commonbuttonread': {
-                click: this.doRead
-            },
-            'mnm001combobox': {
-                select:this.comboboxSelect
-            },
-            'mnm001panel': {
-                selectionchange: this.onGridSelection,
-                render: this.onPanelRendered
-            }
-        })
-        //ref 的使用對象為 Conpoment
-        //store 的取得直接用 this 
-        //在 view 所組成的 compoment 中有使用到的 store 皆可以在 controllr 中存取
-
-        this.store=this.getStore("MN.MNM001.Store");
-
-    },
-    execute: function(params) {
-        //定義此 contoller 所使用之屬性，controller 一旦被執行此事件將會最先被執行
-        params.tabXtype='mnm001panel';
-       //結果將透過下列程式呼叫繼承來的 controller 之 execute
-        this.callParent(arguments);
-    },
-    comboboxSelect: function( combo, records, eOpts ) {
-        this.selections[0].set('userGroupDes',records[0].get('description') );
-    }
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>View</h2>
-
-<p>view 的使用依賴於 controller 有載入的內容，在這邊只作為介面的呈現，不進行事件的定義，除非該事件為通用的事件。</p>
-
-<h3>Combobox</h3>
-
-<p>使用的第一個 store <code>US.USM002.Store</code></p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.define('Frontend.view.MN.MNM001.Combobox', {
-    extend: 'Ext.form.ComboBox',
-    alias : 'widget.mnm001combobox',
-    id:'mnm001combobox',
-    itemId:'mnm001combobox',
-    store: 'US.USM002.Store',
-    queryMode: 'local',
-    displayField: 'userGroupId',
-    valueField: 'userGroupId'
-});
-</code></pre>
-
-<p>```</p>
-
-<h3>Panel</h3>
-
-<p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
-
-<p>```javascript</p>
-
-<pre><code>Ext.define('Frontend.view.MN.MNM001.Panel' ,{
-    extend: 'Frontend.view.common.gridpanel.standard',
-    alias : 'widget.mnm001panel',
-    requires:['Frontend.view.MN.MNM001.Combobox'],
-    columns: [
-        { 
-            header: 'menuId',  
-            dataIndex: 'menuId', 
-            flex: 1,
-            field: {
-                xtype: 'textfield'
-            }
-        },
-        { 
-            header: 'menuDes', 
-            dataIndex: 'menuDes'
-        },
-        { 
-            header: 'userGroupId', 
-            dataIndex: 'userGroupId',
-            field: {
-                xtype: 'mnm001combobox'
-            }
-        },
-        { 
-            header: 'userGroupDes', 
-            dataIndex: 'userGroupDes' 
-        }
-    ],
-    plugins: [{
-            ptype:'rowediting'
-    }],
-    store:'MN.MNM001.Store'
-});
-</code></pre>
-
-<p>```</p>
-
-<h2>執行結果</h2>
-
-<h3>功能一</h3>
-
-<p><img src="https://lh5.googleusercontent.com/-lx8V6k3xoO8/UUp-XqNiMnI/AAAAAAAALmk/19RA9GS5zrE/s615/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.17.jpg" alt="image" /></p>
-
-<h3>功能二</h3>
-
-<p><img src="https://lh4.googleusercontent.com/-HjzcF7nh4y0/UUp-YUkVjUI/AAAAAAAALms/sls8kHck6LI/s614/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.28.jpg" alt="image" /></p>
-
-<p>可以看到兩個功能外框是類似的，差別在欄位的不同，其中共用的部分：</p>
-
-<ul>
-<li>功能二的 grid 與功能一的 userGroupId 的 combobox store 為同一個 <code>US.USM002.Store</code></li>
-<li>兩個功能之 panal 皆繼承於 <code>Frontend.view.common.gridpanel.standard</code></li>
-<li>controller 也繼承於 <code>Frontend.controller.common.Standard</code></li>
-</ul>
-
-
-<p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
 ]]></content>
   </entry>
   
