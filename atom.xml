@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-06T14:29:25+08:00</updated>
+  <updated>2013-08-08T14:47:16+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,224 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-6-30：如何使用 query component]]></title>
+<link href="http://smlsun.com/blog/2013/08/08/extjs-6-30/"/>
+<updated>2013-08-08T12:03:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/08/extjs-6-30</id>
+
+      <content type="html"><![CDATA[<p>使用 extjs 一定要會用它的 query component，使用起來有點類似 css selector，jquery 也是類似的概念，有些選擇語法意義是相同的，不管是在定義 controller，或是在 binding event 的時候都會用到他，筆者找到一篇中國朋友寫的 query component 介紹，藉由他的文章進行介紹，連結如下：<a href="http://www.cnblogs.com/daxin/archive/2013/06/01/3112530.html">ExtJs ComponentQuery</a></p>
+
+<h2>ID selector</h2>
+
+<p>根據元件 id 來 query，具有唯一性。前面以 # 號來代表, 返回 itemid 或者 id 符合的元件，範例如下：</p>
+
+<pre><code>var panel = Ext.ComponentQuery.query('#panel');
+</code></pre>
+
+<h2>xtype selector</h2>
+
+<p>根據 xtype 來選擇，可選擇前面是否以 ”.” 來標示，或者沒有任何符號也代表 xtype 查詢，如：</p>
+
+<pre><code>var cmp= Ext.ComponentQuery.query('gridpanel');
+var cmp= Ext.ComponentQuery.query('.gridpanel');
+</code></pre>
+
+<p>如果我們要找某個類型下面的所擁有的元件 ID 或 itemid，我們可以這樣下</p>
+
+<pre><code>panel#myPanel 
+</code></pre>
+
+<p>代表我要查詢 xtype 為 panel 底下有元件 id 為 myPanel</p>
+
+<h2>attributes selector</h2>
+
+<p>根據元件的屬性來選擇，舉例來說：</p>
+
+<p>回傳擁有 iconCls 屬性的 Ext.Button 的實例：</p>
+
+<pre><code>var btnOk= Ext.ComponentQuery.query('button[iconCls]');
+</code></pre>
+
+<p>其中如果 iconCls 等於 null 或是 false 都視為不符合條件。</p>
+
+<p>除此只外也可以判斷屬性指定特定的值，如下：</p>
+
+<pre><code>var btnOk= Ext.ComponentQuery.query('button[text = "ok"]'); 
+</code></pre>
+
+<p>取得 text 屬性為 “ok” 的 Ext.Button 的。</p>
+
+<p>值得注意的是，屬性可以是任何自定義屬性：</p>
+
+<pre><code>Ext.create("Ext.Panel" , {
+   myAttribute: "helloWorld" 
+});
+
+Ext.ComponentQuery.query('panel[myAttribute= "helloWorld"]');
+</code></pre>
+
+<p>如上面的例子，自己定義的屬性也可以作為判斷。</p>
+
+<h2>descendant(後代) selector</h2>
+
+<p>用來選擇特定容器或容器組的後代，後代選擇器由兩個常用選擇器，中間加一個空格表示。其中前面的選擇器選擇父組件，後面的選擇器選擇後代組件，範例如下：</p>
+
+<p>返回所有id為“myCt”的容器中Ext.Panel：</p>
+
+<pre><code>var panelsWithinmyCt = Ext.ComponentQuery.query('#myCt panel');
+</code></pre>
+
+<p>E F All descendant Components of E that match F (遞歸向下查詢所有可以匹配的組件)</p>
+
+<h2>child selector</h2>
+
+<p>請注意這個選擇器與後代選擇器的區別，子選擇器（child selector）僅是指它的<strong>直接後代</strong>，而後代選擇器是作用於所有子後代組件。後代選擇器通過空格來進行選擇，而子選擇器是通過“>”進行選擇，範例如下：</p>
+
+<p>返回所有id為“myCt”的容器的子組件中的Ext.Panel實例：</p>
+
+<p>var directChildPanel = Ext.ComponentQuery.query(&#8216;#myCt > panel&#8217;);</p>
+
+<p>E > F  All direct children Components of E that match F (查詢直接後代,子孫後代則不匹配)</p>
+
+<p>參考下面範例來了解對應關係：</p>
+
+<pre><code>Ext.create("Ext.Panel" , {
+    itemId: "myCt" ,
+    itmes:[{
+        xtype: "panel" ,
+        html : "我是 myCt 的直接後代，也是 myCt 的後代" ,
+        itmes: [{
+            xtype: "panel" ,
+            html : "我是 myCt 的子孫後代，但不是直接後代" ,
+        }]
+    }]
+});
+</code></pre>
+
+<h2>parent selector</h2>
+
+<p>查找給定元素的父容器（遞迴向上查找所有符合的元素)。</p>
+
+<p>E ^ F  All parent Components of E that match F</p>
+
+<pre><code>Ext.ComponentQuery.query('textfield ^ form');
+</code></pre>
+
+<h2>條件式關鍵字</h2>
+
+<p>~=：符合完整的字串，以空白字元分開，假設我們有兩個元件：</p>
+
+<pre><code>Ext.create('Ext.panel.Panel' , {
+    cls: 'foo-cls my-cls bar-cls'
+});
+
+Ext.create( 'Ext.window.Window' , {
+    cls: 'my-cls' 
+});
+</code></pre>
+
+<p>下述查詢都會符合：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[cls~=my-cls]');
+</code></pre>
+
+<p>^=：開頭符合的屬性，如同 stratWith</p>
+
+<p>$=：結尾符合的屬性，如同 endWith</p>
+
+<p>*=：任何地方只要符合都算，如同 indexOf</p>
+
+<p>@：只查詢使用類別的屬性，不會去查詢 extend 的父類別的屬性，使用方式：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[@collapsed=false]')
+</code></pre>
+
+<h2>Conditional matching(條件匹配)</h2>
+
+<p>匹配同時滿足多個條件的匹配表達式，AND：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[cls~=my-cls][floating=true][title$="sales data"]');
+</code></pre>
+
+<p>匹配用&#8221;,&#8221;逗號分隔的滿足任意一個條件的組件，OR：</p>
+
+<pre><code>Ext.ComponentQuery.query('field[fieldLabel^=User], field[fieldLabel*=password]');
+</code></pre>
+
+<h2>Pseudo classes</h2>
+
+<p>查詢滿足條件的第一個元素，<code>:first</code>：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel &gt; button:fi​​rst');
+</code></pre>
+
+<p>查詢滿足條件的最後一個元素，<code>:last</code>：</p>
+
+<pre><code>Ext.ComponentQuery.query('form[title=Profile] field:last');
+</code></pre>
+
+<p>返回可以獲得焦點的組件，<code>:focusable</code>：</p>
+
+<pre><code>panel . down ( ':focusable' ). focus ();
+</code></pre>
+
+<p>匹配相反的結果，<code>:not</code>：</p>
+
+<p>返回所有field但是xtype不是hiddenfield的組件</p>
+
+<pre><code>form . query ( 'field:not( hiddenfield )' );
+</code></pre>
+
+<p>其中 <code>hiddenfield</code> 部分可以放任何表達式如 <code>title^=hello</code></p>
+
+<p>指定每間隔多少的元件，<code>:nth-child</code>：</p>
+
+<p>透過範例可以較清楚如何使用此種 selector</p>
+
+<pre><code>//找出奇數的元件
+form.query('field:nth-child(2n+1)'); 
+//也可以使用關鍵字 :nth-child(odd)
+
+//找出偶數的元件
+form.query('field:nth-child(2n)');
+//也可以使用關鍵字:nth-child(even)
+
+//找出 3 倍數的元件
+form.query('field:nth-child(3n)');
+</code></pre>
+
+<h2>關於使用 component.query 的效能上的建議</h2>
+
+<p>從 extjs <a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.ComponentQuery-method-query">component.query API</a> 中，我們可以看到參數的使用為：<code>query( selector, [root] )</code></p>
+
+<p>其中 root 為選用，指的是要從哪個 Container 的範圍開始進行查詢，雖然是選用，強烈建議最好都要設置，如此一來在執行查詢時，extjs 在小範圍進行查詢，總比全域搜尋來的快，所以我們可以這樣執行：</p>
+
+<pre><code>var btnRefresh = Ext.ComponentQuery.query('#btnRefresh', container); 
+</code></pre>
+
+<p>使用 Ext.ComponentQuery 來進行查詢，又或者，我們可以直接對某個 container 進行 query</p>
+
+<pre><code>var btnRefresh = container.query('#btnRefresh');
+</code></pre>
+
+<p>效果跟第一種方式一樣，都是區域的 query。</p>
+
+<h2>其他內建函數查詢</h2>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-down">down([selector])</a>：取得第一個的子元件</p>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-child">child([selector])</a>：取得第一個直接子元件</p>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.AbstractComponent-method-up">up([selector],[limit])</a>：取得最接近的 container。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/08/extjs-6-30/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3653,257 +3871,6 @@ sudo /etc/init.d/apache2 restart   #restart apache
 
 <p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/21/grails-play/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs: tree 的建立與使用]]></title>
-<link href="http://smlsun.com/blog/2013/02/19/extjs-tree/"/>
-<updated>2013-02-19T18:40:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/19/extjs-tree</id>
-
-      <content type="html"><![CDATA[<p>資料來源：</p>
-
-<ul>
-<li><a href="http://blog.yslifes.com/archives/738">範例Tree元件的使用Ext.tree.TreePanel</a></li>
-<li><a href="http://nano-chicken.blogspot.tw/2009/08/extjs-exttreetreepanel_2847.html">extjs - Ext.tree.TreePanel 簡介</a></li>
-</ul>
-
-
-<p>ExtJS的TreePanel樹是繼承Ext.Panel，所以它可以算是一個Container，不過它也是算是一個ExtJS的Component，給於TreeNode來完成樹狀結果，可以應用在選單或是分類等地方。</p>
-
-<p>這裡將介紹兩種 tree 的建立方式：</p>
-
-<h1>利用物件來產生 tree</h1>
-
-<pre><code>Ext.onReady( function() {
-
-    var root = new Ext.tree.TreeNode( {
-        text : '根'
-    });
-
-    var node1Child1 = new Ext.tree.TreeNode( {
-        text : '個人資料維護',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-    var node1Child2 = new Ext.tree.TreeNode( {
-        text : '密碼變更',
-        leaf : 'true'// 是否為末結果,樹葉
-    });
-
-    var node1 = new Ext.tree.TreeNode( {
-        text : '個人資料'
-    });
-    node1.appendChild(node1Child1);
-    node1.appendChild(node1Child2);
-
-    root.appendChild(node1);
-
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : root
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>利用 script 來產生 tree 透過 AsyncTreeNode</h2>
-
-<p>若是用此方法需要使用 <code>AsyncTreeNode</code>，此外你的 children 也可以掛載 json Object 需要注意的是組成 tree 所需要的 config 都需要有才能正確產生，以及 <code>AsyncTreeNode</code> 的特性，如果節點一次都沒有打開過，若想要經由 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild</a>來取得參照是沒辦法的，因為是 Async (非同步)，所以未開啟其節點尚未實體化。</p>
-
-<pre><code>Ext.onReady( function() {
-    var viewport = new Ext.tree.TreePanel( {
-
-        title : "系統相關",
-        width : 200,
-
-        height : 500,
-        rootVisible : true,//root結點顯不顯示
-        root : new Ext.tree.AsyncTreeNode( {
-            text : '根',
-
-            children : [ {
-                text : '個人資料',
-                children : [ {
-                    text : '個人資料維護',
-                    leaf : true
-                }, {
-                    text : '密碼變更',
-                    leaf : true
-                } ]
-            }, {
-                text : '客戶資料',
-                children : [ {
-                    text : '客戶基本資料查詢維護',
-                    leaf : true
-                }, {
-                    text : '客戶基本資料列印',
-                    leaf : true
-                } ]
-            }]
-        })
-
-    });
-
-    viewport.render('toolbar');
-    viewport.doLayout();
-
-});
-</code></pre>
-
-<h2>讀取 json 資料來源產生 tree</h2>
-
-<p>假設遠端的 json 資料來源：</p>
-
-<pre><code>[{
-    id: 1,
-    text: 'A leaf Node',
-    leaf: true
-},{
-    id: 2,
-    text: 'A folder Node',
-    children: [{
-        id: 3,
-        text: 'A child Node',
-        leaf: true
-    }]
-}]
-</code></pre>
-
-<p>leaf 屬性會在 load 的時候，判斷是否要在遞迴產生子節點。而原本的 Ext.tree.TreeNode 並不支援 Ajax，所以也要改成 Ext.tree.AsyncTreeNode，程式碼如下：</p>
-
-<pre><code>Ext.onReady(function() {
-    var root = new Ext.tree.AsyncTreeNode({text: 'root'});
-    var tree = new Ext.tree.TreePanel({
-        el: 't',
-        width: 150,
-        autoHeight: true,
-        root: root,
-        loader: new Ext.tree.TreeLoader({dataUrl: 'tree.json'})
-    });
-    tree.render();
-});
-</code></pre>
-
-<p>與上面的例子差別在多了使用了 Ext.tree.TreeLoader。</p>
-
-<h2>讀取 xml 資料來源產生 tree</h2>
-
-<p>除了 json 結構讀取外，在 extjs 的 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-loader.html">官方 sample</a> 有資料來源為 xml 的範例。</p>
-
-<p>其中使用 extjs 延伸套件 <a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/ux/XmlTreeLoader.js">Ext.ux.tree.XmlTreeLoader</a>，使用上必須先自行定義 component extend Ext.ux.tree.XmlTreeLoader 並且實作 processAttributes，使用上無法定義 maping 的方式，他會把所有的 xml tag 跑過一變，必須在 tag 中的 Attribute 能有識別的方式，其中若是 tag 裡的內容預設會塞入 innerText 參數。</p>
-
-<ul>
-<li><a href="http://dev.sencha.com/deploy/ext-3.4.0/examples/tree/xml-tree-data.xml">xml 資料來源</a></li>
-</ul>
-
-
-<h2>tree 的操作與參照</h2>
-
-<p>上面介紹了各種產生 tree 的方式，這邊要介紹一下如何透過 extjs 提供的函數來操作相關的節點，幾個重要的函數：</p>
-
-<ul>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.tree.TreePanel-method-expandPath">expandPath( path, [attr], [callback] )</a></p>
-
-<p>  預設的 path 是根據 id 來作為目錄結構的敘述，[attr] 可以改變目錄索引的屬性。</p></li>
-<li><p>selectPath( path, [attr], [callback] )</p>
-
-<p>  使用方式同上，不同的是會執行 expandPath 在做 selectPath</p></li>
-<li><p><a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.data.Node-method-findChild">findChild( attribute, value, [deep] )</a></p>
-
-<p>  用來查詢特定的節點，其中若未設置 deep ＝ tree 將只搜尋使用此函數之物件的下一層，另外在上面有提到，如果是使用 AsyncTreeNode 尚未開啟節點前是找不到的。</p></li>
-</ul>
-
-
-<p>其他請參照 API，以下有實際使用飯例：</p>
-
-<pre><code>Ext.onReady( function() {
-  var viewport = new Ext.tree.TreePanel( {
-    title : "系統相關",
-    width : 200,
-    height : 500,
-    rootVisible : true,//root結點顯不顯示
-    root : new Ext.tree.AsyncTreeNode( {
-      text : '根',
-      id:'r',
-
-      children : [ {
-        text : '個人資料',
-        id:'c1',
-        children : [ {
-            text : '個人資料維護',
-            id:'c1c1',
-            leaf : true
-
-        }, {
-            text : '密碼變更',
-            myid:'c1c2',
-            leaf : true
-        } ]
-      }, {
-        text : '客戶資料',
-        id:'c2',
-        children : [ {
-            text : '客戶基本資料查詢維護',
-            leaf : true,
-            id:'c2c1'
-        }, {
-            text : '客戶基本資料列印',
-            leaf : true,
-            id:'c2c2'
-        } ]
-      } ]
-    })
-
-  });
-
-  viewport.render('toolbar');
-  viewport.doLayout();
-
-  var btn=new Ext.Button({
-    renderTo:"btn",
-    id:'test',
-    text:'test',
-    handler:function(){
-
-        // selectPath 可以做到 expand 之後在進行 select
-      viewport.selectPath('/r/c2/c2c1');
-
-      // 選取另一個節點需注意的是若 c1c1 此節點未被開啟，結果會為 undifine
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 一旦開啟過節點，再次 findChild 就會取得實體。
-      viewport.expandPath('/r/c1/c1c1');
-      alert(viewport.root.findChild( 'id', 'c1c1', true ));
-
-      // 除了 id 之外，我們也可以用別的屬性來做搜尋
-      viewport.root.findChild( 'myid', 'c1c2', true ).select();
-    }
-  });
-
-});
-</code></pre>
-
-<p>說明都在程式註解中，這邊就不再多做說明，以下是實際範例運行的結果：</p>
-
-<iframe style="width: 100%; height: 600px" src="http://jsfiddle.net/smlsun/xyvJX/2/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-
-
-
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/19/extjs-tree/"></a></p>]]></content>
     </entry>
   
 </feed>

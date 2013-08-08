@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>agile java with gradle: 使用 gradle 快速開發 java - 蹤影</title>
+  <title>extjs-6-30：如何使用 query component - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/08/08/extjs-6-30/">
 
 
 
@@ -308,7 +308,7 @@
     
 <h1 class="entry-title">
 
-Agile Java With Gradle: 使用 Gradle 快速開發 Java
+Extjs-6-30：如何使用 Query Component
 
 </h1>
 
@@ -319,76 +319,210 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
 
 
   <div class="post-description">
-    <p>以我過往開發java的經驗，總是離不開eclipse，每次要開發新專案，總是要設置一次eclipse的classpath</p>
+    <p>使用 extjs 一定要會用它的 query component，使用起來有點類似 css selector，jquery 也是類似的概念，有些選擇語法意義是相同的，不管是在定義 controller，或是在 binding event 的時候都會用到他，筆者找到一篇中國朋友寫的 query component 介紹，藉由他的文章進行介紹，連結如下：<a href="http://www.cnblogs.com/daxin/archive/2013/06/01/3112530.html">ExtJs ComponentQuery</a></p>
 
-<p>不然就是共同開發時，可能因為夥伴沒有上傳相依套件，造成編譯失敗</p>
+<h2>ID selector</h2>
 
-<p>又或者自己去找缺的套件，好死不死版本不對造成程式異常</p>
+<p>根據元件 id 來 query，具有唯一性。前面以 # 號來代表, 返回 itemid 或者 id 符合的元件，範例如下：</p>
 
-<p>種種開發java遇到的問題總是困擾著我，又因為這樣浪費的很多時間～</p>
+<pre><code>var panel = Ext.ComponentQuery.query('#panel');
+</code></pre>
 
-<hr />
+<h2>xtype selector</h2>
 
-<p>怎麼辦！？介紹大家一帖好藥</p>
+<p>根據 xtype 來選擇，可選擇前面是否以 ”.” 來標示，或者沒有任何符號也代表 xtype 查詢，如：</p>
 
-<h2>Gradle</h2>
+<pre><code>var cmp= Ext.ComponentQuery.query('gridpanel');
+var cmp= Ext.ComponentQuery.query('.gridpanel');
+</code></pre>
 
-<p>之前就有介紹過他，請看我的<a href="http://smlsun.com/slides/java-with-node.html">slide</a></p>
+<p>如果我們要找某個類型下面的所擁有的元件 ID 或 itemid，我們可以這樣下</p>
 
-<p>今天在開發一個小程式，索性就不用eclipse，也不去網路上下載套件，將程式寫好後放到gradle的編譯路徑</p>
+<pre><code>panel#myPanel 
+</code></pre>
 
-<p>然後編輯build.gradle，內容如下</p>
+<p>代表我要查詢 xtype 為 panel 底下有元件 id 為 myPanel</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;java&#39;</span>
-</span><span class='line'><span class="n">apply</span> <span class="nl">plugin:</span> <span class="s1">&#39;eclipse&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">repositories</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">mavenCentral</span><span class="o">()</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">dependencies</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.google.zxing&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;javase&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;2.1&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;net.sf.jasperreports&#39;</span><span class="o">,</span> <span class="nl">name:</span> <span class="s1">&#39;jasperreports&#39;</span><span class="o">,</span> <span class="nl">version:</span> <span class="s1">&#39;5.0.0&#39;</span>
-</span><span class='line'>    <span class="n">compile</span> <span class="nl">group:</span> <span class="s1">&#39;com.lowagie&#39;</span><span class="o">,</span> <span class="nl">name:</span><span class="s1">&#39;itext&#39;</span><span class="o">,</span> <span class="nl">version:</span><span class="s1">&#39;2.1.7&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>attributes selector</h2>
 
+<p>根據元件的屬性來選擇，舉例來說：</p>
 
-<p>可以看到我用到三個套件，分別是javase，jasperreports以及itext，如果你要查套件對應的group以及version可上下列網址查詢：</p>
+<p>回傳擁有 iconCls 屬性的 Ext.Button 的實例：</p>
 
-<p><a href="http://search.maven.org/">maven Central Repository</a></p>
+<pre><code>var btnOk= Ext.ComponentQuery.query('button[iconCls]');
+</code></pre>
 
-<p>輸入你要找的套件名稱，就會列出相關的資訊。</p>
+<p>其中如果 iconCls 等於 null 或是 false 都視為不符合條件。</p>
 
-<p>接著我們只要在Terminal鍵入下列指令：</p>
+<p>除此只外也可以判斷屬性指定特定的值，如下：</p>
 
-<p><code>gradle build jar</code></p>
+<pre><code>var btnOk= Ext.ComponentQuery.query('button[text = "ok"]'); 
+</code></pre>
 
-<p>gradle 就會進行 java compile，並且把熱熱的class馬上幫你包成jar讓你吃，ㄜ，不是！是讓你用～</p>
+<p>取得 text 屬性為 “ok” 的 Ext.Button 的。</p>
 
-<p>就是這麼簡單，如果你還很嫩，離不開eclipse，別擔心，一句指令讓你使用IDE!</p>
+<p>值得注意的是，屬性可以是任何自定義屬性：</p>
 
-<p><code>gradle eclipse</code></p>
+<pre><code>Ext.create("Ext.Panel" , {
+   myAttribute: "helloWorld" 
+});
 
-<p>這時候gradle會根據你設定的 dependencies 幫你把classpath建好，方便吧！</p>
+Ext.ComponentQuery.query('panel[myAttribute= "helloWorld"]');
+</code></pre>
 
-<p>剛剛提到多人開發，缺套件，或者抓錯版本的問題將一去不復返，任何人拿到程式碼，編譯出來的東西都會是一樣，將不再有缺套件沒辦法編譯的問題，可以輕省快速的開發java，以及處理繁瑣的編譯包jar步驟，更快的驗證寫出來的程式，正是敏捷開發的精神!</p>
+<p>如上面的例子，自己定義的屬性也可以作為判斷。</p>
 
-<p>如何？還不趕快試試看阿！</p>
+<h2>descendant(後代) selector</h2>
+
+<p>用來選擇特定容器或容器組的後代，後代選擇器由兩個常用選擇器，中間加一個空格表示。其中前面的選擇器選擇父組件，後面的選擇器選擇後代組件，範例如下：</p>
+
+<p>返回所有id為“myCt”的容器中Ext.Panel：</p>
+
+<pre><code>var panelsWithinmyCt = Ext.ComponentQuery.query('#myCt panel');
+</code></pre>
+
+<p>E F All descendant Components of E that match F (遞歸向下查詢所有可以匹配的組件)</p>
+
+<h2>child selector</h2>
+
+<p>請注意這個選擇器與後代選擇器的區別，子選擇器（child selector）僅是指它的<strong>直接後代</strong>，而後代選擇器是作用於所有子後代組件。後代選擇器通過空格來進行選擇，而子選擇器是通過“>”進行選擇，範例如下：</p>
+
+<p>返回所有id為“myCt”的容器的子組件中的Ext.Panel實例：</p>
+
+<p>var directChildPanel = Ext.ComponentQuery.query(&#8216;#myCt > panel&#8217;);</p>
+
+<p>E > F  All direct children Components of E that match F (查詢直接後代,子孫後代則不匹配)</p>
+
+<p>參考下面範例來了解對應關係：</p>
+
+<pre><code>Ext.create("Ext.Panel" , {
+    itemId: "myCt" ,
+    itmes:[{
+        xtype: "panel" ,
+        html : "我是 myCt 的直接後代，也是 myCt 的後代" ,
+        itmes: [{
+            xtype: "panel" ,
+            html : "我是 myCt 的子孫後代，但不是直接後代" ,
+        }]
+    }]
+});
+</code></pre>
+
+<h2>parent selector</h2>
+
+<p>查找給定元素的父容器（遞迴向上查找所有符合的元素)。</p>
+
+<p>E ^ F  All parent Components of E that match F</p>
+
+<pre><code>Ext.ComponentQuery.query('textfield ^ form');
+</code></pre>
+
+<h2>條件式關鍵字</h2>
+
+<p>~=：符合完整的字串，以空白字元分開，假設我們有兩個元件：</p>
+
+<pre><code>Ext.create('Ext.panel.Panel' , {
+    cls: 'foo-cls my-cls bar-cls'
+});
+
+Ext.create( 'Ext.window.Window' , {
+    cls: 'my-cls' 
+});
+</code></pre>
+
+<p>下述查詢都會符合：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[cls~=my-cls]');
+</code></pre>
+
+<p>^=：開頭符合的屬性，如同 stratWith</p>
+
+<p>$=：結尾符合的屬性，如同 endWith</p>
+
+<p>*=：任何地方只要符合都算，如同 indexOf</p>
+
+<p>@：只查詢使用類別的屬性，不會去查詢 extend 的父類別的屬性，使用方式：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[@collapsed=false]')
+</code></pre>
+
+<h2>Conditional matching(條件匹配)</h2>
+
+<p>匹配同時滿足多個條件的匹配表達式，AND：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel[cls~=my-cls][floating=true][title$="sales data"]');
+</code></pre>
+
+<p>匹配用&#8221;,&#8221;逗號分隔的滿足任意一個條件的組件，OR：</p>
+
+<pre><code>Ext.ComponentQuery.query('field[fieldLabel^=User], field[fieldLabel*=password]');
+</code></pre>
+
+<h2>Pseudo classes</h2>
+
+<p>查詢滿足條件的第一個元素，<code>:first</code>：</p>
+
+<pre><code>Ext.ComponentQuery.query('panel &gt; button:fi​​rst');
+</code></pre>
+
+<p>查詢滿足條件的最後一個元素，<code>:last</code>：</p>
+
+<pre><code>Ext.ComponentQuery.query('form[title=Profile] field:last');
+</code></pre>
+
+<p>返回可以獲得焦點的組件，<code>:focusable</code>：</p>
+
+<pre><code>panel . down ( ':focusable' ). focus ();
+</code></pre>
+
+<p>匹配相反的結果，<code>:not</code>：</p>
+
+<p>返回所有field但是xtype不是hiddenfield的組件</p>
+
+<pre><code>form . query ( 'field:not( hiddenfield )' );
+</code></pre>
+
+<p>其中 <code>hiddenfield</code> 部分可以放任何表達式如 <code>title^=hello</code></p>
+
+<p>指定每間隔多少的元件，<code>:nth-child</code>：</p>
+
+<p>透過範例可以較清楚如何使用此種 selector</p>
+
+<pre><code>//找出奇數的元件
+form.query('field:nth-child(2n+1)'); 
+//也可以使用關鍵字 :nth-child(odd)
+
+//找出偶數的元件
+form.query('field:nth-child(2n)');
+//也可以使用關鍵字:nth-child(even)
+
+//找出 3 倍數的元件
+form.query('field:nth-child(3n)');
+</code></pre>
+
+<h2>關於使用 component.query 的效能上的建議</h2>
+
+<p>從 extjs <a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.ComponentQuery-method-query">component.query API</a> 中，我們可以看到參數的使用為：<code>query( selector, [root] )</code></p>
+
+<p>其中 root 為選用，指的是要從哪個 Container 的範圍開始進行查詢，雖然是選用，強烈建議最好都要設置，如此一來在執行查詢時，extjs 在小範圍進行查詢，總比全域搜尋來的快，所以我們可以這樣執行：</p>
+
+<pre><code>var btnRefresh = Ext.ComponentQuery.query('#btnRefresh', container); 
+</code></pre>
+
+<p>使用 Ext.ComponentQuery 來進行查詢，又或者，我們可以直接對某個 container 進行 query</p>
+
+<pre><code>var btnRefresh = container.query('#btnRefresh');
+</code></pre>
+
+<p>效果跟第一種方式一樣，都是區域的 query。</p>
+
+<h2>其他內建函數查詢</h2>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-down">down([selector])</a>：取得第一個的子元件</p>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-child">child([selector])</a>：取得第一個直接子元件</p>
+
+<p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.AbstractComponent-method-up">up([selector],[limit])</a>：取得最接近的 container。</p>
 
   </div>
 
@@ -422,12 +556,12 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T18:04:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-08-08T12:03:00+08:00" pubdate data-updated="true">Aug 8<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/agile/'>agile</a>, <a class='category' href='/blog/categories/gradle/'>gradle</a>, <a class='category' href='/blog/categories/java/'>java</a>
+    <a class='category' href='/blog/categories/extjs/'>extjs</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
 </span></span>
 
@@ -442,7 +576,7 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/08/08/extjs-6-30/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/08/08/extjs-6-30/" target="_blank" >Tweet</a>
     
   
   
@@ -463,10 +597,8 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/06/ireport-map-component/" title="Previous Post: introduction ireport component: Map 地圖"><li>&laquo; introduction ireport component: Map 地圖</li></a>
+            <a class="left" href="/blog/2013/08/06/online-meeting-record/" title="Previous Post: 遠端線上開會並且記錄的利器：google hangout"><li>&laquo; 遠端線上開會並且記錄的利器：google hangout</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/06/ireport-use-scriptlet/" title="Next Post: ireport use scriptlet"><li>ireport use scriptlet &raquo;</li></a>
           
         </ul>
 
@@ -610,7 +742,7 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/08/08/extjs-6-30/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/08/08/extjs-6-30/" target="_blank" >Tweet</a>
     
   
   
@@ -762,8 +894,8 @@ Agile Java With Gradle: 使用 Gradle 快速開發 Java
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/08/08/extjs-6-30/';
+        var disqus_url = 'http://smlsun.com/blog/2013/08/08/extjs-6-30/';
         var disqus_script = 'embed.js';
       
     (function () {
