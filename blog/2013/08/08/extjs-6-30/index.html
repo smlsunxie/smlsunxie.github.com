@@ -323,14 +323,14 @@ Extjs-6-30：如何使用 Query Component
 
 <h2>ID selector</h2>
 
-<p>根據元件 id 來 query，具有唯一性。前面以 # 號來代表, 返回 itemid 或者 id 符合的元件，範例如下：</p>
+<p>根據元件 id 來 query，具有唯一性。前面以 # 號來代表, 取得 itemid 或者 id 符合的元件，範例如下：</p>
 
 <pre><code>var panel = Ext.ComponentQuery.query('#panel');
 </code></pre>
 
 <h2>xtype selector</h2>
 
-<p>根據 xtype 來選擇，可選擇前面是否以 ”.” 來標示，或者沒有任何符號也代表 xtype 查詢，如：</p>
+<p>根據 xtype 來選擇，可選擇前面是否以 &#8216;.&#8217; 來標示，或者沒有任何符號也代表 xtype 查詢，如：</p>
 
 <pre><code>var cmp= Ext.ComponentQuery.query('gridpanel');
 var cmp= Ext.ComponentQuery.query('.gridpanel');
@@ -359,7 +359,7 @@ var cmp= Ext.ComponentQuery.query('.gridpanel');
 <pre><code>var btnOk= Ext.ComponentQuery.query('button[text = "ok"]'); 
 </code></pre>
 
-<p>取得 text 屬性為 “ok” 的 Ext.Button 的。</p>
+<p>取得 text 屬性為 &#8216;ok&#8217; 的 Ext.Button 的。</p>
 
 <p>值得注意的是，屬性可以是任何自定義屬性：</p>
 
@@ -374,24 +374,24 @@ Ext.ComponentQuery.query('panel[myAttribute= "helloWorld"]');
 
 <h2>descendant(後代) selector</h2>
 
-<p>用來選擇特定容器或容器組的後代，後代選擇器由兩個常用選擇器，中間加一個空格表示。其中前面的選擇器選擇父組件，後面的選擇器選擇後代組件，範例如下：</p>
+<p>用來選擇特定容器或容器組的後代，後代選擇器由兩個常用選擇器，中間加一個空格表示。其中前面的選擇器選擇父元件，後面的選擇器選擇後代元件，範例如下：</p>
 
-<p>返回所有id為“myCt”的容器中Ext.Panel：</p>
+<p>取得所有 id 為 &#8216;myCt&#8217; 中的 Ext.Panel：</p>
 
 <pre><code>var panelsWithinmyCt = Ext.ComponentQuery.query('#myCt panel');
 </code></pre>
 
-<p>E F All descendant Components of E that match F (遞歸向下查詢所有可以匹配的組件)</p>
+<p>E F All descendant Components of E that match F (遞歸向下查詢所有可以符合的元件)</p>
 
 <h2>child selector</h2>
 
-<p>請注意這個選擇器與後代選擇器的區別，子選擇器（child selector）僅是指它的<strong>直接後代</strong>，而後代選擇器是作用於所有子後代組件。後代選擇器通過空格來進行選擇，而子選擇器是通過“>”進行選擇，範例如下：</p>
+<p>請注意這個選擇器與後代選擇器的區別，子選擇器（child selector）僅是指它的<strong>直接後代</strong>，而後代選擇器是作用於所有子後代元件。後代選擇器通過空格來進行選擇，而子選擇器是通過&#8217;>&#8217;進行選擇，範例如下：</p>
 
-<p>返回所有id為“myCt”的容器的子組件中的Ext.Panel實例：</p>
+<p>取得所有 id 為 &#8216;myCt&#8217; 的 container 中的直接子元件 Ext.Panel ：</p>
 
 <p>var directChildPanel = Ext.ComponentQuery.query(&#8216;#myCt > panel&#8217;);</p>
 
-<p>E > F  All direct children Components of E that match F (查詢直接後代,子孫後代則不匹配)</p>
+<p>E > F  All direct children Components of E that match F (查詢直接後代,其他非直接的則不符合)</p>
 
 <p>參考下面範例來了解對應關係：</p>
 
@@ -402,7 +402,7 @@ Ext.ComponentQuery.query('panel[myAttribute= "helloWorld"]');
         html : "我是 myCt 的直接後代，也是 myCt 的後代" ,
         itmes: [{
             xtype: "panel" ,
-            html : "我是 myCt 的子孫後代，但不是直接後代" ,
+            html : "我是 myCt 的後代，但不是直接後代" ,
         }]
     }]
 });
@@ -446,14 +446,14 @@ Ext.create( 'Ext.window.Window' , {
 <pre><code>Ext.ComponentQuery.query('panel[@collapsed=false]')
 </code></pre>
 
-<h2>Conditional matching(條件匹配)</h2>
+<h2>Conditional matching(條件符合)</h2>
 
-<p>匹配同時滿足多個條件的匹配表達式，AND：</p>
+<p>符合同時滿足多個條件的符合表達式，AND：</p>
 
 <pre><code>Ext.ComponentQuery.query('panel[cls~=my-cls][floating=true][title$="sales data"]');
 </code></pre>
 
-<p>匹配用&#8221;,&#8221;逗號分隔的滿足任意一個條件的組件，OR：</p>
+<p>符合用 &#8216;,&#8217; 逗號分隔的滿足任意一個條件的元件，OR：</p>
 
 <pre><code>Ext.ComponentQuery.query('field[fieldLabel^=User], field[fieldLabel*=password]');
 </code></pre>
@@ -470,14 +470,14 @@ Ext.create( 'Ext.window.Window' , {
 <pre><code>Ext.ComponentQuery.query('form[title=Profile] field:last');
 </code></pre>
 
-<p>返回可以獲得焦點的組件，<code>:focusable</code>：</p>
+<p>取得可以獲得焦點的元件，<code>:focusable</code>：</p>
 
 <pre><code>panel . down ( ':focusable' ). focus ();
 </code></pre>
 
-<p>匹配相反的結果，<code>:not</code>：</p>
+<p>符合相反的結果，<code>:not</code>：</p>
 
-<p>返回所有field但是xtype不是hiddenfield的組件</p>
+<p>取得所有field但是xtype不是hiddenfield的元件</p>
 
 <pre><code>form . query ( 'field:not( hiddenfield )' );
 </code></pre>
@@ -514,15 +514,19 @@ form.query('field:nth-child(3n)');
 <pre><code>var btnRefresh = container.query('#btnRefresh');
 </code></pre>
 
-<p>效果跟第一種方式一樣，都是區域的 query。</p>
+<p>效果跟第一種方式一樣，都是區域性的元件 query。</p>
 
 <h2>其他內建函數查詢</h2>
+
+<p>更精確的定義，可以參考官方的 API 說明，如每個函式的連結。</p>
 
 <p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-down">down([selector])</a>：取得第一個的子元件</p>
 
 <p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.Queryable-method-child">child([selector])</a>：取得第一個直接子元件</p>
 
 <p><a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.AbstractComponent-method-up">up([selector],[limit])</a>：取得最接近的 container。</p>
+
+<p>搞懂 compnent query 可以讓你在 extjs 的世界事半工倍，而且一點也不難的。</p>
 
   </div>
 
