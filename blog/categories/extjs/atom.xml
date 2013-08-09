@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-08T19:44:23+08:00</updated>
+  <updated>2013-08-09T11:33:59+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例]]></title>
+    <link href="http://smlsun.com/blog/2013/08/09/extjs-7-30/"/>
+    <updated>2013-08-09T09:27:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/09/extjs-7-30</id>
+    <content type="html"><![CDATA[<p>開發 extjs 時，他能夠帶給我們類似 java swing 元件化的前端開發方式，若能搭配 sencha architect 使用，更能讓開發更加的流暢，關於 architect 的使用可參考筆者在之前在 ithome 所寫的文章：<a href="http://ithelp.ithome.com.tw/question/10120289">extjs 4 系列 4/5：利用 Sencha Architect 快速開發 extjs</a>。</p>
+
+<p>而因為 extjs 設計為元件化以及類類別系統，所以除了官方的元件之外，網路上的先進也開發出很多優秀的套件，以補官方功能上的不足，想當然我們也希望在使用  Architect 時也可以載入 ux 套件作為使用，不過很不幸的，如果單純寫 code 是很輕易達成，但在 Architect 卻不易完成，他的程式碼編輯是有限制的，在查了相關資料後，正好找到一篇：<a href="http://stackoverflow.com/questions/12680645/sencha-architect-xtype-change">Sencha Architect xtype change</a>，剛剛好就解決的這個問題，由開發 Architect 的 one of the lead engineers:Aaron Conran 回答如下：</p>
+
+<blockquote><p>Drag out a List as a top level component. All top level components are their own classes. Set the userAlias and userClassName configurations to values like 'refreshablelist' and 'RefreshableList'. Take a look at the code generated for this.</p>
+
+<p>Drag out a Panel as a top level component, drag the existing RefreshableList in the inspector into the new Panel. A prompt will ask you if you would like to Move, Copy or Link the list, choose "Link". This will create an instance of your subclass RefreshableList.</p></blockquote>
+
+<p>大致的概念是，你可以在 architect 中 view 的最上層新增一個元件 component 讓他作為類別的存在，並且改變 userAlias 以及 userClassName 屬性，以你要載入的 ux 套件之對應 xtype 以及 ClassName，如此一來，該元件就代表 ux 套件在 architect 中的實體類別，這時候你就可以將該元件作為 link 放至於你想要顯示的 container 底下，此時會透過 xtype 來實體化你引入的 ux 套件。</p>
+
+<p>概念說明完後，來用一個例子說明實際的操作方式，在筆者目前的專案中，希望可以利用手機的照相功能來進行資料的上傳，但為了加速及簡化開發所需時間，不考慮使用手機 native 功能，因為若要如此需要包裝成 app 並且若要考慮跨平台，利用 web 網頁是更快的方式，而瀏覽器發展至今，目前比較新的瀏覽器皆有支援手機相機存取的功能，參考這篇：<a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a>，而為了開發手機平台的 web page，筆者考慮使用 sencha touch 作為前端呈現，既然同樣是 sencha 家族，同樣我們也可以用 architect 進行，而我們需要用到的外掛為 <a href="https://github.com/kostysh/File-uploading-component-for-Sencha-Touch">File-uploading-component-for-Sencha-Touch</a></p>
+
+<p>使用方式在其 github page 有詳細說明，這邊就不再贅述，幾個重點：</p>
+
+<ol>
+<li>在 sencha Architect 中，你可以在 Application 的 config 找到 loader 進行設置 ux 原始碼的路徑。</li>
+<li><p>接著你可以在 view 新增一個 Component 進行一開始說明的設置，如下圖</p>
+
+<p> <img src="http://" alt="image" /></p></li>
+<li><p>參考 <a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a> 這篇文章，我們裡面有一段有提到，要讓瀏覽器存取相機，我們只要簡單的新增 html 元件 <code>&lt;input capture="camera" accept="image/*" type="file" &gt;</code> 即可。</p></li>
+<li>而筆者所用的套件，主要是用來進行檔案上傳，所以基本上並沒有 <code>capture="camera" accept="image/*"</code> 的屬性，因此我們可以調整該 ux 的原始碼，修改如下：</li>
+</ol>
+
+
+<p>``` javascript</p>
+
+<pre><code>    // Hidden file element
+    {
+        tag: 'form',
+        reference: 'formElement',
+        hidden: false,            
+
+        children: [
+            {
+
+                capture: "camera", //  add for get pic from camera
+                accept: "image/*", //  add for get pic from camera
+
+                tag: 'input',
+                reference: 'fileElement',
+                type: 'file',
+                name: 'userfile',
+                tabindex: -1,
+                hidden: false,
+                style: 'opacity:0;position:absolute;top:-3px;right:-3px;bottom:-3px;left:-3px;z-index:16777270;'
+            }
+        ]
+    }
+</code></pre>
+
+<p>```</p>
+
+<p>如此一來，該元件就可以讓我在使用手機操作系統時透過相機擷取照片，fork 後修改的 github 如下：<a href="https://github.com/smlsunxie/File-uploading-component-for-Sencha-Touch">smlsunxie/File-uploading-component-for-Sencha-Touch</a>，有需要的讀者可以自行取用，最後執行的畫面如下：</p>
+
+<p><img src="http://" alt="image" /></p>
+
+<p>點選上圖下方的 browser 將會開啟下面畫面，因為筆者使用的是 ios 模擬器，所以不支援鏡頭，只支援上傳檔案，因此會直接進入選取畫面，如果是實體機器，將會詢問要使用相機，還是要選取檔案上傳，筆者已有實機測試。</p>
+
+<p>在這個手機平板普及的現在，相信使用照相功能是很平常的事，如果需求僅止於此，不需要大費周章開發 app 形式，快速把功能做出來，儘快推出才是重點！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs-6-30：如何使用 query component]]></title>
@@ -619,36 +686,6 @@ readBatch: function(obj, record, item, index, e, eOpts) {
 ```</p>
 
 <p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
-    <link href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"/>
-    <updated>2013-08-01T22:52:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
-    <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟一般的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
-
-<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於發生問題，但若是多人開發，再加上有使用版本控管，問題就來了；xds 檔所記錄的似乎是在 architect 建立 extjs 元件之間的關聯，因此若是多人開發不同的功能，並且在版本控管的情況下，該檔案很容易有衝突；而在編修衝突時，很多時候會不知道該如何下手，因為代表元件的相關檔案識別皆已編碼，只有 IDE 才看的懂對應的關係，如果 xds 的內容無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
-
-<p>就筆者的經驗，一般 extjs 元件的建立或修改基本上都比較不會有問題，最容易產生異常的通常是在 application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要因為在使用 architect 時，當你新增元件時，IDE 將會自動將你新增的元件載入到 application.js 中，多人開發情形下，Application.js 就會是所有人的交集，不然照理分別開發新功能所新增的元件皆不同不應該會頻繁造成衝突，而因為 application.js 的多人異動，造成再 xds 中對 application.js 的檔案識別常常會有不同的代表造成衝突，一旦 xds 衝突一發生，編修時一不小心讓 IDE 不認得 Application.js，就會造成 Application.js 無法被識別，導致 IDE 認為沒有建立 Application.js，則以最原始的狀態 Application.js 作為預設，也就是沒有任何元件載入，導致於系統運作異常。</p>
-
-<p>知道問題發生的原因，那上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔的，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作需要哪些類別配合，一旦你有定義 require，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中載入所需 js 的麻煩，進一步的減少元件忘記或是載入錯誤。</p>
-
-<p>前面有提到 application.js 是多人開發時的交集，一個方法是減少交集的產生，而我們該如何減少交集呢？可以用到 extjs 自動載入元件的特性，將我們需要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 application.js 異常，我們知道只要將所有 controller 載入即可恢復，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，完善的定義該功能再運行時所需的元件，可以帶來更易於維護的優點，另外在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，如此一來元件所責任的功能也會更加清楚。</p>
-
-<p>上述的解法，是筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人節省一點時間。</p>
-
-<p>最後綜合上述的內容，整理出使用 architect 開發需要注意的重點如下：</p>
-
-<ol>
-<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
-<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
-<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
-<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
-<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
-</ol>
-
 ]]></content>
   </entry>
   

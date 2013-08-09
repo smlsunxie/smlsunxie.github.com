@@ -310,6 +310,213 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/04/google-spreadsheets-connect/">JavaScript 存取 Google Spreadsheets 試算表</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>google spreadsheets，也就是 google doc 裡面的 excel，對於 excel 的操作相信大家一定不陌生，如果有寫過一些程式，或許有寫過將 excel 當做 database 進行增修改查的動作。</p>
+
+<p>這篇所要介紹的也就是如何存取 google spreadsheets 進行資料的操作，如果你需要一個快速且容易維護的資料庫，那 google spreadsheets 非常適合，將透過 google 所提供的 Visualization API 進行，下面將對幾個重點部分進行介紹</p>
+
+<h2>query Language</h2>
+
+<ul>
+<li><p><a href="https://developers.google.com/chart/interactive/docs/querylanguage?hl=zh-TW#Setting_the_Query_in_the_Data_Source_URL">Query Language Reference</a></p>
+
+<p>  google 官方 query api 裡面有關於查詢語法的說明，基本上就像在下查詢 sql 一樣，如果有操作過 sql 語法，非常好理解。</p></li>
+</ul>
+
+
+<h2>publish spreadsheets</h2>
+
+<ul>
+<li><p><a href="http://blog.ericsk.org/archives/1417">JavaScript 存取 Google 試算表的資料</a></p>
+
+<p>  這篇有介紹存取方式，以及如何將你的 spreadsheets Publish 以便讓 Visualization API 能夠存取</p></li>
+</ul>
+
+
+<h2>新增 spreadsheets Records</h2>
+
+<p>google Visualization API 無法讓你進行 <strong>新增</strong> 所以如果你需要新增資料，建議使用:</p>
+
+<p><a href="http://support.google.com/drive/bin/answer.py?hl=zh-Hant&amp;answer=87809">Google 表單
+</a></p>
+
+<h2>查詢 spreadsheets</h2>
+
+<p>查詢的部份就是重頭戲啦，從範例來看會比較快一點理解：</p>
+
+<p>sample data:</p>
+
+<p><img src="https://lh3.googleusercontent.com/-v-fjMIfNUpU/UQ8hUW60DcI/AAAAAAAALhQ/TjlxGqTLGt0/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-04+%E4%B8%8A%E5%8D%8810.46.55.jpg" alt="image" /></p>
+
+<p>範例程式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// 讀取店家資訊以及地理位置，並且透過 createMarker 將位址加入到 map 裡</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 載入 Visualization API</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span><span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// key 是假的，請使用你的 key</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">URL</span> <span class="o">=</span> <span class="s1">&#39;http://spreadsheets.google.com/tq?key=0AsXj_vRMyOYyk5OXdKRlJXdGZ1FZU3FXRjl6E#gid=0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">google</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">{</span><span class="s1">&#39;packages&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]});</span>
+</span><span class='line'>  <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">visualization</span><span class="p">.</span><span class="nx">Query</span><span class="p">(</span><span class="nx">URL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">queryData</span><span class="p">(</span><span class="nx">queryStr</span><span class="p">,</span><span class="nx">createMarker</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">setQuery</span><span class="p">(</span><span class="s2">&quot;select B,C,D,E,F where H=&#39;Y&#39; &quot;</span><span class="o">+</span><span class="nx">queryStr</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">resp</span><span class="p">.</span><span class="nx">isError</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">dataTable</span> <span class="o">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">getDataTable</span><span class="p">();</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">dataTable</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">markConfig</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">latitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">longitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">address</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">description</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              
+</span><span class='line'>              <span class="nx">createMarker</span><span class="p">(</span><span class="nx">markConfig</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>非常簡單，應該也淺顯易懂，幾個重點：</p>
+
+<ol>
+<li>在 query 部分，沒辦法使用 column Name，只能使用如 samle 圖片中的 A、B、C…</li>
+<li>相同查詢條件下，無法連續查詢，甚至也不會 response records，舉例來說，<code>select B,C,D,E,F where H='Y'</code> 這查詢下第一次 ok，但第二次就會沒有反應，所以在處理上，需檢查查詢條件是否與上次相同，如相同則不需再查，當然也許是可行的，但以我目前測試的結果是這樣</li>
+</ol>
+
+
+<p>如果你要做一個簡單問卷，或是購買清單之類的應用，相信 google spreadsheets 是個不錯的選擇，夠簡單，且輔助 google 表單，可以很快速的完成資料輸入的頁面，查詢上也不複雜，就是幾個實用上要注意的額外處裡一下，希望可以幫有需要的人解省一些時間囉！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-04T16:34:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/04/google-spreadsheets-connect/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/04/google-spreadsheets-connect/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a>
 
 </h1>
@@ -2667,164 +2874,6 @@ F. An exception is thrown at runtime.
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/16/android-vm/">androVM - Run Android in VirtualBox and Deploy App</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在隨處亂逛時，看到一個有趣的東西，那就是android VM!</p>
-
-<p><a href="http://androvm.org/blog/download/">androVM</a></p>
-
-<p>開發 Android 的經驗中，如果要驗證所開發的程式是否正確，比較常用的兩個方法：</p>
-
-<ol>
-<li>使用 google 官方的虛擬 android</li>
-<li>使用實體機器</li>
-</ol>
-
-
-<p>第一個的問題就是，速度真 T…M… 的慢，在講求速度的開發環境，會很想殺人！！！</p>
-
-<p>第二個的問題是，如果 usb 不夠插，或臨時設備不再身邊，或是設備出了意外… 那只好工作停擺啦</p>
-
-<p>所幸還有第三個方案，他還是模擬器沒錯，但是比 google 官方的虛擬 android 來的快多了，號稱快 4 倍，我是憑感覺真的有比較快，至少你不會覺得 <strong>頓</strong>！</p>
-
-<p>安裝方式很簡單</p>
-
-<ol>
-<li>首先你需要安裝 <a href="https://www.virtualbox.org/">Virtualbox</a></li>
-<li>下載 <a href="http://androvm.org/blog/download/">androVM</a> 官方提供的 ova 檔，請選擇適合你用的版本</li>
-<li>下載完成後，請點兩下你下載下來的 ova 檔，他會將設定檔載入你的 virtualBox，包括映像檔，所以一旦你安裝完成後就可以把下載下來的檔案刪掉</li>
-</ol>
-
-
-<p>如此一來就完成啦，實際執行結果如下：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-A623K9XMEUQ/UPeMFnwsF5I/AAAAAAAALfk/LSDz6MekOVY/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.14.18.jpg" alt="img" /></p>
-
-<p>啟動速度比實體機器快很多喔(三倍速+)！</p>
-
-<p>我個人覺得如果還可以支援 camera 那就太完美啦！不過網路上也有人對作者反應，作者也承諾 I&#8217;ll readd the feature asap! 如此一來在開發上將更有彈性，相信以 virtualBox 為基底應該是可以做的到。</p>
-
-<p>再來鄉民應該會覺得，我沒事拿個 vm 來玩平板或手機幹嘛？當然還要能夠拿來開發，並且可以將程式 deploy 上去進行測試啦！在這裡我將說明執行步驟，基本上你可以將運行在 VM 上的 android 想像成現在連接著你的電腦，只是不同的是他在你的電腦中運行，所以你必須告訴你的電腦要在哪裡連接，連接方式是透過 指定 IP 告訴你的開發環境正確的位置，讓我們來一步接著一步進行：</p>
-
-<ol>
-<li><p>首先必須先讓 vm 能夠有個存取的位置，所以我們需要打開 virtualBox 的網路設定頁面</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-P3bHwsK-Y3w/UPeMGgkLUeI/AAAAAAAALfw/fCCG_HEddBQ/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.31.27.jpg" alt="img" /></p>
-
-<p> 將附加選項選擇：橋接介面卡，然後名稱就是你的實體網路的接口，我的電腦只有 wifi，如果是實體網路就應該為 <code>eh0</code>，設定好後，可以進到虛擬的 Android 查看 ip 位置：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-50Uem4xpARg/UPeMHs3YcWI/AAAAAAAALf4/YwWcBpq6WVs/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.35.07.jpg" alt="img" /></p>
-
-<p> 進到 system status 可以看到 ip 為 <code>10.0.3.15</code>，實際上你去 ping 是 ping 不到的，因為那是虛擬的 ip，那要如何找到正確的 ip 呢？androVM 很貼心的在裡面預裝了一個 app 可以讓你對 android 進行一些設定還有環境變數的查詢，裡面就有真實設備的 ip 啦！如下圖：</p>
-
-<p> <img src="https://lh3.googleusercontent.com/-OM5gKYL6QEg/UPeMIU0ILzI/AAAAAAAALgY/IRkUa4FnvCw/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.38.24.jpg" alt="img" /></p>
-
-<p> 有個 android 機器人，好像在做蛋糕(大便) 的樣子 <code>androVM Configuration</code>，哈～顯示如下圖：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-azSrBFWVJ94/UPeMI827gVI/AAAAAAAALgI/vVTWktc1Q4A/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.39.38.jpg" alt="img" /></p>
-
-<p> 點進去後你可以看到在執行畫面上方有個</p>
-
-<p> <code>eh0: 192.168.1.8</code></p>
-
-<p> 就是實際你可以存取得位置啦！</p></li>
-<li><p>接著我們就必須將設備註冊到 adb 上，讓我們進入到 android sdk 資料夾裡面，路徑為</p>
-
-<p> <code>${ANDROID_HOME}/platform-tools</code></p>
-
-<p> 底下應該有個 <code>adb</code> 的檔案，打開 terminal 根據剛剛查到的 ip 輸入：</p>
-
-<p> <code>./adb connect 192.168.1.8</code></p>
-
-<p> 就完成連接了，簡單吧！正常應該會吐出下列訊息</p>
-
-<p> <code>connected to 192.168.1.8:5555</code></p>
-
-<p> 接著我們來看實際運作的狀況，打開 eclipse，執行要 deploy 的專案：</p>
-
-<p> <img src="https://lh6.googleusercontent.com/-fC3_LracFxc/UPeMJkniW2I/AAAAAAAALgQ/oosUBfdmri8/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.50.54.jpg" alt="img" /></p>
-
-<p> 在這裡執行 <code>Run As &gt; Adroid application</code> 會先檢查有無設備連接上，如果沒有會用 google 內建的虛擬機器，如果有連上就會使用實體機器(不過還是虛擬的)，我們就可以看到執行畫面如下：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-IsPB4DxxolY/UPeMKUS4a7I/AAAAAAAALgU/dBhsGIWRSfM/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.53.32.jpg" alt="img" /></p>
-
-<p> 就是如此簡單！接著你要 debug 或是檢查在 app 操作過程中吐出來的訊息就都可以在 eclipse 底下的 Console 進行觀察了，相信開發過程中會方便許多，也避免掉很多不必要的麻煩，試試看囉！</p></li>
-</ol>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-16T21:24:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/16/android-vm/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/16/android-vm/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2902,6 +2951,10 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2013/08/09/extjs-7-30/">extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/08/08/extjs-6-30/">extjs-6-30：如何使用 query component</a>
       </li>
     
@@ -2915,10 +2968,6 @@ F. An exception is thrown at runtime.
     
       <li>
         <a href="/blog/2013/08/05/extjs-4-30/">extjs-4-30 精簡程式碼案例分享</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/08/05/extjs-3-30/">extjs-3-30 mixins(混和) 特性說明</a>
       </li>
     
   </ul>

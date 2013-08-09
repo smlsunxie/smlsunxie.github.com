@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-08T19:44:23+08:00</updated>
+  <updated>2013-08-09T11:33:59+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,98 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例]]></title>
+<link href="http://smlsun.com/blog/2013/08/09/extjs-7-30/"/>
+<updated>2013-08-09T09:27:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/09/extjs-7-30</id>
+
+      <content type="html"><![CDATA[<p>開發 extjs 時，他能夠帶給我們類似 java swing 元件化的前端開發方式，若能搭配 sencha architect 使用，更能讓開發更加的流暢，關於 architect 的使用可參考筆者在之前在 ithome 所寫的文章：<a href="http://ithelp.ithome.com.tw/question/10120289">extjs 4 系列 4/5：利用 Sencha Architect 快速開發 extjs</a>。</p>
+
+<p>而因為 extjs 設計為元件化以及類類別系統，所以除了官方的元件之外，網路上的先進也開發出很多優秀的套件，以補官方功能上的不足，想當然我們也希望在使用  Architect 時也可以載入 ux 套件作為使用，不過很不幸的，如果單純寫 code 是很輕易達成，但在 Architect 卻不易完成，他的程式碼編輯是有限制的，在查了相關資料後，正好找到一篇：<a href="http://stackoverflow.com/questions/12680645/sencha-architect-xtype-change">Sencha Architect xtype change</a>，剛剛好就解決的這個問題，由開發 Architect 的 one of the lead engineers:Aaron Conran 回答如下：</p>
+
+<blockquote><p>Drag out a List as a top level component. All top level components are their own classes. Set the userAlias and userClassName configurations to values like &#8216;refreshablelist&#8217; and &#8216;RefreshableList&#8217;. Take a look at the code generated for this.</p>
+
+<p>Drag out a Panel as a top level component, drag the existing RefreshableList in the inspector into the new Panel. A prompt will ask you if you would like to Move, Copy or Link the list, choose &#8220;Link&#8221;. This will create an instance of your subclass RefreshableList.</p></blockquote>
+
+<p>大致的概念是，你可以在 architect 中 view 的最上層新增一個元件 component 讓他作為類別的存在，並且改變 userAlias 以及 userClassName 屬性，以你要載入的 ux 套件之對應 xtype 以及 ClassName，如此一來，該元件就代表 ux 套件在 architect 中的實體類別，這時候你就可以將該元件作為 link 放至於你想要顯示的 container 底下，此時會透過 xtype 來實體化你引入的 ux 套件。</p>
+
+<p>概念說明完後，來用一個例子說明實際的操作方式，在筆者目前的專案中，希望可以利用手機的照相功能來進行資料的上傳，但為了加速及簡化開發所需時間，不考慮使用手機 native 功能，因為若要如此需要包裝成 app 並且若要考慮跨平台，利用 web 網頁是更快的方式，而瀏覽器發展至今，目前比較新的瀏覽器皆有支援手機相機存取的功能，參考這篇：<a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a>，而為了開發手機平台的 web page，筆者考慮使用 sencha touch 作為前端呈現，既然同樣是 sencha 家族，同樣我們也可以用 architect 進行，而我們需要用到的外掛為 <a href="https://github.com/kostysh/File-uploading-component-for-Sencha-Touch">File-uploading-component-for-Sencha-Touch</a></p>
+
+<p>使用方式在其 github page 有詳細說明，這邊就不再贅述，幾個重點：</p>
+
+<ol>
+<li>在 sencha Architect 中，你可以在 Application 的 config 找到 loader 進行設置 ux 原始碼的路徑。</li>
+<li><p>接著你可以在 view 新增一個 Component 進行一開始說明的設置，如下圖</p>
+
+<p> <img src="http://" alt="image" /></p></li>
+<li><p>參考 <a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a> 這篇文章，我們裡面有一段有提到，要讓瀏覽器存取相機，我們只要簡單的新增 html 元件 <code>&lt;input capture="camera" accept="image/*" type="file" &gt;</code> 即可。</p></li>
+<li>而筆者所用的套件，主要是用來進行檔案上傳，所以基本上並沒有 <code>capture="camera" accept="image/*"</code> 的屬性，因此我們可以調整該 ux 的原始碼，修改如下：</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>        <span class="c1">// Hidden file element</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">tag</span><span class="o">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">reference</span><span class="o">:</span> <span class="s1">&#39;formElement&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">hidden</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">children</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                      
+</span><span class='line'>                    <span class="nx">capture</span><span class="o">:</span> <span class="s2">&quot;camera&quot;</span><span class="p">,</span> <span class="c1">//  add for get pic from camera</span>
+</span><span class='line'>                    <span class="nx">accept</span><span class="o">:</span> <span class="s2">&quot;image/*&quot;</span><span class="p">,</span> <span class="c1">//  add for get pic from camera</span>
+</span><span class='line'>
+</span><span class='line'>                    <span class="nx">tag</span><span class="o">:</span> <span class="s1">&#39;input&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">reference</span><span class="o">:</span> <span class="s1">&#39;fileElement&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;file&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;userfile&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">tabindex</span><span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">hidden</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">style</span><span class="o">:</span> <span class="s1">&#39;opacity:0;position:absolute;top:-3px;right:-3px;bottom:-3px;left:-3px;z-index:16777270;&#39;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此一來，該元件就可以讓我在使用手機操作系統時透過相機擷取照片，fork 後修改的 github 如下：<a href="https://github.com/smlsunxie/File-uploading-component-for-Sencha-Touch">smlsunxie/File-uploading-component-for-Sencha-Touch</a>，有需要的讀者可以自行取用，最後執行的畫面如下：</p>
+
+<p><img src="http://" alt="image" /></p>
+
+<p>點選上圖下方的 browser 將會開啟下面畫面，因為筆者使用的是 ios 模擬器，所以不支援鏡頭，只支援上傳檔案，因此會直接進入選取畫面，如果是實體機器，將會詢問要使用相機，還是要選取檔案上傳，筆者已有實機測試。</p>
+
+<p>在這個手機平板普及的現在，相信使用照相功能是很平常的事，如果需求僅止於此，不需要大費周章開發 app 形式，快速把功能做出來，儘快推出才是重點！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/09/extjs-7-30/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3838,43 +3930,6 @@ sudo /etc/init.d/apache2 restart   #restart apache
 
 <p>以上就是 tomcat 與 mysql 的安裝步驟。</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[程式東西軍： grails & play!]]></title>
-<link href="http://smlsun.com/blog/2013/02/21/grails-play/"/>
-<updated>2013-02-21T16:37:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/21/grails-play</id>
-
-      <content type="html"><![CDATA[<p>grails 與 play! 是當今比較完整的 java framework，當然兩者也常被拿來比較，要說比較優？其實各有各的好。</p>
-
-<p>學習一樣工具需要花很多時間，在開始學習一樣新東西時，當然需要知道哪個是比較值得投入的，人生苦短阿！</p>
-
-<p>因此，在搜尋相關資訊時，發現一個比較 grails and play! 的優缺點很不錯的網站，介紹給大家：</p>
-
-<p><a href="http://www.ubertracks.com/preso/#/">Play vs. Grails Smackdown</a></p>
-
-<p><img src="https://lh4.googleusercontent.com/-64F82PXFzn8/USXlKERNNuI/AAAAAAAALiA/4BTWEumSSzg/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.13.jpg" alt="image" /></p>
-
-<p>這網站的內容是用簡報的方式來呈現，個人是蠻喜歡的，他做了兩個網站，分別使用 grails and play! 進行建置，分別是<a href="http://bike.ubertracks.com/">grils - Bike Über Tracks</a> 以及 <a href="http://hike.ubertracks.com/">play! - Hike Über Tracks</a>；當然在比較時需要從各個面向來進行，該網站先從開發一個專案舉凡資料庫、MVC 架構、設定方式等來進行比較。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-fAoYv2Tr204/USXlLVE-RNI/AAAAAAAALiI/AJgJkzTA45w/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.44.jpg" alt="image" /></p>
-
-<p>接著透過一些應用程式評比工具來測試兩者的優劣，除了開發方便性，效能測試外，對於發展趨勢也有很完整的介紹。</p>
-
-<p>最後的結論由三個面向來做為總結，分別是：程式碼、統計分析、生態系統來做為總結。</p>
-
-<p>雖然有時候比較有點無濟於事，況且對於事物的看法每個人都有所不同，沒有絕對對錯，假如你也正在煩惱哪個比較好，希望這樣的資訊能夠協助你判斷囉。</p>
-
-<p>我個人看完以後看起來是 grails 目前佔上風，不過… 科技日新月異，況且 play! 在 hacker news 數上完勝 grails，誰知道呢？</p>
-
-<p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/21/grails-play/"></a></p>]]></content>
     </entry>
   
 </feed>

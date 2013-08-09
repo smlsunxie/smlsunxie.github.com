@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sencha | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/sencha/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2013-08-09T11:33:59+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例]]></title>
+    <link href="http://smlsun.com/blog/2013/08/09/extjs-7-30/"/>
+    <updated>2013-08-09T09:27:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/09/extjs-7-30</id>
+    <content type="html"><![CDATA[<p>開發 extjs 時，他能夠帶給我們類似 java swing 元件化的前端開發方式，若能搭配 sencha architect 使用，更能讓開發更加的流暢，關於 architect 的使用可參考筆者在之前在 ithome 所寫的文章：<a href="http://ithelp.ithome.com.tw/question/10120289">extjs 4 系列 4/5：利用 Sencha Architect 快速開發 extjs</a>。</p>
+
+<p>而因為 extjs 設計為元件化以及類類別系統，所以除了官方的元件之外，網路上的先進也開發出很多優秀的套件，以補官方功能上的不足，想當然我們也希望在使用  Architect 時也可以載入 ux 套件作為使用，不過很不幸的，如果單純寫 code 是很輕易達成，但在 Architect 卻不易完成，他的程式碼編輯是有限制的，在查了相關資料後，正好找到一篇：<a href="http://stackoverflow.com/questions/12680645/sencha-architect-xtype-change">Sencha Architect xtype change</a>，剛剛好就解決的這個問題，由開發 Architect 的 one of the lead engineers:Aaron Conran 回答如下：</p>
+
+<blockquote><p>Drag out a List as a top level component. All top level components are their own classes. Set the userAlias and userClassName configurations to values like 'refreshablelist' and 'RefreshableList'. Take a look at the code generated for this.</p>
+
+<p>Drag out a Panel as a top level component, drag the existing RefreshableList in the inspector into the new Panel. A prompt will ask you if you would like to Move, Copy or Link the list, choose "Link". This will create an instance of your subclass RefreshableList.</p></blockquote>
+
+<p>大致的概念是，你可以在 architect 中 view 的最上層新增一個元件 component 讓他作為類別的存在，並且改變 userAlias 以及 userClassName 屬性，以你要載入的 ux 套件之對應 xtype 以及 ClassName，如此一來，該元件就代表 ux 套件在 architect 中的實體類別，這時候你就可以將該元件作為 link 放至於你想要顯示的 container 底下，此時會透過 xtype 來實體化你引入的 ux 套件。</p>
+
+<p>概念說明完後，來用一個例子說明實際的操作方式，在筆者目前的專案中，希望可以利用手機的照相功能來進行資料的上傳，但為了加速及簡化開發所需時間，不考慮使用手機 native 功能，因為若要如此需要包裝成 app 並且若要考慮跨平台，利用 web 網頁是更快的方式，而瀏覽器發展至今，目前比較新的瀏覽器皆有支援手機相機存取的功能，參考這篇：<a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a>，而為了開發手機平台的 web page，筆者考慮使用 sencha touch 作為前端呈現，既然同樣是 sencha 家族，同樣我們也可以用 architect 進行，而我們需要用到的外掛為 <a href="https://github.com/kostysh/File-uploading-component-for-Sencha-Touch">File-uploading-component-for-Sencha-Touch</a></p>
+
+<p>使用方式在其 github page 有詳細說明，這邊就不再贅述，幾個重點：</p>
+
+<ol>
+<li>在 sencha Architect 中，你可以在 Application 的 config 找到 loader 進行設置 ux 原始碼的路徑。</li>
+<li><p>接著你可以在 view 新增一個 Component 進行一開始說明的設置，如下圖</p>
+
+<p> <img src="http://" alt="image" /></p></li>
+<li><p>參考 <a href="http://www.html5rocks.com/en/tutorials/getusermedia/intro/">Capturing Audio &amp; Video in HTML5</a> 這篇文章，我們裡面有一段有提到，要讓瀏覽器存取相機，我們只要簡單的新增 html 元件 <code>&lt;input capture="camera" accept="image/*" type="file" &gt;</code> 即可。</p></li>
+<li>而筆者所用的套件，主要是用來進行檔案上傳，所以基本上並沒有 <code>capture="camera" accept="image/*"</code> 的屬性，因此我們可以調整該 ux 的原始碼，修改如下：</li>
+</ol>
+
+
+<p>``` javascript</p>
+
+<pre><code>    // Hidden file element
+    {
+        tag: 'form',
+        reference: 'formElement',
+        hidden: false,            
+
+        children: [
+            {
+
+                capture: "camera", //  add for get pic from camera
+                accept: "image/*", //  add for get pic from camera
+
+                tag: 'input',
+                reference: 'fileElement',
+                type: 'file',
+                name: 'userfile',
+                tabindex: -1,
+                hidden: false,
+                style: 'opacity:0;position:absolute;top:-3px;right:-3px;bottom:-3px;left:-3px;z-index:16777270;'
+            }
+        ]
+    }
+</code></pre>
+
+<p>```</p>
+
+<p>如此一來，該元件就可以讓我在使用手機操作系統時透過相機擷取照片，fork 後修改的 github 如下：<a href="https://github.com/smlsunxie/File-uploading-component-for-Sencha-Touch">smlsunxie/File-uploading-component-for-Sencha-Touch</a>，有需要的讀者可以自行取用，最後執行的畫面如下：</p>
+
+<p><img src="http://" alt="image" /></p>
+
+<p>點選上圖下方的 browser 將會開啟下面畫面，因為筆者使用的是 ios 模擬器，所以不支援鏡頭，只支援上傳檔案，因此會直接進入選取畫面，如果是實體機器，將會詢問要使用相機，還是要選取檔案上傳，筆者已有實機測試。</p>
+
+<p>在這個手機平板普及的現在，相信使用照相功能是很平常的事，如果需求僅止於此，不需要大費周章開發 app 形式，快速把功能做出來，儘快推出才是重點！</p>
+]]></content>
+  </entry>
+  
+</feed>
