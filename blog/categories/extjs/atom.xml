@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-14T18:50:23+08:00</updated>
+  <updated>2013-08-14T18:56:19+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -129,6 +129,20 @@ processLocalized: function(config) {
 ```</p>
 
 <p>一旦加入了 <code>Process config</code> 之後可以看到在 <code>initComponent</code> 這個函式中他將 json object 作為參數傳入 <code>processLocalized</code> 如此一來我們就可以在該函式進行所謂的語系替換，也就可以做到將 title 替換成變數，就解決了沒辦法調整 title 資料型態的窘境。</p>
+
+<p>接著，我們就可以定義我們的語系檔，範例如下：</p>
+
+<p><code>javascript
+var foodprint = {};  
+foodprint.string = {};  
+foodprint.string.list = "瀏覽清單";  
+</code></p>
+
+<p>並且在 Architect 中引入該 js 檔案，如圖：</p>
+
+<p><img src="https://lh3.googleusercontent.com/-CLfnp9EuuvU/Ugth32ooVPI/AAAAAAAALyA/dJ04sF13hQQ/w362-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-14+%25E4%25B8%258B%25E5%258D%25886.53.25.jpg" alt="link" /></p>
+
+<p>至於動態載入不同的語系檔，這邊就不做探討，那是另一個議題，網路上也有一些解法，就先留給個未讀者研究囉。</p>
 
 <p>一開始發現此問題時，直覺反應是這也太不方便了吧！不過在體驗了這樣的作法之後，又覺得這樣做真的很神奇，好處是語系的替換不會散佈在程式碼各處，透過不同函式負責不同的處理，一旦需要新增語系也可以有一致的處理方式，另外在 Architect 進行開發時，畫面上的呈現也可以是簡單易讀的明確文字，確實是兼顧可讀性的處理方式，給大家參考，若有更好的方式也請讓我知道！</p>
 ]]></content>
