@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-09T11:35:50+08:00</updated>
+  <updated>2013-08-14T18:50:23+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,236 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-9-30 更無縫的與 grails 進行整合]]></title>
+<link href="http://smlsun.com/blog/2013/08/14/extjs-9-30/"/>
+<updated>2013-08-14T17:29:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/14/extjs-9-30</id>
+
+      <content type="html"><![CDATA[<p>透過欄位的命名 params.item.id</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/14/extjs-9-30/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[extjs-8-30：在 sencha Architect 中的多語系處理]]></title>
+<link href="http://smlsun.com/blog/2013/08/14/extjs-8-30/"/>
+<updated>2013-08-14T16:50:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/08/14/extjs-8-30</id>
+
+      <content type="html"><![CDATA[<p>關於 extjs 的多語系處理，我們可以參考下列網址：<a href="http://ffzhuang.blogspot.tw/2010/04/quick-add-multiple-language-to-extjs.html">Quick add multiple language to extjs + grails application</a>，或者你可以使用別人寫的 <a href="https://github.com/TigrouMeow/extjs-locale-loader">extjs-locale-loader</a></p>
+
+<p>基本的概念是， 你可以將你的語系資料定義在一個全域的 json Object，如此一來就可以在需要顯示對應語系的地方替換成 json object 裡面的某個屬性，但是在使用 Architect 時，有些屬性不一定可以透過他進行調整，比如說我們希望調整 Panel.title，在 Architect 你只能在 title 的屬性輸入文字屬性不能輸入變數，就算輸入了也會被當字串處理，這狀況確實令人苦惱，不過在遍尋相關資料後，總算讓筆者找到解法，就在官方的文件中關於 <a href="http://docs.sencha.com/architect/2/#!/guide/config_panel">config_panel</a> 說明中 <strong>Using Variables with Configs</strong> 章節，概念上是：title 雖然不能調整資料的類型，但我們可以在任一元件新增 <code>Process config</code> 他會建立一個函式，在裡面可以對 config 進行裡面的欄位調整，光看文件的說明很難想像到底是如何運作，我們可以來看實際產生的程式碼，在還未加入 <code>Process config</code> 之前：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.ItemEditor&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.tab.Panel&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.itemeditor&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;itemEditor&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">activeTab</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;panel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">layout</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;vbox&#39;</span>
+</span><span class='line'>                    <span class="p">},</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;itemgrid&#39;</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">},</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;panel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">layout</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;vbox&#39;</span>
+</span><span class='line'>                    <span class="p">},</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;資料維護&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;itemviewer&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很標準的寫法，我們在 initComponent 將我們需要的加入的元件定義好，其中包括 title 是一個文字 &#8216;list&#8217;，也就是我們沒辦法利用 Arcitect 修改的地方，接著我們來看加入 <code>Process config</code> 之後的程式碼：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.ItemEditor&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.tab.Panel&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.itemeditor&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;itemEditor&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="nx">me</span><span class="p">.</span><span class="nx">processLocalized</span><span class="p">({</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;panel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">layout</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;vbox&#39;</span>
+</span><span class='line'>                    <span class="p">},</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;itemgrid&#39;</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">}),</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;panel&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">layout</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>                        <span class="nx">align</span><span class="o">:</span> <span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+</span><span class='line'>                        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;vbox&#39;</span>
+</span><span class='line'>                    <span class="p">},</span>
+</span><span class='line'>                    <span class="nx">title</span><span class="o">:</span> <span class="s1">&#39;資料維護&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;itemviewer&#39;</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">]</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">processLocalized</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">config</span><span class="p">.</span><span class="nx">title</span><span class="o">=</span><span class="nx">foodprint</span><span class="p">.</span><span class="nx">string</span><span class="p">.</span><span class="nx">list</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">config</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦加入了 <code>Process config</code> 之後可以看到在 <code>initComponent</code> 這個函式中他將 json object 作為參數傳入 <code>processLocalized</code> 如此一來我們就可以在該函式進行所謂的語系替換，也就可以做到將 title 替換成變數，就解決了沒辦法調整 title 資料型態的窘境。</p>
+
+<p>一開始發現此問題時，直覺反應是這也太不方便了吧！不過在體驗了這樣的作法之後，又覺得這樣做真的很神奇，好處是語系的替換不會散佈在程式碼各處，透過不同函式負責不同的處理，一旦需要新增語系也可以有一致的處理方式，另外在 Architect 進行開發時，畫面上的呈現也可以是簡單易讀的明確文字，確實是兼顧可讀性的處理方式，給大家參考，若有更好的方式也請讓我知道！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/14/extjs-8-30/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -3654,284 +3884,6 @@ class Post implements Taggable {
 
 <p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/javascript-sync/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[ubuntu 中安装 apache ab 進行壓力測試]]></title>
-<link href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"/>
-<updated>2013-02-23T11:35:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking</id>
-
-      <content type="html"><![CDATA[<p>資料來源： <a href="http://hikin.iteye.com/blog/866582">ubuntu 中安装 apache ab 來進行簡單的壓力測試</a></p>
-
-<p>在 ubuntu 底下安裝 apache ab 很簡單：</p>
-
-<p>apt-get install apache2-utils</p>
-
-<p>我們可以透過以下指令來做簡單測試：</p>
-
-<p>ab -n 100 -c 10 http://localhost:8080/</p>
-
-<p>其中關於 ab 其他指令的運用可以參考 man</p>
-
-<p>Usage: ab [options] [http[s]://]hostname[:port]/path
-Options are:</p>
-
-<pre><code>//總需求數
--n requests Number of requests to perform宅 
-
-//一次同時併發的請求數 總的請求數(n)=次數*一次併發數(c) 
--c concurrency Number of multiple requests to make
-
--t timelimit Seconds to max. wait for responses
--b windowsize Size of TCP send/receive buffer, in bytes
--p postfile File containing data to POST. Remember also to set -T
--u putfile File containing data to PUT. Remember also to set -T
--T content-type Content-type header for POSTing, eg.
-'application/x-www-form-urlencoded'
-Default is 'text/plain'
--v verbosity How much troubleshooting info to print
--w Print out results in HTML tables
--i Use HEAD instead of GET
--x attributes String to insert as table attributes
--y attributes String to insert as tr attributes
--z attributes String to insert as td or th attributes
--C attribute Add cookie, eg. 'Apache=1234. (repeatable)
--H attribute Add Arbitrary header line, eg. 'Accept-Encoding: gzip'
-Inserted after all normal header lines. (repeatable)
--A attribute Add Basic WWW Authentication, the attributes
-are a colon separated username and password.
--P attribute Add Basic Proxy Authentication, the attributes
-are a colon separated username and password.
--X proxy:port Proxyserver and port number to use
--V Print version number and exit
--k Use HTTP KeepAlive feature
--d Do not show percentiles served table.
--S Do not show confidence estimators and warnings.
--g filename Output collected data to gnuplot format file.
--e filename Output CSV file with percentages served
--r Don't exit on socket receive errors.
--h Display usage information (this message)
--Z ciphersuite Specify SSL/TLS cipher suite (See openssl ciphers)
--f protocol Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)
-</code></pre>
-
-<p>實際的運行報告呈現如下：</p>
-
-<pre><code>Server Software: lighttpd/1.4.20
-Server Hostname: hikin.iteye.com
-Server Port: 80
-
-Document Path: /
-Document Length: 2095 bytes
-
-Concurrency Level: 10
-
-//整個測試持續的時間 
-Time taken for tests: 3.303 seconds
-
-//完成的請求數量 
-Complete requests: 100
-Failed requests: 0
-Write errors: 0
-Total transferred: 235200 bytes
-HTML transferred: 209500 bytes
-
-//平均每秒處理30個請求 
-Requests per second: 30.27 [#/sec] (mean)
-
-//平均每個請求處理時間為330毫秒 注:這裡將一次10個併發請求看成一個整體 
-Time per request: 330.335 [ms] (mean)
-
-//平均每個併發請求處理 時間 為33毫秒 
-Time per request: 33.034 [ms] (mean, across all concurrent requests)
-Transfer rate: 69.53 [Kbytes/sec] received
-
-Connection Times (ms)
-min mean[+/-sd] median max
-Connect: 51 170 35.9 178 230
-Processing: 60 153 64.5 121 263
-Waiting: 55 148 64.4 115 258
-Total: 235 322 59.9 299 437
-
-Percentage of the requests served within a certain time (ms)
-
-//在這100個請求中有50%在299毫秒內完成 
-50% 299
-
-//在這100個請求中有66%在312毫秒內完成 
-66% 312
-75% 383
-80% 412
-90% 431
-95% 432
-98% 436
-99% 437
-100% 437 (longest request)
-</code></pre>
-
-<p>以往要用人工來進行測試，使用 apache ab 可以很快速的完成，讓壓力測試不再是個黑盒子，永遠不知道到底系統運行效率如何。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[mysql5 tomcat7 安裝與注意事項以及透過 apache2 運行 phpmyadmin]]></title>
-<link href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"/>
-<updated>2013-02-22T18:43:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install</id>
-
-      <content type="html"><![CDATA[<p>最近為了運行依一個專案是用 tomcat 作為 AP 與 mysql 作為 DB 的運行環境，實際跑過一次安裝步驟，與過程中的疑難排解，特別寫篇文章記錄一下，順變給有需要的朋友參考看看。</p>
-
-<p>之前在公司時所使用的環境是以 jboss 作為 AP 以及 ms sql 作為 db，而所使用的 os 是 windows xp，基本上還算單純，jboss 解開下載回來的 zip 檔，基本上就可以使用了，而 ms sql 安裝上也不能，只是要注意是否允許資料庫分辨大小寫，以及資料庫編碼方式等。</p>
-
-<p>而這次所要安裝的環境是在 ubuntu 底下，步驟就比較繁瑣了，包括安裝位置什麼的，都有固定位置，更重要的還有權限控管，環境參數等，如果沒有設置好的話是沒有辦法運行的。</p>
-
-<p>首先就先從安裝 mysql 開始啦！</p>
-
-<h2>mysql</h2>
-
-<p>在 ubuntu 安裝 mysql 很簡單只要一句：</p>
-
-<p><code>sudo apt-get install mysql-server</code></p>
-
-<p>安裝完成後會詢問 root 密碼，輸入完成後，接著我們就可進行登入，使用下列語法：</p>
-
-<p><code>mysql -u root -p [資料庫名稱]</code></p>
-
-<p>上述指定，如果沒有如入資料庫名稱，則為資料庫的根目錄，一旦登入後，需要指定操作的資料庫可用下列指令：</p>
-
-<p><code>use [資料庫名稱] ;</code></p>
-
-<p>其中最後的 <code>;</code> 請要記得輸入，那是作為指令結束的識別，有了 <code>;</code> 才會執行，接著一旦登入完成後我們可以建立一個新的資料庫。</p>
-
-<p><code>create database demo</code></p>
-
-<p>預設來說，新增的資料庫是不支援中文，所以如果你要建立資料庫是屬於 utf-8 的編碼方式可以用下列指令：</p>
-
-<p><code>CREATE DATABASE demo DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;</code></p>
-
-<p>再來如果你要新建一個使用者帳號，可以用下列指令，需先登入 mysql：</p>
-
-<p><code>create user 'UserName'@'Host' identified by 'Password';</code></p>
-
-<p>ex:</p>
-
-<p><code>create user 'joey'@'localhost' identified by 'abcd2345';</code></p>
-
-<p>如果你不指定 host 可以先用 <code>%</code> 取代如：</p>
-
-<p><code>create user 'joey'@'%' identified by 'abcd2345';</code></p>
-
-<p>在 mysql 官方的說明如下：</p>
-
-<blockquote><p>If you specify only the user name part of the account name, a host name part of &#8216;%&#8217; is used.</p></blockquote>
-
-<p>user 建立好了，接著就要給予權限啦：</p>
-
-<p><code>grant OPTION on TARGET to USER;</code></p>
-
-<p>範例如下：</p>
-
-<p><code>grant all on *.* to 'joey'@'localhost';</code></p>
-
-<p>上述的意思是 joey 對整個資料庫的所有資料表都擁有全部的權利，如果要指定 joey 只擁有對 demo 這個資料檔[的所有表格]的查詢及新增權利，指令如下：</p>
-
-<p><code>grant select,insert on demo.* to 'joey'@'localhost';</code></p>
-
-<p>假使我們需要知道目前有建立的使用者有哪些，可以使用下列指令顯示 mysql 這個資料庫中 user 資料表的 Host 及 User 欄位：</p>
-
-<p><code>select Host, User from mysql.user;</code></p>
-
-<p>最後如果你要刪除 user 可以用下列指令：</p>
-
-<p><code>drop user OPTION 'UserName'@'Host';</code></p>
-
-<p>如果你需要啟動或停止 mysql 可以用下列指令：</p>
-
-<ul>
-<li>啟動： <code>sudo start mysql</code></li>
-<li>關閉： <code>sudo stop mysql</code></li>
-<li>重啟： <code>sudo restart mysql</code></li>
-</ul>
-
-
-<p>上面就是 mysql 的基礎安裝，當然如果希望一個 gui 元件來管理 mysql，請接著看以下介紹：</p>
-
-<h2>phpmyadmin</h2>
-
-<p>安裝指令也很簡單：</p>
-
-<p><code>sudo apt-get install libapache2-mod-auth-mysql php5-mysql phpmyadmin</code></p>
-
-<p>請根據安裝步驟將他完成，詳細可參考此網址：<a href="http://www.distrogeeks.com/install-phpmyadmin-ubuntu/">Install phpMyAdmin in Ubuntu</a>，其中因為 phpmyadmin 是 php 寫的因此需要運行於 server 上，在這我所使用的是 apache2 可以透過下列指令安裝：</p>
-
-<p><code>sudo apt-get install apache2</code></p>
-
-<p>安裝完成後可以透過瀏覽下列網址來進行操作 <code>http://localhost/phpmyadmin</code>，不過有可能你會看到 404 因此如果你真的遇到了請增加下列步驟：</p>
-
-<p>編輯：</p>
-
-<p><code>sudo vim /etc/apache2/apache2.conf</code></p>
-
-<p>加入下列字串：</p>
-
-<p><code>Include /etc/phpmyadmin/apache.conf</code></p>
-
-<p>重啟 apache2</p>
-
-<p><code>sudo /etc/init.d/apache2 restart</code></p>
-
-<p>你也可以使用啟動與停止：</p>
-
-<pre><code>sudo /etc/init.d/apache2 start   #start apache
-sudo /etc/init.d/apache2 stop   #stop apache
-sudo /etc/init.d/apache2 restart   #restart apache
-</code></pre>
-
-<p>如此一來你就可以用 gui 介面來管理或維護資料庫啦！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-HsxmrVP4C6U/USgqWZS9EaI/AAAAAAAALic/LBXHLR96Wf0/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-23+%E4%B8%8A%E5%8D%8810.32.29.jpg" alt="image" /></p>
-
-<p>mysql 的 介紹算是告一段落了，一些進階的就請 google 一下囉！接著來看 tomcat7 的安裝。</p>
-
-<h2>tomcat7</h2>
-
-<p>在 ubuntu 底下我們可用下列指令來安裝 tomcat7：</p>
-
-<p>sudo apt-get install tomcat7</p>
-
-<p>安裝完成後，我們可以透過下列指令來啟動或關閉 tomcat7：</p>
-
-<ul>
-<li>啟動： <code>sudo service tomcat7 start</code></li>
-<li>關閉： <code>sudo service tomcat7 stop</code></li>
-<li>重啟： <code>sudo service tomcat7 restart</code></li>
-</ul>
-
-
-<p>如果是使用 apt-get install tomcat7 相關檔案放置位置如下：</p>
-
-<ul>
-<li><code>/etc/tomcat6</code> for configuration and runtime, called CATALINA_HOME</li>
-<li><code>/var/lib/tomcat7/webapps/</code> webapps 的位置</li>
-<li><code>/usr/share/tomcat7</code>bin 的位置</li>
-</ul>
-
-
-<p>如果你不想透過 apt-get install tomcat7 可以參考這篇文章安裝：<a href="http://diegobenna.blogspot.tw/2011/01/install-tomcat-7-in-ubuntu-1010.html">Install Tomcat 7 on Ubuntu 12.04</a>，需要注意的是，如果是自行安裝 JAVA_HOME 的設定必須確實，如果設定錯誤，啟動 tomcat 時不會出現明確的錯誤訊息。</p>
-
-<p>以上就是 tomcat 與 mysql 的安裝步驟。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/22/mysql5-tomcat7-install/"></a></p>]]></content>
     </entry>
   
 </feed>

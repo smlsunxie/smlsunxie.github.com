@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-09T11:35:50+08:00</updated>
+  <updated>2013-08-14T18:50:23+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,127 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-8-30：在 sencha Architect 中的多語系處理]]></title>
+    <link href="http://smlsun.com/blog/2013/08/14/extjs-8-30/"/>
+    <updated>2013-08-14T16:50:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/14/extjs-8-30</id>
+    <content type="html"><![CDATA[<p>關於 extjs 的多語系處理，我們可以參考下列網址：<a href="http://ffzhuang.blogspot.tw/2010/04/quick-add-multiple-language-to-extjs.html">Quick add multiple language to extjs + grails application</a>，或者你可以使用別人寫的 <a href="https://github.com/TigrouMeow/extjs-locale-loader">extjs-locale-loader</a></p>
+
+<p>基本的概念是， 你可以將你的語系資料定義在一個全域的 json Object，如此一來就可以在需要顯示對應語系的地方替換成 json object 裡面的某個屬性，但是在使用 Architect 時，有些屬性不一定可以透過他進行調整，比如說我們希望調整 Panel.title，在 Architect 你只能在 title 的屬性輸入文字屬性不能輸入變數，就算輸入了也會被當字串處理，這狀況確實令人苦惱，不過在遍尋相關資料後，總算讓筆者找到解法，就在官方的文件中關於 <a href="http://docs.sencha.com/architect/2/#!/guide/config_panel">config_panel</a> 說明中 <strong>Using Variables with Configs</strong> 章節，概念上是：title 雖然不能調整資料的類型，但我們可以在任一元件新增 <code>Process config</code> 他會建立一個函式，在裡面可以對 config 進行裡面的欄位調整，光看文件的說明很難想像到底是如何運作，我們可以來看實際產生的程式碼，在還未加入 <code>Process config</code> 之前：</p>
+
+<p>``` javascript</p>
+
+<p>Ext.define('foodprint.view.ItemEditor', {</p>
+
+<pre><code>extend: 'Ext.tab.Panel',
+alias: 'widget.itemeditor',
+itemId: 'itemEditor',
+activeTab: 0,
+
+initComponent: function() {
+    var me = this;
+
+    Ext.applyIf(me, {
+        items: [
+            {
+                xtype: 'panel',
+                layout: {
+                    align: 'stretch',
+                    type: 'vbox'
+                },
+                title: 'list',
+                items: [
+                    {
+                        xtype: 'itemgrid'
+                    }
+                ]
+            },
+            {
+                xtype: 'panel',
+                layout: {
+                    align: 'stretch',
+                    type: 'vbox'
+                },
+                title: '資料維護',
+                items: [
+                    {
+                        xtype: 'itemviewer',
+                        flex: 1
+                    }
+                ]
+            }
+        ]
+    });
+
+    me.callParent(arguments);
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<p>很標準的寫法，我們在 initComponent 將我們需要的加入的元件定義好，其中包括 title 是一個文字 'list'，也就是我們沒辦法利用 Arcitect 修改的地方，接著我們來看加入 <code>Process config</code> 之後的程式碼：</p>
+
+<p>``` javascript
+Ext.define('foodprint.view.ItemEditor', {</p>
+
+<pre><code>extend: 'Ext.tab.Panel',
+alias: 'widget.itemeditor',
+itemId: 'itemEditor',
+initComponent: function() {
+    var me = this;
+
+    Ext.applyIf(me, {
+        items: [
+            me.processLocalized({
+                xtype: 'panel',
+                layout: {
+                    align: 'stretch',
+                    type: 'vbox'
+                },
+                title: 'list',
+                items: [
+                    {
+                        xtype: 'itemgrid'
+                    }
+                ]
+            }),
+            {
+                xtype: 'panel',
+                layout: {
+                    align: 'stretch',
+                    type: 'vbox'
+                },
+                title: '資料維護',
+                items: [
+                    {
+                        xtype: 'itemviewer',
+                        flex: 1
+                    }
+                ]
+            }
+        ]
+    });
+
+    me.callParent(arguments);
+},
+
+processLocalized: function(config) {
+    config.title=foodprint.string.list;
+    return config;
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<p>一旦加入了 <code>Process config</code> 之後可以看到在 <code>initComponent</code> 這個函式中他將 json object 作為參數傳入 <code>processLocalized</code> 如此一來我們就可以在該函式進行所謂的語系替換，也就可以做到將 title 替換成變數，就解決了沒辦法調整 title 資料型態的窘境。</p>
+
+<p>一開始發現此問題時，直覺反應是這也太不方便了吧！不過在體驗了這樣的作法之後，又覺得這樣做真的很神奇，好處是語系的替換不會散佈在程式碼各處，透過不同函式負責不同的處理，一旦需要新增語系也可以有一致的處理方式，另外在 Architect 進行開發時，畫面上的呈現也可以是簡單易讀的明確文字，確實是兼顧可讀性的處理方式，給大家參考，若有更好的方式也請讓我知道！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例]]></title>
@@ -578,116 +699,6 @@ onStdEditorToolbarRender: function(component, eOpts) {
 <p>```</p>
 
 <p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs-3-30 mixins(混和) 特性說明]]></title>
-    <link href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"/>
-    <updated>2013-08-05T11:56:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/08/05/extjs-3-30</id>
-    <content type="html"><![CDATA[<p>extjs4 中的 mixsins 是 extjs4 的新特性，在筆者之前寫過的文章中<a href="http://ithelp.ithome.com.tw/question/10120091">extjs 4 系列 1/5：新特性與基本概念</a> mixins (混合複數classes) 章節，有做過簡單介紹，讀者可以參考相關說明，了解 mixsins 的特性，官方 API 可參考連結：<a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>，在 extjs 中屬於 Ext.Class 的函式，也就等於所有不管 mvc 或是元件，都可以使用 mixins 的特性。</p>
-
-<p>接著，想要知道 mixins 在不同狀況下的處理方式可參考 <a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html#o1.3.3.">Ext JS 4 First Look 中文翻譯</a> mixins 章節，在使用上就必須要注意什麼情況下函式或屬性在捨麼情況下會被保留，什麼會被覆蓋。</p>
-
-<p>舉個例子，假設我們有兩個 controller 分別如下：</p>
-
-<p>共用元件之 controller：</p>
-
-<p>``` javascript
-Ext.define('foodprint.controller.StdController', {</p>
-
-<pre><code>extend: 'Ext.app.Controller',
-
-views: [
-    'StdEditorToolbar'
-],
-
-refs: [
-    {
-        ref: 'stdEditorToolbar',
-        selector: 'stdeditortoolbar'
-    }
-],
-
-initial: function(tbar) {
-    ...
-},
-
-onCreateBtnClick: function(btn) {
- ... 
-}
-</code></pre>
-
-<p>});</p>
-
-<p>```</p>
-
-<p>另一個別功能之 controller:</p>
-
-<p>``` javascript
-Ext.define('foodprint.controller.AController', {</p>
-
-<pre><code>extend: 'Ext.app.Controller',
-
-mixins: {
-    StdEditorToolbarCtrl: 'foodprint.controller.StdController'
-},
-
-views: [
-    'BatchEditor'
-],
-
-refs: [
-    {
-        ref: 'batchGrid',
-        selector: 'batchgrid'
-    }
-],
-
-init: function(application) {
-    ...
-},
-
-readBatch: function(obj, record, item, index, e, eOpts) {
-    ...
-},
-</code></pre>
-
-<p>});
-```</p>
-
-<p>在上述的使用情境中，StdController 中的 refs 將會失效，保留 AController 中的 refs，因此在這樣狀況下，若要在 AController 也要能夠有 StdController 中 refs 定義的元件，勢必要在 AController 再次定義一次 StdController 的 refs。</p>
-
-<p>另一種使用情境：假設被 mixins 的類別跟基礎類別有同名的函式，但是我們希望兩個個別實作同名函式<strong>都可以被執行</strong>可以參考 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>的範例：</p>
-
-<p>``` javascript</p>
-
-<p>Ext.define('CanSing', {</p>
-
-<pre><code> sing: function() {
-     alert("I'm on the highway to hell...")
- }
-</code></pre>
-
-<p>});</p>
-
-<p>Ext.define('Musician', {</p>
-
-<pre><code> mixins: {
-     canSing: 'CanSing'
- },
-
- sing: function() {
-     // delegate singing operation to mixin
-     this.mixins.canSing.sing.call(this);
- }
-</code></pre>
-
-<p>})
-```</p>
-
-<p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
 ]]></content>
   </entry>
   
