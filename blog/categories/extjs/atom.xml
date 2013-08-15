@@ -4,7 +4,7 @@
   <title><![CDATA[Category: extjs | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/extjs/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-14T18:56:19+08:00</updated>
+  <updated>2013-08-15T09:26:23+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,256 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[extjs-9-30 更無縫的與 grails 進行整合]]></title>
+    <link href="http://smlsun.com/blog/2013/08/14/extjs-9-30/"/>
+    <updated>2013-08-14T17:29:00+08:00</updated>
+    <id>http://smlsun.com/blog/2013/08/14/extjs-9-30</id>
+    <content type="html"><![CDATA[<p>筆者之前在寫過一篇關於 <a href="http://ithelp.ithome.com.tw/question/10120329">extjs 與 grails 的完美組合</a>，大概說明了 extjs 與 grails 整合所帶來的優點，以及兩者 mvc 的結構可以更快速的開發出容易維護的應用程式，更進一步的我們希望兩者的連結對於資料的 mapping 與更新能夠更加直接。</p>
+
+<p>標題所說的更無縫的整合，在這所要說明的正是關於資料的傳遞，在開發 web 應用程式時，很多時候我們需要處理前端資料結構與後端物件的 mapping，以便進行資料的增修改查，假設我們需要建立一個 grid 如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-WO1kVajzXjg/Ugws44JF0wI/AAAAAAAALyQ/3yB24oNvfho/w433-h173-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-15+%25E4%25B8%258A%25E5%258D%25887.55.06.jpg" alt="image" /></p>
+
+<h2>grials 的 domain 與 extjs 的 model 定義</h2>
+
+<p>畫面以及元件的組立在這就不多做說明，會與後端有關係的就是 domain 與 model的定義，兩者各自代表系統在運作時的資料結構，雖然命名不同，性質是一樣的，假設我們有兩個定義在 grails 的 domain 如下：</p>
+
+<p>``` groovy
+class Item {</p>
+
+<pre><code>String name
+String title=""
+
+static constraints = {
+}
+</code></pre>
+
+<p>}</p>
+
+<p>class Batch {</p>
+
+<pre><code>static belongsTo=[Item:item]
+String name
+
+
+static constraints = {
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>很簡單的兩層結構，在 extjs 也要有對應的 model 如下：</p>
+
+<p>``` javascript
+Ext.define('MyApp.model.Item', {</p>
+
+<pre><code>extend: 'Ext.data.Model',
+
+fields: [
+    {
+        name: 'id'
+    },
+    {
+        name: 'title'
+    },
+    {
+        name: 'name'
+    }
+],
+
+proxy: {
+    type: 'rest',
+    url: '/rest/item',
+    reader: {
+        type: 'json',
+        root: 'itemInstanceList',
+        totalProperty: 'itemInstanceTotal'
+    }
+}
+</code></pre>
+
+<p>});</p>
+
+<p>Ext.define('MyApp.model.Batch', {</p>
+
+<pre><code>extend: 'Ext.data.Model',
+
+fields: [
+    {
+        name: 'id'
+    },
+    {
+        name: 'name'
+    },
+    {
+        mapping: 'item.id',
+        name: 'item.id'
+    }
+],
+
+proxy: {
+    type: 'rest',
+    url: '/rest/batch',
+    reader: {
+        type: 'json',
+        root: 'batchInstanceList',
+        totalProperty: 'BatchInstanceTotal'
+    }
+}
+</code></pre>
+
+<p>});
+```
+同樣定義了相同的資料結構只不過在 extjs 前端多了 id 是因為在 grails 中 id 欄位將會自動產生，不需要經過定義。</p>
+
+<h2>grials 與 extjs 的資料交換與 mapping</h2>
+
+<p>接著要說明兩者之間的資料如何進行交換傳遞，在上述 extjs 的 model 中，proxy 定義了與後端溝通的方式，在這邊我們使用 rest 的方式，reader 定義了回傳回來的資料該如何進行解析，範例的回傳結構如下：</p>
+
+<p>``` javascript
+{</p>
+
+<pre><code>"batchInstanceList": [
+    {
+        "class": "extjs.grails.sample.Batch",
+        "id": 1,
+        "item": {
+            "class": "Item",
+            "id": 1
+        },
+        "name": "batch1"
+    },
+    {
+        "class": "extjs.grails.sample.Batch",
+        "id": 2,
+        "item": {
+            "class": "Item",
+            "id": 1
+        },
+        "name": "batch2"
+    }
+],
+"batchInstanceTotal": 3
+</code></pre>
+
+<p>}
+```</p>
+
+<p>其中 root 與 totalProperty 所指定的就是在回傳 json 中對應的屬性名稱，更進階的，我們可以多層如同：</p>
+
+<p>``` javascript
+{</p>
+
+<pre><code>"itemInstanceList": [
+    {
+        "class": "extjs.grails.sample.Batch",
+        "id": 1,
+        "item": {
+            "class": "Item",
+            "id": 1
+        },
+        "name": "batch1"
+        "route": {
+            [
+                {
+                    id:1
+                    name:'route1'
+                },
+                {
+                    id:2
+                    name:'route2'
+                }
+
+            ]
+        },
+    },
+    {
+        "class": "extjs.grails.sample.Batch",
+        "id": 2,
+        "item": {
+            "class": "Item",
+            "id": 1
+        },
+        "name": "batch2"
+    }
+],
+"batchInstanceTotal": 3
+</code></pre>
+
+<p>}
+```</p>
+
+<p>這樣的結構下我們可以這樣定義 root：</p>
+
+<pre><code>root: 'batchInstanceList.route',
+</code></pre>
+
+<p>很多時候 model 會有 hasMany 的關係，json 解析時清楚看到資料的結構，實際使用時也可以根據不同情形取出不同層級的資料內容進行 grid 的呈現。</p>
+
+<p>另一種情形是為了節省 request 的量，會希望一次交易就將多組資料一次從後端取得，可以指定多層的索引方式就格外重要。</p>
+
+<p>說明完了資料結構的定義，我們在進一步來看單筆資料的回傳，假設我們利用 ajax 將資料送出並且回傳格式為 json 內容如下</p>
+
+<pre><code>{
+    id: 1
+    item_id: 1
+    name: "batch2"
+}
+</code></pre>
+
+<p>後端 grails 接收到這樣的資料時，前端所傳入的參數值都存入 <code>params</code> 這個變數以便進行存取取得任何資料，就跟使用 json object 一樣，我們可以這樣進行更新：</p>
+
+<p>``` groovy
+// update
+def batchInstance=Batch.get(params.id)
+batchInstance.properties = params
+batchInstance.item=Item.findById(params.item_id)
+batchInstance.save()</p>
+
+<p>// create
+def batchInstance=new Batch(params)
+batchInstance.item=Item.findById(params.item_id)
+batchInstance.save()
+```</p>
+
+<p>在使用 grails 時，雖然 update 與 create 的使用方式不同，但我們都可以將整個 json 傳入 domain 讓 grails 自動幫我們進行資料的 mapping，透過 json 裡的每個參數名，而在有多層架構下，初學使用可能會向上述範例程式一樣，需要在查詢一次下層 domain，其實 grails 對於多層的物件也可以自動 mapping 並且查出，假設我們的回資料結構改變為下：</p>
+
+<pre><code>{
+    id: 1
+    item.id: 1 // item_id &gt;&gt; item.id
+    name: "batch2"
+}
+</code></pre>
+
+<p>如此一來在 grails 中我們可以這樣存取 item.id：<code>params.item.id</code>，也就是說傳入 grails 的參數如果是有多層結構，我們可以在前端 field 之 id 定義成對應的多層結構的如同上述範例，即使是使用 form 的格式也是一樣對應 input field 的 name。</p>
+
+<p>調整完後我們的 update 與 create 可以精簡如下：</p>
+
+<p>``` groovy
+// update
+def batchInstance=Batch.get(params.id)
+batchInstance.properties = params
+batchInstance.save()</p>
+
+<p>// create
+def batchInstance=new Batch(params)
+batchInstance.save()
+```</p>
+
+<p>這樣的特性有什麼好處？在不需要特殊的欄位處理下，對於 domain 欄位的調整或新增我們不需要變動到 update 與 create 的處理，所有中間的資料 mapping 都交由 grails 幫我們處理完成，相信還有更重要的事值得我們去花時間。</p>
+
+<h2>sencha architect 使用注意事項</h2>
+
+<p>最後還要在說明的是在使用 architect 定義前端 model 的 name 時不允許輸入 "." 會跳出下圖訊息：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-mQB4Eknmjgk/Ugws5QX998I/AAAAAAAALyc/GAjDYfB8xb0/w370-h97-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-15+%25E4%25B8%258A%25E5%258D%25889.08.03.jpg" alt="image" /></p>
+
+<p>你只要先用 '_' 將他建立完成，之後再進入 field 將 name 中的 _ 改為 '.' 即可，算是兩邊的限制不一樣，基本上 field 中的 name 有 '.' 是不影響運作的。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[extjs-8-30：在 sencha Architect 中的多語系處理]]></title>
@@ -142,7 +392,7 @@ foodprint.string.list = "瀏覽清單";
 
 <p><img src="https://lh3.googleusercontent.com/-CLfnp9EuuvU/Ugth32ooVPI/AAAAAAAALyA/dJ04sF13hQQ/w362-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-14+%25E4%25B8%258B%25E5%258D%25886.53.25.jpg" alt="link" /></p>
 
-<p>至於動態載入不同的語系檔，這邊就不做探討，那是另一個議題，網路上也有一些解法，就先留給個未讀者研究囉。</p>
+<p>至於動態載入不同的語系檔，這邊就不做探討，那是另一個議題，網路上也有一些解法，就先留給各位讀者研究囉。</p>
 
 <p>一開始發現此問題時，直覺反應是這也太不方便了吧！不過在體驗了這樣的作法之後，又覺得這樣做真的很神奇，好處是語系的替換不會散佈在程式碼各處，透過不同函式負責不同的處理，一旦需要新增語系也可以有一致的處理方式，另外在 Architect 進行開發時，畫面上的呈現也可以是簡單易讀的明確文字，確實是兼顧可讀性的處理方式，給大家參考，若有更好的方式也請讓我知道！</p>
 ]]></content>
@@ -464,255 +714,6 @@ form.query('field:nth-child(3n)');
 <li>如果事件處理範圍只屬於某個元件底下並且屬於公用元件，那事件應該定義在元件</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[extjs-4-30 精簡程式碼案例分享]]></title>
-    <link href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"/>
-    <updated>2013-08-05T19:54:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/08/05/extjs-4-30</id>
-    <content type="html"><![CDATA[<p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
-
-<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
-
-<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
-
-<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
-
-<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
-
-<p>``` javascript
-Ext.define('foodprint.view. ', {</p>
-
-<pre><code>extend: 'Ext.toolbar.Toolbar',
-alias: 'widget.stdeditortoolbar',
-
-requires: [
-    'foodprint.view.CreateBtn',
-    'foodprint.view.DeleteBtn',
-    'foodprint.view.SaveBtn',
-    'foodprint.view.ReadBtn',
-    'foodprint.view.UpdateBtn'
-],
-
-itemId: 'stdEditorToolbar',
-
-initComponent: function() {
-    var me = this;
-
-    Ext.applyIf(me, {
-        items: [
-            {
-                xtype: 'createbtn',
-                listeners: {
-                    click: {
-                        fn: me.onCreateBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'deletebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onDeleteBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'savebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onSaveBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'readbtn'
-            },
-            {
-                xtype: 'updatebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onUpdateBtnClick,
-                        scope: me
-                    }
-                }
-            }
-        ]
-    });
-
-    me.callParent(arguments);
-},
-
-onCreateBtnClick: function(button, e, eOpts) {
-        //重覆
-    var crebtn=btn;
-    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
-    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
-    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
-    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
-
-    delbtn.setDisabled(true);
-    savbtn.setDisabled(false);
-    updbtn.setDisabled(true);
-    redbtn.setDisabled(true);
-},
-
-onDeleteBtnClick: function(button, e, eOpts) {
-        //重覆
-    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
-    var delbtn=button;
-    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
-    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
-    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
-
-    delbtn.setDisabled(true);
-},
-
-onSaveBtnClick: function(button, e, eOpts) {
-        //重覆
-    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
-    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
-    var savbtn=button;
-    var updbtn=button.ownerCt.down('button[itemId=updateBtn]');
-    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
-
-    savbtn.setDisabled(true);
-},
-
-onUpdateBtnClick: function(button, e, eOpts) {
-        //重覆
-    var crebtn=button.ownerCt.down('button[itemId=createBtn]');
-    var delbtn=button.ownerCt.down('button[itemId=deleteBtn]');
-    var savbtn=button.ownerCt.down('button[itemId=saveBtn]');
-    var updbtn=button;
-    var redbtn=button.ownerCt.down('button[itemId=readBtn]');
-
-    updbtn.setDisabled(true);
-}
-</code></pre>
-
-<p>});
-```</p>
-
-<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
-
-<p>``` javascript
-Ext.define('foodprint.view.StdEditorToolbar', {</p>
-
-<pre><code>extend: 'Ext.toolbar.Toolbar',
-alias: 'widget.stdeditortoolbar',
-
-requires: [
-    'foodprint.view.CreateBtn',
-    'foodprint.view.DeleteBtn',
-    'foodprint.view.SaveBtn',
-    'foodprint.view.ReadBtn',
-    'foodprint.view.UpdateBtn'
-],
-
-itemId: 'stdEditorToolbar',
-
-initComponent: function() {
-    var me = this;
-
-    Ext.applyIf(me, {
-        items: [
-            {
-                xtype: 'createbtn',
-                listeners: {
-                    click: {
-                        fn: me.onCreateBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'deletebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onDeleteBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'savebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onSaveBtnClick,
-                        scope: me
-                    }
-                }
-            },
-            {
-                xtype: 'readbtn'
-            },
-            {
-                xtype: 'updatebtn',
-                disabled: true,
-                listeners: {
-                    click: {
-                        fn: me.onUpdateBtnClick,
-                        scope: me
-                    }
-                }
-            }
-        ],
-        listeners: {
-            render: {
-                fn: me.onStdEditorToolbarRender,
-                scope: me
-            }
-        }
-    });
-
-    me.callParent(arguments);
-},
-
-onCreateBtnClick: function(button, e, eOpts) {
-    this.delbtn.setDisabled(true);
-    this.savbtn.setDisabled(false);
-    this.updbtn.setDisabled(true);
-    this.redbtn.setDisabled(true);
-},
-
-onDeleteBtnClick: function(button, e, eOpts) {
-    this.delbtn.setDisabled(true);
-},
-
-onSaveBtnClick: function(button, e, eOpts) {
-    this.savbtn.setDisabled(true);
-},
-
-onUpdateBtnClick: function(button, e, eOpts) {
-    this.updbtn.setDisabled(true);
-},
-
-onStdEditorToolbarRender: function(component, eOpts) {
-    this.crebtn=component.down('button[itemId=createBtn]');
-    this.delbtn=component.down('button[itemId=deleteBtn]');
-    this.savbtn=component.down('button[itemId=saveBtn]');
-    this.updbtn=component.down('button[itemId=updateBtn]');
-    this.redbtn=component.down('button[itemId=readBtn]');
-
-}
-</code></pre>
-
-<p>});</p>
-
-<p>```</p>
-
-<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
 ]]></content>
   </entry>
   
