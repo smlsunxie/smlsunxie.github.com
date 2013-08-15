@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-15T09:26:23+08:00</updated>
+  <updated>2013-08-15T15:55:15+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -367,7 +367,7 @@
 <pre><code>{
     id: 1
     item.id: 1 // item_id &gt;&gt; item.id
-    name: "batch2"
+    name: 'batch'
 }
 </code></pre>
 
@@ -395,6 +395,12 @@
 
 
 <p>這樣的特性有什麼好處？在不需要特殊的欄位處理下，對於 domain 欄位的調整或新增我們不需要變動到 update 與 create 的處理，所有中間的資料 mapping 都交由 grails 幫我們處理完成，相信還有更重要的事值得我們去花時間。</p>
+
+<p>關於 grails 的 data binding 方式，讀者可以參考 grails 的官方 <a href="http://grails.org/doc/latest/guide/single.html#dataBinding">7.1.6 Data Binding</a>，裡面有其他更進階方變得 binding 規則，其中在筆者的專案中有遇到一個問題，在要將關連 domain 設為空的時候傳入 null 值一直無法正確運作，在官方說明 binding 的章節中有一段說明：</p>
+
+<blockquote><p>An association property can be set to null by passing the literal String &#8220;null&#8221;.</p></blockquote>
+
+<p>像是這種情形，就應該要把要設為 null 的物件其值改為 &#8220;null&#8221;，如此一來我們就可以把關連 domain 設為空，移除該關連。</p>
 
 <h2>sencha architect 使用注意事項</h2>
 
