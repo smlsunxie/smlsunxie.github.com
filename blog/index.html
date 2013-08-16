@@ -1000,6 +1000,19 @@
 
 <p>至於動態載入不同的語系檔，這邊就不做探討，那是另一個議題，網路上也有一些解法，就先留給各位讀者研究囉。</p>
 
+<p>另外關於語系的處理，我們可以用到 extjs 對於 javascript 的String 類別的強化，參考 API：<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.String-method-format">Ext.String-method-format</a>，對於一些訊息的呈現我們可以將相關參數傳進去，如此在定義語系時，變數的位置就可以被空下來，使用 extjs 原生的函式進行替換，使用方式可參考範例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">cls</span> <span class="o">=</span> <span class="s1">&#39;my-class&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">text</span> <span class="o">=</span> <span class="s1">&#39;Some text&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nb">String</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="s1">&#39;&lt;div class=&quot;{0}&quot;&gt;{1}&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="nx">cls</span><span class="p">,</span> <span class="nx">text</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// s now contains the string: &#39;&lt;div class=&quot;my-class&quot;&gt;Some text&lt;/div&gt;&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>一開始發現此問題時，直覺反應是這也太不方便了吧！不過在體驗了這樣的作法之後，又覺得這樣做真的很神奇，好處是語系的替換不會散佈在程式碼各處，透過不同函式負責不同的處理，一旦需要新增語系也可以有一致的處理方式，另外在 Architect 進行開發時，畫面上的呈現也可以是簡單易讀的明確文字，確實是兼顧可讀性的處理方式，給大家參考，若有更好的方式也請讓我知道！</p>
 
   </div>
