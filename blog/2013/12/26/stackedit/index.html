@@ -12,7 +12,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>ireport use scriptlet - 蹤影</title>
+  <title>stackedit：寫部落格的新利器 - 蹤影</title>
   <meta name="author" content="smlsun">
   <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
 
@@ -34,7 +34,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/">
+  <link rel="canonical" href="http://smlsun.com/blog/2013/12/26/stackedit/">
 
 
 
@@ -308,7 +308,7 @@
     
 <h1 class="entry-title">
 
-Ireport Use Scriptlet
+Stackedit：寫部落格的新利器
 
 </h1>
 
@@ -319,23 +319,45 @@ Ireport Use Scriptlet
 
 
   <div class="post-description">
-    <p>在開始之前請容許我發洩一下：</p>
+    <p>最近經朋友介紹使用同樣是以 markdown 為書寫規則的線上編輯服務 <strong>stackedit</strong> 又讓我回到了 Blogger 了，本來本人是使用 octopress 將文章 push 到 github 發佈文章，因為自從使用 makedown 書寫文章以後就沒辦法接受用一般的編輯器來進行文章撰寫，之前會放棄 Blogger 也是因為沒有很好的 markdown 的支援。</p>
 
-<p>ireport 的文件真他媽的少阿!</p>
+<p>使用 octopress 最大的好處就是可以利用 markdown 書寫，且可以自己調整 blog 的外觀，不過就是麻煩了點，每次發佈都要下指令，且文章的檔名沒辦法隨心所欲的顯示，其他還算不錯，另外如果寫的文章數變多了以後發佈時間也會比較慢，雖然我的文章還沒有那麼多就是了&#8230;</p>
 
-<p>希望透過這篇文章，能幫助大家節省一些時間，其實scriptlet很強大</p>
+<p>另外，畢竟 octopress 幾乎是自己架設，所以對於 SEO 還是必須自己下功夫，但在 bolgspot 就不用太花力器，google 都已幫做了很多了。</p>
 
-<p>知道原理後之後就很簡單了，你可以輕易的讓ireprt中的資料交由自己寫的class進行處理，與ireport的互動將更加容易</p>
+<p>當然要回到 Blogger 最重要的就是 markdown 的撰寫風格，雖然 Blogger 尚未有這樣的功能，幸好有 stackedit 幫這個忙，所以我又回來 Blogger 繼續撰寫往後的 blog 這邊就介紹主要的功能：</p>
 
-<p>只是沒有文件說明他怎麼用，以致沒有人了解他</p>
+<p>你可以在 <a href="https://chrome.google.com/webstore/detail/stackedit/iiooodelglhkcpgbajoejffhijaclcdg?utm_source=chrome-ntp-launcher">stackedit</a> chrome 的官方套件下載，安裝在 chrome，下載之後，你可以到 google drive 新增 stackedit 的檔案：</p>
 
-<p>開始我們的正題</p>
+<p><img src="https://lh5.googleusercontent.com/-gjsyEesIeZI/Urwh7Apwo0I/AAAAAAAAL5U/bbItukNZEqM/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.29.18.png" title="螢幕快照 2013-12-26 下午8.29.18.png" alt="enter image description here" /></p>
 
-<h2>如何使用 ireport scriptlet</h2>
+<p>一旦點選新增後，就會建立一個 document，就可以開始使用 stackedit 編輯文章，文章撰寫的過程中，有時候會需要插入圖片stackedit 也提供了很方便的圖片插入的功能，點選上方的圖片圖示：</p>
 
-<p>先來看看java code</p>
+<p><img src="https://lh6.googleusercontent.com/-IzAXYSA-kns/UrwiuvYvZ1I/AAAAAAAAL5s/EGhCnD0rPOU/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.35.32.png" title="螢幕快照 2013-12-26 下午8.35.32.png" alt="enter image description here" /></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p>跳出下面的視窗</p>
+
+<p><img src="https://lh4.googleusercontent.com/-sAkGBJLE-IY/Urwi7zOMb9I/AAAAAAAAL58/URUZDQnbL3s/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.36.45.png" title="螢幕快照 2013-12-26 下午8.36.45.png" alt="enter image description here" /></p>
+
+<p>你可以選擇外部的圖片網址，也可以選擇自己上傳照片，點選上圖下方的 import from google + 就可以用拖拉的方式來把照片上傳，同時就會自動產生連結。</p>
+
+<p>一旦文章寫好或是隨時都可以用 command + S or 在 windows 底下用 ctrl + S 來進行儲存，他會把更新的內容寫入 google drive 的檔案內。</p>
+
+<p>如果你寫的文章是要發佈到 blog 或是其他地方 stackedit 也提供了很方便的 publish 功能：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-5GbYYmjRJGw/UrwkGmyauqI/AAAAAAAAL6U/iIt7uVqxw3E/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.41.38.png" title="螢幕快照 2013-12-26 下午8.41.38.png" alt="enter image description here" /></p>
+
+<p>舉凡上述的對象都可以進行發佈，一旦設定完成，可以在左上角看到發佈的對象，</p>
+
+<p><img src="https://lh3.googleusercontent.com/-wVzH01vbBUA/UrwkdEjOUoI/AAAAAAAAL6g/aeyv2u_SchM/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.43.12.png" title="螢幕快照 2013-12-26 下午8.43.12.png" alt="enter image description here" /></p>
+
+<p>第一個圖示表示檔案儲存的對像，第二個表示你發佈得對象，只要文章有更新你就可以很方便的發佈到目標位置，且發佈對象可以多個，大大的節省發佈的時間。</p>
+
+<p>除此之外，還可以給你自己選擇文章轉換的類型，有 HTML、pdf 以及原始的 markdown 檔案，其中還可以自定 templete，這邊推薦我在網路上找到的範本，來源網站：<a href="http://pacinispace.Blogger.tw/2013/07/write-in-markdown-stackedit-with-custom.html">markdown templete</a></p>
+
+<p>只要將下列的程式碼：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -344,56 +366,54 @@ Ireport Use Scriptlet
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">com</span><span class="o">.</span><span class="na">smlsun</span><span class="o">.</span><span class="na">ireport</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRDefaultScriptlet</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.sf.jasperreports.engine.JRScriptletException</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestScriptlet</span> <span class="kd">extends</span> <span class="n">JRDefaultScriptlet</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterDetailEval</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">JRScriptletException</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">this</span><span class="o">.</span><span class="na">setVariableValue</span><span class="o">(</span><span class="s">&quot;titleAddOrderid&quot;</span><span class="o">,</span> <span class="s">&quot;test Scriptlet ORDERID:&quot;</span><span class="o">+</span><span class="n">getFieldValue</span><span class="o">(</span><span class="s">&quot;ORDERID&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;!DOCTYPE html&gt;
+</span><span class='line'>&lt;html&gt;
+</span><span class='line'>&lt;head&gt;
+</span><span class='line'>&lt;meta charset="utf-8"&gt;
+</span><span class='line'>&lt;title&gt;&lt;%= documentTitle %&gt;&lt;/title&gt;
+</span><span class='line'> 
+</span><span class='line'>&lt;link rel="stylesheet" type="text/css" href="https://googledrive.com/host/0B33VkLLKzd0aYWxSaUhvQjR2SUU"&gt;
+</span><span class='line'> 
+</span><span class='line'>&lt;script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;
+</span><span class='line'>&lt;/script&gt;
+</span><span class='line'> 
+</span><span class='line'>&lt;script type="text/javascript" src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=desert"&gt;
+</span><span class='line'>&lt;/script&gt;
+</span><span class='line'>&lt;!--
+</span><span class='line'>To use highlight.js uncomment this part and comment the previous script
+</span><span class='line'>&lt;link rel="stylesheet" href="http://yandex.st/highlightjs/7.5/styles/github.min.css"&gt;
+</span><span class='line'>&lt;script src="http://yandex.st/highlightjs/7.5/highlight.min.js"&gt;&lt;/script&gt;
+</span><span class='line'>--&gt;
+</span><span class='line'> 
+</span><span class='line'>&lt;/head&gt;
+</span><span class='line'>&lt;body&gt;&lt;%= documentHTML %&gt;&lt;/body&gt;
+</span><span class='line'>&lt;/html&gt;</span></code></pre></td></tr></table></div></figure>
 
 
-<h3>java部分</h3>
+<p>複製到 stackEdit 中 setting 的：</p>
 
-<p>重點如下：</p>
+<p><img src="https://lh4.googleusercontent.com/-TYn7E_x2bJU/UrwmbxJYuGI/AAAAAAAAL60/EMsdgghaFds/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.50.55.png" title="螢幕快照 2013-12-26 下午8.50.55.png" alt="enter image description here" /></p>
 
-<ul>
-<li>需要注意的是需要 <code>extends JRDefaultScriptlet</code></li>
-<li>接著你需要實作 JRDefaultScriptlet 裡的介面，此範例實作afterDetailEval，也就是當detal band畫完之後進行處理</li>
-<li>透過 getFieldValue 來取得報表中有的欄位值進行處理，此範例只是加上一些字串而已</li>
-<li>處理好的值塞到ireport 事先定義好的Variable，透過 setVariableValue</li>
-<li>將寫完的java 打包成jar，可以看我上一篇文章 <a href="http://smlsun.com/blog/2012/12/06/agile-java-with-gradle/">gradle</a> 快速完成！</li>
-</ul>
+<p>default templete 中，在發佈或存檔時在點選以 templete 輸出，就可以產出不錯的文件內容：</p>
 
+<p><img src="https://lh5.googleusercontent.com/-30BZ80YplCU/UrwnGH54IdI/AAAAAAAAL7E/MDcwuzfOrww/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-26+%E4%B8%8B%E5%8D%888.54.02.png" title="螢幕快照 2013-12-26 下午8.54.02.png" alt="enter image description here" /></p>
 
-<p>java部分大概就是這樣了~</p>
+<p>可說是一舉數得喔！</p>
 
-<hr />
-
-<h3>接著回到ireport</h3>
-
-<p>需要處理的重點如下：</p>
-
-<ul>
-<li>將打包好的jar加入到ireport的classpath</li>
-<li>在你要使用的報表將寫好的class name加到scriptlets，記得要連package</li>
-<li>將Variable建好，需要與class裡定義的一樣，此例需命名為 titleAddOrderid</li>
-<li>新增一個text field 將Expression 填入建好的 $v{titleAddOrderid}</li>
-</ul>
-
-
-<p>OK啦～如此一來就算完成讓ireport 使用 scriptlet，沒圖沒真相，結果如下：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-aK45tf5w6U8/UMFWA9BRnhI/AAAAAAAALXU/WYeH7MHoSh8/s640/testIreportScriptlet.jpg" alt="testIreportScriptlet" /></p>
-
-<p>其實真的不難，做過一次就知道了，就是因為文件少，不知從何開始，希望能幫幫ireport苦惱的人～</p>
-
-<p>最後再補上，別人錄的 step by step 影片，他是用 image當例子，跟本範例用string原理是一樣的</p>
-
-<p><a href="http://ireport-tutorial.blogspot.tw/2008/11/show-blob-image-in-ireport.html">show-blob-image-in-ireport</a></p>
+<p>另外因為 StackEdit 綁定檔案是根據 id 來做對應，所以一旦檔案建立之後隨你放置在任何位置，連結都會一直都在，所以也不影響文件得整理，真的很方便，個人覺得與之前使用 octopress 的經驗來看，方便度大概有提昇寫作速度 30 % 左右，有興趣的可以體驗看看囉！這篇文章就是用 StackEdit，所撰寫的，給大家參考，我也把我本來的網誌 <a href="http://smlsun.com/">蹤影 octopress + github</a> 的文章也都利用 stackedit 輸入到 Blogger，今後就在 <a href="http://blog.smlsun.com/">蹤影 Blogger</a> 繼續與大家分享囉！</p>
 
   </div>
 
@@ -427,12 +447,12 @@ Ireport Use Scriptlet
 
 
 
-<i class="mini-ico-calendar"></i><time datetime="2012-12-06T20:00:00+08:00" pubdate data-updated="true">Dec 6<span>th</span>, 2012</time>
+<i class="mini-ico-calendar"></i><time datetime="2013-12-26T09:29:00+08:00" pubdate data-updated="true">Dec 26<span>th</span>, 2013</time>
 
 
 <span ><i class="mini-ico-tags"></i><span class="categories">
   
-    <a class='category' href='/blog/categories/ireport/'>ireport</a>, <a class='category' href='/blog/categories/java/'>java</a>
+    <a class='category' href='/blog/categories/tools/'>tools</a>
   
 </span></span>
 
@@ -447,7 +467,7 @@ Ireport Use Scriptlet
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/12/26/stackedit/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/12/26/stackedit/" target="_blank" >Tweet</a>
     
   
   
@@ -468,10 +488,8 @@ Ireport Use Scriptlet
         <br>
         <ul class="pagination">
           
-            <a class="left" href="/blog/2012/12/06/agile-java-with-gradle/" title="Previous Post: agile java with gradle: 使用 gradle 快速開發 java"><li>&laquo; agile java with gradle: 使用 gradle 快速開發 java</li></a>
+            <a class="left" href="/blog/2013/08/14/extjs-8-30/" title="Previous Post: extjs-8-30：在 sencha Architect 中的多語系處理"><li>&laquo; extjs-8-30：在 sencha Architect 中的多語系處理</li></a>
           
-          
-            <a class="right" href="/blog/2012/12/07/ireport-use-qrcode/" title="Next Post: ireport use qrcode"><li>ireport use qrcode &raquo;</li></a>
           
         </ul>
 
@@ -615,7 +633,7 @@ Ireport Use Scriptlet
   <h1>Sharing</h1>
   
     
-      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/" target="_blank" >Tweet</a>
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2013/12/26/stackedit/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2013/12/26/stackedit/" target="_blank" >Tweet</a>
     
   
   
@@ -767,8 +785,8 @@ Ireport Use Scriptlet
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/';
-        var disqus_url = 'http://smlsun.com/blog/2012/12/06/ireport-use-scriptlet/';
+        var disqus_identifier = 'http://smlsun.com/blog/2013/12/26/stackedit/';
+        var disqus_url = 'http://smlsun.com/blog/2013/12/26/stackedit/';
         var disqus_script = 'embed.js';
       
     (function () {
