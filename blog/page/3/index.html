@@ -310,191 +310,6 @@
     
 <h1 class="entry-title">
 
-<a href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/">Ubuntu 中安装 Apache Ab 進行壓力測試</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>資料來源： <a href="http://hikin.iteye.com/blog/866582">ubuntu 中安装 apache ab 來進行簡單的壓力測試</a></p>
-
-<p>在 ubuntu 底下安裝 apache ab 很簡單：</p>
-
-<p>apt-get install apache2-utils</p>
-
-<p>我們可以透過以下指令來做簡單測試：</p>
-
-<p>ab -n 100 -c 10 http://localhost:8080/</p>
-
-<p>其中關於 ab 其他指令的運用可以參考 man</p>
-
-<p>Usage: ab [options] [http[s]://]hostname[:port]/path
-Options are:</p>
-
-<pre><code>//總需求數
--n requests Number of requests to perform宅 
-
-//一次同時併發的請求數 總的請求數(n)=次數*一次併發數(c) 
--c concurrency Number of multiple requests to make
-
--t timelimit Seconds to max. wait for responses
--b windowsize Size of TCP send/receive buffer, in bytes
--p postfile File containing data to POST. Remember also to set -T
--u putfile File containing data to PUT. Remember also to set -T
--T content-type Content-type header for POSTing, eg.
-'application/x-www-form-urlencoded'
-Default is 'text/plain'
--v verbosity How much troubleshooting info to print
--w Print out results in HTML tables
--i Use HEAD instead of GET
--x attributes String to insert as table attributes
--y attributes String to insert as tr attributes
--z attributes String to insert as td or th attributes
--C attribute Add cookie, eg. 'Apache=1234. (repeatable)
--H attribute Add Arbitrary header line, eg. 'Accept-Encoding: gzip'
-Inserted after all normal header lines. (repeatable)
--A attribute Add Basic WWW Authentication, the attributes
-are a colon separated username and password.
--P attribute Add Basic Proxy Authentication, the attributes
-are a colon separated username and password.
--X proxy:port Proxyserver and port number to use
--V Print version number and exit
--k Use HTTP KeepAlive feature
--d Do not show percentiles served table.
--S Do not show confidence estimators and warnings.
--g filename Output collected data to gnuplot format file.
--e filename Output CSV file with percentages served
--r Don't exit on socket receive errors.
--h Display usage information (this message)
--Z ciphersuite Specify SSL/TLS cipher suite (See openssl ciphers)
--f protocol Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)
-</code></pre>
-
-<p>實際的運行報告呈現如下：</p>
-
-<pre><code>Server Software: lighttpd/1.4.20
-Server Hostname: hikin.iteye.com
-Server Port: 80
-
-Document Path: /
-Document Length: 2095 bytes
-
-Concurrency Level: 10
-
-//整個測試持續的時間 
-Time taken for tests: 3.303 seconds
-
-//完成的請求數量 
-Complete requests: 100
-Failed requests: 0
-Write errors: 0
-Total transferred: 235200 bytes
-HTML transferred: 209500 bytes
-
-//平均每秒處理30個請求 
-Requests per second: 30.27 [#/sec] (mean)
-
-//平均每個請求處理時間為330毫秒 注:這裡將一次10個併發請求看成一個整體 
-Time per request: 330.335 [ms] (mean)
-
-//平均每個併發請求處理 時間 為33毫秒 
-Time per request: 33.034 [ms] (mean, across all concurrent requests)
-Transfer rate: 69.53 [Kbytes/sec] received
-
-Connection Times (ms)
-min mean[+/-sd] median max
-Connect: 51 170 35.9 178 230
-Processing: 60 153 64.5 121 263
-Waiting: 55 148 64.4 115 258
-Total: 235 322 59.9 299 437
-
-Percentage of the requests served within a certain time (ms)
-
-//在這100個請求中有50%在299毫秒內完成 
-50% 299
-
-//在這100個請求中有66%在312毫秒內完成 
-66% 312
-75% 383
-80% 412
-90% 431
-95% 432
-98% 436
-99% 437
-100% 437 (longest request)
-</code></pre>
-
-<p>以往要用人工來進行測試，使用 apache ab 可以很快速的完成，讓壓力測試不再是個黑盒子，永遠不知道到底系統運行效率如何。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-02-23T11:35:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/23/ubuntu-apache-ab-benchmarking/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
 <a href="/blog/2013/02/22/mysql5-tomcat7-install/">Mysql5 Tomcat7 安裝與注意事項以及透過 Apache2 運行 Phpmyadmin</a>
 
 </h1>
@@ -617,6 +432,10 @@ sudo /etc/init.d/apache2 restart   #restart apache
 <p>如此一來你就可以用 gui 介面來管理或維護資料庫啦！</p>
 
 <p><img src="https://lh6.googleusercontent.com/-HsxmrVP4C6U/USgqWZS9EaI/AAAAAAAALic/LBXHLR96Wf0/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-23+%E4%B8%8A%E5%8D%8810.32.29.jpg" alt="image" /></p>
+
+<p>如果進入首頁時是讓你下載一個檔案，而不是登入畫面，那你還需要安裝下列套件</p>
+
+<p><code>sudo apt-get install libapache2-mod-php5</code></p>
 
 <p>mysql 的 介紹算是告一段落了，一些進階的就請 google 一下囉！接著來看 tomcat7 的安裝。</p>
 
@@ -2942,6 +2761,277 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
 </div>
     </div>
     
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/05/extjs-events/">Extjs: Events</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>資料來源: 次世代 Ajax 解決方案 EXTjs 開發實戰</p>
+
+<p>作者:徐會生、何啟偉、康愛媛</p>
+
+<h2>Extjs 事件</h2>
+
+<p>ExtJs對事件的管理非常強大，主要定義在Ext.EventManager對象(單例模式)中。先看註冊事件監聽方式，ExtJs提供了幾種方式來註冊元素監聽函數</p>
+
+<ul>
+<li>透過 <code>Ext.EventManager.addListener/on</code> 函數來為指定元素的某種事件註冊監聽函數。例如：<code>Ext.EventManager.on('test1','click',clickMe,this);</code></li>
+<li>透過ExtJs元素的on函數來為自身註冊某種事件的監聽處理函數。例如：
+<code>Ext.get('test1').on('click', clickMe,this,{preventDefault:true});</code></li>
+</ul>
+
+
+<p>其中 options參數是事件配置項，各項說明如下：</p>
+
+<ul>
+<li>scope ：可指定執行上下文</li>
+<li>delegate ：事件代理</li>
+<li>stopEvent ：阻止冒泡和默認行為</li>
+<li>preventDefault ：阻止默認行為</li>
+<li>stopPropagation ：停止事件冒泡</li>
+<li>normalized ：僅傳原生事件對象</li>
+<li>delay ：延遲執行</li>
+<li>single :僅執行一次</li>
+<li>buffer ：延遲執行，多次時最後一次覆蓋前一次</li>
+<li>target :指定在父元素上執行</li>
+</ul>
+
+
+<p>舉例來說，假如我要進行事件延遲處理，就可以使用 delay</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(){</span>
+</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="s2">&quot;btnAlert&quot;</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;click&quot;</span> <span class="p">,</span><span class="nx">a</span><span class="p">,</span> <span class="k">this</span> <span class="p">,{</span><span class="nx">delay</span><span class="o">:</span><span class="mi">2000</span><span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要知道更詳細的解說可以查看 extjs api: <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.EventManager-method-addListener">Ext.EventManager-method-addListener</a></p>
+
+<h2>Extjs 之事件模型</h2>
+
+<p>所有繼承自 <a href="http://docs.sencha.com/ext-js/3-4/#!/api/Ext.util.Observable">Ext.util.observable</a> 類別的控制項皆可以支援事件。因此可對這些繼承自 Ext.util.observable 的物件定義事件，並為這些事件配置監聽器。當某個事件被觸發，Ext會自動呼叫對應的監聽器，此即為Ext之事件模型。</p>
+
+<p>下面是個簡單的例子</p>
+
+<h3>定義Person類別</h3>
+
+<ul>
+<li>此例定義了一個Person物件，擁有一個屬性 name。</li>
+<li>使用 this.addEvent() 函式定義了 walk、eat與sleep三個自訂事件。</li>
+<li>使用 Ext.extend() 讓Person物件繼承Ext.util.observable所有屬性。</li>
+<li>並擴充一個新函數 info()，並設計info() 函式可傳回Person的資訊。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Person</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">addEvents</span><span class="p">(</span><span class="err">“</span><span class="nx">walk</span><span class="err">”</span><span class="p">,</span><span class="err">”</span><span class="nx">eat</span><span class="err">”</span><span class="p">,</span><span class="err">”</span><span class="nx">sleep</span><span class="err">”</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">Person</span><span class="p">,</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">observable</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">info</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="err">‘</span><span class="nx">is</span><span class="err">’</span> <span class="o">+</span> <span class="nx">event</span> <span class="o">+</span> <span class="err">‘</span><span class="nx">ing</span><span class="p">.</span><span class="err">’</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>建立Person實體物件(instance)，並為其事件配置監聽器(listener)</h3>
+
+<ul>
+<li>on 為 addListener() 的簡寫型式。</li>
+<li>on 函式第一個函數為事件名稱，第二個參數為事件發生時所執行的函數。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">(</span><span class="err">‘</span><span class="nx">Lingo</span><span class="err">’</span><span class="p">);</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">walk</span><span class="err">’</span> <span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="err">‘</span><span class="nx">event</span><span class="err">’</span> <span class="p">,</span> <span class="nx">person</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="err">“</span><span class="nx">is</span> <span class="nx">walking</span><span class="err">…”</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">eat</span><span class="err">’</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">breakfast</span><span class="p">,</span> <span class="nx">lunch</span><span class="p">,</span> <span class="nx">supper</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="err">‘</span><span class="nx">event</span><span class="err">’</span><span class="p">,</span> <span class="nx">person</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="err">“</span><span class="nx">want</span> <span class="nx">to</span> <span class="nx">eat</span><span class="err">”</span> <span class="o">+</span> <span class="nx">breakfast</span> <span class="o">+</span> <span class="err">“</span><span class="nx">and</span> <span class="err">”</span><span class="o">+</span> <span class="nx">lunch</span> <span class="o">+</span> <span class="err">“</span><span class="nx">and</span> <span class="err">”</span> <span class="o">+</span> <span class="nx">supper</span> <span class="o">+</span> <span class="err">“</span><span class="p">.</span><span class="err">”</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">person</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">sleep</span><span class="err">’</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="err">‘</span><span class="nx">event</span><span class="err">’</span><span class="p">,</span><span class="nx">person</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="err">“從”</span> <span class="o">+</span> <span class="nx">time</span><span class="p">.</span><span class="nx">format</span><span class="p">(</span><span class="err">“</span><span class="nx">H</span><span class="err">”</span><span class="p">)</span> <span class="o">+</span> <span class="err">“點開始睡覺。”</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>觸發事件</h3>
+
+<ul>
+<li>呼叫fireEvent() 即觸發函式，傳入一個事件名稱，其對應之監聽函式即會執行。</li>
+<li>與 on() 相反，un() 為 removeListener() 函式的簡寫，用途為刪除某事件之對應函數。</li>
+<li>另有一 purgeListeners() 函數，可將所有監聽器刪除。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="err">‘</span><span class="nx">walk</span><span class="err">’</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span> <span class="p">,</span> <span class="kd">function</span><span class="p">{</span>
+</span><span class='line'>  <span class="nx">person</span><span class="p">.</span><span class="nx">fireEvent</span><span class="p">(</span><span class="err">‘</span><span class="nx">walk</span><span class="err">’</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="err">‘</span><span class="nx">eat</span><span class="err">’</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">person</span><span class="p">.</span><span class="nx">fireEvent</span><span class="p">(</span><span class="err">‘</span><span class="nx">eat</span><span class="err">’</span><span class="p">,</span> <span class="err">‘早餐’</span><span class="p">,</span> <span class="err">‘午餐’</span><span class="p">,</span> <span class="err">‘晚餐’</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="err">‘</span><span class="nx">sleep</span><span class="err">’</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">person</span><span class="p">.</span><span class="nx">fireEvent</span><span class="p">(</span><span class="err">‘</span><span class="nx">sleep</span><span class="err">’</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>瀏覽器事件</h2>
+
+<ul>
+<li>主要使用 Ext.EventManager, Ext.EventObject 與 Ext.lib.Event 對原生瀏覽器事件進行包裝。</li>
+<li>HTML 瀏覽器事件屬於單一綁定，Ext框架則是對於同一個事件可以綁定至多個事件處理控制碼上。</li>
+</ul>
+
+
+<h3>原生 HTML</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">e</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="err">“</span><span class="nx">test</span><span class="err">”</span><span class="p">);</span>
+</span><span class='line'><span class="nx">e</span><span class="p">.</span><span class="nx">onclick</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="err">“</span><span class="nx">handle1</span><span class="err">”</span><span class="p">)};</span>
+</span><span class='line'><span class="nx">e</span><span class="p">.</span><span class="nx">onclick</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="err">“</span><span class="nx">hangle2</span><span class="err">”</span><span class="p">)};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>按下 test後，只會顯示 handle2 提示框。</p></blockquote>
+
+<h3>extjs</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="err">‘</span><span class="nx">test</span><span class="err">’</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">test</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="err">“</span><span class="nx">handle1</span><span class="err">”</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">test</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="err">‘</span><span class="nx">click</span><span class="err">’</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="err">“</span><span class="nx">handle2</span><span class="err">”</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>按下 test 後，handle1 與 handle2 提示框皆會依序顯示。</p></blockquote>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-05T10:18:00+08:00" pubdate data-updated="true">Feb 5<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/05/extjs-events/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/05/extjs-events/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
 
 
 
@@ -3019,10 +3109,6 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
   <ul id="recent_posts">
     
       <li>
-        <a href="/blog/2013/08/14/extjs-9-30/">extjs-9-30 更無縫的與 grails 進行整合</a>
-      </li>
-    
-      <li>
         <a href="/blog/2013/08/14/extjs-8-30/">extjs-8-30：在 sencha Architect 中的多語系處理</a>
       </li>
     
@@ -3036,6 +3122,10 @@ for  ( var  i  =   0 ; i   10000 ; i ++ ) {
     
       <li>
         <a href="/blog/2013/08/06/online-meeting-record/">遠端線上開會並且記錄的利器：google hangout</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2013/08/05/extjs-5-30/">extjs-5-30 事件宣告的建議</a>
       </li>
     
   </ul>

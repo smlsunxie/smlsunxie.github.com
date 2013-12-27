@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2013-08-16T11:50:02+08:00</updated>
+  <updated>2013-12-27T08:42:12+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,406 +11,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs-9-30 更無縫的與 grails 進行整合]]></title>
-<link href="http://smlsun.com/blog/2013/08/14/extjs-9-30/"/>
-<updated>2013-08-14T17:29:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/08/14/extjs-9-30</id>
-
-      <content type="html"><![CDATA[<p>筆者之前在寫過一篇關於 <a href="http://ithelp.ithome.com.tw/question/10120329">extjs 與 grails 的完美組合</a>，大概說明了 extjs 與 grails 整合所帶來的優點，以及兩者 mvc 的結構可以更快速的開發出容易維護的應用程式，更進一步的我們希望兩者的連結對於資料的 mapping 與更新能夠更加直接。</p>
-
-<p>標題所說的更無縫的整合，在這所要說明的正是關於資料的傳遞，在開發 web 應用程式時，很多時候我們需要處理前端資料結構與後端物件的 mapping，以便進行資料的增修改查，假設我們需要建立一個 grid 如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-WO1kVajzXjg/Ugws44JF0wI/AAAAAAAALyQ/3yB24oNvfho/w433-h173-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-15+%25E4%25B8%258A%25E5%258D%25887.55.06.jpg" alt="image" /></p>
-
-<h2>grials 的 domain 與 extjs 的 model 定義</h2>
-
-<p>畫面以及元件的組立在這就不多做說明，會與後端有關係的就是 domain 與 model的定義，兩者各自代表系統在運作時的資料結構，雖然命名不同，性質是一樣的，假設我們有兩個定義在 grails 的 domain 如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="kd">class</span> <span class="nc">Item</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">String</span> <span class="n">name</span>
-</span><span class='line'>  <span class="n">String</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">constraints</span> <span class="o">=</span> <span class="o">{</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">class</span> <span class="nc">Batch</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">static</span> <span class="n">belongsTo</span><span class="o">=[</span><span class="nl">Item:</span><span class="n">item</span><span class="o">]</span>
-</span><span class='line'>  <span class="n">String</span> <span class="n">name</span>
-</span><span class='line'>  
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">constraints</span> <span class="o">=</span> <span class="o">{</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>很簡單的兩層結構，在 extjs 也要有對應的 model 如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;MyApp.model.Item&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;title&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;rest&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/rest/item&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">reader</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;itemInstanceList&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">totalProperty</span><span class="o">:</span> <span class="s1">&#39;itemInstanceTotal&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;MyApp.model.Batch&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">mapping</span><span class="o">:</span> <span class="s1">&#39;item.id&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;item.id&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;rest&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;/rest/batch&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">reader</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;batchInstanceList&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">totalProperty</span><span class="o">:</span> <span class="s1">&#39;BatchInstanceTotal&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>同樣定義了相同的資料結構只不過在 extjs 前端多了 id 是因為在 grails 中 id 欄位將會自動產生，不需要經過定義。</p>
-
-<h2>grials 與 extjs 的資料交換與 mapping</h2>
-
-<p>接著要說明兩者之間的資料如何進行交換傳遞，在上述 extjs 的 model 中，proxy 定義了與後端溝通的方式，在這邊我們使用 rest 的方式，reader 定義了回傳回來的資料該如何進行解析，範例的回傳結構如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="s2">&quot;batchInstanceList&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;extjs.grails.sample.Batch&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;item&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>              <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span>
-</span><span class='line'>          <span class="p">},</span>
-</span><span class='line'>          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;batch1&quot;</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;extjs.grails.sample.Batch&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;item&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>              <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span>
-</span><span class='line'>          <span class="p">},</span>
-</span><span class='line'>          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;batch2&quot;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">],</span>
-</span><span class='line'>  <span class="s2">&quot;batchInstanceTotal&quot;</span><span class="o">:</span> <span class="mi">3</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>其中 root 與 totalProperty 所指定的就是在回傳 json 中對應的屬性名稱，更進階的，我們可以多層如同：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="s2">&quot;itemInstanceList&quot;</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;extjs.grails.sample.Batch&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;item&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>              <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span>
-</span><span class='line'>          <span class="p">},</span>
-</span><span class='line'>          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;batch1&quot;</span>
-</span><span class='line'>          <span class="s2">&quot;route&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>              <span class="p">[</span>
-</span><span class='line'>                  <span class="p">{</span>
-</span><span class='line'>                      <span class="nx">id</span><span class="o">:</span><span class="mi">1</span>
-</span><span class='line'>                      <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;route1&#39;</span>
-</span><span class='line'>                  <span class="p">},</span>
-</span><span class='line'>                  <span class="p">{</span>
-</span><span class='line'>                      <span class="nx">id</span><span class="o">:</span><span class="mi">2</span>
-</span><span class='line'>                      <span class="nx">name</span><span class="o">:</span><span class="s1">&#39;route2&#39;</span>
-</span><span class='line'>                  <span class="p">}</span>
-</span><span class='line'>                  
-</span><span class='line'>              <span class="p">]</span>
-</span><span class='line'>          <span class="p">},</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="p">{</span>
-</span><span class='line'>          <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;extjs.grails.sample.Batch&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>          <span class="s2">&quot;item&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>              <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">1</span>
-</span><span class='line'>          <span class="p">},</span>
-</span><span class='line'>          <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;batch2&quot;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">],</span>
-</span><span class='line'>  <span class="s2">&quot;batchInstanceTotal&quot;</span><span class="o">:</span> <span class="mi">3</span>
-</span><span class='line'>  
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>這樣的結構下我們可以這樣定義 root：</p>
-
-<pre><code>root: 'batchInstanceList.route',
-</code></pre>
-
-<p>很多時候 model 會有 hasMany 的關係，json 解析時清楚看到資料的結構，實際使用時也可以根據不同情形取出不同層級的資料內容進行 grid 的呈現。</p>
-
-<p>另一種情形是為了節省 request 的量，會希望一次交易就將多組資料一次從後端取得，可以指定多層的索引方式就格外重要。</p>
-
-<p>說明完了資料結構的定義，我們在進一步來看單筆資料的回傳，假設我們利用 ajax 將資料送出並且回傳格式為 json 內容如下</p>
-
-<pre><code>{
-    id: 1
-    item_id: 1
-    name: "batch2"
-}
-</code></pre>
-
-<p>後端 grails 接收到這樣的資料時，前端所傳入的參數值都存入 <code>params</code> 這個變數以便進行存取取得任何資料，就跟使用 json object 一樣，我們可以這樣進行更新：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="c1">// update</span>
-</span><span class='line'><span class="kt">def</span> <span class="n">batchInstance</span><span class="o">=</span><span class="n">Batch</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">id</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">properties</span> <span class="o">=</span> <span class="n">params</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">item_id</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">save</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// create</span>
-</span><span class='line'><span class="kt">def</span> <span class="n">batchInstance</span><span class="o">=</span><span class="k">new</span> <span class="n">Batch</span><span class="o">(</span><span class="n">params</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">item</span><span class="o">=</span><span class="n">Item</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">item_id</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">save</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在使用 grails 時，雖然 update 與 create 的使用方式不同，但我們都可以將整個 json 傳入 domain 讓 grails 自動幫我們進行資料的 mapping，透過 json 裡的每個參數名，而在有多層架構下，初學使用可能會向上述範例程式一樣，需要在查詢一次下層 domain，其實 grails 對於多層的物件也可以自動 mapping 並且查出，假設我們的回資料結構改變為下：</p>
-
-<pre><code>{
-    id: 1
-    item.id: 1 // item_id &gt;&gt; item.id
-    name: 'batch'
-}
-</code></pre>
-
-<p>如此一來在 grails 中我們可以這樣存取 item.id：<code>params.item.id</code>，也就是說傳入 grails 的參數如果是有多層結構，我們可以在前端 field 之 id 定義成對應的多層結構的如同上述範例，即使是使用 form 的格式也是一樣對應 input field 的 name。</p>
-
-<p>調整完後我們的 update 與 create 可以精簡如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'><span class="c1">// update</span>
-</span><span class='line'><span class="kt">def</span> <span class="n">batchInstance</span><span class="o">=</span><span class="n">Batch</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">id</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">properties</span> <span class="o">=</span> <span class="n">params</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">save</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// create</span>
-</span><span class='line'><span class="kt">def</span> <span class="n">batchInstance</span><span class="o">=</span><span class="k">new</span> <span class="n">Batch</span><span class="o">(</span><span class="n">params</span><span class="o">)</span>
-</span><span class='line'><span class="n">batchInstance</span><span class="o">.</span><span class="na">save</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>這樣的特性有什麼好處？在不需要特殊的欄位處理下，對於 domain 欄位的調整或新增我們不需要變動到 update 與 create 的處理，所有中間的資料 mapping 都交由 grails 幫我們處理完成，相信還有更重要的事值得我們去花時間。</p>
-
-<p>關於 grails 的 data binding 方式，讀者可以參考 grails 的官方 <a href="http://grails.org/doc/latest/guide/single.html#dataBinding">7.1.6 Data Binding</a>，裡面有其他更進階方變得 binding 規則，其中在筆者的專案中有遇到一個問題，在要將關連 domain 設為空的時候傳入 null 值一直無法正確運作，在官方說明 binding 的章節中有一段說明：</p>
-
-<blockquote><p>An association property can be set to null by passing the literal String &#8220;null&#8221;.</p></blockquote>
-
-<p>像是這種情形，就應該要把要設為 null 的物件其值改為 &#8220;null&#8221;，如此一來我們就可以把關連 domain 設為空，移除該關連。</p>
-
-<h2>sencha architect 使用注意事項</h2>
-
-<p>最後還要在說明的是在使用 architect 定義前端 model 的 name 時不允許輸入 &#8220;.&#8221; 會跳出下圖訊息：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-mQB4Eknmjgk/Ugws5QX998I/AAAAAAAALyc/GAjDYfB8xb0/w370-h97-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-15+%25E4%25B8%258A%25E5%258D%25889.08.03.jpg" alt="image" /></p>
-
-<p>你只要先用 &#8216;_&#8217; 將他建立完成，之後再進入 field 將 name 中的 _ 改為 &#8216;.&#8217; 即可，算是兩邊的限制不一樣，基本上 field 中的 name 有 &#8216;.&#8217; 是不影響運作的。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/14/extjs-9-30/"></a></p>]]></content>
-    </entry>
   
     <entry>
       
@@ -4299,6 +3899,129 @@ class Post implements Taggable {
 
 <p>另外一個流程控制的議題，假設你有個連續的 ajax 請求需求，且必須照順序執行可參考下列文章：<a href="http://blog.darkthread.net/post-2012-09-05-sequential-ajax-with-jquery.aspx">以jQuery循序執行AJAX呼叫，並依結果決定是否繼續</a></p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/javascript-sync/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[ubuntu 中安装 apache ab 進行壓力測試]]></title>
+<link href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"/>
+<updated>2013-02-23T11:35:00+08:00</updated>
+<id>http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking</id>
+
+      <content type="html"><![CDATA[<p>資料來源： <a href="http://hikin.iteye.com/blog/866582">ubuntu 中安装 apache ab 來進行簡單的壓力測試</a></p>
+
+<p>在 ubuntu 底下安裝 apache ab 很簡單：</p>
+
+<p>apt-get install apache2-utils</p>
+
+<p>我們可以透過以下指令來做簡單測試：</p>
+
+<p>ab -n 100 -c 10 http://localhost:8080/</p>
+
+<p>其中關於 ab 其他指令的運用可以參考 man</p>
+
+<p>Usage: ab [options] [http[s]://]hostname[:port]/path
+Options are:</p>
+
+<pre><code>//總需求數
+-n requests Number of requests to perform宅 
+
+//一次同時併發的請求數 總的請求數(n)=次數*一次併發數(c) 
+-c concurrency Number of multiple requests to make
+
+-t timelimit Seconds to max. wait for responses
+-b windowsize Size of TCP send/receive buffer, in bytes
+-p postfile File containing data to POST. Remember also to set -T
+-u putfile File containing data to PUT. Remember also to set -T
+-T content-type Content-type header for POSTing, eg.
+'application/x-www-form-urlencoded'
+Default is 'text/plain'
+-v verbosity How much troubleshooting info to print
+-w Print out results in HTML tables
+-i Use HEAD instead of GET
+-x attributes String to insert as table attributes
+-y attributes String to insert as tr attributes
+-z attributes String to insert as td or th attributes
+-C attribute Add cookie, eg. 'Apache=1234. (repeatable)
+-H attribute Add Arbitrary header line, eg. 'Accept-Encoding: gzip'
+Inserted after all normal header lines. (repeatable)
+-A attribute Add Basic WWW Authentication, the attributes
+are a colon separated username and password.
+-P attribute Add Basic Proxy Authentication, the attributes
+are a colon separated username and password.
+-X proxy:port Proxyserver and port number to use
+-V Print version number and exit
+-k Use HTTP KeepAlive feature
+-d Do not show percentiles served table.
+-S Do not show confidence estimators and warnings.
+-g filename Output collected data to gnuplot format file.
+-e filename Output CSV file with percentages served
+-r Don't exit on socket receive errors.
+-h Display usage information (this message)
+-Z ciphersuite Specify SSL/TLS cipher suite (See openssl ciphers)
+-f protocol Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)
+</code></pre>
+
+<p>實際的運行報告呈現如下：</p>
+
+<pre><code>Server Software: lighttpd/1.4.20
+Server Hostname: hikin.iteye.com
+Server Port: 80
+
+Document Path: /
+Document Length: 2095 bytes
+
+Concurrency Level: 10
+
+//整個測試持續的時間 
+Time taken for tests: 3.303 seconds
+
+//完成的請求數量 
+Complete requests: 100
+Failed requests: 0
+Write errors: 0
+Total transferred: 235200 bytes
+HTML transferred: 209500 bytes
+
+//平均每秒處理30個請求 
+Requests per second: 30.27 [#/sec] (mean)
+
+//平均每個請求處理時間為330毫秒 注:這裡將一次10個併發請求看成一個整體 
+Time per request: 330.335 [ms] (mean)
+
+//平均每個併發請求處理 時間 為33毫秒 
+Time per request: 33.034 [ms] (mean, across all concurrent requests)
+Transfer rate: 69.53 [Kbytes/sec] received
+
+Connection Times (ms)
+min mean[+/-sd] median max
+Connect: 51 170 35.9 178 230
+Processing: 60 153 64.5 121 263
+Waiting: 55 148 64.4 115 258
+Total: 235 322 59.9 299 437
+
+Percentage of the requests served within a certain time (ms)
+
+//在這100個請求中有50%在299毫秒內完成 
+50% 299
+
+//在這100個請求中有66%在312毫秒內完成 
+66% 312
+75% 383
+80% 412
+90% 431
+95% 432
+98% 436
+99% 437
+100% 437 (longest request)
+</code></pre>
+
+<p>以往要用人工來進行測試，使用 apache ab 可以很快速的完成，讓壓力測試不再是個黑盒子，永遠不知道到底系統運行效率如何。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/23/ubuntu-apache-ab-benchmarking/"></a></p>]]></content>
     </entry>
   
 </feed>
