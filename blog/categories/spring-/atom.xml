@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: spring, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/spring-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:03:43+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
+    <link href="http://smlsun.com/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request+%E5%A4%B1%E6%95%97%E8%99%95%E7%90%86/"/>
+    <updated>2014-01-20T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/20/Spring Security Basic Authentication with Ajax request 失敗處理</id>
+    <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
+
+<p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>
+
+<p>基於 rest service 的特性，既然是提供給第三方軟體呼叫，我們就不希望還需要 login 頁面來登入 rest service，可以的話當然希望在進行請求時就驗證存取權限，所以我們需要使用的是 <a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/basic.html">Basic Authentication</a>。</p>
+
+<p>簡單來說 Basic Authentication 就是將驗證資訊透過 http headers 傳遞，交由 server 驗證之後，返回通過或失敗，範例的 request 呼叫如下：</p>
+
+<p>```
+function make_base_auth(user, password) {</p>
+
+<pre><code>var tok = user + ':' + password;
+var hash = $.base64.encode(tok);
+return "Basic "+hash;
+</code></pre>
+
+<p>}
+$.ajax("http://localhost:8080/test/sendMsg", {</p>
+
+<pre><code>type: "GET",
+success: function(){
+    alert("OK");
+},
+xhrFields: {
+    withCredentials: true
+}, 
+beforeSend: function (xhr) {
+    xhr.setRequestHeader('Authorization', 
+        make_base_auth("user", "password"));
+}
+</code></pre>
+
+<p>});
+```</p>
+
+<p>其中 Authorization 的值必須以 Basic 開頭，接著將 username:password 透過 base64 編碼，上述 <code>make_base_auth("user", "password")</code> 回傳的內容為： <code>Basic dXNlcjpwYXNzd29yZA==</code>，並且需要設定 <code>withCredentials</code>，表示包含驗證資訊。</p>
+
+<p>前端的呼叫程式準備好了以後，我們需要對後端的 http 網路存取權限進行設定，rest server 與呼叫端屬於 cross domain 的呼叫，因此需要設置 CorsFilter，如下：</p>
+
+<p>```
+@Component
+public class CorsFilter extends OncePerRequestFilter
+{</p>
+
+<pre><code>@Override
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException
+{
+    response.addHeader("Access-Control-Allow-Origin", "http://192.168.0.100:8080");
+    response.addHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, OPTIONS");
+    response.addHeader("Access-Control-Allow-Headers","Authorization, Content-Type, Origin, Accept");
+    response.addHeader("Access-Control-Max-Age", "1800");
+    response.addHeader("Access-Control-Allow-Credentials", "true");
+
+
+    filterChain.doFilter(request, response);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>rest server 使用 <a href="http://projects.spring.io/spring-boot/">spring-boot</a> 製作，傳統建立 filter 時需要在維護 web.xml，在這裡只要註記為 <code>@Component</code>，且 <code>extends OncePerRequestFilter</code>，服務啟動時 spring 會自動配置 filter，透過設置 Access-Control-* 的相關屬性，我們可以限制對 server 的存取限制。</p>
+
+<p>接著，我們需要定義 Security Config：</p>
+
+<p>```
+@EnableWebSecurity
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {</p>
+
+<pre><code>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http.authorizeRequests()
+            .antMatchers("/test/sendMsg").hasRole("USER")
+            .anyRequest().authenticated();
+    http.httpBasic();
+}
+
+@Override
+protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+    authManagerBuilder.inMemoryAuthentication()
+            .withUser("user").password("password").roles("USER");
+}
+</code></pre>
+
+<p>}
+<code>`
+在</code>configure(HttpSecurity http)<code>我們定義了</code>/test/sendMsg<code>的存取者必須要有</code>USER<code>的權限，且驗證方式使用</code>Basic<code>；在</code>configure(AuthenticationManagerBuilder authManagerBuilder)`` 定義使用者帳號。</p>
+
+<p>如此一來，程式算是準備好，我們可以利用 <code>curl</code> 指令來驗證：</p>
+
+<p><code>curl --url http://localhost:8080/test/sendMsg -H 'Authorization: Basic dXNlcjpwYXNzd29yZA=='</code></p>
+
+<p>可以正常取得 response，但是一旦我們透過 ajax 的方式存取，總會跳出下面的畫面：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-mUoOv_pKbzQ/UsJObr558rI/AAAAAAAAL9s/pni0SJbDEyQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%8812.55.37.png" title="螢幕快照 2013-12-31 下午12.55.37.png" alt="enter image description here" /></p>
+
+<p>這是我們不想要的，且與程式邏輯不符，畢竟我們在 CorsFilter 定義了允許 <code>Authorization</code> 的 header 卻沒有通過驗證，並且在 <code>curl</code> 的模式下是可正常存取。</p>
+
+<p>且既然是提供給第三方軟體呼叫，對使用者而言，一定不知道遠端 rest server 的存取密碼，為了跳過這個帳號密碼驗證步驟，查了相關處理程式 <code>BasicAuthenticationEntryPoint</code> 的原始碼說明：</p>
+
+<p><a href="http://git.springsource.org/~rwinch/spring-security/rwinchs-spring-security/blobs/bf9d4a97470c679008ef6ce42681e3d0c1992636/web/src/main/java/org/springframework/security/web/authentication/www/BasicAuthenticationEntryPoint.java">BasicAuthenticationEntryPoint.java</a></p>
+
+<blockquote><p> Once a user agent is authenticated using BASIC authentication, logout requires that the browser be closed or an unauthorized (401) header be sent.</p></blockquote>
+
+<p>也就是說預設的處理方式，一律會回傳 <code>unauthorized (401)</code>，處理的原始碼如下：</p>
+
+<p>``
+public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)</p>
+
+<pre><code>throws IOException, ServletException {
+response.addHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+</code></pre>
+
+<p>}
+``</p>
+
+<p>所以無論你怎麼調整 CorsFilter 或是 ajax request 參數，就是沒有辦法通過 http 驗證，總是跳出 dialog 需要驗證帳號與密碼，檢查 request method 雖然設置的是 <code>GET</code> 但總是傳出 <code>OPTIONS</code>。</p>
+
+<p>至於為什麼，可參考下列文章：</p>
+
+<p><a href="http://stackoverflow.com/questions/11199426/jquery-cors-json-without-padding-and-authentication-issues">jQuery, CORS, JSON (without padding) and authentication issues</a></p>
+
+<p>文中提到：</p>
+
+<blockquote><p>Basically, because I need authentication, the GET request is sending an Authorization header. However, this is not a "simple" header, and so the browser is sending a pre-flight request (the OPTIONS). This preflight request doesn't have any authentication, though, and so the server was rejecting it. The "solution" was to set the server to let OPTIONS request not require authentication, and report an HTTP status of 200 to it.</p>
+
+<p>Reference: http://www.kinvey.com/blog/item/61-kinvey-adds-cross-origin-resource-sharing-cors</p></blockquote>
+
+<p>也就是說，瀏覽器檢查有驗證資訊，就不是"簡單"的 http request，所以會先送出一個 pre-flight request，也就是 <code>OPTIONS</code>，該 OPTIONS 就不會有驗證資訊，以致於 server 就會拒絕請求，也就呼應為什麼 <code>curl</code> 的情況下可以正常請求，為了解決此問題，就必須要讓 server 能夠接受 OPTIONS 可包含 authentication 的 header 來進行驗證。</p>
+
+<p>上述的說明在一開始看到時還不清楚處理邏輯，真要親身體驗才能了解，花了一天的時間的重覆嘗試，總算讓我找到解法，參考下列文章：</p>
+
+<p><a href="https://github.com/davidtinker/grails-cors/issues/12">Basic Auth filter authenticates OPTIONS requests and breaks CORS</a></p>
+
+<p>從上面關於瀏覽器對於"不簡單"的 request 的敘述，瀏覽器的處理流程會是：</p>
+
+<ol>
+<li>先送出一個 OPTIONS 的 request 進行驗證</li>
+<li>如果 OPTIONS 的 request 不是回傳 401 UNAUTHORIZED 會接著送出在 ajax 定義的 http mathod 的 request</li>
+</ol>
+
+
+<p>會這樣處理，是因為瀏覽器預設是一旦檢查第一步驟沒有通過，就會跳出 dialog 請使用者輸入帳號密碼(開啟 withCredentials 的前提下)，一旦通過，就會將驗證資訊存於 cookies，接著進入第二步驟時，會將已存在 cookies 的驗證資訊加入到第二步驟的 header，之後再重覆請求時就會一直有效，直到 cookies 過期。</p>
+
+<p>有這樣的認知後，在看上面連結中程式部分的解法時就比較能夠理解。</p>
+
+<p>透過繼承 <code>BasicAuthenticationEntryPoint</code> 覆寫 <code>commence</code>，判斷如果是 <code>Preflight</code> 依據傳入的 http method 是否為 <code>OPTIONS</code> 來判斷，若是，則回傳 <code>HttpServletResponse.SC_NO_CONTENT</code>。</p>
+
+<p>```
+if(isPreflight(request)){</p>
+
+<pre><code>response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+</code></pre>
+
+<p>```</p>
+
+<p>因為 OPTIONS 只是瀏覽器為了驗證進行的 request，並不是我們主要的 request 所以將其設為 SC_NO_CONTENT(204)，沒有內容，但沒有失敗，一旦瀏覽器接收到沒有失敗的情形，就會進行主要的 request 請求，此時主要的 request 就會包含 Authentication 的資訊，接著看下面一個判斷式。</p>
+
+<p>```
+if (isRestRequest(request)) {</p>
+
+<pre><code>response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+</code></pre>
+
+<p>```</p>
+
+<p>再來，這邊限制了如果有 <code>X-Requested-With ,XMLHttpRequest</code> 這樣的 header 就直接回傳 <code>SC_UNAUTHORIZED</code>(401)， 有沒有必要，就看服務的性質與需求，可以針對各種狀況，設定不允許存取的條件，最後其他狀況就走一般的處理模式了，完整的程式碼如下：</p>
+
+<p>```
+public class AjaxAwareLoginUrlAuthenticationEntryPoint extends</p>
+
+<pre><code>    BasicAuthenticationEntryPoint {
+
+private static final RequestMatcher requestMatcher = new ELRequestMatcher(
+        "hasHeader('X-Requested-With','XMLHttpRequest')");
+
+public CustomAuthenticationEntryPoint() {
+    super();
+}
+
+public CustomAuthenticationEntryPoint(String realmName) {
+    setRealmName(realmName);
+}
+
+@Override
+public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
+
+    if(isPreflight(request)){
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    } else if (isRestRequest(request)) {
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+    } else {
+        super.commence(request, response, authException);
+    }
+}
+
+/**
+ * Checks if this is a X-domain pre-flight request.
+ * @param request
+ * @return
+ */
+private boolean isPreflight(HttpServletRequest request) {
+    return "OPTIONS".equals(request.getMethod());
+}
+
+/**
+ * Checks if it is a rest request
+ * @param request
+ * @return
+ */
+protected boolean isRestRequest(HttpServletRequest request) {
+    return requestMatcher.matches(request);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>一旦定義好 AuthenticationEntryPoint 在文章中的使用的方式是用 grails 的語法與定義檔：</p>
+
+<blockquote><p>Open resources.groovy and add the following lines:</p></blockquote>
+
+<p>```
+beans = {</p>
+
+<pre><code>basicAuthenticationEntryPoint(CustomAuthenticationEntryPoint) { bean -&gt;
+    realmName = 'Your Realm'
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>spring boot 的情形，我們只要修改一開始建立的 SecuityConfig：</p>
+
+<p>```
+@Override
+protected void configure(HttpSecurity http) throws Exception {</p>
+
+<pre><code>AjaxAwareLoginUrlAuthenticationEntryPoint ajaxAwareLoginUrlAuthenticationEntryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint();
+ajaxAwareLoginUrlAuthenticationEntryPoint.setRealmName("testAp");
+http.httpBasic().authenticationEntryPoint(ajaxAwareLoginUrlAuthenticationEntryPoint);
+</code></pre>
+
+<p>}
+```</p>
+
+<p>新增客製的 <code>ajaxAwareLoginUrlAuthenticationEntryPoint</code>，設置 RealmName，並且加入 <code>httpBasic().authenticationEntryPoint</code> 即可，省去繁瑣的 xml 定義，程式更加的精簡。</p>
+
+<p>實際執行，我們可以看到，一次 ajax 呼叫，有兩個 request：</p>
+
+<p><img src="https://lh6.googleusercontent.com/--XnQ7f4ItTQ/UsKALIrzHOI/AAAAAAAAL-E/cbnNgTDJYP4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.53.51.png" title="螢幕快照 2013-12-31 下午3.53.51.png" alt="enter image description here" /></p>
+
+<p>且第一次呼叫的 http method 為 OPTIONS，http code 為 204，第二次才是主要的 ajax request，在看下圖，為 header 資訊：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-JcEBuYSzsSY/UsKAneA8uuI/AAAAAAAAL-Q/s1Tlly239K4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.54.38.png" title="螢幕快照 2013-12-31 下午3.54.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
+
+<p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
+]]></content>
+  </entry>
+  
+</feed>

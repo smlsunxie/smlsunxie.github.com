@@ -271,6 +271,430 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request+%E5%A4%B1%E6%95%97%E8%99%95%E7%90%86/">Spring Security Basic Authentication With Ajax Request 失敗處理</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
+
+<p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>
+
+<p>基於 rest service 的特性，既然是提供給第三方軟體呼叫，我們就不希望還需要 login 頁面來登入 rest service，可以的話當然希望在進行請求時就驗證存取權限，所以我們需要使用的是 <a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/basic.html">Basic Authentication</a>。</p>
+
+<p>簡單來說 Basic Authentication 就是將驗證資訊透過 http headers 傳遞，交由 server 驗證之後，返回通過或失敗，範例的 request 呼叫如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function make_base_auth(user, password) {
+</span><span class='line'>    var tok = user + ':' + password;
+</span><span class='line'>    var hash = $.base64.encode(tok);
+</span><span class='line'>    return "Basic "+hash;
+</span><span class='line'>}
+</span><span class='line'>$.ajax("http://localhost:8080/test/sendMsg", {
+</span><span class='line'>    type: "GET",
+</span><span class='line'>    success: function(){
+</span><span class='line'>        alert("OK");
+</span><span class='line'>    },
+</span><span class='line'>    xhrFields: {
+</span><span class='line'>        withCredentials: true
+</span><span class='line'>    }, 
+</span><span class='line'>    beforeSend: function (xhr) {
+</span><span class='line'>        xhr.setRequestHeader('Authorization', 
+</span><span class='line'>            make_base_auth("user", "password"));
+</span><span class='line'>    }
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 Authorization 的值必須以 Basic 開頭，接著將 username:password 透過 base64 編碼，上述 <code>make_base_auth("user", "password")</code> 回傳的內容為： <code>Basic dXNlcjpwYXNzd29yZA==</code>，並且需要設定 <code>withCredentials</code>，表示包含驗證資訊。</p>
+
+<p>前端的呼叫程式準備好了以後，我們需要對後端的 http 網路存取權限進行設定，rest server 與呼叫端屬於 cross domain 的呼叫，因此需要設置 CorsFilter，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Component
+</span><span class='line'>public class CorsFilter extends OncePerRequestFilter
+</span><span class='line'>{
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+</span><span class='line'>            throws ServletException, IOException
+</span><span class='line'>    {
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Origin", "http://192.168.0.100:8080");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, OPTIONS");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Headers","Authorization, Content-Type, Origin, Accept");
+</span><span class='line'>        response.addHeader("Access-Control-Max-Age", "1800");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Credentials", "true");
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        filterChain.doFilter(request, response);
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>rest server 使用 <a href="http://projects.spring.io/spring-boot/">spring-boot</a> 製作，傳統建立 filter 時需要在維護 web.xml，在這裡只要註記為 <code>@Component</code>，且 <code>extends OncePerRequestFilter</code>，服務啟動時 spring 會自動配置 filter，透過設置 Access-Control-* 的相關屬性，我們可以限制對 server 的存取限制。</p>
+
+<p>接著，我們需要定義 Security Config：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@EnableWebSecurity
+</span><span class='line'>@Configuration
+</span><span class='line'>public class SecurityConfig extends WebSecurityConfigurerAdapter {
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void configure(HttpSecurity http) throws Exception {
+</span><span class='line'>        http.authorizeRequests()
+</span><span class='line'>                .antMatchers("/test/sendMsg").hasRole("USER")
+</span><span class='line'>                .anyRequest().authenticated();
+</span><span class='line'>        http.httpBasic();
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+</span><span class='line'>        authManagerBuilder.inMemoryAuthentication()
+</span><span class='line'>                .withUser("user").password("password").roles("USER");
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 <code>configure(HttpSecurity http)</code> 我們定義了 <code>/test/sendMsg</code> 的存取者必須要有 <code>USER</code> 的權限，且驗證方式使用 <code>Basic</code>；在 <code>configure(AuthenticationManagerBuilder authManagerBuilder)</code> 定義使用者帳號。</p>
+
+<p>如此一來，程式算是準備好，我們可以利用 <code>curl</code> 指令來驗證：</p>
+
+<p><code>curl --url http://localhost:8080/test/sendMsg -H 'Authorization: Basic dXNlcjpwYXNzd29yZA=='</code></p>
+
+<p>可以正常取得 response，但是一旦我們透過 ajax 的方式存取，總會跳出下面的畫面：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-mUoOv_pKbzQ/UsJObr558rI/AAAAAAAAL9s/pni0SJbDEyQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%8812.55.37.png" title="螢幕快照 2013-12-31 下午12.55.37.png" alt="enter image description here" /></p>
+
+<p>這是我們不想要的，且與程式邏輯不符，畢竟我們在 CorsFilter 定義了允許 <code>Authorization</code> 的 header 卻沒有通過驗證，並且在 <code>curl</code> 的模式下是可正常存取。</p>
+
+<p>且既然是提供給第三方軟體呼叫，對使用者而言，一定不知道遠端 rest server 的存取密碼，為了跳過這個帳號密碼驗證步驟，查了相關處理程式 <code>BasicAuthenticationEntryPoint</code> 的原始碼說明：</p>
+
+<p><a href="http://git.springsource.org/~rwinch/spring-security/rwinchs-spring-security/blobs/bf9d4a97470c679008ef6ce42681e3d0c1992636/web/src/main/java/org/springframework/security/web/authentication/www/BasicAuthenticationEntryPoint.java">BasicAuthenticationEntryPoint.java</a></p>
+
+<blockquote><p> Once a user agent is authenticated using BASIC authentication, logout requires that the browser be closed or an unauthorized (401) header be sent.</p></blockquote>
+
+<p>也就是說預設的處理方式，一律會回傳 <code>unauthorized (401)</code>，處理的原始碼如下：</p>
+
+<p>&#8220;
+public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)</p>
+
+<pre><code>throws IOException, ServletException {
+response.addHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+</code></pre>
+
+<p>}
+&#8220;</p>
+
+<p>所以無論你怎麼調整 CorsFilter 或是 ajax request 參數，就是沒有辦法通過 http 驗證，總是跳出 dialog 需要驗證帳號與密碼，檢查 request method 雖然設置的是 <code>GET</code> 但總是傳出 <code>OPTIONS</code>。</p>
+
+<p>至於為什麼，可參考下列文章：</p>
+
+<p><a href="http://stackoverflow.com/questions/11199426/jquery-cors-json-without-padding-and-authentication-issues">jQuery, CORS, JSON (without padding) and authentication issues</a></p>
+
+<p>文中提到：</p>
+
+<blockquote><p>Basically, because I need authentication, the GET request is sending an Authorization header. However, this is not a &#8220;simple&#8221; header, and so the browser is sending a pre-flight request (the OPTIONS). This preflight request doesn&#8217;t have any authentication, though, and so the server was rejecting it. The &#8220;solution&#8221; was to set the server to let OPTIONS request not require authentication, and report an HTTP status of 200 to it.</p>
+
+<p>Reference: http://www.kinvey.com/blog/item/61-kinvey-adds-cross-origin-resource-sharing-cors</p></blockquote>
+
+<p>也就是說，瀏覽器檢查有驗證資訊，就不是&#8221;簡單&#8221;的 http request，所以會先送出一個 pre-flight request，也就是 <code>OPTIONS</code>，該 OPTIONS 就不會有驗證資訊，以致於 server 就會拒絕請求，也就呼應為什麼 <code>curl</code> 的情況下可以正常請求，為了解決此問題，就必須要讓 server 能夠接受 OPTIONS 可包含 authentication 的 header 來進行驗證。</p>
+
+<p>上述的說明在一開始看到時還不清楚處理邏輯，真要親身體驗才能了解，花了一天的時間的重覆嘗試，總算讓我找到解法，參考下列文章：</p>
+
+<p><a href="https://github.com/davidtinker/grails-cors/issues/12">Basic Auth filter authenticates OPTIONS requests and breaks CORS</a></p>
+
+<p>從上面關於瀏覽器對於&#8221;不簡單&#8221;的 request 的敘述，瀏覽器的處理流程會是：</p>
+
+<ol>
+<li>先送出一個 OPTIONS 的 request 進行驗證</li>
+<li>如果 OPTIONS 的 request 不是回傳 401 UNAUTHORIZED 會接著送出在 ajax 定義的 http mathod 的 request</li>
+</ol>
+
+
+<p>會這樣處理，是因為瀏覽器預設是一旦檢查第一步驟沒有通過，就會跳出 dialog 請使用者輸入帳號密碼(開啟 withCredentials 的前提下)，一旦通過，就會將驗證資訊存於 cookies，接著進入第二步驟時，會將已存在 cookies 的驗證資訊加入到第二步驟的 header，之後再重覆請求時就會一直有效，直到 cookies 過期。</p>
+
+<p>有這樣的認知後，在看上面連結中程式部分的解法時就比較能夠理解。</p>
+
+<p>透過繼承 <code>BasicAuthenticationEntryPoint</code> 覆寫 <code>commence</code>，判斷如果是 <code>Preflight</code> 依據傳入的 http method 是否為 <code>OPTIONS</code> 來判斷，若是，則回傳 <code>HttpServletResponse.SC_NO_CONTENT</code>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if(isPreflight(request)){
+</span><span class='line'>    response.setStatus(HttpServletResponse.SC_NO_CONTENT);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因為 OPTIONS 只是瀏覽器為了驗證進行的 request，並不是我們主要的 request 所以將其設為 SC_NO_CONTENT(204)，沒有內容，但沒有失敗，一旦瀏覽器接收到沒有失敗的情形，就會進行主要的 request 請求，此時主要的 request 就會包含 Authentication 的資訊，接著看下面一個判斷式。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (isRestRequest(request)) {
+</span><span class='line'>    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再來，這邊限制了如果有 <code>X-Requested-With ,XMLHttpRequest</code> 這樣的 header 就直接回傳 <code>SC_UNAUTHORIZED</code>(401)， 有沒有必要，就看服務的性質與需求，可以針對各種狀況，設定不允許存取的條件，最後其他狀況就走一般的處理模式了，完整的程式碼如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class AjaxAwareLoginUrlAuthenticationEntryPoint extends
+</span><span class='line'>        BasicAuthenticationEntryPoint {
+</span><span class='line'>
+</span><span class='line'>    private static final RequestMatcher requestMatcher = new ELRequestMatcher(
+</span><span class='line'>            "hasHeader('X-Requested-With','XMLHttpRequest')");
+</span><span class='line'>
+</span><span class='line'>    public CustomAuthenticationEntryPoint() {
+</span><span class='line'>        super();
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    public CustomAuthenticationEntryPoint(String realmName) {
+</span><span class='line'>        setRealmName(realmName);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
+</span><span class='line'>
+</span><span class='line'>        if(isPreflight(request)){
+</span><span class='line'>            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+</span><span class='line'>        } else if (isRestRequest(request)) {
+</span><span class='line'>            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+</span><span class='line'>        } else {
+</span><span class='line'>            super.commence(request, response, authException);
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    /**
+</span><span class='line'>     * Checks if this is a X-domain pre-flight request.
+</span><span class='line'>     * @param request
+</span><span class='line'>     * @return
+</span><span class='line'>     */
+</span><span class='line'>    private boolean isPreflight(HttpServletRequest request) {
+</span><span class='line'>        return "OPTIONS".equals(request.getMethod());
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    /**
+</span><span class='line'>     * Checks if it is a rest request
+</span><span class='line'>     * @param request
+</span><span class='line'>     * @return
+</span><span class='line'>     */
+</span><span class='line'>    protected boolean isRestRequest(HttpServletRequest request) {
+</span><span class='line'>        return requestMatcher.matches(request);
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦定義好 AuthenticationEntryPoint 在文章中的使用的方式是用 grails 的語法與定義檔：</p>
+
+<blockquote><p>Open resources.groovy and add the following lines:</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>beans = {
+</span><span class='line'>
+</span><span class='line'>    basicAuthenticationEntryPoint(CustomAuthenticationEntryPoint) { bean -&gt;
+</span><span class='line'>        realmName = 'Your Realm'
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>spring boot 的情形，我們只要修改一開始建立的 SecuityConfig：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Override
+</span><span class='line'>protected void configure(HttpSecurity http) throws Exception {
+</span><span class='line'>
+</span><span class='line'>    AjaxAwareLoginUrlAuthenticationEntryPoint ajaxAwareLoginUrlAuthenticationEntryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint();
+</span><span class='line'>    ajaxAwareLoginUrlAuthenticationEntryPoint.setRealmName("testAp");
+</span><span class='line'>    http.httpBasic().authenticationEntryPoint(ajaxAwareLoginUrlAuthenticationEntryPoint);
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新增客製的 <code>ajaxAwareLoginUrlAuthenticationEntryPoint</code>，設置 RealmName，並且加入 <code>httpBasic().authenticationEntryPoint</code> 即可，省去繁瑣的 xml 定義，程式更加的精簡。</p>
+
+<p>實際執行，我們可以看到，一次 ajax 呼叫，有兩個 request：</p>
+
+<p><img src="https://lh6.googleusercontent.com/--XnQ7f4ItTQ/UsKALIrzHOI/AAAAAAAAL-E/cbnNgTDJYP4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.53.51.png" title="螢幕快照 2013-12-31 下午3.53.51.png" alt="enter image description here" /></p>
+
+<p>且第一次呼叫的 http method 為 OPTIONS，http code 為 204，第二次才是主要的 ajax request，在看下圖，為 header 資訊：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-JcEBuYSzsSY/UsKAneA8uuI/AAAAAAAAL-Q/s1Tlly239K4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.54.38.png" title="螢幕快照 2013-12-31 下午3.54.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
+
+<p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-20T00:00:00+08:00" pubdate data-updated="true">Jan 20<span>th</span>, 2014</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request+%E5%A4%B1%E6%95%97%E8%99%95%E7%90%86/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request+%E5%A4%B1%E6%95%97%E8%99%95%E7%90%86/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/12/26/stackedit/">Stackedit：寫部落格的新利器</a>
 
 </h1>
@@ -2265,122 +2689,6 @@ form.query('field:nth-child(3n)');
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/08/01/extjs-1-30/">Extjs 1/30:form 表單之 Submit 透過 Rest 與後端 Grails 的整合</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
-
-<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
-
-<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
-
-<p>而在筆者目前開發的專案中使用 extjs + grails 的組合並且前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，根據文章中建議的 http method 所對應的不同方法來進行資料的增修改查。</p>
-
-<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
-
-<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
-
-<p>節錄裡面的重點：</p>
-
-<blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
-it&#8217;s POST data. I assume that if you use the URL:</p>
-
-<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
-
-<p>then &#8220;userId&#8221; will appear in the &#8220;params&#8221; object. However, Grails
-handles the parsing of XML and JSON requests, so it you were to send
-your parameters as XML, they would probably appear in the &#8220;params&#8221;
-instance.</p></blockquote>
-
-<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，為了要解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
-
-<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
-
-<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
-
-<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
-
-<p>&#8221;/$controller/$action?/$id?&#8221;(<strong>parseRequest: true</strong>) {&#8230;}</p>
-
-<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
-
-<p>此問題與我的夥伴 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">lyhcode</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
-</a></p>
-
-<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-08-01T21:49:00+08:00" pubdate data-updated="true">Aug 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/01/extjs-1-30/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/01/extjs-1-30/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2432,6 +2740,10 @@ instance.</p></blockquote>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request+%E5%A4%B1%E6%95%97%E8%99%95%E7%90%86/">Spring Security Basic Authentication with Ajax request 失敗處理</a>
+      </li>
+    
+      <li>
         <a href="/blog/2013/12/26/stackedit/">stackedit：寫部落格的新利器</a>
       </li>
     
@@ -2445,10 +2757,6 @@ instance.</p></blockquote>
     
       <li>
         <a href="/blog/2013/08/08/extjs-6-30/">extjs-6-30：如何使用 query component</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2013/08/06/online-meeting-record/">遠端線上開會並且記錄的利器：google hangout</a>
       </li>
     
   </ul>
