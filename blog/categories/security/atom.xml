@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Security | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/security/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Spring Security: oauth2 運作原理解析筆記]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2</id>
+    <content type="html"><![CDATA[<p>繼上一篇 <a href="http://blog.smlsun.com/2013/12/spring-security-basic-authentication.html">Spring Security Basic Authentication with Ajax request 失敗處理</a>，說明關於如何在 Spring Security 設定 Basic Authentication 以及透過 ajax 來進行資料請求後，這篇要來說明如何使用目前各大網站常用的 oauth 驗證機制。</p>
+
+<p>關於 oauth 的特性網路上有很多不錯的文章，推薦大家先閱讀：</p>
+
+<h2><a href="http://www.im47.cn/post/2012/08/2012-08-04-oauth2">OAuth原理初探</a></h2>
+
+<p>這篇有很詳細的圖文解說，最後還有關於 OAuth 和 OpenID 的區別:</p>
+
+<blockquote><p>OAuth 關注的是授權，即：“用戶能做什麼”；而 OpenID 關注的是證明，即：“用戶是誰”。</p></blockquote>
+
+<h2><a href="http://www.techiekernel.com/2013/02/oauth2-in-simple-way.html">OAuth2 - In a Simple Way</a></h2>
+
+<p>這篇是英文，但在解釋 oauth 使用時機有較精準的說明:</p>
+
+<blockquote><p>OAuth 2 provides several grant types for different use cases. The grant types defined are:</p>
+
+<ol>
+<li>Authorization Code: for apps running on a web server</li>
+<li>Implicit: for browser-based or mobile apps</li>
+<li>Password: for logging in with a username and password</li>
+<li>Client credentials: for application access</li>
+</ol>
+</blockquote>
+
+<p>可以看到 oauth 提供了各種不同狀況的應用的驗證機制，算是很完整的安全機制，另外在文中還有針對每種驗證方式提供 curl 或是 網址的驗證流程，上述兩篇文章的閱讀可以充分了解 oauth 是什麼。</p>
+
+<h2><a href="http://cscarioni.blogspot.tw/2013/04/pro-spring-security-and-oauth-2.html">Pro Spring Security and OAUTH 2</a></h2>
+
+<p>這邊講的就是實作啦，沒有看過上面兩篇會不知道他在幹嘛，建議可以依序在看到這一篇，該作者為 <a href="http://it-ebooks.info/book/2364/">Pro Spring Security</a> (連結可下載原文 pdf) 的作者，對於 Spring Security 的實作細節有很詳盡的說明，在書中並未包含 oauth 的說明該文章算是補足 oauth 的說明，且說明的是 oauth2 的規範，簡單來說 oauth2 簡化了 oauth，在實作上更加簡單。</p>
+
+<p>該文章範例程式碼：<code>https://github.com/spring-projects/spring-security-oauth</code>，下載之後取出 1.0.1 版<code>git checkout 1.0.1.RELEASE</code>，在專案根目錄使用 maven，在 command 執行 <code>mvn clean install -P bootstrap</code>，將會在該專案底下的 sample 各資料夾底下 target 資料夾找到各別的 war 檔，如此就可以將 war 檔放至於 tomcat 下運行。</p>
+
+<p>整個文章讀下來幾個比較重要的步驟說明筆記如下</p>
+
+<h3>Tonr 之 OAuth2ClientContextFilter 過濾處理</h3>
+
+<ol>
+<li>當登入網頁需要驗證時</li>
+<li>登入失敗時</li>
+<li>已驗證通過會透過該 filter 到達 SparklrServiceImpl</li>
+</ol>
+
+
+<h3>SparklrServiceImpl 將實作存取 Sparklr 相關方法</h3>
+
+<ol>
+<li>呼叫後端 Sparklr 取得使用者特有的圖片</li>
+<li>透過使用 RestOperations(OAuth2RestTemplate)取得 Sparklr 上的圖片</li>
+</ol>
+
+
+<h3>取得 Access Token</h3>
+
+<ol>
+<li>需要先取得 Access Token，一旦取得會存於 DefaultOAuth2ClientContext</li>
+<li>一開始 DefaultOAuth2ClientContext 尚未有 Access Token 時，會從 DefaultOAuth2ClientContext 取得 AccessTokenRequest，兩者當 Spring 啟動時會自動設定，透過 bean 定義 <code>&lt;oauth:rest-template resource="sparklr" /&gt;</code> 傳給 RestTemplateBeanDefinitionParser。</li>
+<li>接著在從呼叫 AccessTokenProvider 取的 Token</li>
+<li>將會被 AccessTokenRequest 以及 AuthorizationCodeResourceDetails 呼叫 AccessTokenProviderChain 中的 obtainAccessToken 方法。</li>
+<li>其中 AuthorizationCodeResourceDetails 定義如下，將在動時透過 ResourceBeanDefinitionParser 解析
+```
+&lt;oauth:resource id="sparklr" type="authorization_code" client-id="tonr" client-secret="secret"
+
+<pre><code>        access-token-uri="${accessTokenUri}" user-authorization-uri="${userAuthorizationUri}" scope="read,write" /&gt;
+</code></pre>
+
+&lt;oauth:rest-template resource="sparklr" />
+```
+
+<h3>取得 Authorization Code Access Token</h3></li>
+<li>AccessTokenProviderChain 的 obtainAccessToken 方法將透過 設定 AccessTokenProvider 實體來取的 token，指的就是 AuthorizationCodeAccessTokenProvider</li>
+<li>AuthorizationCodeAccessTokenProvider 將透過 POST 呼叫 <code>http://localhost:8080/sparklr2/oauth/authorize</code> 取得驗證碼</li>
+<li>sparklr2 其中 <code>/sparklr2/oauth/authorize</code> 將定義於 FilterSecurityInterceptor</li>
+<li><p>一旦 FilterSecurityInterceptor 發現沒有權限登入將會將頁面導入 <code>http://localhost:8080/sparklr2/login.jsp</code>，設定如下：</p>
+
+<p>```
+<http access-denied-page="/login.jsp?authorization_error=true" disable-url-rewriting="true" xmlns="http://www.springframework.org/schema/security"></p>
+
+<pre><code>&lt;intercept-url pattern="/oauth/**" access="ROLE_USER" /&gt;
+&lt;intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" /&gt;
+&lt;form-login authentication-failure-url="/login.jsp?authentication_error=true" default-target-url="/index.jsp" login-page="/login.jsp" login-processing-url="/login.do" /&gt;
+&lt;logout logout-success-url="/index.jsp" logout-url="/logout.do" /&gt;
+&lt;anonymous /&gt;
+</code></pre>
+
+<p></http>
+```</p></li>
+<li>redirect 到 login 頁面將會被 Tonr 的 AuthorizationCodeAccessTokenProvider 接收並且被 UserRedirectRequiredException 擷取並且丟出由 Oauth2ClientContextFilter 處理，加入額外的參數 <code>http://localhost:8080/sparklr2/login.jsp?response_type=code&amp;client_id=tonr&amp;scope=read+write&amp;state=dWby7l&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Ftonr2%2Fsparklr%2Fphotos</code>，如此就可以開始進行登入</li>
+</ol>
+
+
+<h3>進行登入取得 USER ROLE</h3>
+
+<ol>
+<li>登入步驟請參考原文</li>
+<li>一旦取得 role ROLE_USER 將會再次導入之前的網址 <code>/sparklr2/oauth/authorize</code></li>
+<li><p>該網址一旦安裝 core Spring Security OAuth project，透過下述設定就會產生該 endpoint</p>
+
+<p> ```
+ &lt;oauth:authorization-server client-details-service-ref="clientDetails" token-services-ref="tokenServices"</p>
+
+<pre><code> user-approval-handler-ref="userApprovalHandler"&gt;
+ &lt;oauth:authorization-code /&gt;
+ &lt;oauth:implicit /&gt;
+ &lt;oauth:refresh-token /&gt;
+ &lt;oauth:client-credentials /&gt;
+ &lt;oauth:password /&gt;
+</code></pre>
+
+<p> &lt;/oauth:authorization-server>
+ ```</p></li>
+<li>其中 AuthorizationEndpoint 對應  <code>/oauth/authorize</code></li>
+</ol>
+
+
+<h3>透過 AuthorizationEndpoint 取得 CLIENT ROLE</h3>
+
+<p>關於登入者可執行的操作將透過 InMemoryClientDetailsService 取得，該物件將讀取設定如下：</p>
+
+<p>```
+&lt;oauth:client-details-service id="clientDetails"></p>
+
+<pre><code>&lt;oauth:client client-id="my-trusted-client" authorized-grant-types="password,authorization_code,refresh_token,implicit" authorities="ROLE_CLIENT, ROLE_TRUSTED_CLIENT" scope="read,write,trust" access-token-validity="60" /&gt;
+...    
+&lt;oauth:client client-id="my-untrusted-client-with-registered-redirect" authorized-grant-types="authorization_code" authorities="ROLE_CLIENT" redirect-uri="http://anywhere" scope="read" /&gt;
+
+&lt;oauth:client client-id="tonr" resource-ids="sparklr" authorized-grant-types="authorization_code,implicit" authorities="ROLE_CLIENT" scope="read,write" secret="secret" /&gt;
+</code></pre>
+
+<p>&lt;/oauth:client-details-service>
+<code>`
+這裡就是 oauth 與一般使用者驗證的差別，定義的是可對 resource 的操作有哪些如</code>read,write,trust``，這邊的權限設定沒有 user 的概念，只有 server 對不同 client-id 與有無 secret 的差別對 client 提供的功能有哪些，一旦確認有存在於設定檔將會取得 ClientDetails 物件。</p>
+
+<h3>sparklr 請使用者確認是否允許該存取</h3>
+
+<p>一旦確認 AuthorizationRequest 有取得 ClientDetails 物件，將會在被導入 <code>/oauth/confirm_access</code> 該網址的實作必須由我們自己開發的應用程式來實作，也就是 Sparklr 中的 AccessConfirmationController 進而顯示 <code>access_confirmation.jsp</code>，讓使用者確認是否允許存取</p>
+
+<h3>確認允許，透過 PhotoController 取得照片</h3>
+
+<p>一旦點選允許將發生下面的事情：</p>
+
+<ol>
+<li>確認 AuthorizationRequest 是有效可進行存取的。</li>
+<li>透過呼叫 AuthorizationRequest 的 getResponseTypes 取得 code，不是 token</li>
+<li>framework 會產生新的 authorization code，交由 approveOrDeny 方法完成之後的事情，將會從 Sparklr 導回 tonr，實際的範例網址為 <code>http://localhost:8080/tonr2/sparklr/photos;jsessionid=03B2E814391E010B3D1210241ECF6C0A?code=vqMbuf&amp;state=aTSlVl</code></li>
+<li><p>OAuth2RestTemplate 與 AuthorizationCodeAccessTokenProvider 結合，從 Sparklr 取得 token，實際上，將會 request <code>/sparklr/oauth/token</code>包含下列參數：</p>
+
+<p> ```
+ {</p>
+
+<pre><code> grant_type=’authorization_code’,
+ redirect_uri=’http://localhost:8080/tonr2/sparklr/photos’,
+ code=xxxx
+</code></pre>
+
+<p> }
+ ```</p></li>
+<li>該次呼叫會被 <code>org.springframework.security.oauth2.provider.endpoint.TokenEndpoint</code> 處理產生 OAuth2AccessToken 並且 response Bearer token。</li>
+<li>一旦取得 token，Tonr 會再一次呼叫 Sparklr，這次將會傳入取得的 Bearer token 於該次請求的 header</li>
+<li>透過 OAuth2AuthenticationProcessingFilter 解開 token 在由 Oauth2AuthenticationManager 確認該請求是否合法。</li>
+<li>一旦確認無誤，終於可以到達 PhotoController 取得照片的資源。</li>
+</ol>
+
+
+<p>步驟很多，也許有說明不清楚的地方，不過確實把 oauth 的運作詳細走過一遍，希望可以幫助到有需要的人，上述範例是使用 xml 來定義安全性相關的設定，下一篇將進一步說明使用 spring-boot 透過 java config(java 物件)來定義 oauth 過程會精簡很多，筆者也是先瞭解最基本得 xml 設定，才能完成 java config 型式的應用，若有需要，可以先參考下列專案，利用 java config 完成 Spring Security 設定：</p>
+
+<ul>
+<li><a href="https://github.com/spring-projects/spring-security-javaconfig">Spring Security Java Config</a>: 各種使用 java config 的安全性設定</li>
+<li><a href="https://github.com/spring-projects/spring-security-oauth-javaconfig">spring-security-oauth-javaconfig</a>: 針對 oauth 的 java config 設定，算是還在概念階段</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

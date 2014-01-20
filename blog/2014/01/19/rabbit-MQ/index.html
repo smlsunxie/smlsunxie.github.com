@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>rabbit MQ 使用者建立與權限設定 - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2014/01/19/rabbit-MQ/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+Rabbit MQ 使用者建立與權限設定
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>安裝 rabbit MQ 非常簡單，<a href="https://www.rabbitmq.com/download.html">官方就有介紹</a>，安裝完成後，可以透過指令 <code>rabbitmq-server</code> 來啟動 MQ server。</p>
+
+<p>一旦安裝完成，可透過下面網址進入控管 MQ server 的主控台：</p>
+
+<p><code>http://localhost:15672/</code></p>
+
+<p>在瀏覽器輸入上述網址後，預設帳號密碼為 <code>guest/guest</code>，登入後會看到畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-QLG8IN_RDtI/Ur0lQZP-imI/AAAAAAAAL70/2N3Rb4O1pCQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%882.58.50.png" title="螢幕快照 2013-12-27 下午2.58.50.png" alt="enter image description here" /></p>
+
+<p>主要頁面呈現了關於 MQ server 目前的狀態，包括隊列的情形，環境參數等，有需要可以點選看看，本篇要說明的是如何建立或改變使用者帳號。</p>
+
+<h4>建立或改變使用者帳號</h4>
+
+<ol>
+<li><p>點選上圖中導覽列的 Admin 會進入下面的畫面</p>
+
+<p> <img src="https://lh3.googleusercontent.com/-cvd7yKB403c/Ur0lrKf1LyI/AAAAAAAAL8A/ZUd-FF8KvXY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.00.39.png" title="螢幕快照 2013-12-27 下午3.00.39.png" alt="enter image description here" /></p></li>
+<li><p>點選 add a user 就可以輸入要新增的帳號</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-jOyv6P2vvO8/Ur0mGS9N5VI/AAAAAAAAL8M/H73RkFTDZ8c/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.02.24.png" title="螢幕快照 2013-12-27 下午3.02.24.png" alt="enter image description here" /></p></li>
+<li><p>輸入完成後，可以看到如下圖：</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-fCYZHvcrbI0/Ur0mVLaKgdI/AAAAAAAAL8c/DSXoXMqtKZQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.03.26.png" title="螢幕快照 2013-12-27 下午3.03.26.png" alt="enter image description here" /></p>
+
+<p> 表示使用者新增完成。</p></li>
+<li><p>接著設定存取權限，所以接著點選上圖表格中 Name 欄位的 admin，進入下面畫面：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-yeuQj-nJAHY/Ur0m4_r0bJI/AAAAAAAAL8s/EJEkATgSeeY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.05.38.png" title="螢幕快照 2013-12-27 下午3.05.38.png" alt="enter image description here" /></p>
+
+<p> 預設為全部允許，如此一來就可以透過設定好的帳號密碼來進行控管。</p></li>
+</ol>
+
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-19T00:00:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/mq-/'>MQ,</a>, <a class='category' href='/blog/categories/boot/'>boot</a>, <a class='category' href='/blog/categories/java-/'>java,</a>, <a class='category' href='/blog/categories/rabbit/'>rabbit</a>, <a class='category' href='/blog/categories/spring/'>spring</a>, <a class='category' href='/blog/categories/spring-/'>spring,</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2014/01/19/rabbit-MQ/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2014/01/19/rabbit-MQ/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2014/01/19/Window/" title="Previous Post: Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版"><li>&laquo; Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版</li></a>
+          
+          
+            <a class="right" href="/blog/2014/01/19/rabbit-MQ-Spring-boot/" title="Next Post: Rabbit Mq Spring Boot"><li>Rabbit Mq Spring Boot &raquo;</li></a>
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2014/01/19/ubuntu/">ubuntu 忘記密碼怎麼辦？三個步驟完成修改</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/01/19/rabbit-MQ-Spring-boot/">Rabbit Mq Spring Boot</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/01/19/rabbit-MQ/">rabbit MQ 使用者建立與權限設定</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/01/19/Window/">Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/01/19/Spring-Security-oauth2/">Spring Security: oauth2 運作原理解析筆記</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2014/01/19/rabbit-MQ/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2014/01/19/rabbit-MQ/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2014 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: autostartup, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/autostartup-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/Window/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Window</id>
+    <content type="html"><![CDATA[<p>使用 spring-boot 的好處之一，不需要額外安裝 tomcat，也不需要包成 war 檔進行 deploy，我們可以直接包成 jar 檔之後透過比如下面的指令進行啟動服務：<code>java -jar service-1.0.0.jar</code>，可以這麼做的原因是 spring-boot 使用 tomcat-embed 作為 service，所以可以直接使用 jar 運行，作為 server 啟動。</p>
+
+<p>完整的啟動 bat 內容如下：</p>
+
+<p><code>
+set JAVA_HOME=E:\service\Java\jdk1.7.0_45
+set JAVA_JRE=E:\service\Java\jre7
+java -jar service-1.0.0.jar
+</code></p>
+
+<p>設定好 JAVA_HOME 以及 JAVA_JRE 即可不受 window 自動更新 JDK 造成相容性問題，最後再執行 <code>java -jar service-1.0.0.jar</code> 即可啟動服務。</p>
+
+<p>當程式開發好之後，實際發佈到主機作為 production 運行時，我們不希望偶爾的 window 自動更新重啟時造成服務未開啟，讓客戶錯以為系統有問題，在 window 底下最簡單的自動啟動指定的應用程式是將捷徑放置於開始功能列中的 [<code>啟動</code>] 資料夾，這樣的作法有幾個問題：</p>
+
+<ol>
+<li>需要登入才會觸動，所以若是自動更新重啟沒有登入也是沒效</li>
+<li>若有遠端登入也會啟動，造成重覆開啟</li>
+</ol>
+
+
+<p>我們可以用另外一種設定方式來進行透過 [工作排程器]，步驟如下：</p>
+
+<ol>
+<li><p>啟動工作排程器
+ <img src="https://lh6.googleusercontent.com/-sY2DBkcNQmg/UteGzqS4V0I/AAAAAAAAMCc/a3jB0bIxGhE/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.52.44.png" title="螢幕快照 2014-01-16 下午2.52.44.png" alt="enter image description here" /></p></li>
+<li><p>建立基本工作
+ <img src="https://lh6.googleusercontent.com/-GvMx7nrfvHk/UteG_RMFp8I/AAAAAAAAMCo/k4R8KaF-EJ8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.13.png" title="螢幕快照 2014-01-16 下午2.53.13.png" alt="enter image description here" /></p></li>
+<li><p>定義服務名稱
+ <img src="https://lh5.googleusercontent.com/-sijmvNua4Ik/UteHI0q2lsI/AAAAAAAAMC0/jhZ7yxP6UH8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.46.png" title="螢幕快照 2014-01-16 下午2.53.46.png" alt="enter image description here" /></p></li>
+<li><p>定義啟動時機
+ <img src="https://lh3.googleusercontent.com/-8NGvtH4yfog/UteI1fvaaxI/AAAAAAAAMDo/sW64MwnYkZw/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.20.49.png" title="螢幕快照 2014-01-16 下午3.20.49.png" alt="enter image description here" /></p></li>
+<li><p>選擇工作類型，選擇啟動程式
+ <img src="https://lh4.googleusercontent.com/-z0JtzmxDECc/UteHSqKqU9I/AAAAAAAAMDA/SySPxMM9bfg/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.54.16.png" title="螢幕快照 2014-01-16 下午2.54.16.png" alt="enter image description here" /></p></li>
+<li><p>選擇要執行的 bat 檔
+ <img src="https://lh3.googleusercontent.com/-PUmGanA4O7w/UteI9opVxdI/AAAAAAAAMD0/SEWz5gr0p5k/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.21.23.png" title="螢幕快照 2014-01-16 下午3.21.23.png" alt="enter image description here" /></p></li>
+</ol>
+
+
+<p>如此一來，系統就會在啟動時執行目標工作啦，記得要寫 log，因為這樣的運行模式下沒有 console 視窗，有任何異常都要從 log 檔查看。</p>
+
+<p>同場加映：</p>
+
+<p>宏大 <a href="http://blog.lyhdev.com/">lyhcode</a> 詢問：</p>
+
+<blockquote><p>有沒有用 command line 就能搞定的 geek 版？</p></blockquote>
+
+<p>感謝 <a href="http://www.dotblogs.com.tw/jamesfu/">jamesFu</a> 大師解答：</p>
+
+<blockquote><p>schtask /create /sc onstart /tn Service /tr "E:\service\run.bat" /ru</p></blockquote>
+]]></content>
+  </entry>
+  
+</feed>

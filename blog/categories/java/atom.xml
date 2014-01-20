@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:07:08+08:00</updated>
+  <updated>2014-01-20T10:17:51+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,10 +14,67 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/Window/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Window</id>
+    <content type="html"><![CDATA[<p>使用 spring-boot 的好處之一，不需要額外安裝 tomcat，也不需要包成 war 檔進行 deploy，我們可以直接包成 jar 檔之後透過比如下面的指令進行啟動服務：<code>java -jar service-1.0.0.jar</code>，可以這麼做的原因是 spring-boot 使用 tomcat-embed 作為 service，所以可以直接使用 jar 運行，作為 server 啟動。</p>
+
+<p>完整的啟動 bat 內容如下：</p>
+
+<p><code>
+set JAVA_HOME=E:\service\Java\jdk1.7.0_45
+set JAVA_JRE=E:\service\Java\jre7
+java -jar service-1.0.0.jar
+</code></p>
+
+<p>設定好 JAVA_HOME 以及 JAVA_JRE 即可不受 window 自動更新 JDK 造成相容性問題，最後再執行 <code>java -jar service-1.0.0.jar</code> 即可啟動服務。</p>
+
+<p>當程式開發好之後，實際發佈到主機作為 production 運行時，我們不希望偶爾的 window 自動更新重啟時造成服務未開啟，讓客戶錯以為系統有問題，在 window 底下最簡單的自動啟動指定的應用程式是將捷徑放置於開始功能列中的 [<code>啟動</code>] 資料夾，這樣的作法有幾個問題：</p>
+
+<ol>
+<li>需要登入才會觸動，所以若是自動更新重啟沒有登入也是沒效</li>
+<li>若有遠端登入也會啟動，造成重覆開啟</li>
+</ol>
+
+
+<p>我們可以用另外一種設定方式來進行透過 [工作排程器]，步驟如下：</p>
+
+<ol>
+<li><p>啟動工作排程器
+ <img src="https://lh6.googleusercontent.com/-sY2DBkcNQmg/UteGzqS4V0I/AAAAAAAAMCc/a3jB0bIxGhE/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.52.44.png" title="螢幕快照 2014-01-16 下午2.52.44.png" alt="enter image description here" /></p></li>
+<li><p>建立基本工作
+ <img src="https://lh6.googleusercontent.com/-GvMx7nrfvHk/UteG_RMFp8I/AAAAAAAAMCo/k4R8KaF-EJ8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.13.png" title="螢幕快照 2014-01-16 下午2.53.13.png" alt="enter image description here" /></p></li>
+<li><p>定義服務名稱
+ <img src="https://lh5.googleusercontent.com/-sijmvNua4Ik/UteHI0q2lsI/AAAAAAAAMC0/jhZ7yxP6UH8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.46.png" title="螢幕快照 2014-01-16 下午2.53.46.png" alt="enter image description here" /></p></li>
+<li><p>定義啟動時機
+ <img src="https://lh3.googleusercontent.com/-8NGvtH4yfog/UteI1fvaaxI/AAAAAAAAMDo/sW64MwnYkZw/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.20.49.png" title="螢幕快照 2014-01-16 下午3.20.49.png" alt="enter image description here" /></p></li>
+<li><p>選擇工作類型，選擇啟動程式
+ <img src="https://lh4.googleusercontent.com/-z0JtzmxDECc/UteHSqKqU9I/AAAAAAAAMDA/SySPxMM9bfg/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.54.16.png" title="螢幕快照 2014-01-16 下午2.54.16.png" alt="enter image description here" /></p></li>
+<li><p>選擇要執行的 bat 檔
+ <img src="https://lh3.googleusercontent.com/-PUmGanA4O7w/UteI9opVxdI/AAAAAAAAMD0/SEWz5gr0p5k/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.21.23.png" title="螢幕快照 2014-01-16 下午3.21.23.png" alt="enter image description here" /></p></li>
+</ol>
+
+
+<p>如此一來，系統就會在啟動時執行目標工作啦，記得要寫 log，因為這樣的運行模式下沒有 console 視窗，有任何異常都要從 log 檔查看。</p>
+
+<p>同場加映：</p>
+
+<p>宏大 <a href="http://blog.lyhdev.com/">lyhcode</a> 詢問：</p>
+
+<blockquote><p>有沒有用 command line 就能搞定的 geek 版？</p></blockquote>
+
+<p>感謝 <a href="http://www.dotblogs.com.tw/jamesfu/">jamesFu</a> 大師解答：</p>
+
+<blockquote><p>schtask /create /sc onstart /tn Service /tr "E:\service\run.bat" /ru</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
-    <link href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
-    <updated>2014-01-20T00:00:00+08:00</updated>
-    <id>http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request</id>
+    <link href="http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request</id>
     <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
 
 <p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>
@@ -829,37 +886,6 @@ post.save(flush: true)
 ```</p>
 
 <p>就這樣完成 taggable 的開發，包括漂亮的介面、方便的輸入以及資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[程式東西軍： grails & play!]]></title>
-    <link href="http://smlsun.com/blog/2013/02/21/grails-play/"/>
-    <updated>2013-02-21T16:37:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/02/21/grails-play</id>
-    <content type="html"><![CDATA[<p>grails 與 play! 是當今比較完整的 java framework，當然兩者也常被拿來比較，要說比較優？其實各有各的好。</p>
-
-<p>學習一樣工具需要花很多時間，在開始學習一樣新東西時，當然需要知道哪個是比較值得投入的，人生苦短阿！</p>
-
-<p>因此，在搜尋相關資訊時，發現一個比較 grails and play! 的優缺點很不錯的網站，介紹給大家：</p>
-
-<p><a href="http://www.ubertracks.com/preso/#/">Play vs. Grails Smackdown</a></p>
-
-<p><img src="https://lh4.googleusercontent.com/-64F82PXFzn8/USXlKERNNuI/AAAAAAAALiA/4BTWEumSSzg/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.13.jpg" alt="image" /></p>
-
-<p>這網站的內容是用簡報的方式來呈現，個人是蠻喜歡的，他做了兩個網站，分別使用 grails and play! 進行建置，分別是<a href="http://bike.ubertracks.com/">grils - Bike Über Tracks</a> 以及 <a href="http://hike.ubertracks.com/">play! - Hike Über Tracks</a>；當然在比較時需要從各個面向來進行，該網站先從開發一個專案舉凡資料庫、MVC 架構、設定方式等來進行比較。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-fAoYv2Tr204/USXlLVE-RNI/AAAAAAAALiI/AJgJkzTA45w/s786/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-21+%E4%B8%8B%E5%8D%885.12.44.jpg" alt="image" /></p>
-
-<p>接著透過一些應用程式評比工具來測試兩者的優劣，除了開發方便性，效能測試外，對於發展趨勢也有很完整的介紹。</p>
-
-<p>最後的結論由三個面向來做為總結，分別是：程式碼、統計分析、生態系統來做為總結。</p>
-
-<p>雖然有時候比較有點無濟於事，況且對於事物的看法每個人都有所不同，沒有絕對對錯，假如你也正在煩惱哪個比較好，希望這樣的資訊能夠協助你判斷囉。</p>
-
-<p>我個人看完以後看起來是 grails 目前佔上風，不過… 科技日新月異，況且 play! 在 hacker news 數上完勝 grails，誰知道呢？</p>
-
-<p>最後提醒大家，不管黑貓白貓，會抓老鼠的就是好貓，用起來最順手的就是好工具！</p>
 ]]></content>
   </entry>
   

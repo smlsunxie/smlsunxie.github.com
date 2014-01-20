@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: spring | 蹤影]]></title>
+  <title><![CDATA[Category: Spring | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/spring/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:07:08+08:00</updated>
+  <updated>2014-01-20T10:17:51+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -14,273 +14,180 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
-    <link href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
-    <updated>2014-01-20T00:00:00+08:00</updated>
-    <id>http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request</id>
-    <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
+    <title type="html"><![CDATA[Spring Security: oauth2 運作原理解析筆記]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2</id>
+    <content type="html"><![CDATA[<p>繼上一篇 <a href="http://blog.smlsun.com/2013/12/spring-security-basic-authentication.html">Spring Security Basic Authentication with Ajax request 失敗處理</a>，說明關於如何在 Spring Security 設定 Basic Authentication 以及透過 ajax 來進行資料請求後，這篇要來說明如何使用目前各大網站常用的 oauth 驗證機制。</p>
 
-<p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>
+<p>關於 oauth 的特性網路上有很多不錯的文章，推薦大家先閱讀：</p>
 
-<p>基於 rest service 的特性，既然是提供給第三方軟體呼叫，我們就不希望還需要 login 頁面來登入 rest service，可以的話當然希望在進行請求時就驗證存取權限，所以我們需要使用的是 <a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/basic.html">Basic Authentication</a>。</p>
+<h2><a href="http://www.im47.cn/post/2012/08/2012-08-04-oauth2">OAuth原理初探</a></h2>
 
-<p>簡單來說 Basic Authentication 就是將驗證資訊透過 http headers 傳遞，交由 server 驗證之後，返回通過或失敗，範例的 request 呼叫如下：</p>
+<p>這篇有很詳細的圖文解說，最後還有關於 OAuth 和 OpenID 的區別:</p>
 
-<p>```
-function make_base_auth(user, password) {</p>
+<blockquote><p>OAuth 關注的是授權，即：“用戶能做什麼”；而 OpenID 關注的是證明，即：“用戶是誰”。</p></blockquote>
 
-<pre><code>var tok = user + ':' + password;
-var hash = $.base64.encode(tok);
-return "Basic "+hash;
-</code></pre>
+<h2><a href="http://www.techiekernel.com/2013/02/oauth2-in-simple-way.html">OAuth2 - In a Simple Way</a></h2>
 
-<p>}
-$.ajax("http://localhost:8080/test/sendMsg", {</p>
+<p>這篇是英文，但在解釋 oauth 使用時機有較精準的說明:</p>
 
-<pre><code>type: "GET",
-success: function(){
-    alert("OK");
-},
-xhrFields: {
-    withCredentials: true
-}, 
-beforeSend: function (xhr) {
-    xhr.setRequestHeader('Authorization', 
-        make_base_auth("user", "password"));
-}
-</code></pre>
-
-<p>});
-```</p>
-
-<p>其中 Authorization 的值必須以 Basic 開頭，接著將 username:password 透過 base64 編碼，上述 <code>make_base_auth("user", "password")</code> 回傳的內容為： <code>Basic dXNlcjpwYXNzd29yZA==</code>，並且需要設定 <code>withCredentials</code>，表示包含驗證資訊。</p>
-
-<p>前端的呼叫程式準備好了以後，我們需要對後端的 http 網路存取權限進行設定，rest server 與呼叫端屬於 cross domain 的呼叫，因此需要設置 CorsFilter，如下：</p>
-
-<p>```
-@Component
-public class CorsFilter extends OncePerRequestFilter
-{</p>
-
-<pre><code>@Override
-protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException
-{
-    response.addHeader("Access-Control-Allow-Origin", "http://192.168.0.100:8080");
-    response.addHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, OPTIONS");
-    response.addHeader("Access-Control-Allow-Headers","Authorization, Content-Type, Origin, Accept");
-    response.addHeader("Access-Control-Max-Age", "1800");
-    response.addHeader("Access-Control-Allow-Credentials", "true");
-
-
-    filterChain.doFilter(request, response);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>rest server 使用 <a href="http://projects.spring.io/spring-boot/">spring-boot</a> 製作，傳統建立 filter 時需要在維護 web.xml，在這裡只要註記為 <code>@Component</code>，且 <code>extends OncePerRequestFilter</code>，服務啟動時 spring 會自動配置 filter，透過設置 Access-Control-* 的相關屬性，我們可以限制對 server 的存取限制。</p>
-
-<p>接著，我們需要定義 Security Config：</p>
-
-<p>```
-@EnableWebSecurity
-@Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter {</p>
-
-<pre><code>@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.authorizeRequests()
-            .antMatchers("/test/sendMsg").hasRole("USER")
-            .anyRequest().authenticated();
-    http.httpBasic();
-}
-
-@Override
-protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-    authManagerBuilder.inMemoryAuthentication()
-            .withUser("user").password("password").roles("USER");
-}
-</code></pre>
-
-<p>}
-<code>`
-在</code>configure(HttpSecurity http)<code>我們定義了</code>/test/sendMsg<code>的存取者必須要有</code>USER<code>的權限，且驗證方式使用</code>Basic<code>；在</code>configure(AuthenticationManagerBuilder authManagerBuilder)`` 定義使用者帳號。</p>
-
-<p>如此一來，程式算是準備好，我們可以利用 <code>curl</code> 指令來驗證：</p>
-
-<p><code>curl --url http://localhost:8080/test/sendMsg -H 'Authorization: Basic dXNlcjpwYXNzd29yZA=='</code></p>
-
-<p>可以正常取得 response，但是一旦我們透過 ajax 的方式存取，總會跳出下面的畫面：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-mUoOv_pKbzQ/UsJObr558rI/AAAAAAAAL9s/pni0SJbDEyQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%8812.55.37.png" title="螢幕快照 2013-12-31 下午12.55.37.png" alt="enter image description here" /></p>
-
-<p>這是我們不想要的，且與程式邏輯不符，畢竟我們在 CorsFilter 定義了允許 <code>Authorization</code> 的 header 卻沒有通過驗證，並且在 <code>curl</code> 的模式下是可正常存取。</p>
-
-<p>且既然是提供給第三方軟體呼叫，對使用者而言，一定不知道遠端 rest server 的存取密碼，為了跳過這個帳號密碼驗證步驟，查了相關處理程式 <code>BasicAuthenticationEntryPoint</code> 的原始碼說明：</p>
-
-<p><a href="http://git.springsource.org/~rwinch/spring-security/rwinchs-spring-security/blobs/bf9d4a97470c679008ef6ce42681e3d0c1992636/web/src/main/java/org/springframework/security/web/authentication/www/BasicAuthenticationEntryPoint.java">BasicAuthenticationEntryPoint.java</a></p>
-
-<blockquote><p> Once a user agent is authenticated using BASIC authentication, logout requires that the browser be closed or an unauthorized (401) header be sent.</p></blockquote>
-
-<p>也就是說預設的處理方式，一律會回傳 <code>unauthorized (401)</code>，處理的原始碼如下：</p>
-
-<p>``
-public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)</p>
-
-<pre><code>throws IOException, ServletException {
-response.addHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-</code></pre>
-
-<p>}
-``</p>
-
-<p>所以無論你怎麼調整 CorsFilter 或是 ajax request 參數，就是沒有辦法通過 http 驗證，總是跳出 dialog 需要驗證帳號與密碼，檢查 request method 雖然設置的是 <code>GET</code> 但總是傳出 <code>OPTIONS</code>。</p>
-
-<p>至於為什麼，可參考下列文章：</p>
-
-<p><a href="http://stackoverflow.com/questions/11199426/jquery-cors-json-without-padding-and-authentication-issues">jQuery, CORS, JSON (without padding) and authentication issues</a></p>
-
-<p>文中提到：</p>
-
-<blockquote><p>Basically, because I need authentication, the GET request is sending an Authorization header. However, this is not a "simple" header, and so the browser is sending a pre-flight request (the OPTIONS). This preflight request doesn't have any authentication, though, and so the server was rejecting it. The "solution" was to set the server to let OPTIONS request not require authentication, and report an HTTP status of 200 to it.</p>
-
-<p>Reference: http://www.kinvey.com/blog/item/61-kinvey-adds-cross-origin-resource-sharing-cors</p></blockquote>
-
-<p>也就是說，瀏覽器檢查有驗證資訊，就不是"簡單"的 http request，所以會先送出一個 pre-flight request，也就是 <code>OPTIONS</code>，該 OPTIONS 就不會有驗證資訊，以致於 server 就會拒絕請求，也就呼應為什麼 <code>curl</code> 的情況下可以正常請求，為了解決此問題，就必須要讓 server 能夠接受 OPTIONS 可包含 authentication 的 header 來進行驗證。</p>
-
-<p>上述的說明在一開始看到時還不清楚處理邏輯，真要親身體驗才能了解，花了一天的時間的重覆嘗試，總算讓我找到解法，參考下列文章：</p>
-
-<p><a href="https://github.com/davidtinker/grails-cors/issues/12">Basic Auth filter authenticates OPTIONS requests and breaks CORS</a></p>
-
-<p>從上面關於瀏覽器對於"不簡單"的 request 的敘述，瀏覽器的處理流程會是：</p>
+<blockquote><p>OAuth 2 provides several grant types for different use cases. The grant types defined are:</p>
 
 <ol>
-<li>先送出一個 OPTIONS 的 request 進行驗證</li>
-<li>如果 OPTIONS 的 request 不是回傳 401 UNAUTHORIZED 會接著送出在 ajax 定義的 http mathod 的 request</li>
+<li>Authorization Code: for apps running on a web server</li>
+<li>Implicit: for browser-based or mobile apps</li>
+<li>Password: for logging in with a username and password</li>
+<li>Client credentials: for application access</li>
+</ol>
+</blockquote>
+
+<p>可以看到 oauth 提供了各種不同狀況的應用的驗證機制，算是很完整的安全機制，另外在文中還有針對每種驗證方式提供 curl 或是 網址的驗證流程，上述兩篇文章的閱讀可以充分了解 oauth 是什麼。</p>
+
+<h2><a href="http://cscarioni.blogspot.tw/2013/04/pro-spring-security-and-oauth-2.html">Pro Spring Security and OAUTH 2</a></h2>
+
+<p>這邊講的就是實作啦，沒有看過上面兩篇會不知道他在幹嘛，建議可以依序在看到這一篇，該作者為 <a href="http://it-ebooks.info/book/2364/">Pro Spring Security</a> (連結可下載原文 pdf) 的作者，對於 Spring Security 的實作細節有很詳盡的說明，在書中並未包含 oauth 的說明該文章算是補足 oauth 的說明，且說明的是 oauth2 的規範，簡單來說 oauth2 簡化了 oauth，在實作上更加簡單。</p>
+
+<p>該文章範例程式碼：<code>https://github.com/spring-projects/spring-security-oauth</code>，下載之後取出 1.0.1 版<code>git checkout 1.0.1.RELEASE</code>，在專案根目錄使用 maven，在 command 執行 <code>mvn clean install -P bootstrap</code>，將會在該專案底下的 sample 各資料夾底下 target 資料夾找到各別的 war 檔，如此就可以將 war 檔放至於 tomcat 下運行。</p>
+
+<p>整個文章讀下來幾個比較重要的步驟說明筆記如下</p>
+
+<h3>Tonr 之 OAuth2ClientContextFilter 過濾處理</h3>
+
+<ol>
+<li>當登入網頁需要驗證時</li>
+<li>登入失敗時</li>
+<li>已驗證通過會透過該 filter 到達 SparklrServiceImpl</li>
 </ol>
 
 
-<p>會這樣處理，是因為瀏覽器預設是一旦檢查第一步驟沒有通過，就會跳出 dialog 請使用者輸入帳號密碼(開啟 withCredentials 的前提下)，一旦通過，就會將驗證資訊存於 cookies，接著進入第二步驟時，會將已存在 cookies 的驗證資訊加入到第二步驟的 header，之後再重覆請求時就會一直有效，直到 cookies 過期。</p>
+<h3>SparklrServiceImpl 將實作存取 Sparklr 相關方法</h3>
 
-<p>有這樣的認知後，在看上面連結中程式部分的解法時就比較能夠理解。</p>
+<ol>
+<li>呼叫後端 Sparklr 取得使用者特有的圖片</li>
+<li>透過使用 RestOperations(OAuth2RestTemplate)取得 Sparklr 上的圖片</li>
+</ol>
 
-<p>透過繼承 <code>BasicAuthenticationEntryPoint</code> 覆寫 <code>commence</code>，判斷如果是 <code>Preflight</code> 依據傳入的 http method 是否為 <code>OPTIONS</code> 來判斷，若是，則回傳 <code>HttpServletResponse.SC_NO_CONTENT</code>。</p>
 
-<p>```
-if(isPreflight(request)){</p>
+<h3>取得 Access Token</h3>
 
-<pre><code>response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+<ol>
+<li>需要先取得 Access Token，一旦取得會存於 DefaultOAuth2ClientContext</li>
+<li>一開始 DefaultOAuth2ClientContext 尚未有 Access Token 時，會從 DefaultOAuth2ClientContext 取得 AccessTokenRequest，兩者當 Spring 啟動時會自動設定，透過 bean 定義 <code>&lt;oauth:rest-template resource="sparklr" /&gt;</code> 傳給 RestTemplateBeanDefinitionParser。</li>
+<li>接著在從呼叫 AccessTokenProvider 取的 Token</li>
+<li>將會被 AccessTokenRequest 以及 AuthorizationCodeResourceDetails 呼叫 AccessTokenProviderChain 中的 obtainAccessToken 方法。</li>
+<li>其中 AuthorizationCodeResourceDetails 定義如下，將在動時透過 ResourceBeanDefinitionParser 解析
+```
+&lt;oauth:resource id="sparklr" type="authorization_code" client-id="tonr" client-secret="secret"
+
+<pre><code>        access-token-uri="${accessTokenUri}" user-authorization-uri="${userAuthorizationUri}" scope="read,write" /&gt;
 </code></pre>
 
-<p>```</p>
+&lt;oauth:rest-template resource="sparklr" />
+```
 
-<p>因為 OPTIONS 只是瀏覽器為了驗證進行的 request，並不是我們主要的 request 所以將其設為 SC_NO_CONTENT(204)，沒有內容，但沒有失敗，一旦瀏覽器接收到沒有失敗的情形，就會進行主要的 request 請求，此時主要的 request 就會包含 Authentication 的資訊，接著看下面一個判斷式。</p>
-
-<p>```
-if (isRestRequest(request)) {</p>
-
-<pre><code>response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-</code></pre>
-
-<p>```</p>
-
-<p>再來，這邊限制了如果有 <code>X-Requested-With ,XMLHttpRequest</code> 這樣的 header 就直接回傳 <code>SC_UNAUTHORIZED</code>(401)， 有沒有必要，就看服務的性質與需求，可以針對各種狀況，設定不允許存取的條件，最後其他狀況就走一般的處理模式了，完整的程式碼如下：</p>
+<h3>取得 Authorization Code Access Token</h3></li>
+<li>AccessTokenProviderChain 的 obtainAccessToken 方法將透過 設定 AccessTokenProvider 實體來取的 token，指的就是 AuthorizationCodeAccessTokenProvider</li>
+<li>AuthorizationCodeAccessTokenProvider 將透過 POST 呼叫 <code>http://localhost:8080/sparklr2/oauth/authorize</code> 取得驗證碼</li>
+<li>sparklr2 其中 <code>/sparklr2/oauth/authorize</code> 將定義於 FilterSecurityInterceptor</li>
+<li><p>一旦 FilterSecurityInterceptor 發現沒有權限登入將會將頁面導入 <code>http://localhost:8080/sparklr2/login.jsp</code>，設定如下：</p>
 
 <p>```
-public class AjaxAwareLoginUrlAuthenticationEntryPoint extends</p>
+<http access-denied-page="/login.jsp?authorization_error=true" disable-url-rewriting="true" xmlns="http://www.springframework.org/schema/security"></p>
 
-<pre><code>    BasicAuthenticationEntryPoint {
-
-private static final RequestMatcher requestMatcher = new ELRequestMatcher(
-        "hasHeader('X-Requested-With','XMLHttpRequest')");
-
-public CustomAuthenticationEntryPoint() {
-    super();
-}
-
-public CustomAuthenticationEntryPoint(String realmName) {
-    setRealmName(realmName);
-}
-
-@Override
-public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
-
-    if(isPreflight(request)){
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-    } else if (isRestRequest(request)) {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-    } else {
-        super.commence(request, response, authException);
-    }
-}
-
-/**
- * Checks if this is a X-domain pre-flight request.
- * @param request
- * @return
- */
-private boolean isPreflight(HttpServletRequest request) {
-    return "OPTIONS".equals(request.getMethod());
-}
-
-/**
- * Checks if it is a rest request
- * @param request
- * @return
- */
-protected boolean isRestRequest(HttpServletRequest request) {
-    return requestMatcher.matches(request);
-}
+<pre><code>&lt;intercept-url pattern="/oauth/**" access="ROLE_USER" /&gt;
+&lt;intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" /&gt;
+&lt;form-login authentication-failure-url="/login.jsp?authentication_error=true" default-target-url="/index.jsp" login-page="/login.jsp" login-processing-url="/login.do" /&gt;
+&lt;logout logout-success-url="/index.jsp" logout-url="/logout.do" /&gt;
+&lt;anonymous /&gt;
 </code></pre>
 
-<p>}
-```</p>
+<p></http>
+```</p></li>
+<li>redirect 到 login 頁面將會被 Tonr 的 AuthorizationCodeAccessTokenProvider 接收並且被 UserRedirectRequiredException 擷取並且丟出由 Oauth2ClientContextFilter 處理，加入額外的參數 <code>http://localhost:8080/sparklr2/login.jsp?response_type=code&amp;client_id=tonr&amp;scope=read+write&amp;state=dWby7l&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Ftonr2%2Fsparklr%2Fphotos</code>，如此就可以開始進行登入</li>
+</ol>
 
-<p>一旦定義好 AuthenticationEntryPoint 在文章中的使用的方式是用 grails 的語法與定義檔：</p>
 
-<blockquote><p>Open resources.groovy and add the following lines:</p></blockquote>
+<h3>進行登入取得 USER ROLE</h3>
+
+<ol>
+<li>登入步驟請參考原文</li>
+<li>一旦取得 role ROLE_USER 將會再次導入之前的網址 <code>/sparklr2/oauth/authorize</code></li>
+<li><p>該網址一旦安裝 core Spring Security OAuth project，透過下述設定就會產生該 endpoint</p>
+
+<p> ```
+ &lt;oauth:authorization-server client-details-service-ref="clientDetails" token-services-ref="tokenServices"</p>
+
+<pre><code> user-approval-handler-ref="userApprovalHandler"&gt;
+ &lt;oauth:authorization-code /&gt;
+ &lt;oauth:implicit /&gt;
+ &lt;oauth:refresh-token /&gt;
+ &lt;oauth:client-credentials /&gt;
+ &lt;oauth:password /&gt;
+</code></pre>
+
+<p> &lt;/oauth:authorization-server>
+ ```</p></li>
+<li>其中 AuthorizationEndpoint 對應  <code>/oauth/authorize</code></li>
+</ol>
+
+
+<h3>透過 AuthorizationEndpoint 取得 CLIENT ROLE</h3>
+
+<p>關於登入者可執行的操作將透過 InMemoryClientDetailsService 取得，該物件將讀取設定如下：</p>
 
 <p>```
-beans = {</p>
+&lt;oauth:client-details-service id="clientDetails"></p>
 
-<pre><code>basicAuthenticationEntryPoint(CustomAuthenticationEntryPoint) { bean -&gt;
-    realmName = 'Your Realm'
-}
+<pre><code>&lt;oauth:client client-id="my-trusted-client" authorized-grant-types="password,authorization_code,refresh_token,implicit" authorities="ROLE_CLIENT, ROLE_TRUSTED_CLIENT" scope="read,write,trust" access-token-validity="60" /&gt;
+...    
+&lt;oauth:client client-id="my-untrusted-client-with-registered-redirect" authorized-grant-types="authorization_code" authorities="ROLE_CLIENT" redirect-uri="http://anywhere" scope="read" /&gt;
+
+&lt;oauth:client client-id="tonr" resource-ids="sparklr" authorized-grant-types="authorization_code,implicit" authorities="ROLE_CLIENT" scope="read,write" secret="secret" /&gt;
 </code></pre>
 
-<p>}
-```</p>
+<p>&lt;/oauth:client-details-service>
+<code>`
+這裡就是 oauth 與一般使用者驗證的差別，定義的是可對 resource 的操作有哪些如</code>read,write,trust``，這邊的權限設定沒有 user 的概念，只有 server 對不同 client-id 與有無 secret 的差別對 client 提供的功能有哪些，一旦確認有存在於設定檔將會取得 ClientDetails 物件。</p>
 
-<p>spring boot 的情形，我們只要修改一開始建立的 SecuityConfig：</p>
+<h3>sparklr 請使用者確認是否允許該存取</h3>
 
-<p>```
-@Override
-protected void configure(HttpSecurity http) throws Exception {</p>
+<p>一旦確認 AuthorizationRequest 有取得 ClientDetails 物件，將會在被導入 <code>/oauth/confirm_access</code> 該網址的實作必須由我們自己開發的應用程式來實作，也就是 Sparklr 中的 AccessConfirmationController 進而顯示 <code>access_confirmation.jsp</code>，讓使用者確認是否允許存取</p>
 
-<pre><code>AjaxAwareLoginUrlAuthenticationEntryPoint ajaxAwareLoginUrlAuthenticationEntryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint();
-ajaxAwareLoginUrlAuthenticationEntryPoint.setRealmName("testAp");
-http.httpBasic().authenticationEntryPoint(ajaxAwareLoginUrlAuthenticationEntryPoint);
+<h3>確認允許，透過 PhotoController 取得照片</h3>
+
+<p>一旦點選允許將發生下面的事情：</p>
+
+<ol>
+<li>確認 AuthorizationRequest 是有效可進行存取的。</li>
+<li>透過呼叫 AuthorizationRequest 的 getResponseTypes 取得 code，不是 token</li>
+<li>framework 會產生新的 authorization code，交由 approveOrDeny 方法完成之後的事情，將會從 Sparklr 導回 tonr，實際的範例網址為 <code>http://localhost:8080/tonr2/sparklr/photos;jsessionid=03B2E814391E010B3D1210241ECF6C0A?code=vqMbuf&amp;state=aTSlVl</code></li>
+<li><p>OAuth2RestTemplate 與 AuthorizationCodeAccessTokenProvider 結合，從 Sparklr 取得 token，實際上，將會 request <code>/sparklr/oauth/token</code>包含下列參數：</p>
+
+<p> ```
+ {</p>
+
+<pre><code> grant_type=’authorization_code’,
+ redirect_uri=’http://localhost:8080/tonr2/sparklr/photos’,
+ code=xxxx
 </code></pre>
 
-<p>}
-```</p>
+<p> }
+ ```</p></li>
+<li>該次呼叫會被 <code>org.springframework.security.oauth2.provider.endpoint.TokenEndpoint</code> 處理產生 OAuth2AccessToken 並且 response Bearer token。</li>
+<li>一旦取得 token，Tonr 會再一次呼叫 Sparklr，這次將會傳入取得的 Bearer token 於該次請求的 header</li>
+<li>透過 OAuth2AuthenticationProcessingFilter 解開 token 在由 Oauth2AuthenticationManager 確認該請求是否合法。</li>
+<li>一旦確認無誤，終於可以到達 PhotoController 取得照片的資源。</li>
+</ol>
 
-<p>新增客製的 <code>ajaxAwareLoginUrlAuthenticationEntryPoint</code>，設置 RealmName，並且加入 <code>httpBasic().authenticationEntryPoint</code> 即可，省去繁瑣的 xml 定義，程式更加的精簡。</p>
 
-<p>實際執行，我們可以看到，一次 ajax 呼叫，有兩個 request：</p>
+<p>步驟很多，也許有說明不清楚的地方，不過確實把 oauth 的運作詳細走過一遍，希望可以幫助到有需要的人，上述範例是使用 xml 來定義安全性相關的設定，下一篇將進一步說明使用 spring-boot 透過 java config(java 物件)來定義 oauth 過程會精簡很多，筆者也是先瞭解最基本得 xml 設定，才能完成 java config 型式的應用，若有需要，可以先參考下列專案，利用 java config 完成 Spring Security 設定：</p>
 
-<p><img src="https://lh6.googleusercontent.com/--XnQ7f4ItTQ/UsKALIrzHOI/AAAAAAAAL-E/cbnNgTDJYP4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.53.51.png" title="螢幕快照 2013-12-31 下午3.53.51.png" alt="enter image description here" /></p>
+<ul>
+<li><a href="https://github.com/spring-projects/spring-security-javaconfig">Spring Security Java Config</a>: 各種使用 java config 的安全性設定</li>
+<li><a href="https://github.com/spring-projects/spring-security-oauth-javaconfig">spring-security-oauth-javaconfig</a>: 針對 oauth 的 java config 設定，算是還在概念階段</li>
+</ul>
 
-<p>且第一次呼叫的 http method 為 OPTIONS，http code 為 204，第二次才是主要的 ajax request，在看下圖，為 header 資訊：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-JcEBuYSzsSY/UsKAneA8uuI/AAAAAAAAL-Q/s1Tlly239K4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.54.38.png" title="螢幕快照 2013-12-31 下午3.54.38.png" alt="enter image description here" /></p>
-
-<p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
-
-<p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
 ]]></content>
   </entry>
   

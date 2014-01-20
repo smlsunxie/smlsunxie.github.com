@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:07:08+08:00</updated>
+  <updated>2014-01-20T10:17:51+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -18,10 +18,802 @@
 
 
 
+<title type="html"><![CDATA[ubuntu 忘記密碼怎麼辦？三個步驟完成修改]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/ubuntu/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/ubuntu</id>
+
+      <content type="html"><![CDATA[<ol>
+<li><p>游標移到 recovery mode (不要 enter)，鍵盤輸入 e，表示編輯 command</p>
+
+<p> <img src="https://lh3.googleusercontent.com/-IIwTTUyywEk/UsYdxqpauxI/AAAAAAAAL_k/drrfABMruQI/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.16.36.png" title="螢幕快照 2014-01-03 上午10.16.36.png" alt="enter image description here" /></p></li>
+<li><p>修改關鍵字 <code>ro recovery nomodeset</code>：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-WMKHLt4bS5s/UsYgsBGuviI/AAAAAAAAL_4/q8PIplU5CLU/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.29.47.png" title="螢幕快照 2014-01-03 上午10.29.47.png" alt="enter image description here" /></p>
+
+<p> ro 表示 readonly，標準只有提供幾個內建功能，若要修改密碼我們需要用到 bash 的 passwd 的指令，將其改為 <code>rw single init=/bin/bash</code>，表示進入 single user mode，也就是 root 使用者，並且載入 bash 令我們可以修改密碼：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-V7A7bn00g50/UsYhmVEx6gI/AAAAAAAAMAE/v8B8EEJwl1k/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.33.42.png" title="螢幕快照 2014-01-03 上午10.33.42.png" alt="enter image description here" /></p></li>
+<li><p>修改完成後，鍵盤輸入 ctrl-x 進入 recovary：</p>
+
+<p> 可以看到游標停在 <code>root@(none):/#:</code>，現在我們有了 root 權限，如此一來在有最大權限的情況下，你就可以任意調整 server</p></li>
+<li><p>輸入 <code>passwd username</code> 就可以進行修改密碼。</p></li>
+</ol>
+
+
+<h3>完工</h3>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/ubuntu/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Rabbit Mq Spring Boot]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/rabbit-MQ-Spring-boot/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/rabbit-MQ-Spring-boot</id>
+
+      <content type="html"><![CDATA[<hr />
+
+<p>title: &#8220;rabbit MQ 與 Spring boot 整合，以 RPC mode 為例&#8221;
+layout: post</p>
+
+<h2>categories: rabbit MQ, java, spring, spring boot</h2>
+
+<p>最近在開發的專案剛好有使用到 rabbit MQ，也花了一點時間了解運作原理，關於使用 MQ 的好處，與各種應用情形，網路上有很多，有需要可以搜尋看看，本篇要說明的是 rabbit MQ 與 java 的串接，在實作的過程中花了一些時間，希望透過這篇的說明可以幫助到有需要的人。</p>
+
+<p>在開始說明前，先簡單說明一下 RPC 模式的運作：</p>
+
+<p>在 rabbit MQ 的官網<a href="http://www.rabbitmq.com/tutorials/tutorial-six-python.html">關於 RPC 的介紹</a>，模型示意圖如下：</p>
+
+<p><img src="http://www.rabbitmq.com/img/tutorials/python-six.png" alt="enter image description here" /></p>
+
+<p>可以看到在 RPC 模式下分為 client 與 server，request 與 Reply 分別有各自的隊列負責，本範例使用 spring AmqpTemplate 作為 client 進行操作，在上圖中總共有四個重要的成員，分為 client 與 server 跟大家介紹。</p>
+
+<p>一開始要先跟大家說明的是，在整個 java 與 rabbit MQ 整合有個很重要的物件為 <code>ConnectionFactory connectionFactory</code>，該物件存放了存取 rabbit MQ server 的相關資訊，包括登入帳號與密碼，因此在此範例中不管 client、server 或是去跟回的隊列都會跟他有關係，因此一開始我們需要先建立 ConnectionFactory。</p>
+
+<p>因為是用 spring boot 開發，預設只要有使用到  amqp 套件，spring 在啟動時就算你沒有特別設定，就會產生好有預設參數的 bean 等待你取用，本範例沒有用到特殊參數，因此透過下列程式就可以取得 ConnectionFactory 實體：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Autowired
+</span><span class='line'>ConnectionFactory connectionFactory;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所謂的預設值分別是 ip、port、帳號、密碼等，client 與 server 用的會是一個物件，接著我們就可以來看 client 的定義。</p>
+
+<h2>client</h2>
+
+<p>client 是訊息的發起方，一開始我們需要先定義 client 的隊列，RPC 模式有去有回，對於 client 而言，他需要消化的隊列是 reply，因此我們需要先將 client 與 reply 進行綁定，首先需要先定義 reply 隊列：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>final static String queueName = "reply";
+</span><span class='line'>
+</span><span class='line'>@Bean
+</span><span class='line'>public Queue responseQueue() {
+</span><span class='line'>    return new Queue(queueName);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦隊列建立完成，再來要設定 amqpTemplete，還記得剛剛說的 connectionFactory 儲存了存取  MQ server 的相關資訊，因此在建立時需要傳入，建立以後綁定 reply 隊列，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Bean
+</span><span class='line'>public RabbitTemplate amqpTemplate() {
+</span><span class='line'>    RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+</span><span class='line'>    rabbitTemplate.setReplyQueue(responseQueue());
+</span><span class='line'>    return rabbitTemplate;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接著我們需要設定 SimpleMessageListenerContainer，首先為了讓 SimpleMessageListenerContainer 可以存取隊列訊息，所以他也需要 ConnectionFactory，一旦 amqpTemplate 送出訊息後，將透過 SimpleMessageListenerContainer 去監看 replay 的隊列有沒有新的訊息近來並且要將訊息傳給 amqpTemplate，因此 SimpleMessageListenerContainer 需要綁定 amqpTemplate 與 replay 隊列，設定的程式碼如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Bean
+</span><span class='line'>public SimpleMessageListenerContainer clientMessageListenerContainer() {
+</span><span class='line'>    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+</span><span class='line'>    container.setConnectionFactory(connectionFactory);
+</span><span class='line'>    container.setQueues(responseQueue());
+</span><span class='line'>    container.setMessageListener(amqpTemplate());
+</span><span class='line'>    return container;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此就完成 client 的設定，完整程式碼如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package goinfo.test;
+</span><span class='line'>
+</span><span class='line'>import org.springframework.amqp.core.Queue;
+</span><span class='line'>import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+</span><span class='line'>import org.springframework.amqp.rabbit.core.RabbitTemplate;
+</span><span class='line'>import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+</span><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>import org.springframework.context.annotation.Bean;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class MqClientConfig {
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    ConnectionFactory connectionFactory;
+</span><span class='line'>
+</span><span class='line'>    final static String queueName = "reply";
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public Queue responseQueue() {
+</span><span class='line'>        return new Queue(queueName);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public RabbitTemplate amqpTemplate() {
+</span><span class='line'>        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+</span><span class='line'>        rabbitTemplate.setReplyQueue(responseQueue());
+</span><span class='line'>        return rabbitTemplate;
+</span><span class='line'>    }
+</span><span class='line'>    @Bean
+</span><span class='line'>    public SimpleMessageListenerContainer clientMessageListenerContainer() {
+</span><span class='line'>        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+</span><span class='line'>        container.setConnectionFactory(connectionFactory);
+</span><span class='line'>        container.setQueues(responseQueue());
+</span><span class='line'>        container.setMessageListener(amqpTemplate());
+</span><span class='line'>
+</span><span class='line'>        return container;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>server</h1>
+
+<p>server 的部分同樣需要 ConnectionFactory connectionFactory，跟  client 一樣，這邊不多說明，除了 connectionFactory，第一步要定義的是 server 所要消化的對列，也就是上圖中的 rpc_queue，我們將隊列命名為 spring-boot 如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Autowired
+</span><span class='line'>ConnectionFactory connectionFactory;
+</span><span class='line'>
+</span><span class='line'>final static String queueName = "spring-boot";
+</span><span class='line'>
+</span><span class='line'>@Bean
+</span><span class='line'>Queue queue() {
+</span><span class='line'>    return new Queue(queueName, false);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我們需要一個類別來處理由 rpc_queue 傳入的訊息，並且定義一旦接收到 message 之後，要呼叫哪個函式，透過 MessageListenerAdapter 來幫我們完成：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Bean
+</span><span class='line'>AmqpController receiver() {
+</span><span class='line'>    return new AmqpController();
+</span><span class='line'>}
+</span><span class='line'>@Bean
+</span><span class='line'>MessageListenerAdapter listenerAdapter(AmqpController receiver) {
+</span><span class='line'>    return new MessageListenerAdapter(receiver, "receiveMessage");
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AmqpController 是我們要處理 message 的類別，而 <code>MessageListenerAdapter(receiver, "receiveMessage");</code>這一句表示，一旦接收到訊息，要呼叫 receiver 物件中所定義的 <code>receiveMessage</code> 方法， AmqpController 程式碼如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>import goinfo.service.ApiFecadeService;
+</span><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>
+</span><span class='line'>public class AmqpController {
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    private ApiFecadeService apiFecadeService;
+</span><span class='line'>
+</span><span class='line'>  public String receiveMessage(String message) {
+</span><span class='line'>        return apiFecadeService.excute(apiFecadeService, message);
+</span><span class='line'>    }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到我們定義了 receiveMessage method，所傳入的 message 將透過 MessageListenerAdapter 傳入，return 的部份就是要傳入 reply 隊列的內容。</p>
+
+<p>這邊不得不補充一下，自己在研究時，一直想不透到底要怎麼將處理的結果回傳給 reply，因為 spring AMQP 官方的範例是最單純的有去沒回的模式，因此在宣告 receiveMessage 是  void 而不是 String，嘗試許多方法，靈機想說該不會直接 return 就會傳給 reply，果不其然&#8230;就是這麼簡單！</p>
+
+<p>一旦 MessageListenerAdapter 設定好，我們同樣需要設定 SimpleMessageListenerContainer，該物件的建立同樣需要 ConnectionFactory 作為存取隊列的依據，與 client 類似，但不一樣的是隊列對象是 rpc_queue，而訊息的處理交由 MessageListenerAdapter 傳入 AmqpController，設定如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Bean
+</span><span class='line'>SimpleMessageListenerContainer serverMessageListenerContainer(MessageListenerAdapter listenerAdapter) {
+</span><span class='line'>    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+</span><span class='line'>    container.setConnectionFactory(connectionFactory);
+</span><span class='line'>    container.setQueues(queue());
+</span><span class='line'>    container.setMessageListener(listenerAdapter);
+</span><span class='line'>    return container;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>完整的程式如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>package goinfo.cfg;
+</span><span class='line'>
+</span><span class='line'>import goinfo.web.AmqpController;
+</span><span class='line'>import org.springframework.amqp.core.Queue;
+</span><span class='line'>import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+</span><span class='line'>import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+</span><span class='line'>import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+</span><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>import org.springframework.context.annotation.Bean;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class MqServerConfig {
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    ConnectionFactory connectionFactory;
+</span><span class='line'>
+</span><span class='line'>    final static String queueName = "spring-boot";
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    Queue queue() {
+</span><span class='line'>        return new Queue(queueName, false);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    AmqpController receiver() {
+</span><span class='line'>        return new AmqpController();
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    MessageListenerAdapter listenerAdapter(AmqpController receiver) {
+</span><span class='line'>        return new MessageListenerAdapter(receiver, "receiveMessage");
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    SimpleMessageListenerContainer serverMessageListenerContainer(MessageListenerAdapter listenerAdapter) {
+</span><span class='line'>        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+</span><span class='line'>        container.setConnectionFactory(connectionFactory);
+</span><span class='line'>        container.setQueues(queue());
+</span><span class='line'>        container.setMessageListener(listenerAdapter);
+</span><span class='line'>        return container;
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此就完成 client 與 server 端的設定，可以開始實際使用。</p>
+
+<p>另外在 MQ 的運行中還有一個很重要的參與者名為 exchange，若有需要也可以透過下面的程式碼綁定：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Bean
+</span><span class='line'>TopicExchange exchange() {
+</span><span class='line'>    return new TopicExchange("spring-boot-exchange");
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Bean
+</span><span class='line'>Binding binding(Queue queue, TopicExchange exchange) {
+</span><span class='line'>    return BindingBuilder.bind(queue).to(exchange).with(queueName);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>沒有設定也沒有關係，spring boot 會幫你設定好預設為 server 的 queue 名稱加上 -exchange，此例來說就是 spring-boot-exchange。</p>
+
+<h2>範例訊息送出與接收</h2>
+
+<p>在這裡我們建立一個 TestController 進行訊息的組成在透過一開始在 client 說明中建立的 AmqpTemplete 將訊息送出，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.amqp.rabbit.core.RabbitTemplate;
+</span><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>
+</span><span class='line'>@Controller
+</span><span class='line'>public class TestController {
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    RabbitTemplate amqpTemplate;
+</span><span class='line'>    public String sendMsg() {
+</span><span class='line'>        Object o = amqpTemplate.convertSendAndReceive("spring-boot", "{test: 'OK'}");
+</span><span class='line'>        return result;
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最後再整理一下整個執行的過程：</p>
+
+<ol>
+<li>使用 amqpTemplate 所提供的 convertSendAndReceive，表示送出訊息後要等待接收 reply</li>
+<li>透過該函式將訊息送到指定的隊列名稱為 <code>spring-boot</code>，透過 connectionFactory 將訊息傳給 rpc_quene</li>
+<li>Server 端的  serverMessageListenerContainer，一發現 rpc_quene 有新的訊息，就會把訊息傳給 listenerAdapter，交由 AmqpController 處理</li>
+<li>一旦 AmqpController 的 receiveMessage 函式處理完成後，將處理結果 return</li>
+<li>此時 serverMessageListenerContainer 根據從 amqpTemplate 送出訊息裡包含的 <a href="http://stackoverflow.com/questions/18403623/rabbitmq-amqp-basicproperties-builder-values">BasicProperties</a> 知道要回傳到隊列 reply</li>
+<li>一旦隊列 reply 有了新訊息，client 的 clientMessageListenerContainer 監控到 reply 新的訊息需要處理，根據 clientMessageListenerContainer 綁定的 MessageListener 對象為一開始發出訊息的 amqpTemplate，將處理結果傳入，回到原點，完成整個交易過程。</li>
+</ol>
+
+
+<p>最後附上在 MQ server 控制頁的模型圖示：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-rhWN2FC7ceo/Us9gs33fNeI/AAAAAAAAMBQ/oU231Uq9gP8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-10+%E4%B8%8A%E5%8D%8810.52.55.png" title="螢幕快照 2014-01-10 上午10.52.55.png" alt="enter image description here" /></p>
+
+<p>若是以 rabbit MQ server 角度來看，當你送出訊息時，訊息會送到與 spring-boot 隊列成對的 exchange，spring-boot-exchange 綁定了 spring-boot 與 reply 隊列。</p>
+
+<p>上圖中的藍色線就是當你送出 message 時會出現代表有新訊息傳入，在交由 exchange 去分派到對應的隊列。</p>
+
+<p>寫了很多，希望可以幫助到需要的朋友。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/rabbit-MQ-Spring-boot/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[rabbit MQ 使用者建立與權限設定]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/rabbit-MQ/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/rabbit-MQ</id>
+
+      <content type="html"><![CDATA[<p>安裝 rabbit MQ 非常簡單，<a href="https://www.rabbitmq.com/download.html">官方就有介紹</a>，安裝完成後，可以透過指令 <code>rabbitmq-server</code> 來啟動 MQ server。</p>
+
+<p>一旦安裝完成，可透過下面網址進入控管 MQ server 的主控台：</p>
+
+<p><code>http://localhost:15672/</code></p>
+
+<p>在瀏覽器輸入上述網址後，預設帳號密碼為 <code>guest/guest</code>，登入後會看到畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-QLG8IN_RDtI/Ur0lQZP-imI/AAAAAAAAL70/2N3Rb4O1pCQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%882.58.50.png" title="螢幕快照 2013-12-27 下午2.58.50.png" alt="enter image description here" /></p>
+
+<p>主要頁面呈現了關於 MQ server 目前的狀態，包括隊列的情形，環境參數等，有需要可以點選看看，本篇要說明的是如何建立或改變使用者帳號。</p>
+
+<h4>建立或改變使用者帳號</h4>
+
+<ol>
+<li><p>點選上圖中導覽列的 Admin 會進入下面的畫面</p>
+
+<p> <img src="https://lh3.googleusercontent.com/-cvd7yKB403c/Ur0lrKf1LyI/AAAAAAAAL8A/ZUd-FF8KvXY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.00.39.png" title="螢幕快照 2013-12-27 下午3.00.39.png" alt="enter image description here" /></p></li>
+<li><p>點選 add a user 就可以輸入要新增的帳號</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-jOyv6P2vvO8/Ur0mGS9N5VI/AAAAAAAAL8M/H73RkFTDZ8c/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.02.24.png" title="螢幕快照 2013-12-27 下午3.02.24.png" alt="enter image description here" /></p></li>
+<li><p>輸入完成後，可以看到如下圖：</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-fCYZHvcrbI0/Ur0mVLaKgdI/AAAAAAAAL8c/DSXoXMqtKZQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.03.26.png" title="螢幕快照 2013-12-27 下午3.03.26.png" alt="enter image description here" /></p>
+
+<p> 表示使用者新增完成。</p></li>
+<li><p>接著設定存取權限，所以接著點選上圖表格中 Name 欄位的 admin，進入下面畫面：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-yeuQj-nJAHY/Ur0m4_r0bJI/AAAAAAAAL8s/EJEkATgSeeY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.05.38.png" title="螢幕快照 2013-12-27 下午3.05.38.png" alt="enter image description here" /></p>
+
+<p> 預設為全部允許，如此一來就可以透過設定好的帳號密碼來進行控管。</p></li>
+</ol>
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/rabbit-MQ/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/Window/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/Window</id>
+
+      <content type="html"><![CDATA[<p>使用 spring-boot 的好處之一，不需要額外安裝 tomcat，也不需要包成 war 檔進行 deploy，我們可以直接包成 jar 檔之後透過比如下面的指令進行啟動服務：<code>java -jar service-1.0.0.jar</code>，可以這麼做的原因是 spring-boot 使用 tomcat-embed 作為 service，所以可以直接使用 jar 運行，作為 server 啟動。</p>
+
+<p>完整的啟動 bat 內容如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>set JAVA_HOME=E:\service\Java\jdk1.7.0_45
+</span><span class='line'>set JAVA_JRE=E:\service\Java\jre7
+</span><span class='line'>java -jar service-1.0.0.jar</span></code></pre></td></tr></table></div></figure>
+
+
+<p>設定好 JAVA_HOME 以及 JAVA_JRE 即可不受 window 自動更新 JDK 造成相容性問題，最後再執行 <code>java -jar service-1.0.0.jar</code> 即可啟動服務。</p>
+
+<p>當程式開發好之後，實際發佈到主機作為 production 運行時，我們不希望偶爾的 window 自動更新重啟時造成服務未開啟，讓客戶錯以為系統有問題，在 window 底下最簡單的自動啟動指定的應用程式是將捷徑放置於開始功能列中的 [<code>啟動</code>] 資料夾，這樣的作法有幾個問題：</p>
+
+<ol>
+<li>需要登入才會觸動，所以若是自動更新重啟沒有登入也是沒效</li>
+<li>若有遠端登入也會啟動，造成重覆開啟</li>
+</ol>
+
+
+<p>我們可以用另外一種設定方式來進行透過 [工作排程器]，步驟如下：</p>
+
+<ol>
+<li><p>啟動工作排程器
+ <img src="https://lh6.googleusercontent.com/-sY2DBkcNQmg/UteGzqS4V0I/AAAAAAAAMCc/a3jB0bIxGhE/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.52.44.png" title="螢幕快照 2014-01-16 下午2.52.44.png" alt="enter image description here" /></p></li>
+<li><p>建立基本工作
+ <img src="https://lh6.googleusercontent.com/-GvMx7nrfvHk/UteG_RMFp8I/AAAAAAAAMCo/k4R8KaF-EJ8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.13.png" title="螢幕快照 2014-01-16 下午2.53.13.png" alt="enter image description here" /></p></li>
+<li><p>定義服務名稱
+ <img src="https://lh5.googleusercontent.com/-sijmvNua4Ik/UteHI0q2lsI/AAAAAAAAMC0/jhZ7yxP6UH8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.53.46.png" title="螢幕快照 2014-01-16 下午2.53.46.png" alt="enter image description here" /></p></li>
+<li><p>定義啟動時機
+ <img src="https://lh3.googleusercontent.com/-8NGvtH4yfog/UteI1fvaaxI/AAAAAAAAMDo/sW64MwnYkZw/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.20.49.png" title="螢幕快照 2014-01-16 下午3.20.49.png" alt="enter image description here" /></p></li>
+<li><p>選擇工作類型，選擇啟動程式
+ <img src="https://lh4.googleusercontent.com/-z0JtzmxDECc/UteHSqKqU9I/AAAAAAAAMDA/SySPxMM9bfg/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%882.54.16.png" title="螢幕快照 2014-01-16 下午2.54.16.png" alt="enter image description here" /></p></li>
+<li><p>選擇要執行的 bat 檔
+ <img src="https://lh3.googleusercontent.com/-PUmGanA4O7w/UteI9opVxdI/AAAAAAAAMD0/SEWz5gr0p5k/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-16+%E4%B8%8B%E5%8D%883.21.23.png" title="螢幕快照 2014-01-16 下午3.21.23.png" alt="enter image description here" /></p></li>
+</ol>
+
+
+<p>如此一來，系統就會在啟動時執行目標工作啦，記得要寫 log，因為這樣的運行模式下沒有 console 視窗，有任何異常都要從 log 檔查看。</p>
+
+<p>同場加映：</p>
+
+<p>宏大 <a href="http://blog.lyhdev.com/">lyhcode</a> 詢問：</p>
+
+<blockquote><p>有沒有用 command line 就能搞定的 geek 版？</p></blockquote>
+
+<p>感謝 <a href="http://www.dotblogs.com.tw/jamesfu/">jamesFu</a> 大師解答：</p>
+
+<blockquote><p>schtask /create /sc onstart /tn Service /tr &#8220;E:\service\run.bat&#8221; /ru</p></blockquote>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/Window/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Spring Security: oauth2 運作原理解析筆記]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2</id>
+
+      <content type="html"><![CDATA[<p>繼上一篇 <a href="http://blog.smlsun.com/2013/12/spring-security-basic-authentication.html">Spring Security Basic Authentication with Ajax request 失敗處理</a>，說明關於如何在 Spring Security 設定 Basic Authentication 以及透過 ajax 來進行資料請求後，這篇要來說明如何使用目前各大網站常用的 oauth 驗證機制。</p>
+
+<p>關於 oauth 的特性網路上有很多不錯的文章，推薦大家先閱讀：</p>
+
+<h2><a href="http://www.im47.cn/post/2012/08/2012-08-04-oauth2">OAuth原理初探</a></h2>
+
+<p>這篇有很詳細的圖文解說，最後還有關於 OAuth 和 OpenID 的區別:</p>
+
+<blockquote><p>OAuth 關注的是授權，即：“用戶能做什麼”；而 OpenID 關注的是證明，即：“用戶是誰”。</p></blockquote>
+
+<h2><a href="http://www.techiekernel.com/2013/02/oauth2-in-simple-way.html">OAuth2 - In a Simple Way</a></h2>
+
+<p>這篇是英文，但在解釋 oauth 使用時機有較精準的說明:</p>
+
+<blockquote><p>OAuth 2 provides several grant types for different use cases. The grant types defined are:</p>
+
+<ol>
+<li>Authorization Code: for apps running on a web server</li>
+<li>Implicit: for browser-based or mobile apps</li>
+<li>Password: for logging in with a username and password</li>
+<li>Client credentials: for application access</li>
+</ol>
+</blockquote>
+
+<p>可以看到 oauth 提供了各種不同狀況的應用的驗證機制，算是很完整的安全機制，另外在文中還有針對每種驗證方式提供 curl 或是 網址的驗證流程，上述兩篇文章的閱讀可以充分了解 oauth 是什麼。</p>
+
+<h2><a href="http://cscarioni.blogspot.tw/2013/04/pro-spring-security-and-oauth-2.html">Pro Spring Security and OAUTH 2</a></h2>
+
+<p>這邊講的就是實作啦，沒有看過上面兩篇會不知道他在幹嘛，建議可以依序在看到這一篇，該作者為 <a href="http://it-ebooks.info/book/2364/">Pro Spring Security</a> (連結可下載原文 pdf) 的作者，對於 Spring Security 的實作細節有很詳盡的說明，在書中並未包含 oauth 的說明該文章算是補足 oauth 的說明，且說明的是 oauth2 的規範，簡單來說 oauth2 簡化了 oauth，在實作上更加簡單。</p>
+
+<p>該文章範例程式碼：<code>https://github.com/spring-projects/spring-security-oauth</code>，下載之後取出 1.0.1 版<code>git checkout 1.0.1.RELEASE</code>，在專案根目錄使用 maven，在 command 執行 <code>mvn clean install -P bootstrap</code>，將會在該專案底下的 sample 各資料夾底下 target 資料夾找到各別的 war 檔，如此就可以將 war 檔放至於 tomcat 下運行。</p>
+
+<p>整個文章讀下來幾個比較重要的步驟說明筆記如下</p>
+
+<h3>Tonr 之 OAuth2ClientContextFilter 過濾處理</h3>
+
+<ol>
+<li>當登入網頁需要驗證時</li>
+<li>登入失敗時</li>
+<li>已驗證通過會透過該 filter 到達 SparklrServiceImpl</li>
+</ol>
+
+
+<h3>SparklrServiceImpl 將實作存取 Sparklr 相關方法</h3>
+
+<ol>
+<li>呼叫後端 Sparklr 取得使用者特有的圖片</li>
+<li>透過使用 RestOperations(OAuth2RestTemplate)取得 Sparklr 上的圖片</li>
+</ol>
+
+
+<h3>取得 Access Token</h3>
+
+<ol>
+<li>需要先取得 Access Token，一旦取得會存於 DefaultOAuth2ClientContext</li>
+<li>一開始 DefaultOAuth2ClientContext 尚未有 Access Token 時，會從 DefaultOAuth2ClientContext 取得 AccessTokenRequest，兩者當 Spring 啟動時會自動設定，透過 bean 定義 <code>&lt;oauth:rest-template resource="sparklr" /&gt;</code> 傳給 RestTemplateBeanDefinitionParser。</li>
+<li>接著在從呼叫 AccessTokenProvider 取的 Token</li>
+<li>將會被 AccessTokenRequest 以及 AuthorizationCodeResourceDetails 呼叫 AccessTokenProviderChain 中的 obtainAccessToken 方法。</li>
+<li>其中 AuthorizationCodeResourceDetails 定義如下，將在動時透過 ResourceBeanDefinitionParser 解析</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;oauth:resource id="sparklr" type="authorization_code" client-id="tonr" client-secret="secret"
+</span><span class='line'>                access-token-uri="${accessTokenUri}" user-authorization-uri="${userAuthorizationUri}" scope="read,write" /&gt;
+</span><span class='line'>&lt;oauth:rest-template resource="sparklr" /&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>取得 Authorization Code Access Token</h3>
+
+<ol>
+<li>AccessTokenProviderChain 的 obtainAccessToken 方法將透過 設定 AccessTokenProvider 實體來取的 token，指的就是 AuthorizationCodeAccessTokenProvider</li>
+<li>AuthorizationCodeAccessTokenProvider 將透過 POST 呼叫 <code>http://localhost:8080/sparklr2/oauth/authorize</code> 取得驗證碼</li>
+<li>sparklr2 其中 <code>/sparklr2/oauth/authorize</code> 將定義於 FilterSecurityInterceptor</li>
+<li><p>一旦 FilterSecurityInterceptor 發現沒有權限登入將會將頁面導入 <code>http://localhost:8080/sparklr2/login.jsp</code>，設定如下：</p>
+
+<p>&#8220;`
+<http access-denied-page="/login.jsp?authorization_error=true" disable-url-rewriting="true" xmlns="http://www.springframework.org/schema/security"></p>
+
+<pre><code>&lt;intercept-url pattern="/oauth/**" access="ROLE_USER" /&gt;
+&lt;intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" /&gt;
+&lt;form-login authentication-failure-url="/login.jsp?authentication_error=true" default-target-url="/index.jsp" login-page="/login.jsp" login-processing-url="/login.do" /&gt;
+&lt;logout logout-success-url="/index.jsp" logout-url="/logout.do" /&gt;
+&lt;anonymous /&gt;
+</code></pre>
+
+<p></http>
+&#8220;`</p></li>
+<li>redirect 到 login 頁面將會被 Tonr 的 AuthorizationCodeAccessTokenProvider 接收並且被 UserRedirectRequiredException 擷取並且丟出由 Oauth2ClientContextFilter 處理，加入額外的參數 <code>http://localhost:8080/sparklr2/login.jsp?response_type=code&amp;client_id=tonr&amp;scope=read+write&amp;state=dWby7l&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Ftonr2%2Fsparklr%2Fphotos</code>，如此就可以開始進行登入</li>
+</ol>
+
+
+<h3>進行登入取得 USER ROLE</h3>
+
+<ol>
+<li>登入步驟請參考原文</li>
+<li>一旦取得 role ROLE_USER 將會再次導入之前的網址 <code>/sparklr2/oauth/authorize</code></li>
+<li><p>該網址一旦安裝 core Spring Security OAuth project，透過下述設定就會產生該 endpoint</p>
+
+<p> &#8220;`
+ &lt;oauth:authorization-server client-details-service-ref=&#8221;clientDetails&#8221; token-services-ref=&#8221;tokenServices&#8221;</p>
+
+<pre><code> user-approval-handler-ref="userApprovalHandler"&gt;
+ &lt;oauth:authorization-code /&gt;
+ &lt;oauth:implicit /&gt;
+ &lt;oauth:refresh-token /&gt;
+ &lt;oauth:client-credentials /&gt;
+ &lt;oauth:password /&gt;
+</code></pre>
+
+<p> &lt;/oauth:authorization-server>
+ &#8220;`</p></li>
+<li>其中 AuthorizationEndpoint 對應  <code>/oauth/authorize</code></li>
+</ol>
+
+
+<h3>透過 AuthorizationEndpoint 取得 CLIENT ROLE</h3>
+
+<p>關於登入者可執行的操作將透過 InMemoryClientDetailsService 取得，該物件將讀取設定如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;oauth:client-details-service id="clientDetails"&gt;
+</span><span class='line'>
+</span><span class='line'>    &lt;oauth:client client-id="my-trusted-client" authorized-grant-types="password,authorization_code,refresh_token,implicit" authorities="ROLE_CLIENT, ROLE_TRUSTED_CLIENT" scope="read,write,trust" access-token-validity="60" /&gt;
+</span><span class='line'>    ...    
+</span><span class='line'>    &lt;oauth:client client-id="my-untrusted-client-with-registered-redirect" authorized-grant-types="authorization_code" authorities="ROLE_CLIENT" redirect-uri="http://anywhere" scope="read" /&gt;
+</span><span class='line'>    
+</span><span class='line'>    &lt;oauth:client client-id="tonr" resource-ids="sparklr" authorized-grant-types="authorization_code,implicit" authorities="ROLE_CLIENT" scope="read,write" secret="secret" /&gt;
+</span><span class='line'>&lt;/oauth:client-details-service&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>這裡就是 oauth 與一般使用者驗證的差別，定義的是可對 resource 的操作有哪些如 <code>read,write,trust</code>，這邊的權限設定沒有 user 的概念，只有 server 對不同 client-id 與有無 secret 的差別對 client 提供的功能有哪些，一旦確認有存在於設定檔將會取得 ClientDetails 物件。</p>
+
+<h3>sparklr 請使用者確認是否允許該存取</h3>
+
+<p>一旦確認 AuthorizationRequest 有取得 ClientDetails 物件，將會在被導入 <code>/oauth/confirm_access</code> 該網址的實作必須由我們自己開發的應用程式來實作，也就是 Sparklr 中的 AccessConfirmationController 進而顯示 <code>access_confirmation.jsp</code>，讓使用者確認是否允許存取</p>
+
+<h3>確認允許，透過 PhotoController 取得照片</h3>
+
+<p>一旦點選允許將發生下面的事情：</p>
+
+<ol>
+<li>確認 AuthorizationRequest 是有效可進行存取的。</li>
+<li>透過呼叫 AuthorizationRequest 的 getResponseTypes 取得 code，不是 token</li>
+<li>framework 會產生新的 authorization code，交由 approveOrDeny 方法完成之後的事情，將會從 Sparklr 導回 tonr，實際的範例網址為 <code>http://localhost:8080/tonr2/sparklr/photos;jsessionid=03B2E814391E010B3D1210241ECF6C0A?code=vqMbuf&amp;state=aTSlVl</code></li>
+<li><p>OAuth2RestTemplate 與 AuthorizationCodeAccessTokenProvider 結合，從 Sparklr 取得 token，實際上，將會 request <code>/sparklr/oauth/token</code>包含下列參數：</p>
+
+<p> &#8220;`
+ {</p>
+
+<pre><code> grant_type=’authorization_code’,
+ redirect_uri=’http://localhost:8080/tonr2/sparklr/photos’,
+ code=xxxx
+</code></pre>
+
+<p> }
+ &#8220;`</p></li>
+<li>該次呼叫會被 <code>org.springframework.security.oauth2.provider.endpoint.TokenEndpoint</code> 處理產生 OAuth2AccessToken 並且 response Bearer token。</li>
+<li>一旦取得 token，Tonr 會再一次呼叫 Sparklr，這次將會傳入取得的 Bearer token 於該次請求的 header</li>
+<li>透過 OAuth2AuthenticationProcessingFilter 解開 token 在由 Oauth2AuthenticationManager 確認該請求是否合法。</li>
+<li>一旦確認無誤，終於可以到達 PhotoController 取得照片的資源。</li>
+</ol>
+
+
+<p>步驟很多，也許有說明不清楚的地方，不過確實把 oauth 的運作詳細走過一遍，希望可以幫助到有需要的人，上述範例是使用 xml 來定義安全性相關的設定，下一篇將進一步說明使用 spring-boot 透過 java config(java 物件)來定義 oauth 過程會精簡很多，筆者也是先瞭解最基本得 xml 設定，才能完成 java config 型式的應用，若有需要，可以先參考下列專案，利用 java config 完成 Spring Security 設定：</p>
+
+<ul>
+<li><a href="https://github.com/spring-projects/spring-security-javaconfig">Spring Security Java Config</a>: 各種使用 java config 的安全性設定</li>
+<li><a href="https://github.com/spring-projects/spring-security-oauth-javaconfig">spring-security-oauth-javaconfig</a>: 針對 oauth 的 java config 設定，算是還在概念階段</li>
+</ul>
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/Spring-Security-oauth2/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
 <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
-<link href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
-<updated>2014-01-20T00:00:00+08:00</updated>
-<id>http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request</id>
+<link href="http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request</id>
 
       <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
 
@@ -371,7 +1163,674 @@ response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage
 <p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
 
 <p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Spring boot: 監控 memory useage & 執行 GC]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/Spring+boot-memory-useage/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/Spring boot-memory-useage</id>
+
+      <content type="html"><![CDATA[<p>參考下面連結：<a href="http://xantorohara.blogspot.tw/2013/11/spring-boot-memory-usage.html">Spring-boot memory usage</a></p>
+
+<p>因為 spring boot 可使用 jar 檔直接運行，不需要打包成 war，也不需要實體 tomcat，實際上，spring boot 使用的是 embedded tomcat，整個專案打包後的大小非常小，使得記憶體可用空間也能夠更多。</p>
+
+<p>文中利用下面的 controller 來輸出記憶體使用量：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.stereotype.Controller;
+</span><span class='line'>import org.springframework.web.bind.annotation.RequestMapping;
+</span><span class='line'>import org.springframework.web.bind.annotation.RequestMethod;
+</span><span class='line'>import org.springframework.web.bind.annotation.ResponseBody;
+</span><span class='line'>
+</span><span class='line'>@Controller
+</span><span class='line'>public class AdminController {
+</span><span class='line'>
+</span><span class='line'>    @RequestMapping(value = "/admin/mem", method = {RequestMethod.GET}
+</span><span class='line'>            , produces = "text/html;charset=UTF-8")
+</span><span class='line'>    @ResponseBody
+</span><span class='line'>    public String mem() {
+</span><span class='line'>        long max = Runtime.getRuntime().maxMemory();
+</span><span class='line'>        long total = Runtime.getRuntime().totalMemory();
+</span><span class='line'>        long free = Runtime.getRuntime().freeMemory();
+</span><span class='line'>        long used = total - free;
+</span><span class='line'>
+</span><span class='line'>        return String.format("Memory:\n" +
+</span><span class='line'>                "max: %,d bytes\n" +
+</span><span class='line'>                "total: %,d bytes\n" +
+</span><span class='line'>                "free: %,d bytes\n" +
+</span><span class='line'>                "used: %,d bytes\n",
+</span><span class='line'>                max, total, free, used);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @RequestMapping(value = "/admin/rungc" , method = RequestMethod.GET)
+</span><span class='line'>    @ResponseBody
+</span><span class='line'>    public String rungc() {
+</span><span class='line'>        Runtime.getRuntime().gc();
+</span><span class='line'>        return "Run GC finish";
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己的專案，包含了 spring security、jdbc、rest service、以及 rabbitmq client
+執行的結果如下：</p>
+
+<blockquote><p>剛啟動時記憶體使用量
+(http://localhost:8080/admin/mem):
+max:    1,908,932,608 bytes
+total:    372,768,768 bytes
+free:     274,485,040 bytes
+used:      98,283,728 bytes</p></blockquote>
+
+<hr />
+
+<blockquote><p>執行GC後的使用量
+(http://localhost:8080/admin/rungc):
+max: 1,908,932,608 bytes
+total: 374,865,920 bytes
+free:  346,690,128 bytes
+used:   28,175,792 bytes</p></blockquote>
+
+<p>還不賴！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/Spring+boot-memory-useage/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[SQL state [HY010]; error code [0]; Invalid state, the Connection object is closed 處理筆記]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/SQL-state-HY010/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/SQL-state-HY010</id>
+
+      <content type="html"><![CDATA[<p>之前曾經遇到過，最近又來了&#8230;</p>
+
+<p>果然該還的還是要還，因此這次要詳細記錄處理過程，希望以後再發生可以更快釐清問題。</p>
+
+<p>首先需要先確定發生可能原因，google 了一下目前比較明確的錯誤狀況如下：</p>
+
+<ol>
+<li>到了連線 timeout 時間</li>
+<li>drive 的問題</li>
+<li>或是 database server 被重啟</li>
+</ol>
+
+
+<p>我查了一下預設的 connection pool 的 timeout 時間有 30000 ms，所以第一項先不考慮。</p>
+
+<p>drive 問題目前發生問題的是 jtds 1.3.1，有人說換換看 ms sql 所提供的 drive，在 sql 2008、O.S. 為 64 位元的情況會比較沒問題，well 姑且試試看。</p>
+
+<p>檢視 database 的 log 記錄，似乎有重啟的狀況，如下圖：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-ZQwS21llDr4/Us0VNJxSjwI/AAAAAAAAMA4/BED3lh6m6vo/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-08+%E4%B8%8B%E5%8D%885.05.15.png" title="螢幕快照 2014-01-08 下午5.05.15.png" alt="enter image description here" /></p>
+
+<p>在持續觀察中發現確實隔天早上資料庫被重啟(os 重新啟動)，另外一個可調整的地方就是設置 connection pool 的 setTestOnBorrow：取出 pool 中的連線時進行驗證，若沒有通過則會在取出新的連線，這應該是我們要的參數，經過下列測試步驟：</p>
+
+<h2>未設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，吐出訊息 <code>SQL state [null]; error code [0]; 連接已關閉</code></li>
+</ol>
+
+
+<h2>有設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，資料查詢正常</li>
+</ol>
+
+
+<p>這樣一來即使遠端連結的資料庫主機重啟，或是關閉的情形，一旦該主機重新上線，我們的應用程式也不用重開令 pool 重新連線，才不會總是鬼打牆，服務明明好好得但就是會出現連線異常，檢視遠端 db 主機也在線上，殊不知曾經被重啟過。</p>
+
+<p>另外 testOnBorrow 需要搭配 validationQuery 使用，可參考下面連結：<a href="https://wiki.shibboleth.net/confluence/plugins/viewsource/viewpagesrc.action?pageId=4358588">Database Connectors</a>，最下方的 Database Reference Table 有各個不同 databse 的 validationQuery 可以參考。</p>
+
+<p>一件落著！</p>
+
+<p>不過我的測試案例出現的是 <code>SQL state [null];</code> 而不是 <code>SQL state [HY010];</code>，還是要在觀察一下。</p>
+
+<p>若有朋友有關於此問題有處理經驗或建議，也請指教，感謝！</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/SQL-state-HY010/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[Grails migrations: database 的版本控管]]></title>
+<link href="http://smlsun.com/blog/2014/01/19/Grails-migrations-database/"/>
+<updated>2014-01-19T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/01/19/Grails-migrations-database</id>
+
+      <content type="html"><![CDATA[<p>說到版本控管，就一定跟版本顯示，更新舊有版本有關，在程式碼部分使用版本控管已經習以為常，但通常一個應用程式或是專案從來就不只有程式碼，還有 datbase schema 的維護，偏偏 datbase 的版本升級沒有像程式碼控管那樣的簡單，也沒有類似 SVN 或是 GIT 的版本控管軟體。</p>
+
+<p>不過，筆者最近在開發 grails 時發現了一個套件：<a href="http://grails.org/plugin/database-migration">Grails Database Migration Plugin</a>，其運作方式跟版本控管有異曲同工之妙，簡單但是有效的進行 datbase schema 版控。</p>
+
+<p>下列文章在使用 Grails Migration 非常有參考價值，若有需要可以看看：</p>
+
+<ul>
+<li><a href="http://grails-plugins.github.io/grails-database-migration/docs/manual/guide/introduction.html">Database Migration Plugin - Reference Documentation</a></li>
+<li><a href="http://fbflex.wordpress.com/2011/01/19/working-with-the-grails-database-migration-plugin/">Working with the Grails Database Migration Plugin</a></li>
+<li><a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a></li>
+</ul>
+
+
+<p>在開始說明前需要先進行 dataSource 的調整。</p>
+
+<h2>定義 dataSource</h2>
+
+<p>grails 預設的 domain 管理使用的是 gorm 技術，也就是常見的 orm mapping，因此，一般預設會定義 dbCreate = &#8220;update&#8221;，也就是一旦檢查 domain 物件有調整，會自動檢查並且更新，使用 Migration 我們就不希望 orm mapping 介入因此我們在定義 dataSource 的地方設定 <code>dbCreate = ""</code>，也就是關閉自動更新的機制，設定檔如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>development {
+</span><span class='line'>    dataSource {
+</span><span class='line'>        dbCreate = "" // one of 'create', 'create-drop', 'update', 'validate', ''
+</span><span class='line'>        pooled = true
+</span><span class='line'>        driverClassName = "com.mysql.jdbc.Driver"
+</span><span class='line'>        dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+</span><span class='line'>        username = ""
+</span><span class='line'>        password = ""
+</span><span class='line'>        url = "jdbc:mysql://localhost/test?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull"
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一定有讀者會有疑慮使用 orm 技術就可以幫我們自動更新 schema 為什麼還要使用 migrations ? 幾點如下：</p>
+
+<ol>
+<li>migrations 有版本記錄與控管，orm update 沒有</li>
+<li>migrations 可以偵測到 PK、FK、限制式的調整，orm update 沒辦法</li>
+<li>migrations 可以偵測到欄位的刪除，orm update 沒辦法</li>
+<li>migrations 可以自定更新 sql 語法，並且加入版本控管，orm update 沒辦法</li>
+</ol>
+
+
+<p>如果你的應用程式不會停止更新變動，那 migrations 才有可能涵蓋所有需求。</p>
+
+<p>有了上述了解與設定後，首先要為我們的資料庫建立第一版的版控內容，可以想像成版本控制的初始專案或是 git init。</p>
+
+<h2>初始資料庫版控</h2>
+
+<p>假設我們有個 domain 定義如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Part {
+</span><span class='line'>    String name
+</span><span class='line'>    String title
+</span><span class='line'>    String description
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    static constraints = {
+</span><span class='line'>        name blank: false, unique: true
+</span><span class='line'>        title blank: false
+</span><span class='line'>        description nullable: true, empty: true
+</span><span class='line'>
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦在 grails 建立了 domain 之後，我們可以透過下列語法產生最一開始的資料庫版控記錄檔： <code>changelog.groovy</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-generate-gorm-changelog changelog.groovy </span></code></pre></td></tr></table></div></figure>
+
+
+<p>該指令指的是透過 domain 產生建立資料庫的相關語法 如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389679387050-1") {
+</span><span class='line'>      createTable(tableName: "part") {
+</span><span class='line'>          column(autoIncrement: "true", name: "id", type: "bigint") {
+</span><span class='line'>              constraints(nullable: "false", primaryKey: "true", primaryKeyName: "partPK")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "version", type: "bigint") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "description", type: "varchar(255)")
+</span><span class='line'>
+</span><span class='line'>          column(name: "name", type: "varchar(255)") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "title", type: "varchar(255)") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389679387050-2") {
+</span><span class='line'>      createIndex(indexName: "name_uniq_1389679387009", tableName: "part", unique: "true") {
+</span><span class='line'>          column(name: "name")
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦建立完成，我們可以在我們 DB server 先建立好空的資料庫，透過下面指令產生一個初始的 database 包含上面 changelog.groovy 的變動：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>初始資料庫建好之後，我們可以使用 sql client 軟體來看一下 table 的結構，如下圖:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-LHDhbqc-ikY/UtTWMawYxnI/AAAAAAAAMB0/QzxhMNG5QJI/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.15.25.png" title="螢幕快照 2014-01-14 下午2.15.25.png" alt="enter image description here" /></p>
+
+<p>圖中的 DATABASECHANGELOG table 記錄的就是目前 database 的版本記錄，migrations plugin 就是透過該 table 比對目前 db 執行到 changelog 裡的哪些調整，不存在的才執行，如此一來即使你的應用程式會 deploy 到不同主機且 db 的版本不一致的情形，透過該 table 就可以知道每個 db 目前的版本狀況進而讓  migration plugin 幫你更新到最新的 database 版本。</p>
+
+<p>對於初始 db 以及版本資訊 的建立有了解後，接著要說明調整欄位後，如何將調整結果更新的到 db。</p>
+
+<h2>調整欄位後更新 database</h2>
+
+<p>假設我們將一開始建立的 domain 調整 index，以及去掉以及加入欄位的 nullable 限制式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Part {
+</span><span class='line'>    String name
+</span><span class='line'>    String title
+</span><span class='line'>    String description
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    static constraints = {
+</span><span class='line'>        name blank: false, unique: 'title' // 新增 PK
+</span><span class='line'>        title nullable: true //原本 title blank: false
+</span><span class='line'>        //description nullable: true, empty: true
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦 domain 調整完成後，我們可以進行比對目前 database schema 與 domain 的差異，透過下列語法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-gorm-diff 1.0.1.groovy -add</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因為版本控制的概念是要一直延續，且有每階段的調整，我們將第二次的調整儲存於另外的的檔案叫做 <code>1.0.1.groovy</code>，其產生的結果如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-1") {
+</span><span class='line'>      addNotNullConstraint(columnDataType: "varchar(255)", columnName: "description", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-2") {
+</span><span class='line'>      dropNotNullConstraint(columnDataType: "varchar(255)", columnName: "title", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-3") {
+</span><span class='line'>      dropIndex(indexName: "name_uniq_1389679387009", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-4") {
+</span><span class='line'>      createIndex(indexName: "unique_name", tableName: "part", unique: "true") {
+</span><span class='line'>          column(name: "title")
+</span><span class='line'>
+</span><span class='line'>          column(name: "name")
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而指令中的 <code>-add</code> 指的是將上面檔案 includ 到 changelog.groovy，在該檔案新增一行程式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>include file: '1.0.1.groovy'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此，我們在執行 dbm-update 時，會連著第二次更新一並檢查，再一次執行下述指令：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在查看一次 DATABASECHANGELOG，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-glR-DMMN88k/UtTbuyjNQ2I/AAAAAAAAMCI/TwMLXz_CPS8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.38.38.png" title="螢幕快照 2014-01-14 下午2.38.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 changelog 又有新的資料，表示資料庫已更新到最新的狀態。</p>
+
+<p>不過實際狀況可能會有執行失敗的情形，怎麼辦？該 plugin 提供了 rollback 的機制。</p>
+
+<h2>取消更新</h2>
+
+<p>我們可以透過下列語法將更新還原</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-rollback-count 1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>後面的數字表示要退回的更新步驟，需要注意的是 rollback 不一定能成功，畢竟實際狀況是複雜的，可以的話竟量測試完善，你也可以客製 rollback 要執行的語法，可參考最後的 [客製資料庫更新語法]。</p>
+
+<p>當然，除了新專案可以使用 migration，我們也希望舊專案也能納入控管，接著說明如何升級舊有的 database</p>
+
+<h2>將既有的 database 升級</h2>
+
+<p>首先設定一組要升級的 database 連線參數，需要放在 dataSource.groovy，不可以放在外部設定檔，如 <code>.grails/appname-config.groovy</code>，筆者一開始測試就是定義在外部設定檔一直無法成功，設定如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dbToUpdate {
+</span><span class='line'>    dataSource {
+</span><span class='line'>        dbCreate = ""
+</span><span class='line'>        driverClassName = "com.mysql.jdbc.Driver"
+</span><span class='line'>        dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+</span><span class='line'>        username = ""
+</span><span class='line'>        password = ""
+</span><span class='line'>        url = "jdbc:mysql://localhost/oldDatabase?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull"
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接著執行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-diff dbToUpdate newChangelog.groovy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>該指令會以一開始定義的 dev datasource，跟 dbToUpdate datasource 指令的資料庫進行差異比對，並且將差異差異寫入 newChangelog.groovy 檔案。</p>
+
+<p>一旦差異產生好後，接著要將 dbToUpdate 更新到跟 dev datasource 指定的 schema 一樣到最新狀態</p>
+
+<p>在開始執行更新之前，需要先設定 config.groovy 新增下面的參數：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails.plugin.databasemigration.changelogFileName = newChangelog.groovy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>告訴 migration 在執行 dbm-update 時參考 db 跟 db 之間的差異檔 <code>newChangelog.groovy</code></p>
+
+<p>如此一來我們就可以執行下面指令進行舊資料庫升級：</p>
+
+<blockquote><p>注意：執行下面語法時，請先備份舊有資料庫</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails -Dgrails.env=dbToUpdate dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>順利的話 dbToUpdate 定義之舊的 database schema 將會被更新的跟 dev 一樣，接著我們必須將版本記錄更新到最新，因為剛剛執行 dbm-update 的對象是 newChangelog.groovy 同樣會將更新記錄寫入 DATABASECHANGELOG table，該記錄是為了升級用，並不是正式加入控管的記錄，且一開始就開始進行版控的 db 不會有升級的版本記錄，因此我們需要先清除在產生新的 changelog，步驟如下：</p>
+
+<ol>
+<li>先把剛剛更新 newChangelog.groovy 的版本記錄 DATABASECHANGELOG 刪掉</li>
+<li>將 config.groovy 的 <code>grails.plugin.databasemigration.changelogFileName = newChangelog.groovy</code> 刪除，或是調整回 <code>changelog.groovy</code>，表示回到正式版控內。</li>
+<li>寫入從開始版控到最近變更的版本記錄 grails -Dgrails.env=dbToUpdate dbm-changelog-sync</li>
+</ol>
+
+
+<p>透過上述步驟，就可以讓失去控制的舊有 database 回到正軌，之後就可以透過版本控制隨時保持在最新狀態。</p>
+
+<p>當然，一定還有些狀況沒辦法透過比對自動產生，如果你需要對資料庫進行欄位轉換或是特殊處理，下面接著說明。</p>
+
+<h2>客製資料庫更新語法</h2>
+
+<p>假設你有新增欄位，該欄位需要預設值時，可使用下列語法進行：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>    changeSet(author: "wpgreenway", id: "add-date-created-to-post") {
+</span><span class='line'>        addColumn(tableName: "post") {
+</span><span class='line'>            column(name: "date_created", type: "timestamp")
+</span><span class='line'>        }
+</span><span class='line'>
+</span><span class='line'>        grailsChange {
+</span><span class='line'>            change {
+</span><span class='line'>                sql.execute("UPDATE post SET date_created = NOW()")
+</span><span class='line'>            }
+</span><span class='line'>            rollback {
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>
+</span><span class='line'>        addNotNullConstraint(tableName: "post", columnName: "date_created")
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中可以看到 rollback 的 block，你也可以定義如果需要進行 rollback 時要執行的語法，上述是不懂 gorm 可以用一般的 sql 來進行，如果你熟 gorm，可以使用下列語法，不過在一開始的介紹的連結 <a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a> 有提到這樣的作法是危險的，這邊不多說明，可參考連結中的敘述，這裡只是記錄也可以這樣進行操作。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grailsChange {
+</span><span class='line'>  change {
+</span><span class='line'>    Post.list().each { post -&gt;
+</span><span class='line'>      post.dateCreated = new Date()
+</span><span class='line'>      post.save(failOnError: true, flush: true)
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或許有讀者會覺得，我用 sql 檔案也同樣能夠做到資料庫版本更新，又何必要透過類似 migration 的機制？跟一般 sql 檔案控管還有不同的地方，上述自定的 sql 更新記錄同樣的也會加入到 DATABASECHANGELOG，沒有任何一個變更會被遺漏，只要有正確的版本記錄，migration 都會一一的進行更新。</p>
+
+<p>最後，一但所有更新語法都準備就緒實際應用在 production，總不希望還需要手動下指令，migration 提供下列設定來自動完成資料庫更新的動作。</p>
+
+<h2>應用程式運行時自動進行資料更新</h2>
+
+<p>在 config.groovy 加入下列參數</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails.plugin.databasemigration.updateOnStart = true
+</span><span class='line'>grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦系統運行將會自動比對 cheangelog，你也可以根據不同的 environments 設置不同的比對 chnagelog file，又或者有客製情形可以調整</p>
+
+<p>接著運行 run-app 就會開始比對 changelog 並且更新 database，確認 schema 沒問題時 deploy 到遠端自動執行 schema 調整。</p>
+
+<h2>其他使用注意事項</h2>
+
+<p>有時候，執行 <code>grails dev dbm-update</code> 指令會失敗，可能因為你的專案加了不同的 plugin 改變了產生 doamin 的方式，或是 plugin 中有各自維護的 domain，以筆者的狀況使用了 <a href="http://www.grails.org/plugin/taggable">Taggable Plugin</a> 有自己維護的 table，可以利用 [應用程式運行時自動進行資料更新] 來執行上述指令，筆者在進行舊有資料庫升級時同樣也有上述指令沒有辦法運作的情形，也是透過 [應用程式運行時自動進行資料更新] 完成更新。</p>
+
+<p>另外，如果執行 <code>grails dev dbm-update</code> 時出現下面錯誤</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Message: Validation Failed:
+</span><span class='line'>     1 change sets check sum</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可透過下面語法先清除 MD5SUM</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-clear-checksums</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再一次執行 <code>grails dev dbm-update</code> 即可</p>
+
+<p>如果你有使用 searchable 套件，你會發現若你變更欄位限制式時，在執行 dbm-gorm-diff 可以正常運作，但若你在有支援 seachable 的 domain 新增欄位時在執行 dbm-gorm-diff 會出現下列錯誤訊息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[Compass Gps Index [pool-8-thread-3]] ERROR util.JDBCExceptionReporter  - Unknown column 'user0_.has_tour' in 'field list'
+</span><span class='line'>
+</span><span class='line'>[Compass Gps Index [pool-8-thread-3]] ERROR indexer.ScrollableHibernateIndexEntitiesIndexer  - {hibernate}: Failed to index the database
+</span><span class='line'>Message: could not load an entity: [app.User#182]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>只要把 domain 中 static searchable 關鍵字移除舊可以正常運作，在執行 migrations 操作，有未知的異常時，記得先檢查你在 domain 中有沒有特殊的關鍵字，有可以造成誤判或是相互影響</p>
+
+<h2>如果沒有用 grails 開發想使用 migration</h2>
+
+<p>我相信 migration 這樣的機制在每種不同的語言一定有類似的套件提供相同的功能，希望透過這樣的介紹讓讀者知道原來 database 也可以進行版本控制，不需要很複雜也可以做到，有時候就是不知道所以也不知道該怎麼下手。</p>
+
+<p>另外一個方向，如果真的找不到目前專案使用語言有類似 migration 這樣的套件，也可以透過 grails 來中介，將 domain mapping 到既有的 database，在 mapping 時 datasource 定義 <code>dbCreate = "validate"</code>，可以部分 mapping 就開始進行版控，陸續在加入， 一點想法給大家參考。</p>
+
+<p>最後附上本篇文章範例程式位置：</p>
+
+<p><a href="https://github.com/smlsunxie/grailsMigrationsTest">grailsMigrationsTest</a></p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/19/Grails-migrations-database/"></a></p>]]></content>
     </entry>
   
     <entry>
@@ -2350,1766 +3809,6 @@ instance.</p></blockquote>
 
 <p>系列文章到此告一段落，期待下次在與大家分享！</p>
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/05/09/extjs-with-grails/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[利用 Sencha Architect 快速開發 extjs]]></title>
-<link href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"/>
-<updated>2013-05-09T10:45:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro</id>
-
-      <content type="html"><![CDATA[<p>Sencha Architect，基於 extjs 的可視化開發工具，如果你目前主要的前端開發框架選擇的是 extjs，那你就不能錯過，Sencha Architect 提供的功能比妳想像的多更多，他不只是使用 extjs 的元件來進行 mockup 而已，妳可以利用他完成所有妳想到的功能，幫你節省很多除錯的時間，如果有過開發 extjs 的經驗純文字開發除錯是非常費時的。</p>
-
-<p>早在 Sencha Architect 前一代 designer 時，筆者就有使用過，這一版在徹底大改版後的物件化設計，好用許多，非常值得一試。</p>
-
-<hr />
-
-<p>使用 Sencha Architect 來開發 extjs 的好處，除了他會幫你檢查一些常見的問題，比如 id 與 class 名稱的重覆與錯誤，對於前端很最重要的畫面呈現，經由他所組合出來的畫面，幾乎就是實際運行的結果，網路上對於一些基礎的使用技巧已有詳細介紹，這邊就不贅述，在開始閱讀下面的內容時妳可以先參考下面連結，先對基本操作有些概念。</p>
-
-<p><a href="http://ithelp.ithome.com.tw/question/10091599">使用 Sencha Architect 2 快速搞定 Web App 的 UI</a></p>
-
-<p>假設妳已經讀過上面連結，最好還能夠實際操作看看，相信有些概念後會更容易吸收。</p>
-
-<p>並且可以先了解一下 <a href="http://ithelp.ithome.com.tw/question/10120206">extjs 中的 mvc 還有物件導向的特性</a>，在 Sencha Architect 中，妳將可以很輕易做到，一些基礎的使用方式筆者就不贅述，本篇將介紹進階使用技巧。</p>
-
-<h2>物件導向：元件重覆使用</h2>
-
-<p>拜 extjs 所賜，讓前端純 javascript 的開發也能用物件導向的方式來進行，我們可以將一些常用的元件重覆使用，一旦我們需要調整時，只要調整基礎元件，就可以同時影響所有有使用到的元件，參考下圖：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-r6dKsDsjny8/UYoJTVdWbrI/AAAAAAAALq4/ZcWWw55l13s/w295-h351-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.13.42.jpg" alt="image" /></p>
-
-<p>可以看到 saveBtn 同時出現在三個自定元件，在 Sencha Architect 裡如果是屬於 link 元件將會用藍色線連結，讓你可以一目了然，一旦改了最原始的 saveBtn 將會連動其他的元件，如下圖</p>
-
-<p><img src="https://lh3.googleusercontent.com/-CRJZ6KfxDso/UYoJT3XjC2I/AAAAAAAALrE/e1G0YHxzXfw/w297-h487-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.21.51.jpg" alt="image" /></p>
-
-<p>物件導向的特性讓你將共用與特有的屬性能夠有效率的管理，在妳需要時組合成妳想的介面。</p>
-
-<h2>toolbox</h2>
-
-<p>除了利用類別的方式，我們也可將我們自定義的元件加入 toolbox 以利重覆使用，使用上如下圖：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-iZyb8gySybw/UYoJUgko80I/AAAAAAAALrI/SmexsiI1Ty4/w529-h270-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.26.43.jpg" alt="image" /></p>
-
-<p>一旦此元件屬於標準元件妳可以將其加入 toolbox 加以管理，需要使用時，拖拉至妳需要放置的位置即可。</p>
-
-<h2>model 資料表令 Store 連結真實資料</h2>
-
-<p>除了在一開始基礎操作連結中有說明到可以定義 model 之外，妳也可以連真實的資料來進行呈現。</p>
-
-<p>一旦連結成功，在 store 旁，將會有一個黑色眼睛，表示資料已連結，實際在 Architect 裡，也會將資料真實呈現。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-zqKWz11Vqx8/UYoJVkvPa1I/AAAAAAAALrY/Jte5iEJvZkE/w602-h229-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.38.22.jpg" alt="image" /></p>
-
-<p>如此一來，除了 grid 的欄位顯示，我們也可以透過 Architect 知道實際呈現時資料內容是否正確。</p>
-
-<h2>進階屬性定義</h2>
-
-<p>在 Sencha Architect 裡的每個元件皆有預設的屬性可以讓您方便的進行定義，但實際上妳可能會找不到妳要的屬性，沒關係，妳也可以自定，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-5ghG4LSpW68/UYoJVMRl7UI/AAAAAAAALrQ/jaTUxgolSD4/w301-h291-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-02+%25E4%25B8%258A%25E5%258D%258811.31.02.jpg" alt="image" /></p>
-
-<p>一旦妳輸入的屬性不存在，妳可以點選 add，就會加入下方的屬性，並且可選取該屬性的資料型態，根據妳所選的資料屬性 Architect 會幫你進行資料型態檢查。</p>
-
-<h2>介面 layout 定義</h2>
-
-<p>這部份是筆者認為非常棒的功能，在使用 extjs 時，如果是利用純文字編輯，對於元件的佈置很難直覺的想像，透過 Architect 可以很方便完成我們希望的介面呈現，舉個例子：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-2x6Rf3kw21Y/UYo606h83XI/AAAAAAAALrw/NkggFPdeqkY/w436-h126-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.55.06.jpg" alt="image" /></p>
-
-<p>上圖是在<a href="http://ithelp.ithome.com.tw/question/10120206">上一篇 MVC</a> 文章中，用到的 ItemGrid 可以看到若是單獨看此元件的話，其實是縮在一起的，但如果我們要確認實際放入 ItemEditor tab 中的狀況就可以透過 Architect：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-5zPQbOzLYk4/UYo61v204lI/AAAAAAAALr4/sO0SnYOfakE/w603-h178-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.58.44.jpg" alt="image" /></p>
-
-<p>圖中可以看到使用的 layout 為 vbox，結構上如下圖：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-ZSGWB1J0R-0/UYo62Dv1_mI/AAAAAAAALsA/i6lYouhtbQU/w225-h110-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.03.16.jpg" alt="image" /></p>
-
-<p>由 listToolbar 以及 itemGrid 組成，在這邊希望能夠將下方得 itemGrid 填滿全部，如下圖，實際呈現上 grid 並沒有填滿：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-yKNyzxCP6Cw/UYo77sp5o9I/AAAAAAAALsc/uTg9bFi3XD0/w603-h148-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.49.25.jpg" alt="image" /></p>
-
-<p>那是因為沒有設置 Flex，所以我們將 grid 的 Flex 設為 1，可以看到，顯示上已全部填滿可以顯示的區域:</p>
-
-<p><img src="https://lh6.googleusercontent.com/-WCIo746bzlQ/UYo63BQT0mI/AAAAAAAALsI/yTewTe8q944/w603-h468-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.07.28.jpg" alt="image" /></p>
-
-<p>此時如果我們要看其他 layout 情形將可以很方便完成，以往直覺上我們可能會使用 fit，但是結果可能不是我們所預期，透過這樣的工具我們可以很快速完成佈置，專注在重要的互動事件與邏輯上，最後附上若同樣的介面，使用 fit 會是怎樣的情形：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-vwy-OwEHBtM/UYo63hR1XHI/AAAAAAAALsQ/I5k90ZYFgLU/w603-h462-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25887.11.17.jpg" alt="image" /></p>
-
-<p>只有 toolbar 被填滿，grid 不見了，所以，妳可以省下寶貴生命快速確認介面的呈現。</p>
-
-<h2>方便進行測試與開發</h2>
-
-<p>在 extjs 的 application.js 中可以定義一個屬性為 <code>autoCreateViewport</code>，一旦定義此屬性為 true，extjs 會在 view 底下自動顯示檔案為 Viewport.js 定義的內容，而在 Architect 中每一個 view 類別都可以標示為 Initial View，如下圖中的 Mark as Initial View：</p>
-
-<p><img src="https://lh3.googleusercontent.com/-uGliPz2sLMU/UYo60ILc2WI/AAAAAAAALro/RM6EnhQDGjk/w259-h249-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258B%25E5%258D%25886.45.47.jpg" alt="image" /></p>
-
-<p>這樣有什麼好處？在開發 extjs 時，如果應用程式是需要進行登入的，每次更新程式後要進行測試，免不了需要經過登入步驟以及點選功能來開啟需要測試的功能，次數少還好，如果反覆測試的情況下，著實浪費時間，更甚者，假設應用程式是多人開發，可能在執行某應用程式前，需要經過別的應用程式，但如果前面步驟尚未完成，就無法進行測試，這時候這樣的功能就很方便，因為我們可以針對單一元件進行單元功能開發與測試，大大降低功能間的相依性，一旦各自元件開發完成，就可以進行組合最終在進行整合功能測試即可！</p>
-
-<p>Sencha Architect 確實有他存在及使用的價值，筆者使用純文字開發 extjs 多年，遇到很多介面上的問題，並且依靠經驗除過不少 bug，但是都沒有使用 Sencha Architect 來的快及準確，話雖這麼說，IDE 也沒有辦法幫你寫出「對」的程式，強烈建議使用 Sencha Architect 務必先了解 extjs 的原理，如此才能夠讓你駕馭 Architect，就像開車一樣，沒有先了解如何開車就上路，開的不好錯怪車子，還有可能出車禍喔。</p>
-
-<p>經由這四篇文章，希望可以帶給讀者 extjs 從入門到進階的知識，以及如何透過 IDE 快速建立應用網站外觀，並且確認，減少不必要的反覆測試。</p>
-
-<p>最後的第五天，要為大家說明在實際的開發環境，extjs 如何與後端應用程式進行互動，在軟體開發技術上越來越方便的現在，更提倡敏捷快速的開發，善用 extjs MVC 架構作為 view 層，來與後端的 MC(?)搭配，將以 java 中 Ruby on Rails：Grails 來為大家介紹，企業級開發框架：extjs 與 grails 的完美組合。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/05/09/extjs4-sencha-architect-intro/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs mvc 架構：繼承與模組重覆使用]]></title>
-<link href="http://smlsun.com/blog/2013/05/08/extjs-oo/"/>
-<updated>2013-05-08T08:42:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/05/08/extjs-oo</id>
-
-      <content type="html"><![CDATA[<p>兩篇對 extjs 的基本介紹後，總算要進入主菜了，也就是在 extjs 中的物件導向 MVC 架構，物件導向的觀念，在網路上或書上都可以找到相關資料，用不用的好就是一個人的功力，此篇文章中，將透過幾個例子讓讀者了解 extjs 的物件導向操作。</p>
-
-<hr />
-
-<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
-
-<p>引用上述文章的開頭：</p>
-
-<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4 帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類 MVC 的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種 MVC 架構，基本大同小異，ExtJS 4的定義如下：</p>
-
-<ul>
-<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
-<li>View: 用於界面展示– grid, tree, panel都是view</li>
-<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
-</ul>
-</blockquote>
-
-<p>在我早先的令一篇文章中也有引用到，<a href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/">Extjs4: Mvc 使用簡介與範例介紹</a>，在該篇文章中說明到較多的實作細節，本篇專注於 mvc 結構與特性，如果讀者有興趣也可以參考閱讀，在開始之前，先提一下兩個重要的物件導向觀念：</p>
-
-<ul>
-<li>單一責任原則（single responsibility principle:SRP）：當一個類別需要修改時應該只有一個理由。</li>
-<li>關注點分離（separation of conserns:SoC）：把應用程式功能分解成數個不重疊的模組。</li>
-</ul>
-
-
-<p>遵循這兩個原則，最重要的好處就是要能夠重覆使類別，令單一類別不要過於複雜，如此一來程式在設計上就可以比較接近組合積木，一個個零件完成後，可以根據不同的狀況組合。</p>
-
-<p>為了能夠設計出可以重覆使用的類別，將針對三種不同的課題，繼承，混和以及 model 關連建立，就讓我們從 mvc 中的 model 資料模型開始。</p>
-
-<h2>model - 關連建立</h2>
-
-<p>假設我們設計一個應用程式，其資料模型如下：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-0q850mONEZ0/UYnJDk0otZI/AAAAAAAALqA/sIPHKvaPjZs/w603-h115-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%25881.01.45.jpg" alt="image" /></p>
-
-<p>可以看到有三個 table：item（品項），itemImage（品項圖片），batch（批號），其中 item 可以有多張圖片，批號屬於 item，根據這樣的描述，可以整理出兩個關係：</p>
-
-<ul>
-<li>item 可以有多張圖片：item hasMany itemImage</li>
-<li>批號屬於 item：batch belongsTo item</li>
-</ul>
-
-
-<p>根據這樣的關係，我們可以利用 extjs 來建立對應的類別。</p>
-
-<p>三個資料表的基本宣告程式碼如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//品項</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.model.Item&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;title&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//圖片</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.model.ItemImage&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">mapping</span><span class="o">:</span> <span class="s1">&#39;item.id&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;item_id&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//批號</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.model.batch&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">mapping</span><span class="o">:</span> <span class="s1">&#39;item.id&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;item_id&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此一來，三個資料表算是建立完成，但是彼此之間都是獨立沒有關係的，為此，我們需要要在加上關連的定義。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//item hasMany itemImage</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.model.Item&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="c1">//使用到的關連 model 務必引入  </span>
-</span><span class='line'>    <span class="nx">uses</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;finder_extjs.model.ItemImage&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="p">...</span>
-</span><span class='line'>    <span class="nx">hasMany</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">associationKey</span><span class="o">:</span> <span class="s1">&#39;itemImages&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">model</span><span class="o">:</span> <span class="s1">&#39;finder_extjs.model.ItemImage&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 設定 foreignKey 將會作為查詢的 property name</span>
-</span><span class='line'>        <span class="nx">foreignKey</span><span class="o">:</span> <span class="s1">&#39;item_id&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="c1">//跟據 name 將會產生對應的參照 function</span>
-</span><span class='line'>        <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;itemImages&#39;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>多定義了關係一定要有用處，不然何必要花時間，實際在使用上我們可以：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//item hasMany itemImage</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">finder_extjs</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">Item</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span><span class="mi">1</span><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 一旦定義 hasMany extjs 將自動產生對應 name 的 function 回傳關連資料的 store 實體</span>
-</span><span class='line'><span class="c1">//取得關連資料</span>
-</span><span class='line'><span class="nx">item</span><span class="p">.</span><span class="nx">itemImage</span><span class="p">().</span><span class="nx">load</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在上面的程式碼中，如果你有定義 model 的連結方式，實際上將會透過 http request 向後端查詢資料，並且帶有參數為：<code>filter:[{"property":"item_id","value":1}]</code>，一旦結果回傳，會根據 model 的 fields mapping 相關的欄位資料，如此一來當你有存取相關的資料時，就可以很方便的使用，免去撰寫重覆 ajax request 的步驟，接著來看 belongsTo 的例子。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//batch belongsTo item</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.model.batch&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">uses</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;finder_extjs.model.Item&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="p">...</span>
-</span><span class='line'>    <span class="nx">belongsTo</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">model</span><span class="o">:</span> <span class="s1">&#39;finder_extjs.model.Item&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="c1">// 根據定義的 getterName 產生 function 來取得所屬 model 的參照</span>
-</span><span class='line'>        <span class="nx">getterName</span><span class="o">:</span> <span class="s1">&#39;getItem&#39;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">batch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">finder_extjs</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nx">Batch</span><span class="p">({</span><span class="nx">id</span><span class="o">:</span><span class="mi">1</span><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 根據 getterName 的設定將自動產生對應 name 的 function 回傳關連資料的 record</span>
-</span><span class='line'><span class="c1">// 取得關連資料</span>
-</span><span class='line'><span class="nx">batch</span><span class="p">.</span><span class="nx">getItem</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>同樣的一旦呼叫了 <code>batch.getItem();</code> 也會向後端請求取得資料，如此一來，只要資料結構與關係定義好，往後在使用時，就可以很方便的取得，甚至妳也可以這樣使用：<code>batch.getItem().itemImages().load()</code></p>
-
-<p>在資料串查上，可以從關關連快速完成資料的取得，再來我們就來看看，mvc 中的 view 如何在 extjs 物件化，並且能夠重覆使用。</p>
-
-<h2>view - 繼承與連結</h2>
-
-<p>單純的建立 view 的元件這邊不多做說明，主要還是針對 extjs 物件導向特性來做說明，假設我們需要建立如同下圖的畫面：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-6uDmCuSY5vE/UYnJFCExBMI/AAAAAAAALqQ/wy7BAOoryi4/w603-h323-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.13.jpg" alt="image" /></p>
-
-<p>在圖片中可以看到主要是由 form 以及 grid 所組成，有個共同的地方，就是兩者皆有同樣的 toolbar，因此在設計的時候，我們可以將 toolbar 獨立成一個類別，在兩個地方引入，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-1IPFyWhNQRg/UYnJEl2Tk7I/AAAAAAAALqM/gry2WHV0LhU/w242-h393-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%25889.49.54.jpg" alt="image" /></p>
-
-<p>上圖的結構是利用 sencha Architect 所呈現的，可以看到元件 StdEditorToolbar 就是獨立的類別，藍色線代表作為連結使用在另外兩個自定元件裡面，如此一來相同的元件與 ID 定義，就不需要重覆多次，在索引時也較一致性，如果讀者有看我上一篇 <a href="http://smlsun.com/blog/2013/02/19/extjs-component/">ID 與 itemId 的不同</a>，就會知道這樣是可行的，而因為 extjs 4 在這次多了 controller 的類別，所以我們的 view 層都是單純的介面元件，沒有特殊的邏輯，所以可以重覆使用，除此之外，我們也可以交由多人協助完成相關的元件，最後在將他們組合成最終要呈現的畫面，參考上一張圖片的樹狀結構，最終的呈現將由三個主要元件組成，ItemGrid，ItemViewer，ItemEdtor，步驟上就可以先將 ItemGrid，ItemViewer 完成以後，ItemEdtor 作為 tabpanel 連結 ItemGrid，ItemViewer 完成整個畫面，如下圖：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-XKtk5cWSqsk/UYnJFiXo1CI/AAAAAAAALqY/qYUtCJjeKrM/w603-h285-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.02.55.jpg" alt="image" /></p>
-
-<p><img src="https://lh4.googleusercontent.com/-_P3Jgg56zw4/UYnJGQ8iwFI/AAAAAAAALqg/sHmkQdYRubo/w603-h397-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.03.16.jpg" alt="image" /></p>
-
-<p>就是如此簡單愉快，上面所完成的自定元件都使用到了在物件導向中繼承的特性，基本上都是經由繼承 extjs 的元件加以客製化，當然自定元件同樣也可以作為別人的父類別，端看如何設計。mvc 中的前兩項完成了，接著我們就來看最後一個 C，controller 的部份。</p>
-
-<h2>Controller - 混和</h2>
-
-<p>作為 view 與 model 的溝通橋樑，與操作 view 中元件的互動，Controller 扮演的角色是很重要的，他必須要很方便存取以及定義欲操作的元件，extjs 在這邊也確實做到了，還記得上一篇最提到的關於 extjs 如何查詢 component，當你在撰寫 Controller 將會大量使用到，延續上一節的 view 中三個元件：ItemGrid，ItemViewer，ItemEdtor，來進行說明。</p>
-
-<ul>
-<li>ItemGrid：如果是作為 grid 單獨存在，將只會有讀取資料的功能，因此在 controller 中，我們只需要定義 read 的功能實作。</li>
-<li>ItemViewer：作為 Viewer 本身只是個空殼，需要由外部傳入資料後進行資料呈現，因此我們需要定義得是 display 的功能</li>
-<li>ItemEditor：組合了 ItemGrid 與 ItemViewer，兩個介面，也因此實作的內容就為兩者之間的互動，一旦點選 ItemGrid 中的資料，就將其作為 ItemViewer 的資料來源進行呈現，因此我們要實作的是 readItem。</li>
-</ul>
-
-
-<p>大致上解釋一下設計概念後，粗糙一點我們可以把上面三個功能都定義在 ItemEditor，但如果 ItemGrid 以及 ItemViewer 會作為獨立功能，或者組合到不同的介面，這時候我們就必須要寫兩個同樣的 function，這不是個好辦法，因此我們可以利用 extjs 提供的另一個特性：混和(mixsins)，在系列文章的<a href="http://ithelp.ithome.com.tw/question/10120091">第一篇</a>有提到，一旦我們個別定義好 ItemGrid，ItemViewer 的邏輯函式，我們可以將他混和入 ItemEditor 如此一來就可以各自專注各自的責任，除了可以組合在一起，也可以各自獨立運作，是不是很美好呢！接著我們就來看範例程式碼與結構：</p>
-
-<p><img src="https://lh4.googleusercontent.com/--nSzi3U1WrQ/UYnJG2grGnI/AAAAAAAALqo/SA-TwLD_zg4/w215-h289-no/%25E8%259E%25A2%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-05-08+%25E4%25B8%258A%25E5%258D%258810.48.04.jpg" alt="image" /></p>
-
-<p>參考上圖，可以看到我們為了三個介面分別做了三個 controller，就如同前面提到的三點，個別設定了三個函數，在這邊我就不詳述各個 controller 的實作，直接來看 ItemEditorController：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;finder_extjs.controller.ItemEditorController&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 混和： ItemViewerController 以及 ItemGridController</span>
-</span><span class='line'>    <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">itemViewerCtrl</span><span class="o">:</span> <span class="s1">&#39;finder_extjs.controller.ItemViewerController&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">ItemGridCtrl</span><span class="o">:</span> <span class="s1">&#39;finder_extjs.controller.ItemGridController&#39;</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 目標 views</span>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;ItemEditor&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 定義操作對象</span>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;itemViewer&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;itemviewer&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;itemGrid&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;itemgrid&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;itemEditor&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;itemeditor&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">application</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">// event binding</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">control</span><span class="p">({</span>
-</span><span class='line'>            <span class="s1">&#39;itemeditor button[itemId=readBtn]&#39;</span><span class="o">:</span><span class="p">{</span>
-</span><span class='line'>                <span class="nx">click</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">doRead</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="c1">//一旦 grid 中的資料被雙擊，執行 readItem</span>
-</span><span class='line'>            <span class="s1">&#39;itemeditor grid[itemId=itemGrid]&#39;</span><span class="o">:</span><span class="p">{</span>
-</span><span class='line'>                <span class="nx">itemdblclick</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">readItem</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 將傳入的目標資料，作為顯示的資料來源進行呈現</span>
-</span><span class='line'>    <span class="nx">readItem</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">getItemEditor</span><span class="p">().</span><span class="nx">setActiveTab</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">getItemViewer</span><span class="p">().</span><span class="nx">up</span><span class="p">());</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">//屬於 itemViewerController 所定義的函數</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">doDisplay</span><span class="p">(</span><span class="nx">record</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>這篇文章中，說明了 MVC 的運作，以及個別利用了物件導向開發中的資料關連，繼承以及混和；當然不只這些，還有很多奇巧淫技等著學習並熟練，程式的世界是學也學不完，希望藉由這樣的說明，能夠讓讀者有個概念，在使用 extjs 這樣的物件導向設計時可以有個參考，文章進行到這裡，對於 extjs 的概念與使用，相信應該有些了解，不過如果有實際經歷過 extjs 開發的讀者應該可以體會，因為他是這樣的複雜，在除錯上有時並不是那麼容易，特別是物件導向式的開發方式會有很多獨立的類別，如何能夠快速開發減少不必要的錯誤，就要善用工具啦！幸好官方提供了 sencha architect，可以幫助我們減少開發中的錯誤，並且快速完成介面的建立，最後要強調的是，ide 只是輔助，請在熟練基礎過後在服用，不然&#8230;嘿嘿～</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/05/08/extjs-oo/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[使用 extjs 必須了解的 js 技巧與知識]]></title>
-<link href="http://smlsun.com/blog/2013/05/02/extjs4-with-js/"/>
-<updated>2013-05-02T09:15:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/05/02/extjs4-with-js</id>
-
-      <content type="html"><![CDATA[<p>在使用類似 extjs 這樣的 framework 時，一定會被他的方便性還有物件化所吸引，但是如果你對 javascript 的一些基礎或是進階技巧不了解，可能會錯用造成無法預知的麻煩，甚至錯把 javascript 原生當做 extjs 特有的以致於在進行程式開發時扼殺了一些變化的可能性，這些問題也都是筆者曾經經歷過的問題，本篇將就一些在使用 extjs 時一定要知道的觀念與 javascript 的技巧進行介紹。</p>
-
-<p>也許熟手會覺得這是基本中的基本，實際上在業界還不會走路就要會飛的例子比比皆是…不是每個人都是東尼，為了不要摔的太大力，馬步還是蹲好一點。</p>
-
-<hr />
-
-<p>雖說是為了 extjs 而介紹，基本上就算是使用其他的 js 框架，也是需要這些技巧與知識的，就讓我們一個一個來，下面的文章連接皆從我的 blog 而來，歡迎大家進來參觀。</p>
-
-<h2>this</h2>
-
-<p>在使用 extjs 時，很多時候妳必須存取物件的屬性來進行顯示或判斷，特別在物件導向的世界，為了能夠更完美封裝，有些時候妳必須從操作物件的本體來取得相關的物件或屬性，因此，搞懂 this 的對象就非常重要，對於 this 的原理與特性，連結中將有介紹：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">What Is This?</a></p>
-
-<h2>Scope</h2>
-
-<p>Scope 也就是所謂的作用域，了解作用域特性相關的知識在使用 extjs 這樣的框架是很有幫助的，在 extjs 物件導向的特性中很多時候需要利用 Scope 的特性來達成，甚至是在使用 javascript 時，若有效能上的問題，理解 scope 也是個改善方向：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">Scope</a></p>
-
-<h2>callback</h2>
-
-<p>寫 javascript 不得不知道什麼是 callback，extjs 建構於 javascript，使用 extjs 也必須了解，特別是使用 ajax 向後端取得資料時所產生的延遲，為了確保函式執行的順序，callback 就是你要使用的技巧，在使用 extjs 時，可不要認為 callback 形式的函數是 extjs 特有得的：<a href="http://smlsun.com/blog/2013/02/04/javascript-callback/">Callback</a></p>
-
-<h2>Closure</h2>
-
-<p>閉包，是個很強大的特性，但確也是兩面刃，需要花一些時間理解，對於初階開發者也許沒辦法靈活應用，但其特性不得不知，特別是在使用 extjs 這樣的框架，大量使用了閉包的特性來封裝物件，也因此，了解閉包將有助於理解 extjs：<a href="http://smlsun.com/blog/2013/02/01/javascript-closure/">Closure</a></p>
-
-<h2>setTimeout</h2>
-
-<p>從 javascript 原生函式 setTimeout 的運作可以一窺 javascript 在瀏覽器引擎中如何處理接踵而來的任務，雖然與 extjs 沒有直接的關係，但是，在 javascript 的世界裡開車，怎能不了解引擎的運作原理呢：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">setTimeout</a></p>
-
-<h2>Performance</h2>
-
-<p>Performance 的問題一直是個不單純的課題，即使是使用 extjs 這樣的框架，也不得從日常開始養成好習慣，來避免應用程式效率低下，有些效能上的知識能夠越早知道才能一點一滴的累積高效能的程式碼：<a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Performance &amp; Tip</a></p>
-
-<h2>Memory Leaks 偵測</h2>
-
-<p>知道影響效能的原因，當能然也要能夠解決效能瓶頸，我們不能瞎摸期待哪天碰到死耗子，要找到問題發生的點，才能夠對症下藥，如何利用工具客觀的找出也是很重要的技能：<a href="http://smlsun.com/blog/2013/02/17/javascript-memory-leaks/">Memory Leaks 的情況以及如何解決與偵測</a></p>
-
-<p>基本工是很重要的，就像倚天屠龍記裡的張無忌，有九陽神功護體學什麼東西都快的道理，掌握基礎，除了能夠理解框架的運作，也可以避免無知的錯誤，特別是像 extjs 這樣龐大的架構，在撰寫時更要注意，請讀者定要耐心，蹲好馬步！</p>
-
-<p>下一篇將會進入 extjs 實際如何運用 MVC 與物件導向特性，來使物件能夠重覆使用，以及多人開發時如何任務分工。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/05/02/extjs4-with-js/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[台灣首部空拍電影-域望 & MIT台灣誌十周年特別企劃-中央山脈大縱走]]></title>
-<link href="http://smlsun.com/blog/2013/04/30/abovetaiwan/"/>
-<updated>2013-04-30T16:48:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/04/30/abovetaiwan</id>
-
-      <content type="html"><![CDATA[<p>有天晚上看到小燕有約再介紹齊柏林導演的首部空拍電影-域望，講的是對台灣的介紹，以及對台灣這塊土地愛的堅持，不惜放棄公務員的工作，投入所有的資源，賣掉房子也要將他完成，看到這樣的題材，通常我是不會放過的，也一定要介紹一下，身為台灣人，雖然我沒有這樣的勇氣，但幫忙宣傳是一定要的，台灣真的很美，但是卻被人類的慾望所破壞，甚至是個人，常常因為一己方便，不尊重自然，與他人觀賞的權力。</p>
-
-<iframe width="560" height="315" src="http://www.youtube.com/embed/P8giKLSvahU" frameborder="0" allowfullscreen></iframe>
-
-
-<p>而現代人往往只待在城市中，沒有去親近大自然，自然無法了解台灣的美麗，如果想要速成，相信這電影是個很好的選擇，當然不是看完就算了，有機會還是要去大自然走走。</p>
-
-<iframe width="420" height="315" src="http://www.youtube.com/embed/koedeH4yHJI" frameborder="0" allowfullscreen></iframe>
-
-
-<p>不要再做低頭族了，就是你！還不趕快移動你的身體，台灣除了親切的人民，還有美麗的風景，如果你沒有走進去，那你就不曾擁有… 也別忘了做一個懂得尊重的人。</p>
-
-<p>後記：看完這系列的影片，讓我的又想要爬山腳癢了，該是規劃爬山行程的時候了…</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/04/30/abovetaiwan/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs 4 的新特性與基本概念]]></title>
-<link href="http://smlsun.com/blog/2013/04/30/extjs4-intro/"/>
-<updated>2013-04-30T10:28:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/04/30/extjs4-intro</id>
-
-      <content type="html"><![CDATA[<p>extjs 算是筆者最早接觸的 javascript framework，在本身對程式開發還是新生兒的年紀，extjs 的出現著實讓我眼睛一亮，打從 extjs 1.x 的時候他就一直伴隨著我，公司的專案也一路隨著extjs 1.x 一路升級的 3.x，也算是見證 extjs 的發展。</p>
-
-<p>當初為什麼選擇 extjs？除了強者朋友推薦之外，非科班出生的筆者，jquery 完全沒用過，對於 javascript 只懂個皮毛，不知道 css 是什麼，要能夠有個可以看的介面，實在是難如登天，更何況是處理 html 元件之間的互動，著實讓筆者我不知該如何下手！而 extjs 剛剛好符合我們當時系統開發的需求，中規中矩介面，豐富的事件控制，最重要的還要跨瀏覽器的特性(那個年代瀏覽器還是很原始的)。</p>
-
-<p>當然雖然 extjs 對當時的我來說是那麼的美好，說實在的如果有些基礎 javascript 不熟悉，使用起來常常不知所以然，以致於寫出來的 code 總是讓人覺得「不是一般人寫的出來的」…糟糕，那是個青澀的年代(遠望~)，</p>
-
-<p>時至今日 extjs 來到 4.x，一個新的境界，與以往版本有著更大的不同，希望透過一系列的文章能夠讓剛接觸 extjs 讀者快速了解他的特性，少走一些冤枉路，快速完成公司交辦的工作，早早下班享受人生～</p>
-
-<hr />
-
-<p>系列文章的一開始希望能夠讓大家對 extjs 的基本特性以及原理做個基本介紹，本文將參考下列文章內容節錄重要的部份，有需要更深入了解的讀者可以跳轉參考</p>
-
-<ul>
-<li><a href="http://book.51cto.com/art/201109/291474.htm">ExtJS Web應用程序開發指南</a></li>
-<li><a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html">Ext JS 4 First Look 翻譯：新特性</a></li>
-</ul>
-
-
-<p>首先在使用 extjs 時，不得不被他得物件導向特性所吸引到，如果對 javascript 有些開發經驗了解他的特性，可以知道 javascript 是函數式語言，沒有直接的物件導向特性。通常，要將 javascript 設計為物件導向的開發方式不是不行，但相信那不時是初階開發人員可以做到的，實務上物件導向設計確實可以有效的分工，對於多人開發以及程式重覆使用已有多年的驗證，但硬是要將函數語言改為物件語言，沒有深厚的功力，恐怕沒那簡單，也因此第一個要介紹 extjs 的部份，就是其物件導向的設計，讓我們可以很輕易的用  javascript 進行物件導向式的開發。</p>
-
-<h1>動態加載和新的物件導向特性</h1>
-
-<p>JavaScript 沒有真正的物件導向設計，但 ExtJS 自己設計了物件導向式的結構，從而讓開發者可以利用物件導向的精神來開發前端 javascript。</p>
-
-<p>與以往版本的不同，ExtJS 4.0對舊的物件系統進行了全面的更新，進而讓開發更簡單、更靈活。</p>
-
-<p>ExtJS 4 推出4個新的物件導向特性：類別定義、mixins(混合複數classes)、更方便的物件屬性定義及動態加載，下面將針對上述特性做個簡單介紹</p>
-
-<h2>類別定義</h2>
-
-<p>ExtJS 4 引入了 Ext.define 方法，這就避免了由於定義的類別不存在產生錯誤。類別管理器會自動檢查各類別之間的依賴關係，因此，我們不再需要花費心思去控制載入順序，extjs 就會幫我們處理妥當。</p>
-
-<p>舉個簡單的例子：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Argicloud.view.ReadBtn&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.button.Button&#39;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.readbtn&#39;</span><span class="p">,</span>
-</span><span class='line'>  
-</span><span class='line'>      <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;readBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">text</span><span class="o">:</span> <span class="s1">&#39;Read&#39;</span><span class="p">,</span>
-</span><span class='line'>  
-</span><span class='line'>      <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>          <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>  
-</span><span class='line'>          <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上述的例子讓我們可以輕易的繼承 extjs 原生的 Button 定義客製的屬性，如此就可做到前端元件重覆使用，並且抽出共用的部分，方便後續維護，這邊先點到為止，後續會有更詳細的文章介紹，接著來看 mixins</p>
-
-<h2>mixins (混合複數classes)</h2>
-
-<p>許多動態語言都支援 mixins 的特性，比如 Ruby、Python。而JavaScript 在語法上並無 mixins 的特性，但 ExtJS 4 自己實現了 mixins 的功能，類似於多重繼承，是種更細的程式碼重覆使用特性，如果一個類別需要某個特性，只需要將擁有該特性的類別類混入目標類別中即可。同樣的先來看一下簡單範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="nx">operate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;1000 rpm&quot;</span><span class="p">);</span>
-</span><span class='line'>       <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Wheel&quot;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="nx">scroll</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;go&quot;</span><span class="p">);</span>
-</span><span class='line'>       <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s2">&quot;MyClass.Car&quot;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>       <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">Engine</span><span class="o">:</span> <span class="s2">&quot;MyClass.Engine&quot;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">Wheel</span><span class="o">:</span> <span class="s2">&quot;MyClass.Wheel&quot;</span>
-</span><span class='line'>       <span class="p">},</span>
-</span><span class='line'>       <span class="nx">dirve</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;forward&quot;</span><span class="p">);</span>
-</span><span class='line'>       <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">objCar</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s2">&quot;MyClass.C&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">operate</span><span class="p">();</span> <span class="c1">// 1000 rpm</span>
-</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">scroll</span><span class="p">();</span> <span class="c1">// go</span>
-</span><span class='line'>  <span class="nx">objCar</span><span class="p">.</span><span class="nx">dirve</span><span class="p">();</span> <span class="c1">// forward</span>
-</span><span class='line'>  
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此我們可以很簡單的將一個應用拆分成多個不同的小類別，最後再將各個類別像積木一樣主合成一最後要使用的物件。除了物件導向的特性外 extjs 4 也提供新的物件屬性定義方式。</p>
-
-<h2>新增的 Config 設定</h2>
-
-<p>透過對物件 config 屬性的定義的屬性將動態生成 getter 和 setter 方法​​，並且這些方法也允許我們進行覆寫，大大減少程式碼的行數，以及您的生命，提供屬性預設方法，一旦在 Config 區塊定義的 object 或屬性在產生 class 時，將自動產生 config 屬性的 setter 以及 getter，如需自行客製化時，則可以自行設計同名函數，用文字描述可能很難理解，來看一個簡單的範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;My.awesome.Class&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">// The default config</span>
-</span><span class='line'>      <span class="nx">config</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Awesome&#39;</span><span class="p">,</span>
-</span><span class='line'>          <span class="nx">isAwesome</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="nx">constructor</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
-</span><span class='line'>          <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">awesome</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">My</span><span class="p">.</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">Class</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Super Awesome&#39;</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">awesome</span><span class="p">.</span><span class="nx">getName</span><span class="p">());</span> <span class="c1">// &#39;Super Awesome&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到在類別定義中 config.name 定義好了，但未特別定義 getName 這樣的函數，但我們卻可以直接呼叫，這樣的特性正是 extjs 幫我們完成的，讓我們可以更專注在最重要的邏輯上。</p>
-
-<h2>動態載入(dynamic loading)</h2>
-
-<p>不管你有沒有用過類似 extjs 的框架，或者是寫過大型的 web 應用程式，一旦您的頁面需要載入大量的 resource 或著 .js 檔時，將會造成載入時間過長，很多不需要的腳本其實可以不用載入甚至在需要時載入，但實務上一個人開發時要管控還算簡單，多人就麻煩了！</p>
-
-<p>也因為 extjs 在舊版時沒有很漂亮的解決此問題，我也算是有切身之痛，所幸，extjs 發展到現在也該是時候了，動態載入功能將根據你對類別定義需要的類別引入相關的 js 檔，通過動態載入可以有效地減少客戶端載入的腳本體積，也因此在 html page 你只要載入 extjs 的 lib 以及 application.js（後續 mvc 會介紹），之後所有的 js 檔會在你使用類別時進行動態載入，希望可以讓讀者更清楚知道該屬性，我們來看一下範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'> <span class="nt">&lt;html&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;head&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;title&gt;</span>My ExtJS MVC<span class="nt">&lt;/title&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;extjs-4.1.0/resources/css/ext-all.css&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;extjs-4.1.0/ext-all.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;init.js&quot;</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/head&gt;</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="nt">&lt;body&gt;</span>
-</span><span class='line'>  
-</span><span class='line'>  
-</span><span class='line'>  <span class="nt">&lt;/body&gt;</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="nt">&lt;/html&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面程式碼我們只有載入 extjs lib 以及初始的 init.js</p>
-
-<p>接著來看 init.js 的內容</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">Loader</span><span class="p">.</span><span class="nx">setConfig</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">application</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">models</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;Item&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="nx">stores</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;ItemStore&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;ItemGrid&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="nx">autoCreateViewport</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">//set as true - 將尋找 Viewport.js 自動載入</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">controllers</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;MainController&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Argicloud&#39;</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到該 init.js 用到了 views、stores、models 以及 controllers，檔案結構上以 views 為例，應該會有個檔案在 {App.name}/view/ItemGrid.js，extjs 將會將其動態載入，是不是輕鬆簡單呢！</p>
-
-<p>但動態載入一般使用於 dev 模式，若是 production 模式，為了加速資源的載入，當然希望能夠做到最小化以及一次性載入可透過 sencha  cmd 來完成，在往後的文章將介紹到。</p>
-
-<p>對於 extjs 物件導向特性有了大致的了解後，接著來看在使用上的基本概念。</p>
-
-<h2>ExtJS中的基本概念</h2>
-
-<p>ExtJS 和傳統的前端 Web 開發的不一樣，不用在 HTML 和 CSS 中打轉，就像筆者當年對兩者都不甚了解，還是用的很開心一樣，可以想像你是在使用 JavaSwing 這樣的技術呈現的結果是在網頁上一樣，不用管介面的樣式以及如何呈現，只要負責操作類別間的互動以及事件的定義，其他就交由 extjs 幫你處理。一但透過目前瀏覽器提供的開發者工具，可以發現 extjs 只是把你宣告的元件轉化成 html dom element，基本上與 html 還是脫不了關係，有這層了解後在使用 extjs 可以更容易理解，在這裡將介紹幾個 extjs 較重要的元件</p>
-
-<h2>Container</h2>
-
-<p>extjs 中 Container 顧名思義就是容器，你可以把它想像成 html 中的 div，在 extjs Container 是一些類別的父類別，比如說：panel，在開始開發 extjs 時，你可以先用繼承於 Cotainer 的類別進行介面的分塊把你想要的呈現方式定義好，之後在放上你要的元件即可。</p>
-
-<h2>Layout</h2>
-
-<p>每個 container 都有個屬性：layout。透過該屬性的定義來對 container 裡所擁有的元件進行擺放，開發者不需要在自行定義 css 或者 html dom 巢狀結構來擺放相關元件，可以更快速的將介面呈現定義好，在開發人員技術不純熟的情況下，可以保證介面呈現的一置性。</p>
-
-<h2>Component</h2>
-
-<p>當你開始製作 extjs 應用程式時，一旦拉好框架，定義好 layout 後，接著你要做的就是將元件放入，舉凡按鈕，欄位，表單以及資料表在 extjs 都是繼承於 Component，透過繼承於 Component 除了 extjs 原生的元件外，你也可以製作你自己的元件，甚至是第三方元件等，大大提昇 extjs 在前端呈現的豐富性。</p>
-
-<p>在一開始提到 extjs 實際上在 html 呈現上基本還是將類別定義的內容轉化為 html dom element，就是透過 render 來完成的。</p>
-
-<h2>Model 與 Store</h2>
-
-<p>Model 與 Store，也就是一個系統的骨幹，資料結構，ExtJS 4 對其進行了全面地重構，Ext.data.Model 取代 Ext.data.Record 成為資料的核心，在Model 中可以直接定義 Proxy (資料的來源)，不需要透過 Store 就可以直接載入資料。同時 Store 支援 local 與 remote 排序、篩選和分組。</p>
-
-<p>除此之外，ExtJS 4.0 提供了 關聯 API，可以定義不同 model 間多對多或一對多等的資歷關係，通過關聯 API 將模型關聯起來後，將可以更容易存取相關的資料模型。</p>
-
-<p>透過上述的介紹希望讀者們可以對 extjs 有個初步的了解，如果看完後還算有興趣，下一篇將介紹 extjs 使用到的進階 js 技巧，所謂萬丈高樓平地起，像 extjs 這樣複雜的框架，也是從基本 javascript 建構而來，理解該框架所使用到的 js 進階技巧，將有助於您在使用 extjs 時的理解進而變化運用</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/04/30/extjs4-intro/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs4: mvc 使用簡介與範例介紹]]></title>
-<link href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/"/>
-<updated>2013-03-21T08:42:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/03/21/extjs4-mvc</id>
-
-      <content type="html"><![CDATA[<p><a href="http://www.showframework.com/2012/07/extjs-mvc-architecture/">ExtJS 4 MVC架構講解</a></p>
-
-<p>引用上述文章的開頭：</p>
-
-<blockquote><p>大規模客戶端應用通常不好實現不好組織也不好維護，因為功能和人力的不斷增加，這些應用的規模很快就會超出掌控能力，ExtJS 4帶來了一個新的應用架構，不但可以組織代碼，還可以減少實現的內容 新的應用架構遵照一個類MVC的模式，模型（Models）和控制器（Controllers）首次被引入。業界有很 ​​多種MVC架構，基本大同小異，ExtJS 4的定義如下：</p>
-
-<ul>
-<li>Model: 資料的集合，例如 User 帶有 username 和 password 的資料，model 知道如何持久化自己的數據，並且可以和其他 model 關聯，model 跟 ExtJS 3中 的 Record 有點像（區別是，Record 只是單純的扁平結構，而 Model 可以 nest ），通常都用在 Store 中去展示 grid 和其他組件的資料</li>
-<li>View: 用於界面展示– grid, tree, panel都是view</li>
-<li>Controllers: 安放所有使你的 app 正確工作的代碼的位置，具體一點應該是所有動作，例如如何渲染 view，如何初始化 model，和 app 的其他邏輯</li>
-</ul>
-</blockquote>
-
-<p>對於 extjs 4 的 mvc 有點概念後，我們可以實際來看例子進一步了解運作的方式。</p>
-
-<h2>Application</h2>
-
-<p>每個 ExtJS 4 的應用都從一個 Application 開始，這個實例包含應用的全域配置（例應用的名字），這個實例也負責維護對全部模型、視圖、控制器的引用的維護，還有一個 <code>launch</code> 函數，會在所有加載項加載完成之後呼叫。首先需要選擇一個全域命名空間，所有 ExtJS 4 應用都需要有一個全域命名空間，以讓所有應用中的 class 安放到其中</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="nx">Ext</span><span class="p">.</span><span class="nx">Loader</span><span class="p">.</span><span class="nx">setConfig</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">enabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="c1">//disableCaching: true //強制關閉 cache</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="nx">Ext</span><span class="p">.</span><span class="nx">application</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Frontend&#39;</span><span class="p">,</span> <span class="c1">//app folder 別名為 Frontend</span>
-</span><span class='line'>      <span class="nx">appFolder</span><span class="o">:</span> <span class="s1">&#39;app&#39;</span><span class="p">,</span> <span class="c1">//檔案 root 存放位置</span>
-</span><span class='line'>      <span class="nx">controllers</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="s1">&#39;SYS.SYS001&#39;</span><span class="p">,</span>   <span class="c1">//使用者登入</span>
-</span><span class='line'>        <span class="s1">&#39;SYS.SYS002&#39;</span><span class="p">,</span>   <span class="c1">//主畫面</span>
-</span><span class='line'>        <span class="s1">&#39;MN.MNM001&#39;</span><span class="p">,</span>     <span class="c1">//群組權限維護</span>
-</span><span class='line'>        <span class="s1">&#39;US.USM002&#39;</span>    <span class="c1">//使用者群組維護</span>
-</span><span class='line'>      <span class="p">],</span>
-</span><span class='line'>      <span class="nx">launch</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">Ext</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">&#39;Ext.container.Viewport&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>              <span class="nx">id</span><span class="o">:</span> <span class="s1">&#39;mainVP&#39;</span><span class="p">,</span>
-</span><span class='line'>              <span class="nx">layout</span><span class="o">:</span> <span class="s1">&#39;fit&#39;</span><span class="p">,</span>
-</span><span class='line'>              <span class="nx">items</span><span class="o">:</span> <span class="p">[{</span>
-</span><span class='line'>                  <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;sys001loginform&#39;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8080/agricloud/user/login.json&#39;</span>
-</span><span class='line'>              <span class="p">}]</span>
-</span><span class='line'>          <span class="p">});</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Model</h2>
-
-<p>定義來源資料的 mapping 以及資料型態</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app/model/MN/MNM001/MenuGroup.js</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.model.MN.MNM001.MenuGroup&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Model&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span>  <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;string&#39;</span><span class="p">}</span>
-</span><span class='line'>    <span class="p">]</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Store</h2>
-
-<p>設定資料獲取的來源，以及取得資料的方式，載入上一節的 model <code>Frontend.model.MN.MNM001.MenuGroup</code>。一旦資料讀取成功，將會依據 model 進行資料 mapping 作為 view 層的資料呈現來源。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app.store.MN.MNM001.Store.js</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.store.MN.MNM001.Store&#39;</span> <span class="p">,{</span>
-</span><span class='line'>    <span class="nx">model</span><span class="o">:</span><span class="s1">&#39;Frontend.model.MN.MNM001.MenuGroup&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.data.Store&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001store&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">proxy</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;rest&#39;</span><span class="p">,</span>   <span class="c1">// 使用 rest 來與後端 server 溝通</span>
-</span><span class='line'>        <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost:8080/agricloud/rest/menuGroup/&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">reader</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">root</span><span class="o">:</span> <span class="s1">&#39;items&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="nx">writer</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="nx">afterRequest</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">success</span><span class="p">){</span>
-</span><span class='line'>            <span class="kd">var</span> <span class="nx">operation</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">operation</span><span class="p">;</span>
-</span><span class='line'>            <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="nx">operation</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">success</span><span class="p">){</span>
-</span><span class='line'>            <span class="p">}</span><span class="k">else</span><span class="p">{}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">// 讀取完資料後，進行 load </span>
-</span><span class='line'>        <span class="nx">write</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nx">operation</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Controller</h2>
-
-<p>用於整合 model 的資料讓 view 可以使用，並且定義 view 各個事件要執行的內容，如此一來 view 將可以被獨立設計，一旦 view 被使用於別的功能也不會有衝突的事件定義。在使用上 Controller 也可以進行繼承，下面的 parent Controller 範例實作一些常用的事件，因為對於 controller 而言，所載入的各個 store 都視為 controller 的屬性，故只要繼承至 parent Controller 都有給定要求的變數內容，所定義的事件將會運作正常</p>
-
-<h3>parent Controller</h3>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * std Controller</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.controller.common.Standard&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">execute</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">tab</span> <span class="o">=</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">getCmp</span><span class="p">(</span><span class="s1">&#39;mainTab&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">tab</span><span class="p">.</span><span class="nx">add</span><span class="p">({</span>
-</span><span class='line'>            <span class="nx">id</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">title</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">closable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">layout</span><span class="o">:</span><span class="s1">&#39;fit&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="nx">params</span><span class="p">.</span><span class="nx">tabXtype</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">doRead</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;doRead&quot;</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">doCreate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">model</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">doDelete</span><span class="o">:</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">selection</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">getSelection</span><span class="p">()[</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">selection</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">selection</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">doUpdate</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sync</span><span class="p">({</span>
-</span><span class='line'>            <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">);</span>
-</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新成功&#39;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="nx">failure</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">,</span> <span class="nx">options</span><span class="p">){</span>
-</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;failure&quot;</span><span class="p">);</span>
-</span><span class='line'>                <span class="nx">Ext</span><span class="p">.</span><span class="nx">Msg</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span> <span class="s1">&#39;更新失敗&#39;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">onGridSelection</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">selModel</span><span class="p">,</span> <span class="nx">selections</span><span class="p">,</span><span class="nx">eOpts</span><span class="p">){</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selections</span><span class="o">=</span><span class="nx">selections</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selModel</span><span class="o">=</span><span class="nx">selModel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">//必須利用refs 取得實體介面已 render的物件</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">deleteButton</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="nx">selections</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">onPanelRendered</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//將載入的 view 指定為此 controller 的屬性</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">grid</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getGridPanel</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">deleteButton</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getDeleteButton</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>main controller</h3>
-
-<p>繼承於上一節的 parent Controller，在主要使用的 controller 需透過 <code>views</code>、<code>stores</code>、<code>models</code> 將對應的 mvc 載入，以及透過 refs 將需要控制的 Component 找出來並且給予別名，如此一來，我們在之後 <code>init</code> 事件定義元件的動作時可以方便的參照相關的元件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// app.controller.MN.MNM001.js</span>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * 功能群組維護</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.controller.MN.MNM001&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Frontend.controller.common.Standard&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;MN.MNM001.Panel&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[{</span>
-</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;deleteButton&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001panel commonbuttondelete&#39;</span>
-</span><span class='line'>    <span class="p">},{</span>
-</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;gridPanel&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001panel&#39;</span>
-</span><span class='line'>    <span class="p">},{</span>
-</span><span class='line'>        <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;combobox&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;mnm001combobox&#39;</span>
-</span><span class='line'>    <span class="p">}],</span>
-</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>      
-</span><span class='line'>      <span class="err">定義各個元件所要執行的事件以及相關的函數</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">control</span><span class="p">({</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttoncreate&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doCreate</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttondelete&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doDelete</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttonupdate&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doUpdate</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001panel commonbuttonread&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">click</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">doRead</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001combobox&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">select</span><span class="o">:</span><span class="k">this</span><span class="p">.</span><span class="nx">comboboxSelect</span>
-</span><span class='line'>            <span class="p">},</span>
-</span><span class='line'>            <span class="s1">&#39;mnm001panel&#39;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">selectionchange</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">onGridSelection</span><span class="p">,</span>
-</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">onPanelRendered</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">})</span>
-</span><span class='line'>        <span class="c1">//ref 的使用對象為 Conpoment</span>
-</span><span class='line'>        <span class="c1">//store 的取得直接用 this </span>
-</span><span class='line'>        <span class="c1">//在 view 所組成的 compoment 中有使用到的 store 皆可以在 controllr 中存取</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="o">=</span><span class="k">this</span><span class="p">.</span><span class="nx">getStore</span><span class="p">(</span><span class="s2">&quot;MN.MNM001.Store&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">execute</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="c1">//定義此 contoller 所使用之屬性，controller 一旦被執行此事件將會最先被執行</span>
-</span><span class='line'>        <span class="nx">params</span><span class="p">.</span><span class="nx">tabXtype</span><span class="o">=</span><span class="s1">&#39;mnm001panel&#39;</span><span class="p">;</span>
-</span><span class='line'>       <span class="c1">//結果將透過下列程式呼叫繼承來的 controller 之 execute</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>    <span class="nx">comboboxSelect</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">combo</span><span class="p">,</span> <span class="nx">records</span><span class="p">,</span> <span class="nx">eOpts</span> <span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">selections</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span> <span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>View</h2>
-
-<p>view 的使用依賴於 controller 有載入的內容，在這邊只作為介面的呈現，不進行事件的定義，除非該事件為通用的事件。</p>
-
-<h3>Combobox</h3>
-
-<p>使用的第一個 store <code>US.USM002.Store</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.view.MN.MNM001.Combobox&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.form.ComboBox&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001combobox&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">id</span><span class="o">:</span><span class="s1">&#39;mnm001combobox&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span><span class="s1">&#39;mnm001combobox&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">store</span><span class="o">:</span> <span class="s1">&#39;US.USM002.Store&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">queryMode</span><span class="o">:</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">displayField</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">valueField</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Panel</h3>
-
-<p>使用的第二個 store <code>MN.MNM001.Store</code>，其中 <code>Frontend.view.common.gridpanel.standard</code> 是自定義通用的 gridpanel，假設你有第二個類似的功能就可以繼承他，只要修改 columns 的定義即可，並且載入額外套件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Frontend.view.MN.MNM001.Panel&#39;</span> <span class="p">,{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Frontend.view.common.gridpanel.standard&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span> <span class="o">:</span> <span class="s1">&#39;widget.mnm001panel&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span><span class="p">[</span><span class="s1">&#39;Frontend.view.MN.MNM001.Combobox&#39;</span><span class="p">],</span>
-</span><span class='line'>    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;menuId&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">flex</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>          <span class="nx">field</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;textfield&#39;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;menuDes&#39;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;userGroupId&#39;</span><span class="p">,</span>
-</span><span class='line'>          <span class="nx">field</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;mnm001combobox&#39;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">header</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">dataIndex</span><span class="o">:</span> <span class="s1">&#39;userGroupDes&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>    <span class="nx">plugins</span><span class="o">:</span> <span class="p">[{</span>
-</span><span class='line'>          <span class="nx">ptype</span><span class="o">:</span><span class="s1">&#39;rowediting&#39;</span>
-</span><span class='line'>  <span class="p">}],</span>
-</span><span class='line'>    <span class="nx">store</span><span class="o">:</span><span class="s1">&#39;MN.MNM001.Store&#39;</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>執行結果</h2>
-
-<h3>功能一</h3>
-
-<p><img src="https://lh5.googleusercontent.com/-lx8V6k3xoO8/UUp-XqNiMnI/AAAAAAAALmk/19RA9GS5zrE/s615/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.17.jpg" alt="image" /></p>
-
-<h3>功能二</h3>
-
-<p><img src="https://lh4.googleusercontent.com/-HjzcF7nh4y0/UUp-YUkVjUI/AAAAAAAALms/sls8kHck6LI/s614/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-21+%E4%B8%8A%E5%8D%8811.25.28.jpg" alt="image" /></p>
-
-<p>可以看到兩個功能外框是類似的，差別在欄位的不同，其中共用的部分：</p>
-
-<ul>
-<li>功能二的 grid 與功能一的 userGroupId 的 combobox store 為同一個 <code>US.USM002.Store</code></li>
-<li>兩個功能之 panal 皆繼承於 <code>Frontend.view.common.gridpanel.standard</code></li>
-<li>controller 也繼承於 <code>Frontend.controller.common.Standard</code></li>
-</ul>
-
-
-<p>透過 extjs 的模組化功能，我們可以很輕易的將重覆的程式碼進行利用，在 mvc 三個維度也可以很方便進行分工，只要各個元件的 id 索引定義清楚，幾乎可以獨立開發，剩下的就是最後的整合運作需要一起 debug，extjs 在前端 mvc 的架構卻實作的蠻漂亮的，有興趣可以參考一下。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/03/21/extjs4-mvc/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美組合]]></title>
-<link href="http://smlsun.com/blog/2013/03/01/grails-taggable/"/>
-<updated>2013-03-01T18:34:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/03/01/grails-taggable</id>
-
-      <content type="html"><![CDATA[<p>引言：<a href="http://blog.lyhdev.com/2013/01/grails-22.html">快速瀏覽 Grails 2.2 新功能</a></p>
-
-<blockquote><p>Grails 是受到 Ruby on Rails (RoR) 啟發的 Java EE 開發框架，它利用 Java 世界的 Groovy Scripting 語言實現與 Rails MVC 架構相似的開發工具；因為基於 Java 豐富的企業元件基礎，可以同時獲得敏捷的開發效率，並且和既有的 Java 程式保持相容。</p></blockquote>
-
-<p>最近開始想要幫家裡開發一個資訊發佈平台，因為我本身習慣開發 java，這陣子經由 <a href="http://blog.lyhdev.com/">lyhcode</a> 的介紹開始使用 Grails，發現他真的是一個充滿驚奇的 framework，一開始可能會因為他的 <strong>精簡</strong> 讓你感到困惑，原本可能需要的步驟被省略後反而無法理解… 但一旦深入了解並且了解其習性後，才發現原來開發 java 也可以這麼快速！</p>
-
-<p>一旦使用 Grails 後，你就不想用原始的 java 開發程式，正所謂回不去了… 除了骨子裡是 java，外在的部分基本上已經完全不一樣了，是說變帥了嘛？（誤）</p>
-
-<p>回到正題，在一般 blog 的網站，很常用到的 tag (標籤)在實作上… 說實在的細節實在很多，我也不知道該怎麼實作… 在完全不知道怎麼實作光構思就可能花上一天，在加上開發運氣好的話或許 3 天解決，但今天我所要介紹的，只花你 1 小時，就完成 taggable 的實作！！很難想像嘛？就讓我們繼續看下去。</p>
-
-<p>此範例參考下列網站：<a href="http://blog.armbruster-it.de/2011/04/a-perfect-team-grails-taggable-plugin-and-jquery-tagit/">Grails Taggable plugin and JQuery Tagit</a>，在這個範例中用的 grails 版本：1.4；jquery-tagit 版本：1.5。</p>
-
-<p>而本文章撰寫時所使用的 grails 版本：2.2；jquery-tagit 版本：2.0。雖然版本不一樣但步驟上大致相同，首先我們必須安裝 taggable plugin。</p>
-
-<h1>taggable &amp; jquery-ui plugin install</h1>
-
-<p>在新版 2.2 grails 中已不建議使用 plugin install，根據官方的建議我們只要在 BuildConfig.groovy 新增下列：</p>
-
-<pre><code>compile ':spring-security-ui:latest.release'
-compile ":taggable:1.0.1"
-</code></pre>
-
-<p>一旦進入 grails 運行環境時將會自動安裝 plugin，就是這麼簡單，而 resources plugin 在 2.2 版已內建，所以不需要安裝，接著我們來處理…</p>
-
-<h1>jquery tagit install</h1>
-
-<p>下載 <a href="http://aehlke.github.com/tag-it/">jquery tagit</a></p>
-
-<p>解壓縮後將檔案放置於：</p>
-
-<ul>
-<li>jquery.tagit.css: &#8216;web-app/tagit/css/jquery.tagit.css&#8217;</li>
-<li>tagit.ui-zendesk.css: &#8216;web-app/tagit/css/tagit.ui-zendesk.css&#8217;</li>
-<li>tag-it.js: &#8216;web-app/tagit/js/tag-it.js&#8217;</li>
-</ul>
-
-
-<p>接著需要定義 ApplicationResourses.goovy</p>
-
-<pre><code>tagit {
-    dependsOn 'jquery-ui'
-    resource url: 'tagit/css/jquery.tagit.css'
-    resource url: 'tagit/css/tagit.ui-zendesk.css'
-    resource url: 'tagit/js/tag-it.js'
-}
-</code></pre>
-
-<p> 如此一來，基本環境與需要的套件都已經 ready 了，就讓我們開始實作 taggable 功能，就先從定義…</p>
-
-<h2>domain object</h2>
-
-<p>在 grails 中所謂的 domain object 就是所謂的資料表物件，定義資料結構的地方，假設我們是要開發自己的 blog 平台，那每一篇文章在資料庫中我們就可以定義 table 為 post，相關程式碼如下：</p>
-
-<pre><code>package sample
-
-class Post {
-    String title
-    String content
-}
-</code></pre>
-
-<p>我們所要做的就是將 <code>org.grails.taggable.Taggable</code> import 進去，並且實作 Taggable</p>
-
-<pre><code>package sample
-import org.grails.taggable.Taggable
-
-class Post implements Taggable {
-    String title
-    String content
-}
-</code></pre>
-
-<p>ok～我們的 domain object 準備好的，不需要額外的設定，而且完整的程式碼就是這樣而已，其他勒？沒有了… 詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
-
-<h2>view</h2>
-
-<p>在 view 的撰寫上，基本上與原文中一樣，這邊對重點的部份進行說明</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="o">...</span>
-</span><span class='line'>  <span class="o">&lt;%--</span> <span class="k">in</span> <span class="n">the</span> <span class="n">head</span> <span class="n">section</span> <span class="o">--%&gt;</span>
-</span><span class='line'>  <span class="o">&lt;%--</span> <span class="err">下面會將剛剛在</span> <span class="n">ApplicationResourses</span> <span class="err">所定義需要載入的</span> <span class="n">tagit</span> <span class="err">相關</span> <span class="n">js</span><span class="err">、</span><span class="n">css</span> <span class="err">載入</span> <span class="o">--%&gt;</span>
-</span><span class='line'>  <span class="o">&lt;</span><span class="nl">r:</span><span class="n">use</span> <span class="n">modules</span><span class="o">=</span><span class="s2">&quot;tagit&quot;</span><span class="s">/&gt;</span>
-</span><span class='line'><span class="s">  ...</span>
-</span><span class='line'><span class="s">  &lt;%-- in the form section --%&gt;</span>
-</span><span class='line'><span class="s">  &lt;fieldset class=&quot;form&quot;&gt;</span>
-</span><span class='line'><span class="s">    &lt;r:script&gt;</span>
-</span><span class='line'><span class="s">      $(function() {</span>
-</span><span class='line'><span class="s">        /</span><span class="o">*</span><span class="err">將</span><span class="n">$</span><span class="o">{</span><span class="n">g</span><span class="o">.</span><span class="na">createLink</span><span class="o">(</span><span class="nl">action:</span> <span class="s1">&#39;tags&#39;</span><span class="o">)}</span><span class="err">：產生</span> <span class="n">postController</span> <span class="n">action</span> <span class="err">為</span> <span class="n">tags</span> <span class="err">的連結</span>
-</span><span class='line'>        <span class="o">*</span> <span class="err">透過設定</span> <span class="n">jquery</span> <span class="n">tagit</span> <span class="err">的</span> <span class="n">tagSource</span> <span class="err">的網址，一旦當你輸入</span> <span class="n">tag</span> <span class="n">name</span>
-</span><span class='line'>        <span class="o">*</span> <span class="err">將會透過</span> <span class="n">ajax</span> <span class="err">的方式比對輸入的資料與資料庫中的</span> <span class="n">tag</span> <span class="err">來當做</span> <span class="n">auto</span><span class="o">-</span><span class="n">completion</span>
-</span><span class='line'>        <span class="o">*</span> <span class="err">的資料來源</span>
-</span><span class='line'>        <span class="o">*</span><span class="s">/</span>
-</span><span class='line'><span class="s">        $(&quot;ul[name=&#39;tags&#39;]&quot;).tagit({select:true, tagSource: &quot;${g.createLink(action: &#39;tags&#39;)}&quot;});</span>
-</span><span class='line'><span class="s">      });</span>
-</span><span class='line'><span class="s">    &lt;/</span><span class="nl">r:</span><span class="n">script</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="o">&lt;</span><span class="n">h3</span><span class="o">&gt;</span><span class="n">Tags</span><span class="o">&lt;</span><span class="s">/h3&gt;</span>
-</span><span class='line'><span class="s">    &lt;div class=&quot;fieldcontain&quot;&gt;</span>
-</span><span class='line'><span class="s">      &lt;ul name=&quot;tags&quot;&gt;</span>
-</span><span class='line'><span class="s">         &lt;%-- 透過 ${post.tags} 取得 tags 的資料 --%&gt;</span>
-</span><span class='line'><span class="s">        &lt;g:each in=&quot;${post.tags}&quot;&gt;</span>
-</span><span class='line'><span class="s">          &lt;li&gt;${it}&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'>        <span class="o">&lt;</span><span class="s">/g:each&gt;</span>
-</span><span class='line'><span class="s">      &lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="s">/div&gt;</span>
-</span><span class='line'><span class="s">  &lt;/</span><span class="n">fieldset</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>view 的部分這樣就算完成啦，跟前面比起來稍微複雜一點，但還是挺簡單的，接著我們就需要定義 controller 的部份。</p>
-
-<h2>controller</h2>
-
-<p>首先我們先把 tag 的 auto-completion 實作完成，我們需要先將相關的套件載入</p>
-
-<p>  import org.grails.taggable.Tag
-  import grails.converters.JSON</p>
-
-<p>接著我們就可以新增 controller 中的 action</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="kt">def</span> <span class="n">tags</span> <span class="o">=</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">render</span> <span class="n">Tag</span><span class="o">.</span><span class="na">findAllByNameIlike</span><span class="o">(</span><span class="s2">&quot;${params.term}%&quot;</span><span class="o">).</span><span class="na">name</span> <span class="k">as</span> <span class="n">JSON</span>
-</span><span class='line'>  <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
-
-<p>  render &#8230; as JSON</p>
-
-<p>指的是將查出來的結果轉為 JSON，接著看下面：</p>
-
-<p>  Tag.findAllByNameIlike(&#8220;${params.term}%&#8221;)</p>
-
-<p>根據 <a href="http://grails.org/doc/latest/guide/GORM.html#domainClasses">grails domainClasses API</a> 的說明，提到：</p>
-
-<blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
-
-<p>也就是區別大小寫，找出所有的 Name like &#8220;${params.term}%&#8221;，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
-
-<p>  [&#8220;test1&#8221;,&#8221;test2&#8221;]</p>
-
-<p>如此一來在 web 網頁輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
-
-<p>很棒吧！假設 tag 輸入完畢了，我們必須把 tag 的資料寫入資料庫我們定義 action 為 update，相關程式碼如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='groovy'><span class='line'>  <span class="kt">def</span> <span class="nf">update</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kt">def</span> <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">id</span><span class="o">)</span>
-</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">properties</span> <span class="o">=</span> <span class="n">params</span>
-</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">tags</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="na">tags</span> <span class="c1">// 為了儲存 tags 只要新增這行</span>
-</span><span class='line'>    <span class="n">post</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="nl">flush:</span> <span class="kc">true</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>就這樣完成 taggable 的開發，包括漂亮的介面、方便的輸入以及資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/03/01/grails-taggable/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[學 web 開發以及 sql 語法的好地方]]></title>
-<link href="http://smlsun.com/blog/2013/02/28/study-coding/"/>
-<updated>2013-02-28T18:45:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/02/28/study-coding</id>
-
-      <content type="html"><![CDATA[<p>如果你是你剛踏入軟體開發的行列，很多語法或特性還不是很熟，是不是很想有個地方可以讓你找到各種語法的使用方式。</p>
-
-<p>或者你是已經有經驗的開發者，有些時候你想試試看哪個屬性或者語法執行的結果如何，但當下又沒有環境讓你測試。</p>
-
-<p>下面將介紹幾個不錯的網站讓不管是初學還是有經驗的開發者，都可以有個現成的環境讓你試試每個語法的特性。</p>
-
-<h2><a href="http://jsfiddle.net/">jsfiddle</a></h2>
-
-<p><img src="https://lh5.googleusercontent.com/-yFUqWAT58q0/US9CeiPUAiI/AAAAAAAALiw/L3CanL_aS58/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%886.52.46.jpg" alt="img" /></p>
-
-<p>一個可以線上模擬一個網站的環境，只要在上面的 HTML、css 以及 JavaScript 中寫入你要測試的程式碼，一旦執行以後，就可以在 Result 看到輸出的結果，特別的是該網站整合了一些大家都會常用的套件或是 framework，舉凡 jquery、extjs 或者是 YUI 等，都可以很輕易的測試每個套件的特性，圖片中的範例是用 extjs 來做範例</p>
-
-<h2><a href="http://sqlfiddle.com/">sqlfiddle</a></h2>
-
-<p><img src="https://lh5.googleusercontent.com/-iZt6XO24I_U/US9VL4aM9YI/AAAAAAAALjM/YuTxlBkcM58/s774/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%889.00.59.jpg" alt="image" /></p>
-
-<p>線上 sql 語法練習網站，與 jsfiddle 類似，只是對象改成 sql，在開始練習前，需要先將範例 table 建立的語法置於左上角區域，接著就點選 Build Schema 就可以開始練習 sql 語法啦！</p>
-
-<p>這網站還有一個特別的地方，他將 sql 的執行計畫也一併產生出來，可以讓你分析你下的 sql 執行效率，真的很方便呢！</p>
-
-<h2><a href="http://www.w3schools.com/">w3schools</a></h2>
-
-<p><img src="https://lh3.googleusercontent.com/-OD_nz64JW8I/US9CfAlsghI/AAAAAAAALi4/EWnAar60Nx0/s720/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-28+%E4%B8%8B%E5%8D%887.41.17.jpg" alt="image" /></p>
-
-<p>與 jsfiddle 不同，w3schools 專注於每種語法的特性，一些在 wed 開發中會用到的技術介紹，當然他也可以線上測試各種語法的特性，雖然只是單語言測試，但對於急於查詢相關語法或者測試運行結果非常夠用了，除此之外有蠻詳細的解釋與範例，是個不錯的參考網站。</p>
-
-<p>相關語言有：</p>
-
-<ul>
-<li><p>HTML &amp; CSS</p>
-
-<ul>
-<li>HTML Tutorial</li>
-<li>HTML5 Tutorial</li>
-<li>CSS Tutorial</li>
-<li>CSS3 Tutorial</li>
-</ul>
-</li>
-<li><p>Browser Scripting</p>
-
-<ul>
-<li>JavaScript Tutorial</li>
-<li>HTML DOM Tutorial</li>
-<li>jQuery Tutorial</li>
-<li>JSON Tutorial</li>
-<li>Google API Tutorial</li>
-</ul>
-</li>
-<li><p>Server Scripting</p>
-
-<ul>
-<li>PHP Tutorial</li>
-<li>SQL Tutorial</li>
-<li>ASP Tutorial</li>
-<li>ASP.NET Tutorial</li>
-<li>Web Services Tutorial</li>
-<li>Schema Tutorial</li>
-<li>SOAP Tutorial</li>
-<li>WSDL Tutorial</li>
-</ul>
-</li>
-<li><p>Web Building</p>
-
-<ul>
-<li>Web Browsers</li>
-<li>Web Certification</li>
-<li>Web Hosting</li>
-<li>Web TCP/IP</li>
-<li>Web W3C</li>
-<li>Web Quality</li>
-</ul>
-</li>
-</ul>
-
-
-<p>上面列出幾項，都是很常見的技術，真的是非常完整，可以參考看看囉！</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/02/28/study-coding/"></a></p>]]></content>
     </entry>
   
 </feed>

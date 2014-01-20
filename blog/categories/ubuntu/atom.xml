@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ubuntu | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:07:08+08:00</updated>
+  <updated>2014-01-20T10:17:51+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,33 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ubuntu 忘記密碼怎麼辦？三個步驟完成修改]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/ubuntu/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/ubuntu</id>
+    <content type="html"><![CDATA[<ol>
+<li><p>游標移到 recovery mode (不要 enter)，鍵盤輸入 e，表示編輯 command</p>
+
+<p> <img src="https://lh3.googleusercontent.com/-IIwTTUyywEk/UsYdxqpauxI/AAAAAAAAL_k/drrfABMruQI/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.16.36.png" title="螢幕快照 2014-01-03 上午10.16.36.png" alt="enter image description here" /></p></li>
+<li><p>修改關鍵字 <code>ro recovery nomodeset</code>：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-WMKHLt4bS5s/UsYgsBGuviI/AAAAAAAAL_4/q8PIplU5CLU/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.29.47.png" title="螢幕快照 2014-01-03 上午10.29.47.png" alt="enter image description here" /></p>
+
+<p> ro 表示 readonly，標準只有提供幾個內建功能，若要修改密碼我們需要用到 bash 的 passwd 的指令，將其改為 <code>rw single init=/bin/bash</code>，表示進入 single user mode，也就是 root 使用者，並且載入 bash 令我們可以修改密碼：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-V7A7bn00g50/UsYhmVEx6gI/AAAAAAAAMAE/v8B8EEJwl1k/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-03+%E4%B8%8A%E5%8D%8810.33.42.png" title="螢幕快照 2014-01-03 上午10.33.42.png" alt="enter image description here" /></p></li>
+<li><p>修改完成後，鍵盤輸入 ctrl-x 進入 recovary：</p>
+
+<p> 可以看到游標停在 <code>root@(none):/#:</code>，現在我們有了 root 權限，如此一來在有最大權限的情況下，你就可以任意調整 server</p></li>
+<li><p>輸入 <code>passwd username</code> 就可以進行修改密碼。</p></li>
+</ol>
+
+
+<h3>完工</h3>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ubuntu 中安装 apache ab 進行壓力測試]]></title>

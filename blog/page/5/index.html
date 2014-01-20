@@ -271,6 +271,2229 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2013/02/04/javascript-callback/">Javascript: Callback</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>資料來源</h4>
+
+<p><a href="http://mao.li/javascript/javascript-callback-function/">JavaScript callback function 理解</a></p>
+
+<h2>定義</h2>
+
+<ul>
+<li><p>維基的Callback_(computer_programming):</p>
+
+<blockquote><p>In computer programming, a callback is a reference to a piece of executable code that is passed as an argument to other code.</p></blockquote></li>
+<li><p>jQuery文檔How jQuery Works#Callback_and_Functio…：</p>
+
+<blockquote><p>A callback is a function that is passed as an argument to another function and is <strong>executed after its parent function has completed</strong>. The special thing about a callback is that functions that appear after the &#8220;parent&#8221; can execute before the callback executes. Another important thing to know is how to properly pass the callback. This is where I have often forgotten the proper syntax.</p></blockquote></li>
+<li><p>百科： callback 函數</p>
+
+<blockquote><p>callback 函數就是一個通過函數指針調用的函數。如果你把函數的指針（地址）作為參數傳遞給另一個函數，當這個指針被用為調用它所指向的函數時，我們就說這是 callback 函數。</p>
+
+<p>callback 函數不是由該函數的實現方直接調用，而是在特定的事件或條件發生時由另外的一方調用的，用於對該事件或條件進行響應。</p></blockquote></li>
+</ul>
+
+
+<p>因此， callback 本質上是一種設計模式，並且jQuery(包括其他框架)的設計原則遵循了這個模式。</p>
+
+<p>在JavaScript中，callback 函數具體的定義為：函數A作為參數(函數引用)傳遞到另一個函數B中，並且這個函數B執行函數A。我們就說函數A叫做 callback 函數。如果沒有名稱(函數表達式)，就叫做匿名 callback 函數。</p>
+
+<p>因此 callback 不一定用於非同步的狀況，一般同步(blocking)的場景下也經常用到 callback ，比如要求執行某些操作後執行 callback 函數。</p>
+
+<h2>範例</h2>
+
+<p>一個同步(blocking)中使用 callback 的例子，目的是在func1代碼執行完成後執行func2。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">func1</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+</span><span class='line'>    <span class="c1">//do something.</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">func1</span><span class="p">(</span><span class="nx">func2</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">func2</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;func2 run!&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>非同步 callback 的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="nx">callback</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;test.html&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">context</span><span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">addClass</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">})</span>
+</span><span class='line'><span class="p">.</span><span class="nx">always</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;complete&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述例子為非同步 ajax 請求，當request 有 response 時,如果先前已定義 callback ,將會觸動相關的函數進行執行。</p>
+
+<h2>callback 什麼時候執行</h2>
+
+<p> callback 函數，一般在同步情境下是最後執行的，而在非同步情境下有可能不執行，因為事件沒有被觸發或者條件不滿足。</p>
+
+<h2>callback 函數的使用場合</h2>
+
+<ul>
+<li>函數需要同步處理時</li>
+<li>setTimeout的延遲時間為0，這經常被用到，settimeout 呼叫的函數其實就是一個callback 的實作，類似範例可參考我的另一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a></li>
+<li>method chain：可參考：<a href="http://ithelp.ithome.com.tw/question/10090856">jQuery method chain review</a></li>
+</ul>
+
+
+<p>另外，最好保證 callback 存在且必須是函數引用或者函數表達式：
+(callback &amp;&amp; typeof(callback) === &#8220;function&#8221;) &amp;&amp; callback();</p>
+
+<h2>使用上的技巧</h2>
+
+<p>因為 callback 的特性，如果你的函數傳入的參數不一致時將變得難以維護，建議函數在設計時應該盡量保持只有一個參數，若要傳入多參數則使用 json 來組合多個參數，然後統一有另一個參數用來傳入 callback 的函式。需注意在執行 callback 時需要先判斷該該參數是否為 function 若是才執行。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-04T22:27:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/04/javascript-callback/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/04/javascript-callback/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/04/google-spreadsheets-connect/">JavaScript 存取 Google Spreadsheets 試算表</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>google spreadsheets，也就是 google doc 裡面的 excel，對於 excel 的操作相信大家一定不陌生，如果有寫過一些程式，或許有寫過將 excel 當做 database 進行增修改查的動作。</p>
+
+<p>這篇所要介紹的也就是如何存取 google spreadsheets 進行資料的操作，如果你需要一個快速且容易維護的資料庫，那 google spreadsheets 非常適合，將透過 google 所提供的 Visualization API 進行，下面將對幾個重點部分進行介紹</p>
+
+<h2>query Language</h2>
+
+<ul>
+<li><p><a href="https://developers.google.com/chart/interactive/docs/querylanguage?hl=zh-TW#Setting_the_Query_in_the_Data_Source_URL">Query Language Reference</a></p>
+
+<p>  google 官方 query api 裡面有關於查詢語法的說明，基本上就像在下查詢 sql 一樣，如果有操作過 sql 語法，非常好理解。</p></li>
+</ul>
+
+
+<h2>publish spreadsheets</h2>
+
+<ul>
+<li><p><a href="http://blog.ericsk.org/archives/1417">JavaScript 存取 Google 試算表的資料</a></p>
+
+<p>  這篇有介紹存取方式，以及如何將你的 spreadsheets Publish 以便讓 Visualization API 能夠存取</p></li>
+</ul>
+
+
+<h2>新增 spreadsheets Records</h2>
+
+<p>google Visualization API 無法讓你進行 <strong>新增</strong> 所以如果你需要新增資料，建議使用:</p>
+
+<p><a href="http://support.google.com/drive/bin/answer.py?hl=zh-Hant&amp;answer=87809">Google 表單
+</a></p>
+
+<h2>查詢 spreadsheets</h2>
+
+<p>查詢的部份就是重頭戲啦，從範例來看會比較快一點理解：</p>
+
+<p>sample data:</p>
+
+<p><img src="https://lh3.googleusercontent.com/-v-fjMIfNUpU/UQ8hUW60DcI/AAAAAAAALhQ/TjlxGqTLGt0/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-02-04+%E4%B8%8A%E5%8D%8810.46.55.jpg" alt="image" /></p>
+
+<p>範例程式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// 讀取店家資訊以及地理位置，並且透過 createMarker 將位址加入到 map 裡</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 載入 Visualization API</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span><span class="kc">null</span><span class="p">;</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// key 是假的，請使用你的 key</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">URL</span> <span class="o">=</span> <span class="s1">&#39;http://spreadsheets.google.com/tq?key=0AsXj_vRMyOYyk5OXdKRlJXdGZ1FZU3FXRjl6E#gid=0&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">google</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;visualization&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+</span><span class='line'>          <span class="p">{</span><span class="s1">&#39;packages&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;table&#39;</span><span class="p">]});</span>
+</span><span class='line'>  <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">visualization</span><span class="p">.</span><span class="nx">Query</span><span class="p">(</span><span class="nx">URL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">queryData</span><span class="p">(</span><span class="nx">queryStr</span><span class="p">,</span><span class="nx">createMarker</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">setQuery</span><span class="p">(</span><span class="s2">&quot;select B,C,D,E,F where H=&#39;Y&#39; &quot;</span><span class="o">+</span><span class="nx">queryStr</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">query</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">resp</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">resp</span><span class="p">.</span><span class="nx">isError</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">dataTable</span> <span class="o">=</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">getDataTable</span><span class="p">();</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">dataTable</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">row</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">.</span><span class="nx">rows</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">markConfig</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">latitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">longitude</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">4</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">address</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              <span class="nx">markConfig</span><span class="p">.</span><span class="nx">description</span><span class="o">=</span><span class="nx">row</span><span class="p">.</span><span class="nx">c</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">v</span><span class="p">;</span>
+</span><span class='line'>              
+</span><span class='line'>              <span class="nx">createMarker</span><span class="p">(</span><span class="nx">markConfig</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>非常簡單，應該也淺顯易懂，幾個重點：</p>
+
+<ol>
+<li>在 query 部分，沒辦法使用 column Name，只能使用如 samle 圖片中的 A、B、C…</li>
+<li>相同查詢條件下，無法連續查詢，甚至也不會 response records，舉例來說，<code>select B,C,D,E,F where H='Y'</code> 這查詢下第一次 ok，但第二次就會沒有反應，所以在處理上，需檢查查詢條件是否與上次相同，如相同則不需再查，當然也許是可行的，但以我目前測試的結果是這樣</li>
+</ol>
+
+
+<p>如果你要做一個簡單問卷，或是購買清單之類的應用，相信 google spreadsheets 是個不錯的選擇，夠簡單，且輔助 google 表單，可以很快速的完成資料輸入的頁面，查詢上也不複雜，就是幾個實用上要注意的額外處裡一下，希望可以幫有需要的人解省一些時間囉！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-04T16:34:00+08:00" pubdate data-updated="true">Feb 4<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/04/google-spreadsheets-connect/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/04/google-spreadsheets-connect/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/01/javascript-settimeout/">Javascript: setTimeout</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在使用 setTimeout 時，假設要執行 4 次就如同下面的例子：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;A=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">function</span> <span class="nx">A</span><span class="p">(){</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">A</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>一般常理判斷結果應該是：</p>
+
+<pre><code>A=0
+B=0
+A=1
+B=1
+A=2
+B=2
+A=3
+B=3
+</code></pre>
+
+<p>實際結果如下：</p>
+
+<pre><code>A=0
+A=1
+A=2
+A=3
+B=4
+B=4
+B=4
+B=4 
+</code></pre>
+
+<p>有沒有覺得很奇怪?</p>
+
+<p>這是因為 javascript 屬於單執行序，看起來 <code>window.setTimeout(A, 0);</code> 似乎是馬上執行，但是實際上， for 迴圈裡的 setTimeout 會先放在代執行的堆疊裡，直到 for 迴圈結束，但如此一來到結束時，i 即為 4，所以結果就是堆疊裡的每個待執行任務中的 i 都為 4。</p>
+
+<p>所以比較好的寫法應該是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">doAppend</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">i</span><span class="o">++</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;B=&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">doAppend</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>跟上面的例子有什麼不同？上面的 setTimeout 每個是獨立的，這個例子的 setTimeout 將 一環接著一環，如此一來，每個 setTimeout 都會有正確的 i 了</p>
+
+<p>關於 javascript 事件驅動以及運作方式想更進一步了解，可參考以下文章</p>
+
+<p><a href="http://www.phpv.net/html/1700.html">JavaScript可否多線程? 深入理解JavaScript定時機制</a></p>
+
+<p>另外一旦我們想要清除定時器，可以通過將定時時產生的ID標識傳遞給clearTimeout或者clearInterval函數來清除定時，至於使用哪個函數取決於調用的時候使用的是setTimeout還是setInterval。範例如下：</p>
+
+<pre><code>var id = setTimeout ( foo ,  1000 ); 
+clearTimeout ( id );
+</code></pre>
+
+<p>假設我們要清除所有定時器，但由於沒有內置的清除所有定時器的方法，可以採用一種暴力的方式來達到這一目的。</p>
+
+<pre><code>//清空"所有"的定時器
+for ( var i =  1 ; i &lt;  1000 ; i ++)  { 
+    clearTimeout ( i ); 
+}
+</code></pre>
+
+<p>可能還有些定時器不會在上面代碼中被清除（如果定時器調用時返回的ID值大於1000），因此我們可以事先保存所有的定時器ID，然後一把清除。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T21:09:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-settimeout/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-settimeout/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/01/javascript-closure/">Javascript: Closure</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>資料來源</h4>
+
+<ul>
+<li><a href="http://caterpillar.onlyfun.net/Gossip/JavaScript/Closure.html">Gossip@caterpillar</a></li>
+<li><a href="http://hi.baidu.com/jz1108/item/e549ca105c4c6bf89c778ab6">一句話說 JavaScript 中的 Closure</a></li>
+<li><a href="http://blog.ithome.com.tw/index.php?op=ViewArticle&amp;articleId=19392&amp;blogId=257">搞清楚lexical scope與closure</a></li>
+</ul>
+
+
+<h2>什麼是 closure</h2>
+
+<p>JavaScript 中的 closure 是初學者比較難理解的觀念，下面是幾個來源關於 closure 的解釋：</p>
+
+<ul>
+<li>A <code>closure</code> is created when a function <code>keeps a link to its parent's scope</code> even after the parent has returned.
+
+<blockquote><p>Object-Oriented JavaScript</p></blockquote></li>
+<li>A closure is a protected variable space, created by using nested functions.
+
+<blockquote><p>Pro JavaScript Design Patterns</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>Closures are means through which inner functions can refer to the variables present in their outer enclosing function after their parent functions have already terminated.
+
+<blockquote><p>Pro JavaScript Techniques</p></blockquote></li>
+<li>A closure is a special kind of object that combines two things: a function, and the environment in which that function was created.
+
+<blockquote><p>MDC</p></blockquote></li>
+<li>A closure is a way to access and manipulate(操作) external variables from within a function.
+
+<blockquote><p>Secrets of the JavaScript Ninja</p></blockquote></li>
+<li>A &#8220;closure&#8221; is an expression (typically a function) that can have free variables together with an environment that binds those variables (that &#8220;closes&#8221; the expression).
+
+<blockquote><p>jibbering.com</p></blockquote></li>
+</ul>
+
+
+<p>本來想將上面的解釋翻譯成中文，發現中文對特定名詞無法很精準的表達，只好讓大家練練英文，有時間在慢慢品嚐，在這直接舉一個實際的例子來看會更容易理解</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doSome</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">doSome</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span> <span class="c1">//輸出結果為 30</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span> <span class="c1">//輸出結果為 40</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面 doSome 的例子中，f 建立了一個 closure，如果你單看：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看來起 x 似乎沒有定義。實際上，x 是從外部函式捕捉而來。closure 是個捕捉了外部函式變數（或使之繼續存活）的函式。在上例中，函式 f 建立了 closure，因為它將變數x關入（close）自己的範圍。如果形式 closure 的函式物件持續存活，被關閉的變數 x 也會繼續存活。就像是延續了變數x的生命週期。</p>
+
+<p>由於 doSome 傳回了函式物件並指定給 foo，就 doSome 而言已經執行完畢。單看 x 的話，理應 x 已結束其生命週期，但由於 doSome 中建立了closure並傳回，x 被關閉在 closure 中，所以 x 的生命週期就與 closure 的生命週期相同了。如上例所示， 呼叫 foo(20) 結果就是 10+20（因為被閉關的 x 值是 10 ），呼叫 foo(30) 結果就是 10+30。</p>
+
+<p>更精簡的說明 Closure 就是擁有閒置變數（Free variable）的運算式，上面提到的例子中 x 就是所謂的 Free variable，什麼是 Free variable ？</p>
+
+<p>參考這篇：<a href="http://stackoverflow.com/questions/12934929/what-are-free-variables"></a></p>
+
+<blockquote><p>Free variables are simply the variables that are neither locally declared nor passed as parameter.</p></blockquote>
+
+<p>聽起來很玄，翻譯起來就是 Free variable 代表不是 function 的參數，x 之所以稱為 Free variable 也就是因為在 f 這個 function 外面被宣告，也沒有透過 function 的參數傳入，但是在 f 裡面卻可以存取。</p>
+
+<p>另外 Closure 有 lexical scope 的特性，所謂的 lexical scope 就是讓我們可以用區域變數的方式，把變數當作一個 function 物件的 private member，但是又可以用一個 function 當作 getter/setter 來存取他，如同：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">Bean</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">X</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">Y</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">setX</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">X</span><span class="o">=</span><span class="nx">x</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">getX</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">X</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">setY</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">Y</span> <span class="o">=</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">getY</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">Y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Bean</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">setX</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">setY</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">getX</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;&quot;</span><span class="o">+</span><span class="nx">a</span><span class="p">.</span><span class="nx">getY</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>closure 關閉的對象</h2>
+
+<p>closure 關閉(包起來)的是變數，而不是變數所參考的值。下面這個範例可以證明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doOther</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">foo</span><span class="p">(</span><span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>直覺來看應該是 10+20，以及 10+30，實際上卻不是，因為在 建立closure時綁定的是 x 變數，而不是數值 10（x變數的值），也因此 doOther 之後改變了 x 變數的值，因此此時 x 的值已變為 100，而後執行 foo 就是用 x=100 在做運算，範例顯示的結果分別是 100+20 與 100+30。</p>
+
+<p>並且由於 closure 綁定的是變數，所以你也可以在 closure 中改變變數的值：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">element</span><span class="p">;</span>
+</span><span class='line'>   <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">sum</span><span class="p">;</span> <span class="c1">//變數內容為 15</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果closure關閉了某個變數，使得該變數的生命週期得以延長，那麼這個會怎麼樣？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">doOther</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">x</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">f1</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">f2</span> <span class="o">=</span> <span class="nx">doOther</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">f1</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">f2</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在這個範例中，doOther被呼叫了兩次（或更多次），doOther中的closure關閉了x，並對其執行了遞減。呼叫了f1時，x會被遞減1，所以顯示9，這沒有問題，那麼呼叫f2()後，結果是9？</p>
+
+<p>像這類的例子，其實結果是一致的，關閉的是建立closure時外部範圍下的變數。以上例來說，第一次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。第二次呼叫doOther時，建立了x變數(新的記憶體位置)，指定值給x變數，而後建立closure將之關閉。所以f1與f2關閉的根本是不同作用範圍的 x 變數（也就是該次呼叫 doOther 時所建立的 x 變數）。所以上例中，呼叫f2之後顯示的值仍是9。</p>
+
+<h2>Closure 使用上需注意</h2>
+
+<ul>
+<li>Closure 有可能會造成記憶體洩漏，主要是因為被參考的變數無法被垃圾收集機制處理，造成佔用的資源無法釋放，所以使用上必須考慮清楚，不要造成意外的記憶體洩漏。（在上面的例子中，如果 f1 一直未執行，使用到的記憶體 x 就不會被釋放）</li>
+<li>跟透過函數的參數把變數傳給函數比較起來，Javascript Engine 會比較難對 Closure 進行最佳化。如果有效能上的考量，這一點也需要注意。</li>
+</ul>
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T14:46:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-closure/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-closure/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/01/javascript-about-scope/">Javascript: About Scope</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h4>參考來源</h4>
+
+<ul>
+<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
+<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
+</ul>
+
+
+<p>這篇文章是根據上面文章，整理與 scope 相關的資料彙總而成。</p>
+
+<p>scope 的產生與函式息息相關，首先必須先了解函式的運作</p>
+
+<h2>函式是如何被初始化</h2>
+
+<ol>
+<li>先宣告函式參數，並設定參數的值</li>
+<li>所有函式內部的函式被宣告</li>
+<li>所有在這函式 scope 中有宣告的變數被生成 (所以即使變數被宣告在最後一行，但卻可已在函式中的任何地方被存取)</li>
+<li>賦予變數值</li>
+</ol>
+
+
+<p>接著來看 scope</p>
+
+<h2>了解變數 scope 以及初始化</h2>
+
+<ol>
+<li>唯一的變數 scope 就是你所在的函式。</li>
+<li>還有全域的 scope，但並沒有區塊的 scope。</li>
+<li>每一個函式都有一個 scope chain，而這個 chain 中會指向上一層函式的 scope。</li>
+<li>如果一個變數或是函式被存取但是在當下的 scope 中找不到，這時候就會嘗試往上一層的 scope 去找一直到有一個對應個宣告被找到為止。</li>
+<li>如果是嘗試賦予一個變數的值，但往上找卻找不到對應宣告的時候，那麼就會直接在全域 scope 設定一個這個變數名字的屬性。</li>
+</ol>
+
+
+<h2>scope 的運作原理</h2>
+
+<p>當你定義一個全域函式的時候，那根據 ECMAScript 規格，它就會有一個 [[Scope]]屬性，而這個 [[Scope]] 會指到一個 Scope Chain Table，這個 table 裡面存放一個指到 global variables 的 table。</p>
+
+<p><img src="http://2.bp.blogspot.com/-gugDSqh-lUg/T_XMYmUT5fI/AAAAAAAAXUE/WqDmooAtSwM/s1600/scope.jpeg" alt="img" /></p>
+
+<p>之後，當一個函式被執行的時候，對應的 execution context 會被生成，而這個 execution context 會有一個屬於自己的 scope chain，這個 scope chain 會被用來作變數解析。</p>
+
+<p>這個 execution context 一開始先把函式的 [[scope]] 複製一份，之後再產生一個 activation object 裡面指到所有的 local variables table，並把這個 activation object 放在 scope chain 的一開始，所以當 setup 被執行的時候 scope chain 應該是長這樣：</p>
+
+<p><img src="http://1.bp.blogspot.com/-3MdmGetL9rE/T_XMhQIwBhI/AAAAAAAAXUY/6I2Ota50G6o/s1600/scope2.jpeg" alt="img" /></p>
+
+<p>當在 function scope 裡面做任何變數的存取的時候，第一步就是先從位於 0 的 scope chain 開始找，如果沒找到就會再往下一個位置去找。</p>
+
+<p>這也是一般大家理解的會先取用 local 的，之後再往上一層，最後一直都找不到的話，就會產生錯誤。</p>
+
+<p>這邊的重點就是 global 的變數永遠都會在 scope chain 的最後面那一層，所以盡可能地使用 local variables，因為這總是比 global variables快，也就是 jQuery 原始碼裡面將 window 轉換成 local 所提到的效能問題是一樣的。</p>
+
+<p>接著必須了解scope management的知識，對於效能改善是很重要的。</p>
+
+<h2>scope management</h2>
+
+<p>關於 scope management，還有一點很重要的，常聽到人家說不要用 with，而 scope 是其中的一個原因。當你用了 with 的時候其實是在 scope chain 裡面硬加了一個暫時的 scope 在最前面的地方，當離開 with scope 的時候，這個 with scope 物件就消失。</p>
+
+<p>所以在 with 的範圍內，所有原本的 local variables 的存取都變慢了。另外，try/catch 也一樣有這個問題。</p>
+
+<p>在 closure 的部分，可以想像的是至少會有三個 scope chain，一個是 global，一個是 containing function 的 activation context，還有一個是最前面的 local。可以想見 closure 的使用也會影響資料存取的效能，因為存取階層變多的關係。</p>
+
+<h2>效能改善相關</h2>
+
+<ol>
+<li>對那些常常會存取的變數，盡量把它放在 local</li>
+<li>避免使用 with</li>
+<li><p>小心使用 try / catch</p>
+
+<blockquote><p>至於為什麼可以參考 <a href="http://smlsun.com/blog/2013/02/01/javascript-performance/">Javascript: Performance</a> 中的第 12. 不要在影響性能的關鍵函數中使用try-catch-finally 說明</p></blockquote></li>
+<li><p>沒有必要的話不要用 closure</p></li>
+<li>不要忘記在宣告變數時要加上 var，不然你會不小心宣告太多全域變數</li>
+</ol>
+
+
+<p>根據以上原則，範例函式如下，使用全域函式 setup，也就是 <code>document</code>。：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>應該要先將 <code>document</code> 指定給區域變數，修正如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">setup</span><span class="p">(</span><span class="nx">items</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">doc</span> <span class="o">=</span> <span class="nb">document</span><span class="p">;</span> <span class="c1">// 原本沒有這行</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// document 全部替換為 doc，也就是改為區域變數</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">divs</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">getElementsById</span><span class="p">(</span><span class="s2">&quot;save-btn&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">process</span><span class="p">(</span><span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">div</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nx">button</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">},</span> <span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T12:07:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-about-scope/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-about-scope/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/02/01/javascript-performance/">Javascript: Performance & Tip</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>介紹幾篇關於效能的文章：</p>
+
+<ul>
+<li><a href="http://www.icoding.co/2012/07/javascript-html-2">提升 JavaScript 效能的技巧</a></li>
+<li><a href="http://www.icoding.co/2012/09/javascript2-html">給非 JavaScript 專家的小技巧</a></li>
+<li><a href="http://bonsaiden.github.com/JavaScript-Garden/zh/">JavaScript秘密花園</a></li>
+<li><a href="http://dev.opera.com/articles/view/efficient-javascript/">Efficient JavaScript</a></li>
+<li><a href="http://www.woiweb.net/efficient-javascript.html">Efficient JavaScript 中文</a></li>
+</ul>
+
+
+<p>節錄幾個重要的觀念：</p>
+
+<h2>1. 了解變數 scope 以及初始化</h2>
+
+<p>可參考我的另外一篇文章：<a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a></p>
+
+<h2>2. 避免寫與 HTML 混在一起(inline)的 JavaScript</h2>
+
+<ul>
+<li><p>錯誤示範：</p>
+
+<pre><code>  &lt;button id="my_btn" onclick="doThis();"&gt;Submit&lt;/button&gt;
+</code></pre>
+
+<p>  把 JavaScript 跟 HTML 混在一起這樣寫會導致 JavaScript 異常的難以維護。一個新的開發者或需要更長的時間來找出散亂在 HTML 中的 script 並且很難將整個功能的情境拼湊出來。</p></li>
+<li><p>正確：</p>
+
+<pre><code>  &lt;button id="my_btn" type="button"&gt;Submit&lt;/button&gt;
+
+  &lt;!-- These scripts go before the &lt;/body&gt; tag. --&gt;&lt;script type="text/javascript" src="/s/init.js"&gt;&lt;/script&gt;&lt;script type="text/javascript"&gt;// &lt;![CDATA[
+  initializePage();
+      // pretend that these functions are in /s/init.js
+      function initializePage() {
+          document.getElementById("my_btn")
+              .addEventListener("click", doThis);
+      }
+      function doThis(e) {
+          // do cool stuff here
+      }
+  // ]]&gt;&lt;/script&gt;
+</code></pre></li>
+</ul>
+
+
+<p>另外關於這兩個寫法更進一步的差異可參考我另外一篇文章：<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>，裡面有對類似的範例解釋對 this 的不同。</p>
+
+<h2>3. 找到對的 Event 去做 binding</h2>
+
+<p>比如說表單的提送按鈕上 bind “click&#8221; 事件處理實際上不是真的要處理 click ，而是要處理表單送出的事件。那麼這時候你應該 bind 的應該是表單的 “submit&#8221;，因為 enter 也會引發表單送出。</p>
+
+<h2>4. 使用快速的 selectors</h2>
+
+<p>如果你只是處理很小部份的 DOM elements，那麼用什麼方法其實沒有那麼重要，隨便你要使用 querySelector 或是 querySelectorAll。但如果你要處理的 DOM element 個數很大的話，記得使用比較快的方式（通常是最老的那個方法）。建議使用 getElementById，所有的瀏覽器都支援而且是目前最快的方式。</p>
+
+<p>如果你用 jQuery 的話，最好還是使用 IDs 或是 classes 可以得到比較好的效能。</p>
+
+<h2>5. 非必要的時候不要去動 document</h2>
+
+<p>這應該是關於最佳化 JavaScript 效能最重要的技巧：沒事不要去動 document ，除非你百分之百確定你必須這麼做。這通常是大量使用 JavaScript 的網站的瓶頸。</p>
+
+<p>盡量嘗試把 elements 的 reference 記下來，避免下次還要重新 query document 一次。</p>
+
+<p>如同一開始提到的 <a href="http://smlsun.com/blog/2013/02/01/javascript-about-scope/">javascript: about scope</a> 文章中有介紹到的範例。</p>
+
+<h2>6. 等值檢查與真值</h2>
+
+<p>JavaScript 除了有一般的等值運算元 (==, !=)之外還有必較嚴格的等值運算元 (===, !==)。 差異如下：</p>
+
+<ul>
+<li>“5″ == 5 but “5″ !== 5</li>
+<li>0 == false but 0 !== false</li>
+<li>null == undefined but null !== undefined</li>
+</ul>
+
+
+<p>換句話說，=== 與 != 在比較的時候不會作自動的真值推導以及型別轉換，必須在兩邊的原始型別相同並且值也相同的情況下才為真。</p>
+
+<h2>7. 資料存取方式</h2>
+
+<p>有四種存取資料的方式分別是：</p>
+
+<ul>
+<li>數值或字串  (literal value)</li>
+<li>變數</li>
+<li>物件屬性</li>
+<li>陣列</li>
+</ul>
+
+
+<p>在這四種方式裡面，literal 與區域變數的存取效率都很好，兩者不相上下。而物件跟陣列的存取相對於前者，效能就差很多。</p>
+
+<p>物件屬性的深度也會對效能有影響。深度越深的話就自然得會越滿慢。所以在資料結構的設計上要小心。</p>
+
+<p>在資料存取的建議是：</p>
+
+<ul>
+<li>如果有一個物件屬性或陣列元素會被用到超過一次，就用區域變數取代它。</li>
+<li>盡量減低物件或是陣列存取的深度。</li>
+</ul>
+
+
+<h2>8. 迴圈</h2>
+
+<p>不要使用 for … in 跟 for each。各個 JS framework 提供的 each 也要少用。尤其是每一次 iteration 都要執行一次函式的方式盡量少用。</p>
+
+<h2>9. DOM</h2>
+
+<p>在第 4. 使用快速的 selectors 有提到過，類似觀念如下：</p>
+
+<p>透過 document.getElementsByTagName之類的函式取得的 HTMLCollection 的存取都很慢。因為每一次的存取都會重新做一次 DOM query。所以要盡量避免在迴圈中存取 HTMLCollection。但這畢竟是不可能的，建議將 HTMLCollection 轉成陣列後再做處理。不過如果你用 jQuery 的話大概不用擔心這個問題。因為 jQuery  會把 selector query 出來的 collection 轉成陣列，因此大概不會有這個問題。</p>
+
+<p>關於 DOM 的效能問題，還有一個是 ReFlow，幾乎所有跟 DOM 物件的操作都會引發 ReFlow，新增或是移除 DOM 物件，或是改變 CSS 屬性，甚至是讀取 DOM 物件屬性，都有可能引發 ReFlow。要解決這個問題，必須利用 DocumentFragment，這是一個類似 document 的物件，但是並不在實際的 DOM Tree 裡面，因此在這個 fragment 上做操作不會引發 ReFlow，之後只要將這個 fragment add 到 DOM，所有的 fragment children 都會被加入到實際的 DOM Tree 中。在你其實並不懂 JavaScript 一文中亦有提及一個好的 JavaScript 開發者必須瞭解如何透過 DocumentFragment 來有效率的新增或移除 DOM Nodes。</p>
+
+<p>關於 DocumentFragment 的使用可以參考這篇 <a href="http://fstoke.me/blog/?p=2487">使用DocumentFragment來加快DOM操作速度</a>，裡面有提到：</p>
+
+<blockquote><p>用Firefox實測，使用第二種DocumentFragment寫法，速度快了將近一倍</p></blockquote>
+
+<h2>10. 避免使用 eval 或 Function 構造函數</h2>
+
+<h3>為什麼不要使用eval</h3>
+
+<p>每次eval或Function構造函數作用於字符串表示的源代碼時，腳本引擎都需要將源代碼轉換成可執行代碼。這是很消耗資源的操作——通常比簡單的函數調用慢100倍以上。</p>
+
+<p>eval函數效率特別低，由於事先無法知曉傳給eval的字符串中的內容，eval在其上下文中解釋要處理的代碼，也就是說編譯器無法優化上下文，因此只能有瀏覽器在運行時解釋代碼。這對性能影響很大。</p>
+
+<h3>重寫eval</h3>
+
+<p>eval不僅效率低下，而且絕大部分情況下完全沒有使用的必要。很多情況下使用eval是因為信息以字符串形式提供，開發者誤認為只有eval能使用此信息。下例是一個典型的錯誤：</p>
+
+<p>function getProperty(oString) {
+  var oReference;
+  eval(&#8216;oReference = test.prop.&#8217;+oString);
+  return oReference;
+}</p>
+
+<p>下面的代碼執行完全相同的函數，但沒有使用eval：</p>
+
+<p>function getProperty(oString) {
+  return test.prop[oString];
+}</p>
+
+<h3>Function</h3>
+
+<p>用 Function 類直接創建函數的語法如下：</p>
+
+<pre><code>var function_name = new function(arg1, arg2, ..., argN, function_body)
+
+var doAdd = new Function("iNum", "alert(iNum + 10)"); 
+</code></pre>
+
+<p>可以看到其定義的方式與 eval 很像，因此也有類似 eval 的問題，只是 Function 構造函數比 eval 略好，因為使用此代碼不會影響周圍代碼；但其速度仍很慢。</p>
+
+<h3>偽裝的eval</h3>
+
+<p>定時函數 setTimeout和setInterval都可以接受字符串作為它們的第一個參數。這個字符串總是在全局作用域中執行，這個特性絕對不要使用，因為它在內部使用了eval。</p>
+
+<p>function foo ()  {</p>
+
+<pre><code>//將會被調用
+</code></pre>
+
+<p>}</p>
+
+<p>function bar ()  {</p>
+
+<pre><code>function foo ()  { 
+    //不會被調用
+} 
+setTimeout ( 'foo()' ,  1000 ); 
+</code></pre>
+
+<p>}
+bar ();</p>
+
+<p>由於eval在這種情況下不是被直接調用，因此傳遞到setTimeout的字符串會自全局作用域中執行；因此，上面的回調函數使用的不是定義在bar作用域中的局部變量foo。</p>
+
+<p>建議不要在調用定時器函數時，為了向回調函數傳遞參數而使用字符串的形式，這麼寫的代碼明顯質量很差。</p>
+
+<pre><code>function foo ( a , b , c )  {} 
+
+//不要這樣做
+setTimeout ( 'foo(1,2, 3)' ,  1000 ) 
+
+//可以使用匿名函數完成相同功能
+setTimeout ( function ()  { 
+    foo ( a , b , c ); 
+},  1000 )
+</code></pre>
+
+<p>當需要向回調函數傳遞參數時，可以創建一個匿名函數，如上例，在函數內執行真實的回調函數，如此一來可避免使用 eval。</p>
+
+<h3>安全問題</h3>
+
+<p>eval 也存在安全問題，因為它會執行任意傳給它的代碼，在代碼字符串未知或者是來自一個不信任的源時，絕對不要使用eval函數。</p>
+
+<h3>結論</h3>
+
+<p>在任何情況下我們都應該避免使用eval函數。99.9%使用eval的場景都有不使用 eval的解決方案，任何使用它的代碼都會在它的工作方式，性能和安全性方面受到質疑。如果一些情況 ​​必須使用到eval才能正常工作，首先它的設計會受到質疑，這不應該是首選的解決方案，一個更好的不使用eval的解決方案應該得到充分考慮並優先採用。</p>
+
+<p>在Opera 9, Firefox, 和Internet Explorer 中後者比前者快95%，在Safari 中快85%。(注意此比較中不含函數本身調用時間。)</p>
+
+<p>特別需要提醒一下：在將 json String 轉換為 json Object 的時候，有些文章會有類似範例使用 eval 進行轉換，應該避免使用</p>
+
+<p>建議可使用下列 js lib: <a href="https://github.com/douglascrockford/JSON-js">JSON-js</a></p>
+
+<h2>11. 自動分號插入</h2>
+
+<p>儘管JavaScript有C的代碼風格，但是它不強制要求在代碼中使用分號，實際上可以省略它們。</p>
+
+<p>JavaScript不是一個沒有分號的語言，恰恰相反上它需要分號來就解析源代碼。因此JavaScript解析器在遇到由於缺少分號導致的解析錯誤時，會自動在源代碼中插入分號。</p>
+
+<p>自動的分號插入被認為是JavaScript語言最大的設計缺陷之一，因為它能改變代碼的行為。</p>
+
+<h3>運作原理</h3>
+
+<p>下面的代碼沒有分號，因此解析器需要自己判斷需要在哪些地方插入分號。</p>
+
+<pre><code>( function ( window ,  undefined )  { 
+    function test ( options )  { 
+        log ( 'testing!' ) 
+
+        ( options . list ||  []). forEach ( function ( i )  { 
+
+        }) 
+
+        options . value . test ( 
+            'long string to pass here' , 
+            'and another long string to pass' 
+        ) 
+
+        return 
+        { 
+            foo :  function ()  {} 
+        } 
+    } 
+    window . test = test 
+
+})( window ) 
+
+( function ( window )  { 
+    window . someLibrary =  {} 
+})( window )
+</code></pre>
+
+<p>下面是解析器&#8221;猜測&#8221;的結果。</p>
+
+<pre><code>( function ( window ,  undefined )  { 
+    function test ( options )  { 
+
+        //沒有插入分號，兩行被合併為一行
+        log ( 'testing!' )( options . list ||  []). forEach ( function ( i )  { 
+
+        });  // &lt;-插入分號
+
+        options . value . test ( 
+            'long string to pass here' , 
+            'and another long string to pass' 
+        );  // &lt;-插入分號
+
+        return ;  // &lt;-插入分號,改變了return表達式的行為
+        {  //作為一個代碼段處理
+            foo :  function ()  {}  
+        };  // &lt;-插入分號
+    } 
+    window . test = test ;  // &lt;-插入分號
+
+//兩行又被合併了
+})( window )( function ( window )  { 
+    window . someLibrary =  {};  // &lt;-插入分號
+})( window );  //&lt;-插入分號
+</code></pre>
+
+<p>建議絕對不要省略分號，同時也提倡將花括號和相應的表達式放在一行，對於只有一行代碼的if或者else表達式，也不應該省略花括號。這些良好的編程習慣不僅可以提到代碼的一致性，而且可以防止解析器改變代碼行為的錯誤處理，雖然 javascript 沒有強制檢查，但好的習慣可以避免不必要的麻煩。</p>
+
+<h2>12. 不要在影響性能的關鍵函數中使用try-catch-finally</h2>
+
+<p>try-catch-finally 結構比較特殊。和其他語法結構不同，它在 runtime 的當前作用域中創建新變量。每當catch執行時，就會將捕獲到的 exception 對象賦給一個變量。這個變量不屬於任何腳本。它在 catch 語句開始時被創建，在結束時被銷毀。</p>
+
+<p>由於此函數比較特殊，且是在運行時動態創建動態銷毀，有些瀏覽器對其的處理並不高效。把catch 語句放在關鍵循環中將極大影響性能。</p>
+
+<p>如果可能，應在腳本中不頻繁被調用的地方進行異常處理，或通過檢查某種動作是否被支持來避免使用。下面的例子中，如果所需的屬性不存在，將在循環語句中拋出許多異常：</p>
+
+<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
+for( i = 0; i &lt; oProperties.length; i++ ) {
+  try {
+    test[oProperties[i]].someproperty = somevalue;
+  } catch(e) {
+    ...
+  }
+}
+</code></pre>
+
+<p>很多情況下，可把 try-catch-finally 結構移到循環外部。這樣做稍微改變了程序語義 ​​，因為如果拋出異常，將停止整個循環：
+有時可用屬性檢測或其他檢測代替 try-catch-finally 結構：</p>
+
+<pre><code>var oProperties = ['first','second','third',...,'nth'], i;
+try {
+  for( i = 0; i &lt; oProperties.length; i++ ) {
+    test[oProperties[i]].someproperty = somevalue;
+  }
+} catch(e) {
+  ...
+}
+</code></pre>
+
+<h2>13. location.replace()控制歷史項</h2>
+
+<p>有時需要通過腳本修改頁面地址。常見的方法是給location.href賦新地址。這將和打開新鏈接一樣添加新歷史項、載入新頁面。
+有時不想添加新歷史項，因為用戶不需要回到前面的頁面。這在內存資源有限的設備中很有用。通過替換歷史項恢復當前頁面所使用的內存。可以通過location.replace()方法實現。</p>
+
+<p>注意頁面仍被保存在cache 中，仍佔用內存，但比保存在歷史中要少的多。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-02-01T11:56:00+08:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/02/01/javascript-performance/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/02/01/javascript-performance/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/01/31/javascript-what-is-this/">Javascript: What Is This?</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <h2>到底 this 是誰？</h2>
+
+<p>JavaScript 的 code 寫多了，你一定會碰到 this 這個關鍵字，是某個 object 下的 method 也好，或是 callback function 也好，關於 this 的用法常常會讓人搞混。</p>
+
+<p>以一句簡單的話來說：在 function 裡，this 所代表的就是呼叫這個 function 的東西。</p>
+
+<p>這樣講可能有點抽象，大家來看個實際的例子：</p>
+
+<h2>this 是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;button&quot;</span>  <span class="nx">id</span> <span class="o">=</span><span class="s2">&quot;aButton&quot;</span>  <span class="nx">value</span> <span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">function</span>  <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span> <span class="p">.</span><span class="nx">value</span>  <span class="o">=</span>  <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果直接調用demo() 函數，tihs.value 將不存在，因為 demo 函數是在 window 對像中定義的，在簡單來說就是屬於全域，所以demo的擁有者（作用域）是 window(代表全域)，demo 裡的 this 也就是 window。 而 window 是沒有 value 屬性的。</p>
+
+<p>更進一步的來看簡單的例子：</p>
+
+<h2>this 不是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span>  <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span>  <span class="nx">demo</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在此例中 this 代表的是 button，因為是透過函數指定的方式 button.onclick =  demo 來呼叫 demo()，他的上層是 button，所以也就有 value 的屬性</p>
+
+<p>對於 button.onclick 輸出得到的是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">demo</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也就代表 demo() 屬於 button 的</p>
+
+<h2>this 又是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;button&quot;</span> <span class="nx">id</span><span class="o">=</span><span class="s2">&quot;aButton&quot;</span> <span class="nx">value</span><span class="o">=</span><span class="s2">&quot;demo&quot;</span> <span class="nx">onclick</span><span class="o">=</span><span class="s2">&quot;demo()&quot;</span> <span class="o">/&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span> <span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">button</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;aButton&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">demo</span> <span class="p">()</span>  <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">button</span><span class="p">.</span><span class="nx">onclick</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>得到的輸出是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">onclick</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">demo</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>onclick =&#8221;demo()&#8221; 引用的方式中，onclick 事件只是直接調用 demo() 函數，而 demo() 函數的作用域仍舊是 w​​indow 對象，所以 this 仍然指向 window。</p>
+
+<p>接著我們來看另一個特殊的情形&#8230;</p>
+
+<h2>setTimeout 中的令人困惑的 this</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">TT</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// this 則為 window 所以 this.lm = &quot;the message&quot;; 中的 lm 會被指向 window 而不是 TT 這個 object</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">// this 是 Object 所以 this.lm = &quot;the message&quot;; lm 被正確建立於 TT 上</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span><span class='line'><span class="c1">// d 在 window 底下，this 是 window。why??</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在上面的例子中如果直接使用 TT()，this 指的是 window，如果透過 new，他所做的事就是先 new 一個 Object 接著將 this 指向這個 Object，這就是 new TT(&#8220;the message&#8221;) 當下 this 的由來… 所以在 第 2 行的 this.lm 則 ok。</p>
+
+<p>但是很不幸的 d.startT(); 執行時在 d.startT();裡面的 this.lm 會是 undefind…</p>
+
+<p>Why!!!…… 我死的不明不白阿！</p>
+
+<p>因為：</p>
+
+<p>setTimeout其實是 window.setTimeout() 函數，並不是某個物件觸發的事件，在這種情況下，this 就會指向 window，因為當你呼叫 setTimeout 時，該函數裡的任務會被加入執行對列等候執行，一旦時間到開始執行實際上並不是經由 TT 來觸發而是全域的 window。</p>
+
+<p>經由下列的測試可以證明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">this</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">);</span> <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>又可以this.alert，又有this.document可用，表示 this 在當時指向的是 window。</p>
+
+<p>很玄吧！這樣就知道怎麼死的了… javascript 真的不是你想的那樣…單純！</p>
+
+<p>既然如此我們要怎麼解決此問題？？？</p>
+
+<blockquote><p>20130207 下面是錯誤的理解，感謝與我討論的朋友</p>
+
+<ol>
+<li>this 在沒指定對象的情況下，就是函數當前的作用域</li>
+<li>看起來 this 曾經是 Object，function TT 被 Object 呼叫，但是一旦 TT 被 new 出來成為  d 之後，狀況又回到單獨呼叫 TT(); 的狀況，this 變為 window</li>
+<li>又因為 closure 的特性包的是變數，而不是變數值，所以一旦 TT 成為 d 之後在 function TT() >底下的 this 隨即成為 window，this 變數還在，改變的是所存的內容，因為變數已被指向 window 所以就爆…炸…了…</li>
+</ol>
+</blockquote>
+
+<h2>解決 setTimeout 中的 this 是 window 的情況</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">TT</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">lm</span> <span class="o">=</span> <span class="s2">&quot;the message&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span> <span class="c1">// 重點！</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">startT</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span><span class="nx">alert</span><span class="p">(</span><span class="nx">that</span><span class="p">.</span><span class="nx">lm</span><span class="p">);},</span><span class="mi">500</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TT</span><span class="p">(</span><span class="s2">&quot;the message&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">d</span><span class="p">.</span><span class="nx">startT</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>利用 closure 關閉的是變數的概念，我們只要在外面宣告 <code>var that = this;</code>，此時原本的 this 就會變為區域變數 that，當 setTimeout 執行函數時因為 that 因為 closure 的特性讓 setTimeout 存取操作 that 也就是 TT 的屬性，解決直接在 setTimeout 中使用 this 造成對象錯誤的情形。</p>
+
+<blockquote><p>20120207 一樣是錯誤的理解，感謝與我討論的朋友</p>
+
+<p>上一節中有提到 <strong>closure 的特性包的是變數，而不是變數值</strong> ，又因為 this 是全域變數，一旦外部因為執行的方式不同，this 就會有所不同，所以我們可以把在 new TT(&#8220;the message&#8221;); 當下正確的 this 指定給區域變數，套物件導向的觀念，如果是物件之間的指定，記得是記憶體位置，而不是複製一份，邏輯上就通啦！在 <code>new TT("the message");</code> 變成 d 之後 this 變成了 window，但是在 <code>new TT("the message");</code> 當下已經將 Object 的位置給了 that，所以此時 that 指定為 Object，如此一來 this 當下的狀態就被綁定在 that 上，這樣就可以讓存在 this.lm 裡的訊息，透過 that 來取用。</p></blockquote>
+
+<p>接著剛剛有提到「沒指定的話」就是函數當前的作用域，所以這也就代表了「可以指定」，透過&#8230;</p>
+
+<h2>call() 和 apply()</h2>
+
+<p><code>call()</code> 和 <code>apply()</code> 的差別主要在於 <code>call()</code> 只接受一個參數，即 <code>call(thisArg);</code>而 apply() 接受兩個參數，即 <code>apply(thisArg, argArray)</code> 。透過 call() 和 apply() 調用函數的主要目的，在於改變函數內部的 this 名稱所指涉的對象。對一般函數而言，當 programmer 在函數內部使用 this 名稱時，指涉對象是 global object 。global object 是運行環境中最頂層的個體，在瀏覽器環境中，global object 就是 window 此一個體。但是 <code>call()</code> 和 <code>apply()</code> 可以改變 this 名稱所指涉的對象。</p>
+
+<p>其中在 ECMAScript Language Specification - Standard ECMA-262 3rd Edition. 15.3.4.3 &amp; 15.3.4.4，有一段解釋：</p>
+
+<blockquote><p>If thisArg is null or undefined, the called function is passed the global object as the this value. Otherwise, the called function is passed ToObject(thisArg) as the this value.</p></blockquote>
+
+<p>接著我們分別透過 <code>call()</code> 和 <code>apply()</code> 來驗證一下</p>
+
+<ul>
+<li>call()</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">myFunc</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">window</span><span class="p">.</span><span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">myFunc</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">hello</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>myFunc();</code>未指定的情狀下，this 輸出的是 window， <code>myFunc.call(hello);</code>則輸出 hello world</p>
+
+<ul>
+<li><p>apply()</p>
+
+<p>  以下面這段程式碼為例：</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">(</span><span class="s1">&#39;abc&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你應該會看到訊息視窗先顯示 abc，接著就是顯示出 window。但若是變成下面這樣呢？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="nx">alert</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;bar&#39;</span> <span class="p">};</span>
+</span><span class='line'><span class="nx">foo</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">bar</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span><span class="s1">&#39;def&#39;</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在呼叫 foo 函式時使用 apply 方法，就可以更換 caller（正確地說是切換 context），而因為用了 apply 方法，函式的參數就要改以陣列傳入。當然，這時候的 this 就變成了 bar。</p>
+
+<p> 結果證實規範內容所言無誤。因此，我們可以利用 call() 和 apply() 改變函數內部的 this 名稱所指涉的對象。</p>
+
+<p>而call跟apply的差別，就在於apply的第二個參數是陣列，而call則是一個一個指定參數例如：</p>
+
+<ul>
+<li>call 呼叫的話會變成；<code>myFunc.call(hello,"abc","def");</code></li>
+<li>apply 的好處是可以先把陣列準備好，如 <code>foo.apply(bar, ['abc','def']);</code>，然後重覆使用。</li>
+</ul>
+
+
+<p>資料來源：</p>
+
+<ul>
+<li><a href="http://blog.roodo.com/rocksaying/archives/2532303.html">石頭閒語</a></li>
+<li><a href="http://www.cnblogs.com/ruxpinsp1/archive/2008/04/20/1162463.html">棕熊@Think Fast</a></li>
+<li><a href="http://blog.ericsk.org/archives/1360">ericsk.net</a></li>
+</ul>
+
+
+<p>此篇文章是把上面三個來源的內容進行融合，挑選比較淺顯易懂得部分，加上我個人的淺見跟理解過後加以補述，希望可以幫助對於 this 不是很清楚的人。當然我因為那個領悟還很新鮮，菜味很重，如果有不對還請指教… 麻煩打臉時小力一點～ ㄎ…</p>
+
+<blockquote><p>20130207 教學真的會相長阿！ ^_^</p></blockquote>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-31T13:12:00+08:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/31/javascript-what-is-this/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/31/javascript-what-is-this/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2013/01/25/customize-live-cd/">Tips: Customize Live Cd</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>最近在研究如何製作 live cd 也因為這項研究，讓我更熟悉 linux 的架構，發現一些有用的知識，與 linux 運作的設定，這篇算是筆記，陸續在新增</p>
+
+<ul>
+<li><p><code>/etc/skel</code></p>
+
+<p>  在這資料夾下面的檔案，只要當新增使用者時，就會複製一份給新增使用者，當你需要有一些預設設定時很好用，比如說：chrome 要有預設的首頁以及捷徑，還有輸入法預設有哪些等。</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/xdg/autostart/</code></p>
+
+<p>  global 自動執行，放在底下的 *.desktop 將會自動執行</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>~/.config/autostart/</code></p>
+
+<p>  local 自動執行，同 <code>/etc/xdg/autostart/</code>，可搭配 <code>/etc/skel</code> 服用，如果你有每個使用者登入就要執行某些程式的需求</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>/etc/rc.local</code></p>
+
+<p>  當你登入系統時，希望要執行任何 command 可以在這編輯，比如說：製作 livecd 一開始時是在 command 模式，你想要讓他直接進到 xwindow 通常需要下 startx，此時就可以在這檔案裡編寫指令，讓他自動執行。需要注意的是在這直接執行 <code>startx</code> 將是使用 root 的身分，在 etc 底下都屬於 global</p>
+
+<p>  相關說明：</p>
+
+<ul>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_sysinit">init 處理系統初始化流程 (/etc/rc.d/rc.sysinit)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_runlevel">啟動系統服務與相關啟動設定檔 (/etc/rc.d/rc N &amp; /etc/sysconfig)</a></li>
+<li><a href="http://linux.vbird.org/linux_basic/0510osloader.php#startup_local">使用者自訂開機啟動程序 (/etc/rc.d/rc.local)</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p>live cd 啟動後，沒有 gdm 的情況下，自動登入 xwindow</p>
+
+<p>  well，這是特定的議題，在查相關資料時，一度認為要用 <code>/etc/rc.local</code> 來解，但後來發現不適用，因為他是用 root，會造成 chrome 無法開啟，故我需要用一般 user 登入，需要將啟動判斷式改放在 <code>.bash_profile</code></p>
+
+<p>  加入下列語法；</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;$DISPLAY&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$(</span>tty<span class="k">)</span> <span class="o">==</span> /dev/tty1 <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>startx
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相關說明可以看這：<a href="http://linux.vbird.org/linux_basic/0320bash.php#settings_bashrc">bash 環境設定檔</a></p>
+
+<hr />
+
+<ul>
+<li><p><code>locale-gen zh_TW.UTF-8</code></p>
+
+<p>  改變系統語系指令，範例為變更為繁體中文環境</p></li>
+</ul>
+
+
+<hr />
+
+<ul>
+<li><p><code>apt-get --yes autoremove</code></p>
+
+<p>  製作 live cd 對於容量要很講究，故要將一些沒有相依不需要的套件進行移除，就可以使用這個指令</p></li>
+<li><p>產生 live cd 範例 makefile</p>
+
+<p>  下面是我做出來的 makefile 有需要的就拿去參考吧！</p></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LIVECD_HOME</span><span class="o">=</span>~/livecd
+</span><span class='line'><span class="nv">LIVECD_TMP</span><span class="o">=</span>/tmp/livecd
+</span><span class='line'>
+</span><span class='line'><span class="nv">ORG_ISO_URL</span><span class="o">=</span>http://www.ubuntu-mini-remix.org/download/12.10
+</span><span class='line'><span class="nv">ORG_ISO_NAME</span><span class="o">=</span>ubuntu-mini-remix-12.10-i386.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">CREATE_ISO_NAME</span><span class="o">=</span>Ubuntu-cusmize-livecd.iso
+</span><span class='line'>
+</span><span class='line'><span class="nv">DEPLOY_LOC</span><span class="o">=</span>~/
+</span><span class='line'><span class="nv">DEPLOY_REMOTE</span><span class="o">=</span>user@ip:~/
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>all: clean
+</span><span class='line'>
+</span><span class='line'>clean:
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/proc/
+</span><span class='line'>  - sudo umount <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/sys/
+</span><span class='line'>  sudo rm -rf <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>
+</span><span class='line'>init: clean
+</span><span class='line'>  wget -nc <span class="k">${</span><span class="nv">ORG_ISO_URL</span><span class="k">}</span>/<span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span>
+</span><span class='line'>  sudo apt-get install squashfs-tools dchroot
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - sudo mount -o loop <span class="k">${</span><span class="nv">ORG_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>
+</span><span class='line'>  - mkdir -p <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  rsync --exclude<span class="o">=</span>/casper/filesystem.squashfs -a <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/ <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd
+</span><span class='line'>  - mkdir <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs  <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo modprobe squashfs
+</span><span class='line'>  - sudo mount -t squashfs -o loop <span class="k">${</span><span class="nv">LIVECD_TMP</span><span class="k">}</span>/casper/filesystem.squashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/
+</span><span class='line'>  sudo cp -a <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/squashfs/* <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom
+</span><span class='line'>  sudo cp /etc/resolv.conf /etc/hosts <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/etc/    
+</span><span class='line'>
+</span><span class='line'>  
+</span><span class='line'>install: init
+</span><span class='line'>  
+</span><span class='line'>  <span class="c"># copy install script 在 install.sh 寫入你需要安裝的套件</span>
+</span><span class='line'>  sudo chmod +x install.sh
+</span><span class='line'>  sudo cp install.sh <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom/home/
+</span><span class='line'>  
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom /home/./install.sh
+</span><span class='line'>
+</span><span class='line'>build: install
+</span><span class='line'>  chmod +w <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo chroot <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom dpkg-query -W --showformat<span class="o">=</span><span class="s1">&#39;${Package} ${Version}\n&#39;</span> &gt; <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest
+</span><span class='line'>  sudo cp <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.manifest-desktop
+</span><span class='line'>  sudo mksquashfs <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/custom <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd/casper/filesystem.squashfs
+</span><span class='line'>  <span class="nb">cd</span> <span class="k">${</span><span class="nv">LIVECD_HOME</span><span class="k">}</span>/cd ;sudo mkisofs -r -V <span class="s2">&quot;Ubuntu-cusmize-livecd&quot;</span> -b isolinux/isolinux.bin -c isolinux/boot.cat -cache-inodes -J -l -no-emul-boot -boot-load-size 4 -boot-info-table -o ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> .
+</span><span class='line'>
+</span><span class='line'>deploy: build
+</span><span class='line'>  scp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_REMOTE</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'>deploy_loc: build
+</span><span class='line'>  cp ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> <span class="k">${</span><span class="nv">DEPLOY_LOC</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">test</span>:
+</span><span class='line'>  qemu-system-i386 -cdrom ~/<span class="k">${</span><span class="nv">CREATE_ISO_NAME</span><span class="k">}</span> -boot d -m 512
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 install.sh：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'>mount -t proc none /proc/
+</span><span class='line'>mount -t sysfs none /sys/
+</span><span class='line'><span class="nb">export </span><span class="nv">HOME</span><span class="o">=</span>/root
+</span><span class='line'>
+</span><span class='line'>locale-gen zh_TW.UTF-8
+</span><span class='line'>update-locale <span class="nv">LANG</span><span class="o">=</span>zh_TW.UTF-8
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install lxde
+</span><span class='line'>sudo apt-get --yes install language-support-zh language-pack-gnome-zh* ttf-arphic-*
+</span><span class='line'>
+</span><span class='line'>wget https://dl.google.com/linux/direct/google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo dpkg -i ./google-chrome*.deb
+</span><span class='line'>sudo apt-get --yes -f install
+</span><span class='line'>
+</span><span class='line'>rm google-chrome-stable_current_i386.deb
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes install Leafpad
+</span><span class='line'>sudo apt-get --yes install xinit
+</span><span class='line'>sudo apt-get --yes install ibus
+</span><span class='line'>sudo apt-get --yes install ibus-chewing
+</span><span class='line'>sudo apt-get --yes install lxterminal
+</span><span class='line'>sudo apt-get --yes install ttf-arphic-uming
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>sudo apt-get --yes purge xscreensaver
+</span><span class='line'>
+</span><span class='line'>apt-get --yes autoremove
+</span><span class='line'>apt-get clean
+</span><span class='line'>rm -rf /tmp/*
+</span><span class='line'>rm -f /etc/hosts /etc/resolv.conf
+</span><span class='line'>umount /proc/
+</span><span class='line'>umount /sys/
+</span><span class='line'><span class="nb">exit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>話說：最近越來越 linux 了～</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2013-01-25T10:29:00+08:00" pubdate data-updated="true">Jan 25<span>th</span>, 2013</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/25/customize-live-cd/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/25/customize-live-cd/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/01/24/qemu/">Lightweight and Portable Virtual Machine: Qemu</a>
 
 </h1>
@@ -450,1237 +2673,6 @@
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/17/java-pointer/">Java OCP 題目解析：關於 Java 指標的運作觀念</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在看 OCP java 證照的題目，有個觀念與大家分享，在實際開發上才不會因為觀念不清楚產生 bug 時死的不明不白，題目如下：</p>
-
-<p>資料來源：<a href="http://yaya741228.pixnet.net/blog">來喝杯JAVA咖啡</a></p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">Foo</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setX</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Gamma</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">foo</span><span class="o">.</span><span class="na">getX</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;-&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">fooFoo</span><span class="o">.</span><span class="na">getX</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the output?</p>
-
-<pre><code>A. 300-100-100-100-100
-B. 300-300-100-100-100
-C. 300-300-300-100-100
-D. 300-300-300-300-100
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<pre><code>做這題頭腦不夠清楚可能會被搞混喔
-這題是考JAVA 隱藏的指標觀念，其實規則很容易：
-1. 方法的呼叫永遠都是傳值，方法在接到值之後，會另外產生一個空間來存這個值，也就是有兩份值，兩個位址
-2. 等號的運算有分為基本資料型態(int, float等等) 和物件兩種
-    2.1. 等號處理基本資料型態時是傳值
-    2.2. 等號處理物件時是傳位址
-</code></pre>
-
-<p>依照題目的情況來模擬一下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Foo</span> <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
-</span><span class='line'><span class="n">Foo</span> <span class="n">fooFoo</span> <span class="o">=</span> <span class="n">fooBar</span><span class="o">(</span><span class="n">foo</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>生成一個物件，並且呼叫下面方法，在呼叫之前，記憶體的情況如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-
-    </tr>
-
-  </tbody>
-</table>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="kd">static</span> <span class="n">Foo</span> <span class="nf">fooBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">foo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>方法第一行接收了物件之後就另外產生空間複製一份，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>方法第二行new 了一個物件，也就是生成了新的位址，把這個物件位指指派給foo，記憶體如下</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td>main:foo</td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>你會發現，有一個空間沒有指標指到它了，沒錯，這樣一來這個空間隨時會被空間回收程序收走</p>
-
-<p>方法第三行回傳了fooBar: foo指標</p>
-
-<p>後來在主方法執行了這一行</p>
-
-<pre><code>foo = fooBar(fooFoo);
-</code></pre>
-
-<p>之後記憶體狀況會變成</p>
-
-<table class="table">
-
-  <tbody>
-    <tr>
-      <td>指標</td>
-      <td></td>
-      <td></td>
-      <td>fooBar:foo</td>
-    </tr>
-    <tr>
-      <td>內容</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=300</td>
-      <td>Foo物件:X=100</td>
-    </tr>
-
-  </tbody>
-</table>
-
-
-<p>只要記住前述兩大規則，就可以掌握所有JAVA 中所有的指標規則</p>
-
-<p>我只有將排版美化，其他都是原作者的內容，另外還有一題特殊情形：</p>
-
-<p>Given:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">KungFu</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">400</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">Integer</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">x</span><span class="o">++;</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">(</span><span class="s">&quot;123&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">StringBuilder</span> <span class="n">sb2</span> <span class="o">=</span> <span class="n">sb1</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">sb1</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;5&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">sb1</span> <span class="o">==</span> <span class="n">sb2</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What is the result?</p>
-
-<pre><code>A. true true
-B. false true
-C. true false
-D. false false
-E. Compilation fails.
-F. An exception is thrown at runtime.
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code>B
-</code></pre>
-
-<p>解析：</p>
-
-<p>Integer是int的WapperClass，雖然以物件的形式來表現，不過在做等於運算的時候要視為基本資料型態，以傳值的作法來做</p>
-
-<p>一般物件的話當然做等於運算就是傳指標了</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-17T11:44:00+08:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/17/java-pointer/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/17/java-pointer/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/16/android-vm/">androVM - Run Android in VirtualBox and Deploy App</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在隨處亂逛時，看到一個有趣的東西，那就是android VM!</p>
-
-<p><a href="http://androvm.org/blog/download/">androVM</a></p>
-
-<p>開發 Android 的經驗中，如果要驗證所開發的程式是否正確，比較常用的兩個方法：</p>
-
-<ol>
-<li>使用 google 官方的虛擬 android</li>
-<li>使用實體機器</li>
-</ol>
-
-
-<p>第一個的問題就是，速度真 T…M… 的慢，在講求速度的開發環境，會很想殺人！！！</p>
-
-<p>第二個的問題是，如果 usb 不夠插，或臨時設備不再身邊，或是設備出了意外… 那只好工作停擺啦</p>
-
-<p>所幸還有第三個方案，他還是模擬器沒錯，但是比 google 官方的虛擬 android 來的快多了，號稱快 4 倍，我是憑感覺真的有比較快，至少你不會覺得 <strong>頓</strong>！</p>
-
-<p>安裝方式很簡單</p>
-
-<ol>
-<li>首先你需要安裝 <a href="https://www.virtualbox.org/">Virtualbox</a></li>
-<li>下載 <a href="http://androvm.org/blog/download/">androVM</a> 官方提供的 ova 檔，請選擇適合你用的版本</li>
-<li>下載完成後，請點兩下你下載下來的 ova 檔，他會將設定檔載入你的 virtualBox，包括映像檔，所以一旦你安裝完成後就可以把下載下來的檔案刪掉</li>
-</ol>
-
-
-<p>如此一來就完成啦，實際執行結果如下：</p>
-
-<p><img src="https://lh4.googleusercontent.com/-A623K9XMEUQ/UPeMFnwsF5I/AAAAAAAALfk/LSDz6MekOVY/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.14.18.jpg" alt="img" /></p>
-
-<p>啟動速度比實體機器快很多喔(三倍速+)！</p>
-
-<p>我個人覺得如果還可以支援 camera 那就太完美啦！不過網路上也有人對作者反應，作者也承諾 I&#8217;ll readd the feature asap! 如此一來在開發上將更有彈性，相信以 virtualBox 為基底應該是可以做的到。</p>
-
-<p>再來鄉民應該會覺得，我沒事拿個 vm 來玩平板或手機幹嘛？當然還要能夠拿來開發，並且可以將程式 deploy 上去進行測試啦！在這裡我將說明執行步驟，基本上你可以將運行在 VM 上的 android 想像成現在連接著你的電腦，只是不同的是他在你的電腦中運行，所以你必須告訴你的電腦要在哪裡連接，連接方式是透過 指定 IP 告訴你的開發環境正確的位置，讓我們來一步接著一步進行：</p>
-
-<ol>
-<li><p>首先必須先讓 vm 能夠有個存取的位置，所以我們需要打開 virtualBox 的網路設定頁面</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-P3bHwsK-Y3w/UPeMGgkLUeI/AAAAAAAALfw/fCCG_HEddBQ/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.31.27.jpg" alt="img" /></p>
-
-<p> 將附加選項選擇：橋接介面卡，然後名稱就是你的實體網路的接口，我的電腦只有 wifi，如果是實體網路就應該為 <code>eh0</code>，設定好後，可以進到虛擬的 Android 查看 ip 位置：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-50Uem4xpARg/UPeMHs3YcWI/AAAAAAAALf4/YwWcBpq6WVs/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.35.07.jpg" alt="img" /></p>
-
-<p> 進到 system status 可以看到 ip 為 <code>10.0.3.15</code>，實際上你去 ping 是 ping 不到的，因為那是虛擬的 ip，那要如何找到正確的 ip 呢？androVM 很貼心的在裡面預裝了一個 app 可以讓你對 android 進行一些設定還有環境變數的查詢，裡面就有真實設備的 ip 啦！如下圖：</p>
-
-<p> <img src="https://lh3.googleusercontent.com/-OM5gKYL6QEg/UPeMIU0ILzI/AAAAAAAALgY/IRkUa4FnvCw/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.38.24.jpg" alt="img" /></p>
-
-<p> 有個 android 機器人，好像在做蛋糕(大便) 的樣子 <code>androVM Configuration</code>，哈～顯示如下圖：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-azSrBFWVJ94/UPeMI827gVI/AAAAAAAALgI/vVTWktc1Q4A/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.39.38.jpg" alt="img" /></p>
-
-<p> 點進去後你可以看到在執行畫面上方有個</p>
-
-<p> <code>eh0: 192.168.1.8</code></p>
-
-<p> 就是實際你可以存取得位置啦！</p></li>
-<li><p>接著我們就必須將設備註冊到 adb 上，讓我們進入到 android sdk 資料夾裡面，路徑為</p>
-
-<p> <code>${ANDROID_HOME}/platform-tools</code></p>
-
-<p> 底下應該有個 <code>adb</code> 的檔案，打開 terminal 根據剛剛查到的 ip 輸入：</p>
-
-<p> <code>./adb connect 192.168.1.8</code></p>
-
-<p> 就完成連接了，簡單吧！正常應該會吐出下列訊息</p>
-
-<p> <code>connected to 192.168.1.8:5555</code></p>
-
-<p> 接著我們來看實際運作的狀況，打開 eclipse，執行要 deploy 的專案：</p>
-
-<p> <img src="https://lh6.googleusercontent.com/-fC3_LracFxc/UPeMJkniW2I/AAAAAAAALgQ/oosUBfdmri8/s604/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.50.54.jpg" alt="img" /></p>
-
-<p> 在這裡執行 <code>Run As &gt; Adroid application</code> 會先檢查有無設備連接上，如果沒有會用 google 內建的虛擬機器，如果有連上就會使用實體機器(不過還是虛擬的)，我們就可以看到執行畫面如下：</p>
-
-<p> <img src="https://lh4.googleusercontent.com/-IsPB4DxxolY/UPeMKUS4a7I/AAAAAAAALgU/dBhsGIWRSfM/s603/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-17+%E4%B8%8B%E5%8D%8812.53.32.jpg" alt="img" /></p>
-
-<p> 就是如此簡單！接著你要 debug 或是檢查在 app 操作過程中吐出來的訊息就都可以在 eclipse 底下的 Console 進行觀察了，相信開發過程中會方便許多，也避免掉很多不必要的麻煩，試試看囉！</p></li>
-</ol>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-16T21:24:00+08:00" pubdate data-updated="true">Jan 16<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/16/android-vm/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/16/android-vm/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/15/intrduction-grails/">Introduction to Grails: 特性以及各種不同約定放置程式的用途介紹</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>之前在某次 nodejs 聚會應邀說明 <a href="http://smlsun.com/slides/java-with-node.html">nodejs 在 java 上如何結合運用</a>，其中有介紹到 Grails，一個完整的 java frameworks，涵蓋前端到後端所有的程式開發，除此之外，他還效法了 ruby on rails 的精神，大量簡化了 java 在開發流程上繁瑣的編譯、打包、佈署等相關的作業，以及複雜的環境設定，而之前對我而言只知道其特性，並沒有很深入去使用，剛好最近有幸使用他來開發一些應用，故想透過這個機會，慢慢把所學整理起來，介紹給大家，作為這系列的第一篇，將說明 grails 的特性，以及其各種不同用途的 Class(groovy) 介紹。</p>
-
-<p>Grails 的特性，只要熟悉 ruby on rails 的朋友應該可以大致了解，在加上 java 的血統，其比較重要的特性如下：</p>
-
-<ul>
-<li>Groovy：與Java 平台集成性最好的動態語言作為Grails的基礎</li>
-<li>建構於 Spring、Hibernate、Quartz、SiteMesh、JUnit、Ant 成熟開源框架之上</li>
-<li>URLMappings：Don’t Repeat Yourself</li>
-<li>約定優於配置：Convention over Configuration</li>
-<li>自動產生 CRUD 維護畫面：scaffold</li>
-</ul>
-
-
-<p>使用 Groovy，做為 grails 開發的基礎，其特性就是大量簡化 java 語言繁瑣的程式指令步驟。</p>
-
-<p>可以看到 Grails 算是集目前 java 世界許多成熟的套件，這些原本單獨使用很繁瑣的套件，在 Grails 上都有某種程度的簡化，簡單到一開始很難直覺想像，往後會會在詳細介紹，這邊不多談。</p>
-
-<p>接著就是設定的部份，在傳統的 java 開發我們常常需要設定像是 jdbc config 、 spring aop 設定的位置等，在 Grails 中，是基於「約定優於配置」的精神，也就是只要放對位置，設定就會生效。</p>
-
-<p>以及 Don’t Repeat Yourself 的精神，在網路應用程式的開發，假設有用到 restful 的技術，在傳統的 JAVA 開發，總要為每個 class 設定 url 規則，如果一多是很繁瑣的。</p>
-
-<p>最後就是自動產生 CRUD 維護畫面，在開發初期，常常需要快速的建立測試資料，以往要是前端與後端程式開發是分開的，總是需要等到後端工程師將 API 開出來後才能開始進行資料庫操作，在 grails 效法 ruby rails 也提供了快速產生維護畫面的功能。</p>
-
-<p>以上是 grails 的特性簡介，不過！絕對不只如此其他還有很多特性，往後會在一一介紹，完全改變對於 Java 開發的習慣。</p>
-
-<p>再來就要在簡單介紹，在 grails 各種不同用途的 Class(groovy) 介紹：</p>
-
-<p><img src="https://lh6.googleusercontent.com/-qgBQ7bBJaDg/UPVP_UtqoxI/AAAAAAAALfQ/rPBPRd5iLXk/s223/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-01-15+%E4%B8%8B%E5%8D%888.46.39.jpg" alt="img" /></p>
-
-<p>在「約定優於配置」的精神下，grails 本身就針對不同責任的程式進行分類，可以看到如上圖幾種，這邊將簡單介紹各個項目所有處理的事情：</p>
-
-<ul>
-<li>domain: 簡單來講就是原本 hibernate 的 DAO 物件，如果沒有用過類似 O/R MAPPING 的技術可以以把它想像成每個不同的 table 的定義，屬於 MVC 架構中的 Model</li>
-<li>controllers: 也就是 MVC 架構中的 control，用來操作 Model，以及將運算結果呈現給 view</li>
-<li>view: MVC 架構中的 view，在 grails 的世界，是用 gsp ，可以想像成 jsp</li>
-<li>taglib: 可以在 view 中使用一些已經定義好的 tag ，原本在傳統的 j2ee 是非常繁瑣的技術，在 grails 可以很方便使用。</li>
-<li>services: 商業邏輯放置的位置，這部份的程式可任意在 domain、controllers、taglib中直接宣告，將利用 spring 進行注入，有 scope 以及 transaction 交易安全的屬性可以進行操作</li>
-<li>utils: 檢查數值或資料是否符合特定的規格運算程式放置的地方，比如說 email</li>
-<li>scripts: 可以撰寫在 terminal 或是 command line 下可以執行的程式，搭配 <code>grails create-script execute-report</code> 使用。</li>
-<li>i18n: 也就是多語系啦，可以搭配 taglib 在 view 層進行語系的轉換</li>
-<li>src/java: 在 grails 如果你要寫傳統 java 也是 ok 的只要放在這個資料夾，就會編譯成 class</li>
-<li>src/groovy: 上述分類中無法歸屬，或著原本有寫過純 groovy 的程式碼就放在這</li>
-<li>test/utils: 單元測試，只要放在這資料夾的測試程式，都會被執行</li>
-<li>test/integration: 整合測試，也就是會將上述所有的不同功能都載入進行測試。</li>
-</ul>
-
-
-<p>大致上上面所說的就是 grails 中一開始需要習慣的地方，與以往的 free style 的開發雖然多了些限制，但有了約定，基本上程式也不會亂放導致東一塊西一塊，並且透過了解上面的結構，對於程式初學也可以較清楚知道一個完整的程式，必須包含哪些不同責任的元件。</p>
-
-<p>也許有些專案成員沒有辦法立即現有的工作換到新的開發框架，不過！找時間玩玩看，相信可以更了解程式的責任釐清，像我就是！陸續會在根據不同責任的程式使用的方式個別進行詳細說明，文章就到這啦！</p>
-
-<p>這篇花了我一小時的時間，寫文章還是不夠快速，要在加油…</p>
-
-<p>最後如果想要更進一步<strong>及早</strong>了解可以參考 <a href="http://grails.org/doc/latest/">Grails Quick Start</a></p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-15T20:17:00+08:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/15/intrduction-grails/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/15/intrduction-grails/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/14/video-man/">Video Man - 『尊重』的重要，與『沒關係』的可怕</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>有趣的短片介紹 <strong>man</strong> ：</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/WfGMYdalClU?list=FLEHOkEUdqDd_BUFy5_YFT0g" frameborder="0" allowfullscreen></iframe>
-
-
-<p>感想：</p>
-
-<p>人類的慾望隨著科技的發達，只有增加沒有減少過，為了讓我們的生活更便利，往往犧牲別的物種的世界，即使是同種不同國家的人類們，每天都在競爭中踩著別人往上爬，到最後其實什麼都沒得到，影片最後的空虛世界，在消耗了那麼多資源後人類作為王者存在又為？在更為強大的外星人面前也是被打扁的份。</p>
-
-<p>總是在想，以前的農業社會，與大自然共存，就算物質生還沒有現在的多，但人們是單純且快樂的，人與大自然間的關系有一份尊重在，在現在的人們心中『尊重』的概念越來越少，以致於人與人之間越來越自私，看看社會新聞，酒駕：撞人後不管死活先跑了再說；出去玩亂丟垃圾，反正有人撿，大家都一樣沒關係，為了賺錢污染環境也沒關係，是多麼的自大！</p>
-
-<p>也許有人會覺得又在無病呻吟，講這麼多大環境還不是沒辦法改變！</p>
-
-<p>的確，一人之力是無法改變，但何不從你我開始，大家都有『尊重』的觀念，自然世界就會越來越美好！</p>
-
-<p>『尊重』別人的安全，所以不應該酒駕，設身處地的想，假若今天出事的是你的家人，你開心嗎？</p>
-
-<p>『尊重』大家共有的環境，所以不應該亂丟垃圾，設身處地的想，如果別人來你家亂丟垃圾，你開心嗎？</p>
-
-<p>『尊重』賺錢的方式，取之自然但也要永續的自然，哪天世界不再那麼美麗，那活著還有什麼好期待？</p>
-
-<h3>勿以惡小而為之，勿以善小而不為</h3>
-
-<p>也許現在的很少讀古人的言詞，在白話一點就是：</p>
-
-<p>不要因為做錯的事無關緊要所以做了也『沒關係』，不要因為做一點對的事無法改變現況所以不做也『沒關係』，那我乾脆就不要做了，反正也沒效</p>
-
-<p>如果事這樣的想法，那不好的事慢慢的累積，就會變成大壞，好的事情因為都不去做那又怎麼會有更好的明天勒？</p>
-
-<p>堅持一下，觀念先對了，就會越做越對，累積久了，也會令人刮目相看；要得到別人的尊重，要先從尊重別人開始！</p>
-
-<p>還記得之前小學讀過一個故事叫做『差不多先生』，而我們常常是『沒關係先生』，對於做對的事情上不能再『沒關係』了！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-14T15:26:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/14/video-man/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/14/video-man/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/14/ubuntu1210-button-layout-change/">Ubuntu 12.10 Install Gnome(no Effects) and Button Layout Change</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>對於常常使用 windows 的 user 剛換到使用 ubuntu 時，一定很不習慣視窗按鈕放大縮小的位置，特別剛要開始熟悉 ubuntu，會先從 VM 安裝 ubuntu 來體驗一下，不過，很不幸的，在目前最新的 ubuntu 12.10 不支援 2D unity，也無從安裝，所以在 vm 下使用 ubuntu 因為效能的關係，使用者體驗不是很好，如果要能夠使用 2D 的環境，目前只剩下 gnome (no effects) 可以選擇，至於安裝方式如下：</p>
-
-<pre><code>sudo apt-get install gnome-session-fallback
-</code></pre>
-
-<p>如此一來，至少在 vm 環境下，效能體驗還是可以接受，接著如果要改變 button layout，在 12.10 之前會使用 gconf-editor，但經我親身使用此方法無法改變 nautilus，ubuntu 下的檔案管理軟體的 button layout，但經我測試 chrome 倒是有效果，應該是第三方還未讀取新的設定方式，回到正題，如果要調整，只要改用下列指令即可：</p>
-
-<pre><code>gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-</code></pre>
-
-<p>不過就是因為尚未所有的第三方軟體都有將參數讀取改至新的設定方式，故保險起見，舊有的設定方式也請服用：</p>
-
-<pre><code>gconftool-2 --set "/apps/metacity/general/button_layout" --type string ":minimize,maximize,close"
-</code></pre>
-
-<p>當然如果你使用的是實體機器，在 unity 底下 button layout 本來就跟 windows 底下一樣，如果有人跟我有一樣的困擾可以參考一下囉！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-14T11:32:00+08:00" pubdate data-updated="true">Jan 14<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/14/ubuntu1210-button-layout-change/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/14/ubuntu1210-button-layout-change/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/this-guy-is-my-bro/">This Guy Is My Bro!這傢伙是我哥～</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p><img src="http://4.bp.blogspot.com/-qkBOxhKvsu4/UGqp2TSiLSI/AAAAAAAAAC8/EWBp1UoXzaw/s1600/P1000578.jpg" alt="img" /></p>
-
-<p>這傢伙是我哥，認識我的人都知道我是很穩定的人，但我哥卻是個浪子，一個非常有勇氣去追逐夢想的人，曾幾何時我還年輕時，總覺得我哥很不務正業，每天都在想東想西，做著一些不算工作的工作，常常讓爸媽擔心，十足是家裡的問題份子，但隨著年歲的增長，看東西的角度不一樣後，現在卻覺得我哥很了不起，能夠有勇氣去追逐他的夢想，並且用他異於常人的方式去完成，有多異於常人？可以看看他寫的網誌，那些艱苦的旅程，真的很難想像，也非常的有趣！</p>
-
-<p>有哪些旅程呢？</p>
-
-<p>從一開始的<a href="http://www.wretch.cc/blog/rz250xr/11556922">複習曲之金旺環島之大雨伴我行</a></p>
-
-<p><img src="https://lh3.googleusercontent.com/-eyj-BRr6FT0/UOzmeKlUmpI/AAAAAAAALd8/Ib7w0j8aF3M/s640/1961773358.jpg" alt="img" /></p>
-
-<p>然後是<a href="http://www.wretch.cc/blog/rz250xr/11889412">流浪漢與男子漢的新春萬榮丹大貫通協奏曲</a>，重點是…騎腳踏車…過程都在不是路的路</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ywo7PaIfmqY/UOzmZsH2EAI/AAAAAAAALdM/whOP-589CAI/s640/1404992859.jpg" alt="img" /></p>
-
-<p>接著<a href="http://www.wretch.cc/blog/rz250xr/12147238">北京到西藏越野車之旅</a>&#8230;重點是騎摩托車，在遇到車禍，在火車上修引擎->因為我家是摩托車店，別懷疑！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-iOolL_NMwy8/UOzma320ptI/AAAAAAAALdY/FEctbyj2-jM/s600/1283332842.jpg" alt="img" /></p>
-
-<p>對了！還有這篇很有趣，<a href="http://www.wretch.cc/blog/rz250xr/12214139">睡</a></p>
-
-<p><img src="https://lh4.googleusercontent.com/-aQk3XSMQk_s/UOzmb6NiG1I/AAAAAAAALdg/CB8aKbRzORE/s640/1492851339.jpg" alt="img" /></p>
-
-<p>西藏之旅得到一個很屌的獎狀！</p>
-
-<p><img src="https://lh3.googleusercontent.com/-O6sa5TS6Hao/UOzmccSHLnI/AAAAAAAALdo/Gb3U1Sf7gFc/s640/1281824619.jpg" alt="img" /></p>
-
-<p>然後我老哥展開他的澳洲兩年的打工旅遊之旅，他又騎著他在當地買的金旺開始他的環澳洲之旅</p>
-
-<p><img src="http://i.imgur.com/hUm2A.jpg" alt="img" /></p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr/12373657">單騎金旺深入澳洲中心</a></p>
-
-<p>又是一個令人傻眼的環澳洲島之旅</p>
-
-<p><img src="https://lh6.googleusercontent.com/-rCv9G7sBox8/UOzmc97IEqI/AAAAAAAALdw/lqMRGD7W6wU/s600/1444736965.jpg" alt="img" /></p>
-
-<p>之後趁著空檔時間跑去<a href="http://www.wretch.cc/blog/rz250xr/12401508">泰國少林寺</a>，裡面有說到：</p>
-
-<blockquote><p>要先和教練相約面試
-面試內容大約是詢問學習泰拳的動機,並確定有能力完成訓練,而不是抱持玩樂的心情
-實際上課的內容是真的非常辛苦,我想我當兵的操課連五分之一都不到吧</p></blockquote>
-
-<p><img src="https://lh5.googleusercontent.com/-WPqco-sA8WQ/UO0g7sNk9DI/AAAAAAAALek/7y4ipvKfD_E/s535/1328731743.jpg" alt="img" /></p>
-
-<p>哈哈～台灣阿兵哥汗顏…</p>
-
-<p>度過困難的泰拳訓練，離開 <a href="http://www.wretch.cc/blog/rz250xr/12402097">A LITTLE PIECE OF HEAVEN</a></p>
-
-<p><img src="https://lh3.googleusercontent.com/-fu0W0RpoU_8/UO0kGMm_BHI/AAAAAAAALe4/LfA5eY9DZsY/s600/1630126878.jpg" alt="img" /></p>
-
-<p>文章最後：</p>
-
-<blockquote><p>非常難忘,這樣的生活似乎也讓我中毒了&#8230;
-開始思索我需要麼不需要什麼,是否因為要求得太多而讓人生變得越來越貧窮
-間單的生活才是最自在的&#8230;.我需要想想</p></blockquote>
-
-<p>嗯…也值得我們想想&#8230;</p>
-
-<p>呼～是不是好像跟著文章走過很多不同的地方，接著在他回來台灣以後，本想他應該就這樣定了下來沒想到兩個禮拜後…</p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr/12408306">流浪漢即將前進印度!!</a></p>
-
-<p><img src="https://lh6.googleusercontent.com/-6eoe4l3c1dM/UOzoG5VImOI/AAAAAAAALeQ/PXdCt5aHwkk/s640/1281824624.jpg" alt="img" /></p>
-
-<p><a href="http://613tin.blogspot.tw/2012/11/blog-post_27.html">印度旅行近況報告</a></p>
-
-<p><img src="http://1.bp.blogspot.com/-dyJSlFINbig/ULIau1otqGI/AAAAAAAAAF0/O9UKgenS8Rg/s320/P1010098.JPG" alt="img" /></p>
-
-<p>我想旅行是會令人上癮的，雖然他號稱他回來後就不會這樣趴趴走，但我覺得應該要持保留態度，哈哈～不管如何，我老哥就是一個屌字可以形容，誰說一定要會念書，進大公司才是最好的選擇，傳統觀念總是給我們太多枷鎖，如果我哥回來有段時間不再亂跑，我一定鼓勵他出本書，我想那內容應該是很吸引人才對，希望我有機會可以為大家介紹囉！最後附上我老哥的網誌：</p>
-
-<p><a href="http://www.wretch.cc/blog/rz250xr">流浪漢越野生活</a></p>
-
-<p><a href="http://613tin.blogspot.tw/">新流浪漢越野生活</a></p>
-
-<p>來隨著流浪漢環遊世界吧！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T10:27:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/this-guy-is-my-bro/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/this-guy-is-my-bro/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/node-start/">快速了解 Node 以及 Mongodb，mail的使用</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>要了解一個程式語言的運作與特性，有時候不是一時半刻可以熟悉，有時候也必須經歷一些專案歷練，但一開始可以透過一些持程式碼，來快速了解，實際動手做總是比用看的更能深入你的腦袋，這邊就來介紹一個不錯的node運作的範例，看完以後相信會對node的運作會有點概念，像我就是！</p>
-
-<p>這個網站是一個簡單的帳號管理系統，簡單來說他就只有登入功能，記錄session，對於建立的使用者可以進行增修改查，並且透過操作mongodb來進行資料的操作，以及使用者密碼加密，網站如下：</p>
-
-<p><a href="http://www.quietless.com/kitchen/building-a-login-system-in-node-js-and-mongodb/">Building a Login System in Node.js and MongoDB</a></p>
-
-<p><img src="http://www.quietless.com/kitchen/wp-content/uploads/2012/06/login-panel.jpg" alt="img" /></p>
-
-<p>雖然只是很單純的登入系統，但是算是涵蓋的非常完整，整個前端到後端以及database的運用，還有rest的http Method的操作都有使用到，包括透過mail來讓忘記密碼的使用者通知更換密碼的網址等，這麼好的範例哪裡找阿！這麼補的大補帖，不吃可惜～</p>
-
-<p>透過看別人的程式能夠快速了解甚學習別人的設計，雖然沒有當面授課，也可以增加你的功力，何樂而不為，只是好的範例真的很少，夠簡單能夠明瞭的也不多，希望藉由這個範例能夠讓對node有興趣的朋友能夠有個好的開始，就讓我們一起 rock codeing with node 吧！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T09:40:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-start/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-start/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/01/09/node-production-setting/">讓nodejs透過 Upstart 作為service 啟動，並且搭配makefile Deploy</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>最近在開發node，一開始相信大家都是在本機進行程式開發，如果到了production的階段，也許你會有個server run你的ap，過程中你會需要上傳程式，這個過程事繁瑣的，如果每次要手動上傳，重新伺服器，累積起來也是可觀的時間，甚至可以多寫幾行code，喝杯咖啡，將時間浪費在生命中美好的事物上。</p>
-
-<p>so 讓我們進入正題，在此假設你已經準備好你開發的程式並且已經準備好要將你的產品發布到線上的伺服器，首先我們必須讓你的node能夠作為service運行，如此一來當你遠端透過ssh 開啟 node時才不會因為登出後，node server 隨即停止，在這你會用到<a href="http://upstart.ubuntu.com/">Upstart</a>，在ubuntu已經內建，可以很方便進行 ap server 設定為service，並且透過<code>start yourapp</code>，<code>stop yourapp</code> 來啟動關閉你的服務，就讓我們來看實際設定的方式吧！</p>
-
-<p>首先你必須建立屬於你的server 的設定檔，假設你的app就叫做 yourapp，so 檔案路徑如下</p>
-
-<p><code>/etc/init/yourapp.conf</code></p>
-
-<p>範例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>description "start yourapp"
-</span><span class='line'>author "user"                                                              
-</span><span class='line'>
-</span><span class='line'>start on startup
-</span><span class='line'>stop on shutdown
-</span><span class='line'>
-</span><span class='line'>script
-</span><span class='line'>    export HOME="/root"
-</span><span class='line'>    #echo $$ &gt; /var/run/yourprogram.pid
-</span><span class='line'>    exec sudo -u root node ~/location/to/yourapp/app.js &gt;&gt; /var/log/yourapp.sys.log 2&gt;&1
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-start script
-</span><span class='line'>    # Date format same as (new Date()).toISOString() for consistency
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script
-</span><span class='line'>
-</span><span class='line'>pre-stop script
-</span><span class='line'>    #rm /var/run/yourprogram.pid
-</span><span class='line'>    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" &gt;&gt; /var/log/yourapp.sys.log
-</span><span class='line'>end script</span></code></pre></td></tr></table></div></figure>
-
-
-<p>一旦設定檔建立後，你可以透過下列指令來確定是否可以work</p>
-
-<p><code>initctl list | grep node</code></p>
-
-<p>會看到下列輸出：</p>
-
-<p><code>yourapp stop/waiting</code></p>
-
-<p>當然一旦作為sevice要進行debug就要將系統輸出訊息內容丟到log，所以還有設置，log輸出位置</p>
-
-<p>上面的步驟完成後，再來就是如何將你本地的程式快速上傳到遠端server，在目前已知道deploy的script語法很多，在這邊我用<code>makefile</code>來進行，當然你的專案大一點可以由CI來handle，不過這邊要說的是概念，所以我們就簡單一點，直接來看程式，makefile檔案內容如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>all: restart
-</span><span class='line'>
-</span><span class='line'>restart: rsync
-</span><span class='line'>  ssh -oStrictHostKeyChecking=no root@yourhost "stop yourapp; start yourapp" 2&gt;/dev/null
-</span><span class='line'>
-</span><span class='line'>rsync: 
-</span><span class='line'>  rsync -av ~/projects/yourapp root@yourhost:projects</span></code></pre></td></tr></table></div></figure>
-
-
-<p>執行步驟白話一點，就是先將檔案上傳到你的遠端伺服器，然後將剛剛完成的service關閉在重新啟動，在這邊透過 rsync</p>
-
-<p>接著在透過 ssh 來重新啟動你剛剛設定的service，如此就完成設定，接著你只要在你的app目錄底下執行<code>make</code>就會自動完成上述步驟，是不是快速又簡單，一點點設定就可以完成，不用再重覆同樣的步驟，做事才會有效率！</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-01-09T08:36:00+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/01/09/node-production-setting/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/01/09/node-production-setting/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -1734,23 +2726,23 @@ F. An exception is thrown at runtime.
   <ul id="recent_posts">
     
       <li>
-        <a href="/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/">Spring Security Basic Authentication with Ajax request 失敗處理</a>
+        <a href="/blog/2014/01/19/ubuntu/">ubuntu 忘記密碼怎麼辦？三個步驟完成修改</a>
       </li>
     
       <li>
-        <a href="/blog/2013/12/26/stackedit/">stackedit：寫部落格的新利器</a>
+        <a href="/blog/2014/01/19/rabbit-MQ-Spring-boot/">Rabbit Mq Spring Boot</a>
       </li>
     
       <li>
-        <a href="/blog/2013/08/14/extjs-8-30/">extjs-8-30：在 sencha Architect 中的多語系處理</a>
+        <a href="/blog/2014/01/19/rabbit-MQ/">rabbit MQ 使用者建立與權限設定</a>
       </li>
     
       <li>
-        <a href="/blog/2013/08/09/extjs-7-30/">extjs-7-30：sencha touch 使用 ux 套件，AKA：外掛，以手機網頁啟動照相功能上傳檔案為例</a>
+        <a href="/blog/2014/01/19/Window/">Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版</a>
       </li>
     
       <li>
-        <a href="/blog/2013/08/08/extjs-6-30/">extjs-6-30：如何使用 query component</a>
+        <a href="/blog/2014/01/19/Spring-Security-oauth2/">Spring Security: oauth2 運作原理解析筆記</a>
       </li>
     
   </ul>

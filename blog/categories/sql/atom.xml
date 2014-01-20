@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: sql | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/sql/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[SQL state [HY010]; error code [0]; Invalid state, the Connection object is closed 處理筆記]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/SQL-state-HY010/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/SQL-state-HY010</id>
+    <content type="html"><![CDATA[<p>之前曾經遇到過，最近又來了...</p>
+
+<p>果然該還的還是要還，因此這次要詳細記錄處理過程，希望以後再發生可以更快釐清問題。</p>
+
+<p>首先需要先確定發生可能原因，google 了一下目前比較明確的錯誤狀況如下：</p>
+
+<ol>
+<li>到了連線 timeout 時間</li>
+<li>drive 的問題</li>
+<li>或是 database server 被重啟</li>
+</ol>
+
+
+<p>我查了一下預設的 connection pool 的 timeout 時間有 30000 ms，所以第一項先不考慮。</p>
+
+<p>drive 問題目前發生問題的是 jtds 1.3.1，有人說換換看 ms sql 所提供的 drive，在 sql 2008、O.S. 為 64 位元的情況會比較沒問題，well 姑且試試看。</p>
+
+<p>檢視 database 的 log 記錄，似乎有重啟的狀況，如下圖：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-ZQwS21llDr4/Us0VNJxSjwI/AAAAAAAAMA4/BED3lh6m6vo/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-08+%E4%B8%8B%E5%8D%885.05.15.png" title="螢幕快照 2014-01-08 下午5.05.15.png" alt="enter image description here" /></p>
+
+<p>在持續觀察中發現確實隔天早上資料庫被重啟(os 重新啟動)，另外一個可調整的地方就是設置 connection pool 的 setTestOnBorrow：取出 pool 中的連線時進行驗證，若沒有通過則會在取出新的連線，這應該是我們要的參數，經過下列測試步驟：</p>
+
+<h2>未設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，吐出訊息 <code>SQL state [null]; error code [0]; 連接已關閉</code></li>
+</ol>
+
+
+<h2>有設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，資料查詢正常</li>
+</ol>
+
+
+<p>這樣一來即使遠端連結的資料庫主機重啟，或是關閉的情形，一旦該主機重新上線，我們的應用程式也不用重開令 pool 重新連線，才不會總是鬼打牆，服務明明好好得但就是會出現連線異常，檢視遠端 db 主機也在線上，殊不知曾經被重啟過。</p>
+
+<p>另外 testOnBorrow 需要搭配 validationQuery 使用，可參考下面連結：<a href="https://wiki.shibboleth.net/confluence/plugins/viewsource/viewpagesrc.action?pageId=4358588">Database Connectors</a>，最下方的 Database Reference Table 有各個不同 databse 的 validationQuery 可以參考。</p>
+
+<p>一件落著！</p>
+
+<p>不過我的測試案例出現的是 <code>SQL state [null];</code> 而不是 <code>SQL state [HY010];</code>，還是要在觀察一下。</p>
+
+<p>若有朋友有關於此問題有處理經驗或建議，也請指教，感謝！</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: grails, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/grails-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Grails migrations: database 的版本控管]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/Grails-migrations-database/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Grails-migrations-database</id>
+    <content type="html"><![CDATA[<p>說到版本控管，就一定跟版本顯示，更新舊有版本有關，在程式碼部分使用版本控管已經習以為常，但通常一個應用程式或是專案從來就不只有程式碼，還有 datbase schema 的維護，偏偏 datbase 的版本升級沒有像程式碼控管那樣的簡單，也沒有類似 SVN 或是 GIT 的版本控管軟體。</p>
+
+<p>不過，筆者最近在開發 grails 時發現了一個套件：<a href="http://grails.org/plugin/database-migration">Grails Database Migration Plugin</a>，其運作方式跟版本控管有異曲同工之妙，簡單但是有效的進行 datbase schema 版控。</p>
+
+<p>下列文章在使用 Grails Migration 非常有參考價值，若有需要可以看看：</p>
+
+<ul>
+<li><a href="http://grails-plugins.github.io/grails-database-migration/docs/manual/guide/introduction.html">Database Migration Plugin - Reference Documentation</a></li>
+<li><a href="http://fbflex.wordpress.com/2011/01/19/working-with-the-grails-database-migration-plugin/">Working with the Grails Database Migration Plugin</a></li>
+<li><a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a></li>
+</ul>
+
+
+<p>在開始說明前需要先進行 dataSource 的調整。</p>
+
+<h2>定義 dataSource</h2>
+
+<p>grails 預設的 domain 管理使用的是 gorm 技術，也就是常見的 orm mapping，因此，一般預設會定義 dbCreate = "update"，也就是一旦檢查 domain 物件有調整，會自動檢查並且更新，使用 Migration 我們就不希望 orm mapping 介入因此我們在定義 dataSource 的地方設定 <code>dbCreate = ""</code>，也就是關閉自動更新的機制，設定檔如下：</p>
+
+<p>```
+development {</p>
+
+<pre><code>dataSource {
+    dbCreate = "" // one of 'create', 'create-drop', 'update', 'validate', ''
+    pooled = true
+    driverClassName = "com.mysql.jdbc.Driver"
+    dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+    username = ""
+    password = ""
+    url = "jdbc:mysql://localhost/test?useUnicode=true&amp;characterEncoding=UTF8&amp;zeroDateTimeBehavior=convertToNull"
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>一定有讀者會有疑慮使用 orm 技術就可以幫我們自動更新 schema 為什麼還要使用 migrations ? 幾點如下：</p>
+
+<ol>
+<li>migrations 有版本記錄與控管，orm update 沒有</li>
+<li>migrations 可以偵測到 PK、FK、限制式的調整，orm update 沒辦法</li>
+<li>migrations 可以偵測到欄位的刪除，orm update 沒辦法</li>
+<li>migrations 可以自定更新 sql 語法，並且加入版本控管，orm update 沒辦法</li>
+</ol>
+
+
+<p>如果你的應用程式不會停止更新變動，那 migrations 才有可能涵蓋所有需求。</p>
+
+<p>有了上述了解與設定後，首先要為我們的資料庫建立第一版的版控內容，可以想像成版本控制的初始專案或是 git init。</p>
+
+<h2>初始資料庫版控</h2>
+
+<p>假設我們有個 domain 定義如下：</p>
+
+<p>```
+class Part {</p>
+
+<pre><code>String name
+String title
+String description
+
+
+static constraints = {
+    name blank: false, unique: true
+    title blank: false
+    description nullable: true, empty: true
+
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>一旦在 grails 建立了 domain 之後，我們可以透過下列語法產生最一開始的資料庫版控記錄檔： <code>changelog.groovy</code></p>
+
+<p><code>
+grails dev dbm-generate-gorm-changelog changelog.groovy
+</code></p>
+
+<p>該指令指的是透過 domain 產生建立資料庫的相關語法 如下：</p>
+
+<p>```
+databaseChangeLog = {</p>
+
+<pre><code>changeSet(author: "Spooky (generated)", id: "1389679387050-1") {
+    createTable(tableName: "part") {
+        column(autoIncrement: "true", name: "id", type: "bigint") {
+            constraints(nullable: "false", primaryKey: "true", primaryKeyName: "partPK")
+        }
+
+        column(name: "version", type: "bigint") {
+            constraints(nullable: "false")
+        }
+
+        column(name: "description", type: "varchar(255)")
+
+        column(name: "name", type: "varchar(255)") {
+            constraints(nullable: "false")
+        }
+
+        column(name: "title", type: "varchar(255)") {
+            constraints(nullable: "false")
+        }
+    }
+}
+
+changeSet(author: "Spooky (generated)", id: "1389679387050-2") {
+    createIndex(indexName: "name_uniq_1389679387009", tableName: "part", unique: "true") {
+        column(name: "name")
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>一旦建立完成，我們可以在我們 DB server 先建立好空的資料庫，透過下面指令產生一個初始的 database 包含上面 changelog.groovy 的變動：</p>
+
+<p><code>
+grails dev dbm-update
+</code></p>
+
+<p>初始資料庫建好之後，我們可以使用 sql client 軟體來看一下 table 的結構，如下圖:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-LHDhbqc-ikY/UtTWMawYxnI/AAAAAAAAMB0/QzxhMNG5QJI/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.15.25.png" title="螢幕快照 2014-01-14 下午2.15.25.png" alt="enter image description here" /></p>
+
+<p>圖中的 DATABASECHANGELOG table 記錄的就是目前 database 的版本記錄，migrations plugin 就是透過該 table 比對目前 db 執行到 changelog 裡的哪些調整，不存在的才執行，如此一來即使你的應用程式會 deploy 到不同主機且 db 的版本不一致的情形，透過該 table 就可以知道每個 db 目前的版本狀況進而讓  migration plugin 幫你更新到最新的 database 版本。</p>
+
+<p>對於初始 db 以及版本資訊 的建立有了解後，接著要說明調整欄位後，如何將調整結果更新的到 db。</p>
+
+<h2>調整欄位後更新 database</h2>
+
+<p>假設我們將一開始建立的 domain 調整 index，以及去掉以及加入欄位的 nullable 限制式：</p>
+
+<p>```
+class Part {</p>
+
+<pre><code>String name
+String title
+String description
+
+
+static constraints = {
+    name blank: false, unique: 'title' // 新增 PK
+    title nullable: true //原本 title blank: false
+    //description nullable: true, empty: true
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>一旦 domain 調整完成後，我們可以進行比對目前 database schema 與 domain 的差異，透過下列語法：</p>
+
+<p><code>
+grails dev dbm-gorm-diff 1.0.1.groovy -add
+</code></p>
+
+<p>因為版本控制的概念是要一直延續，且有每階段的調整，我們將第二次的調整儲存於另外的的檔案叫做 <code>1.0.1.groovy</code>，其產生的結果如下：</p>
+
+<p>```
+databaseChangeLog = {</p>
+
+<pre><code>changeSet(author: "Spooky (generated)", id: "1389681182984-1") {
+    addNotNullConstraint(columnDataType: "varchar(255)", columnName: "description", tableName: "part")
+}
+
+changeSet(author: "Spooky (generated)", id: "1389681182984-2") {
+    dropNotNullConstraint(columnDataType: "varchar(255)", columnName: "title", tableName: "part")
+}
+
+changeSet(author: "Spooky (generated)", id: "1389681182984-3") {
+    dropIndex(indexName: "name_uniq_1389679387009", tableName: "part")
+}
+
+changeSet(author: "Spooky (generated)", id: "1389681182984-4") {
+    createIndex(indexName: "unique_name", tableName: "part", unique: "true") {
+        column(name: "title")
+
+        column(name: "name")
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>而指令中的 <code>-add</code> 指的是將上面檔案 includ 到 changelog.groovy，在該檔案新增一行程式：</p>
+
+<p><code>
+include file: '1.0.1.groovy'
+</code></p>
+
+<p>如此，我們在執行 dbm-update 時，會連著第二次更新一並檢查，再一次執行下述指令：</p>
+
+<p><code>
+grails dev dbm-update
+</code></p>
+
+<p>在查看一次 DATABASECHANGELOG，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-glR-DMMN88k/UtTbuyjNQ2I/AAAAAAAAMCI/TwMLXz_CPS8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.38.38.png" title="螢幕快照 2014-01-14 下午2.38.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 changelog 又有新的資料，表示資料庫已更新到最新的狀態。</p>
+
+<p>不過實際狀況可能會有執行失敗的情形，怎麼辦？該 plugin 提供了 rollback 的機制。</p>
+
+<h2>取消更新</h2>
+
+<p>我們可以透過下列語法將更新還原</p>
+
+<p><code>
+grails dev dbm-rollback-count 1
+</code></p>
+
+<p>後面的數字表示要退回的更新步驟，需要注意的是 rollback 不一定能成功，畢竟實際狀況是複雜的，可以的話竟量測試完善，你也可以客製 rollback 要執行的語法，可參考最後的 [客製資料庫更新語法]。</p>
+
+<p>當然，除了新專案可以使用 migration，我們也希望舊專案也能納入控管，接著說明如何升級舊有的 database</p>
+
+<h2>將既有的 database 升級</h2>
+
+<p>首先設定一組要升級的 database 連線參數，需要放在 dataSource.groovy，不可以放在外部設定檔，如 <code>.grails/appname-config.groovy</code>，筆者一開始測試就是定義在外部設定檔一直無法成功，設定如下：</p>
+
+<p>```
+dbToUpdate {</p>
+
+<pre><code>dataSource {
+    dbCreate = ""
+    driverClassName = "com.mysql.jdbc.Driver"
+    dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+    username = ""
+    password = ""
+    url = "jdbc:mysql://localhost/oldDatabase?useUnicode=true&amp;characterEncoding=UTF8&amp;zeroDateTimeBehavior=convertToNull"
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>接著執行</p>
+
+<p><code>
+grails dev dbm-diff dbToUpdate newChangelog.groovy
+</code></p>
+
+<p>該指令會以一開始定義的 dev datasource，跟 dbToUpdate datasource 指令的資料庫進行差異比對，並且將差異差異寫入 newChangelog.groovy 檔案。</p>
+
+<p>一旦差異產生好後，接著要將 dbToUpdate 更新到跟 dev datasource 指定的 schema 一樣到最新狀態</p>
+
+<p>在開始執行更新之前，需要先設定 config.groovy 新增下面的參數：</p>
+
+<p><code>
+grails.plugin.databasemigration.changelogFileName = newChangelog.groovy
+</code></p>
+
+<p>告訴 migration 在執行 dbm-update 時參考 db 跟 db 之間的差異檔 <code>newChangelog.groovy</code></p>
+
+<p>如此一來我們就可以執行下面指令進行舊資料庫升級：</p>
+
+<blockquote><p>注意：執行下面語法時，請先備份舊有資料庫</p></blockquote>
+
+<p><code>
+grails -Dgrails.env=dbToUpdate dbm-update
+</code></p>
+
+<p>順利的話 dbToUpdate 定義之舊的 database schema 將會被更新的跟 dev 一樣，接著我們必須將版本記錄更新到最新，因為剛剛執行 dbm-update 的對象是 newChangelog.groovy 同樣會將更新記錄寫入 DATABASECHANGELOG table，該記錄是為了升級用，並不是正式加入控管的記錄，且一開始就開始進行版控的 db 不會有升級的版本記錄，因此我們需要先清除在產生新的 changelog，步驟如下：</p>
+
+<ol>
+<li>先把剛剛更新 newChangelog.groovy 的版本記錄 DATABASECHANGELOG 刪掉</li>
+<li>將 config.groovy 的 <code>grails.plugin.databasemigration.changelogFileName = newChangelog.groovy</code> 刪除，或是調整回 <code>changelog.groovy</code>，表示回到正式版控內。</li>
+<li>寫入從開始版控到最近變更的版本記錄 grails -Dgrails.env=dbToUpdate dbm-changelog-sync</li>
+</ol>
+
+
+<p>透過上述步驟，就可以讓失去控制的舊有 database 回到正軌，之後就可以透過版本控制隨時保持在最新狀態。</p>
+
+<p>當然，一定還有些狀況沒辦法透過比對自動產生，如果你需要對資料庫進行欄位轉換或是特殊處理，下面接著說明。</p>
+
+<h2>客製資料庫更新語法</h2>
+
+<p>假設你有新增欄位，該欄位需要預設值時，可使用下列語法進行：
+```
+databaseChangeLog = {</p>
+
+<pre><code>changeSet(author: "wpgreenway", id: "add-date-created-to-post") {
+    addColumn(tableName: "post") {
+        column(name: "date_created", type: "timestamp")
+    }
+
+    grailsChange {
+        change {
+            sql.execute("UPDATE post SET date_created = NOW()")
+        }
+        rollback {
+        }
+    }
+
+    addNotNullConstraint(tableName: "post", columnName: "date_created")
+}
+</code></pre>
+
+<p>}
+```
+其中可以看到 rollback 的 block，你也可以定義如果需要進行 rollback 時要執行的語法，上述是不懂 gorm 可以用一般的 sql 來進行，如果你熟 gorm，可以使用下列語法，不過在一開始的介紹的連結 <a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a> 有提到這樣的作法是危險的，這邊不多說明，可參考連結中的敘述，這裡只是記錄也可以這樣進行操作。</p>
+
+<p>```
+grailsChange {
+  change {</p>
+
+<pre><code>Post.list().each { post -&gt;
+  post.dateCreated = new Date()
+  post.save(failOnError: true, flush: true)
+}
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<p>或許有讀者會覺得，我用 sql 檔案也同樣能夠做到資料庫版本更新，又何必要透過類似 migration 的機制？跟一般 sql 檔案控管還有不同的地方，上述自定的 sql 更新記錄同樣的也會加入到 DATABASECHANGELOG，沒有任何一個變更會被遺漏，只要有正確的版本記錄，migration 都會一一的進行更新。</p>
+
+<p>最後，一但所有更新語法都準備就緒實際應用在 production，總不希望還需要手動下指令，migration 提供下列設定來自動完成資料庫更新的動作。</p>
+
+<h2>應用程式運行時自動進行資料更新</h2>
+
+<p>在 config.groovy 加入下列參數</p>
+
+<p><code>
+grails.plugin.databasemigration.updateOnStart = true
+grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
+</code></p>
+
+<p>一旦系統運行將會自動比對 cheangelog，你也可以根據不同的 environments 設置不同的比對 chnagelog file，又或者有客製情形可以調整</p>
+
+<p>接著運行 run-app 就會開始比對 changelog 並且更新 database，確認 schema 沒問題時 deploy 到遠端自動執行 schema 調整。</p>
+
+<h2>其他使用注意事項</h2>
+
+<p>有時候，執行 <code>grails dev dbm-update</code> 指令會失敗，可能因為你的專案加了不同的 plugin 改變了產生 doamin 的方式，或是 plugin 中有各自維護的 domain，以筆者的狀況使用了 <a href="http://www.grails.org/plugin/taggable">Taggable Plugin</a> 有自己維護的 table，可以利用 [應用程式運行時自動進行資料更新] 來執行上述指令，筆者在進行舊有資料庫升級時同樣也有上述指令沒有辦法運作的情形，也是透過 [應用程式運行時自動進行資料更新] 完成更新。</p>
+
+<p>另外，如果執行 <code>grails dev dbm-update</code> 時出現下面錯誤</p>
+
+<p>```
+Message: Validation Failed:</p>
+
+<pre><code> 1 change sets check sum
+</code></pre>
+
+<p>```</p>
+
+<p>可透過下面語法先清除 MD5SUM</p>
+
+<p><code>
+grails dev dbm-clear-checksums
+</code></p>
+
+<p>再一次執行 <code>grails dev dbm-update</code> 即可</p>
+
+<p>如果你有使用 searchable 套件，你會發現若你變更欄位限制式時，在執行 dbm-gorm-diff 可以正常運作，但若你在有支援 seachable 的 domain 新增欄位時在執行 dbm-gorm-diff 會出現下列錯誤訊息</p>
+
+<p>```
+[Compass Gps Index [pool-8-thread-3]] ERROR util.JDBCExceptionReporter  - Unknown column 'user0_.has_tour' in 'field list'</p>
+
+<p>[Compass Gps Index [pool-8-thread-3]] ERROR indexer.ScrollableHibernateIndexEntitiesIndexer  - {hibernate}: Failed to index the database
+Message: could not load an entity: [app.User#182]
+```</p>
+
+<p>只要把 domain 中 static searchable 關鍵字移除舊可以正常運作，在執行 migrations 操作，有未知的異常時，記得先檢查你在 domain 中有沒有特殊的關鍵字，有可以造成誤判或是相互影響</p>
+
+<h2>如果沒有用 grails 開發想使用 migration</h2>
+
+<p>我相信 migration 這樣的機制在每種不同的語言一定有類似的套件提供相同的功能，希望透過這樣的介紹讓讀者知道原來 database 也可以進行版本控制，不需要很複雜也可以做到，有時候就是不知道所以也不知道該怎麼下手。</p>
+
+<p>另外一個方向，如果真的找不到目前專案使用語言有類似 migration 這樣的套件，也可以透過 grails 來中介，將 domain mapping 到既有的 database，在 mapping 時 datasource 定義 <code>dbCreate = "validate"</code>，可以部分 mapping 就開始進行版控，陸續在加入， 一點想法給大家參考。</p>
+
+<p>最後附上本篇文章範例程式位置：</p>
+
+<p><a href="https://github.com/smlsunxie/grailsMigrationsTest">grailsMigrationsTest</a></p>
+]]></content>
+  </entry>
+  
+</feed>

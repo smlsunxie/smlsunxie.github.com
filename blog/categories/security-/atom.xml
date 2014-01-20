@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Security, | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/security-/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:07:08+08:00</updated>
+  <updated>2014-01-20T10:17:51+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
-    <link href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
-    <updated>2014-01-20T00:00:00+08:00</updated>
-    <id>http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request</id>
+    <link href="http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request</id>
     <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
 
 <p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>

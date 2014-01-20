@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: MQ, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/mq-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T10:17:51+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[rabbit MQ 使用者建立與權限設定]]></title>
+    <link href="http://smlsun.com/blog/2014/01/19/rabbit-MQ/"/>
+    <updated>2014-01-19T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/19/rabbit-MQ</id>
+    <content type="html"><![CDATA[<p>安裝 rabbit MQ 非常簡單，<a href="https://www.rabbitmq.com/download.html">官方就有介紹</a>，安裝完成後，可以透過指令 <code>rabbitmq-server</code> 來啟動 MQ server。</p>
+
+<p>一旦安裝完成，可透過下面網址進入控管 MQ server 的主控台：</p>
+
+<p><code>http://localhost:15672/</code></p>
+
+<p>在瀏覽器輸入上述網址後，預設帳號密碼為 <code>guest/guest</code>，登入後會看到畫面如下：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-QLG8IN_RDtI/Ur0lQZP-imI/AAAAAAAAL70/2N3Rb4O1pCQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%882.58.50.png" title="螢幕快照 2013-12-27 下午2.58.50.png" alt="enter image description here" /></p>
+
+<p>主要頁面呈現了關於 MQ server 目前的狀態，包括隊列的情形，環境參數等，有需要可以點選看看，本篇要說明的是如何建立或改變使用者帳號。</p>
+
+<h4>建立或改變使用者帳號</h4>
+
+<ol>
+<li><p>點選上圖中導覽列的 Admin 會進入下面的畫面</p>
+
+<p> <img src="https://lh3.googleusercontent.com/-cvd7yKB403c/Ur0lrKf1LyI/AAAAAAAAL8A/ZUd-FF8KvXY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.00.39.png" title="螢幕快照 2013-12-27 下午3.00.39.png" alt="enter image description here" /></p></li>
+<li><p>點選 add a user 就可以輸入要新增的帳號</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-jOyv6P2vvO8/Ur0mGS9N5VI/AAAAAAAAL8M/H73RkFTDZ8c/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.02.24.png" title="螢幕快照 2013-12-27 下午3.02.24.png" alt="enter image description here" /></p></li>
+<li><p>輸入完成後，可以看到如下圖：</p>
+
+<p> <img src="https://lh4.googleusercontent.com/-fCYZHvcrbI0/Ur0mVLaKgdI/AAAAAAAAL8c/DSXoXMqtKZQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.03.26.png" title="螢幕快照 2013-12-27 下午3.03.26.png" alt="enter image description here" /></p>
+
+<p> 表示使用者新增完成。</p></li>
+<li><p>接著設定存取權限，所以接著點選上圖表格中 Name 欄位的 admin，進入下面畫面：</p>
+
+<p> <img src="https://lh5.googleusercontent.com/-yeuQj-nJAHY/Ur0m4_r0bJI/AAAAAAAAL8s/EJEkATgSeeY/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-27+%E4%B8%8B%E5%8D%883.05.38.png" title="螢幕快照 2013-12-27 下午3.05.38.png" alt="enter image description here" /></p>
+
+<p> 預設為全部允許，如此一來就可以透過設定好的帳號密碼來進行控管。</p></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>
