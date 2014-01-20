@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T10:05:18+08:00</updated>
+  <updated>2014-01-20T10:07:08+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -19,9 +19,9 @@
 
 
 <title type="html"><![CDATA[Spring Security Basic Authentication with Ajax request 失敗處理]]></title>
-<link href="http://smlsun.com/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request/"/>
+<link href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"/>
 <updated>2014-01-20T00:00:00+08:00</updated>
-<id>http://smlsun.com/blog/2014/01/20/Spring Security Basic Authentication with Ajax request</id>
+<id>http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request</id>
 
       <content type="html"><![CDATA[<p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
 
@@ -371,7 +371,7 @@ response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage
 <p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
 
 <p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/20/Spring+Security+Basic+Authentication+with+Ajax+request/"></a></p>]]></content>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/01/20/Spring-Security-Basic-Authentication-with-Ajax-request/"></a></p>]]></content>
     </entry>
   
     <entry>
