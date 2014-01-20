@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: motoranger | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/motoranger/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-01-20T21:44:54+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[服務上線發表-Moto Ranger 線上摩托維修記錄]]></title>
+    <link href="http://smlsun.com/blog/2014/01/20/Moto-Ranger/"/>
+    <updated>2014-01-20T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/01/20/Moto-Ranger</id>
+    <content type="html"><![CDATA[<p>服務上線發表，不知道別人在產品上線的情形是如何，我個人是非常緊張...</p>
+
+<p>因為家裡開的是機車維修店，常常遇到客戶明明很久以前就換過機油，或是輪胎煞車皮之類的日常保養，卻還是說我前不久才換過，苦無證據，因此開發了一個可以記錄客戶維修歷史記錄的服務，順便也幫傳統的機車行加入一些資訊管理。</p>
+
+<p>傳統摩托維修店家，沒有一個簡易的維修記錄軟體，很難記錄到底熟客有哪些，一個月的營業額有多少，所使用的零件成本也是憑感覺，往往沒辦法確實估算一個車行營運的成本與利潤，並且沒有辦法好好管理客戶資料，有時候確實會發生車子修理好，但是聯絡客戶的資訊找不到的窘境，維修車行是個需要專業並且辛苦的工作，工時又長，來客就是賺錢的機會，憑著維修記錄，也可以提醒客戶該做定期的維修保養，提供完善的服務。</p>
+
+<p>並且在車行的營業環境中會有很多粉塵，在開發此系統時，也考慮提供手機或是平板瀏覽器（android 或是 iOS）的相容，即使沒有 PC 也可以進行。</p>
+
+<p>在打造維修記錄的服務時，一開始的開發對象是店家的維修記錄的管理，但在過程中，發現個人也有需求，相信有在開車或是騎車的朋友一定也會有忘記自己的愛車是什麼時候加過機油（在下也是），觀察一下網路上的服務，甚至是手機 app  似乎沒有一個比較合適簡單的維修記錄軟裡，也有看到很多朋友使用 blog 來記錄維修記錄(辛苦！)，每個人的生命中多少有幾個 [第二老婆] 陪你浪跡天涯，好好愛護才能走更遠的路，萬一因為忘記什麼時候加過機油造成引擎損壞，那就得不償失了。</p>
+
+<p>此外，一旦您的愛車要出售時，也可以附上維修記錄，證明皆有正常維修，讓你的愛車更有價格上的競爭力。</p>
+
+<p>於是基於店家的管理，以及個人的需求，筆者開發一個線上服務，恭敬的為大家介紹；</p>
+
+<h2><a href="http://motoranger.net/">Moto Ranger - 線上摩托維修記錄</a></h2>
+
+<p><img src="https://lh6.googleusercontent.com/--p7y5sSzaIw/UtzT00Q2siI/AAAAAAAAMEs/n3MRFddM8jE/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-20+%E4%B8%8B%E5%8D%883.43.42.png" title="螢幕快照 2014-01-20 下午3.43.42.png" alt="enter image description here" /></p>
+
+<h2>店家首頁</h2>
+
+<p><img src="https://lh5.googleusercontent.com/-Z0OB8dowktA/Utzjhr4-Q3I/AAAAAAAAMFU/_LNNBRVDtYU/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-20+%E4%B8%8B%E5%8D%883.52.24.png" title="螢幕快照 2014-01-20 下午3.52.24.png" alt="enter image description here" /></p>
+
+<h2>維修記錄</h2>
+
+<p><img src="https://lh4.googleusercontent.com/-7x73juU0x9Q/Ut0Cq2N_ezI/AAAAAAAAMF8/w2ZkLskZJe8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-20+%E4%B8%8B%E5%8D%887.03.22.png" title="螢幕快照 2014-01-20 下午7.03.22.png" alt="enter image description here" /></p>
+
+<p>取名為 Moto Ranger 是要向我「<a href="http://blog.smlsun.com/2013/12/this-guy-is-my-bro.html">那流浪漢黑手 bro</a>」，「<a href="http://blog.tin613.com/">tin613</a>」 致敬，勇於追逐自己的夢想，雖然這只是一個小服務，但這是我的第一步，2013 年的總結，雖不知道這服務會發展到什麼程度，但至少在路上了，歡迎大家來使用。</p>
+
+<p>再將近一年陸陸續續的開發中，由家裡的師父當我的早期試用者，陸陸續續也改善了一些流程的問題，在 2013 年末 密集的開發下，總算可以推出供個人與車行使用的線上維護記錄軟體，為了因應個資法，也加入相關的資料防護，方便大家使用的通用維修項目，以及使用導覽，若一開始不知道如何操作的朋友，註冊完成後，登入系統會先進行導覽，幫助您快速上手。</p>
+
+<p>若是個人使用，可以直接線上註冊，若是車行有興趣，可以與我聯繫，期初我會在挑選幾家進行早期測試。</p>
+
+<p>因為剛開始公開測試，若再使用中有任何問題或意見歡迎來信建議，或是直接在服務中的「意見回饋」進行留言，您的意見會讓這個服務更好！</p>
+
+<p>或者，您也可以在我們的 <a href="https://www.facebook.com/pages/%E5%8B%9D%E7%A5%A5%E6%A9%9F%E8%BB%8A%E8%A1%8C-Moto-Ranger/252043181598683">facebook 專頁 Moto Ranger</a> 留下您的意見。</p>
+]]></content>
+  </entry>
+  
+</feed>
