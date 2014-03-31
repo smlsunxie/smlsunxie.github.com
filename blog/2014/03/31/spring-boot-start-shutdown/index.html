@@ -1,0 +1,883 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]>
+  <html class="no-js lte-ie8">
+<![endif]-->
+
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]>
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+
+  <title>spring-boot: server startup or shutdown listener - 蹤影</title>
+  <meta name="author" content="smlsun">
+  <meta name="Generator" content="Jekyll & Octopress (http://octopress.org)">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Language" content="zh-TW" />
+  <meta http-equiv="Content-Language" content="zh-Hant-TW" />
+  <meta name="URL" content="http://smlsun.com">
+
+
+
+  
+  
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/">
+
+
+
+ 
+
+
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  <link href="/assets/magnus/css/style.css"  rel="stylesheet" type="text/css">
+
+  <script src="/javascripts/octopress.min.js" type="text/javascript"></script>
+
+
+  <script src="/assets/magnus/js/bootstrap.js"></script>
+
+  <script defer="defer" src="/assets/magnus/js/custom.js"></script>
+
+
+
+
+  <link href="/atom.xml" rel="alternate" title="蹤影" type="application/atom+xml">
+  
+<!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+<!-- Deck.js -->
+<!-- Style theme. Located in /themes/style/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/style/.css" type='text/css'>
+<!-- Transition theme. Located in /themes/transition/ or create your own. -->
+<link rel="stylesheet" href="/assets/css/deck.js/themes/transition/.css" type='text/css'>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="/assets/css/jquery.fancybox.css?v=2.0.4" type="text/css" media="screen" />
+<script type="text/javascript" src="/javascripts/jquery.fancybox.js?v=2.0.4"></script>
+
+<!-- Add fancyBox jQuery -->
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".fancybox").fancybox();
+  });
+</script>
+<!-- End fancyBox insert -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36297314-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+   
+  <link href="/favicon.png" rel="icon">
+</head>
+
+<body   class="no-sidebar"  >
+  
+
+  <header role="banner">
+  	<div class="container">
+			<div class="row">
+				<hgroup class="logo span3">
+					
+
+<i class="ico-thin-right-arrow ico-color circle"></i>
+<a class="brand" href="/">
+	
+	<span>蹤影</span>.
+
+</a>
+<!-- 		
+	<h2>學習新事物，分享交流的地方，歡迎～</h2>
+ -->
+
+
+
+
+
+
+
+
+				</hgroup>
+
+				<nav class="span9">
+			  	
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </a>
+
+    <div class="nav-collapse collapse">
+
+
+      <ul class="nav">
+        	<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+  
+      </ul>
+      <ul class="nav" data-subscription="rss">
+
+
+
+
+
+        <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+        
+        
+        <li>
+          <div class="search-content">
+            <form action="http://google.com/search" method="get">
+              <fieldset role="search">
+                <input type="hidden" name="q" value="site:smlsun.com" />
+                <input class="search-query" id="search-query" type="text" name="q" results="0" placeholder="Search"/>
+              </fieldset>
+            </form>
+          </div>
+
+
+        </li>
+
+      </ul>
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+				</nav>
+
+			</div>
+  	</div>
+  </header>
+
+
+	<div id="page-title">
+
+		<div id="page-title-inner">
+
+			<!-- start: Container -->
+			<div class="container">
+
+
+				<h2><i class="ico-pencil"></i>
+				
+					 
+						Blog 
+					
+				
+
+				</h2>
+
+			</div>
+			<!-- end: Container  -->
+		</div>	
+	</div>
+
+
+
+
+
+
+
+
+
+	<div id="wrapper">	
+		<!--start: Container -->
+    	<div id="content" class="container">
+
+    		<div class="row">
+
+    
+    <div class="span12"> 
+    
+
+
+
+
+
+
+
+
+
+
+    <div class="post " role="article">
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+Spring-boot: Server Startup or Shutdown Listener
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>在之前的專案中遇到一種狀況，使用者說他們的服務沒有反應？通常會有幾種情形：</p>
+
+<ol>
+<li>服務被人為關閉</li>
+<li>作業系統被關閉</li>
+<li>記憶體不足造成服務終止</li>
+</ol>
+
+
+<p>第三點的原因有很多，這邊先不談，關於 1、2 點可能是人為，或者管理者在做系統維護時，不知道需要在重新啟動服務，或是錯誤關閉，不管哪一種，都會造成服務無法運作，接著你就會接到電話或信件，系統不 work 了。</p>
+
+<p>通常，也只能問有沒有人去操作主機，或是有沒有人去關閉服務？常常問不出所以然，當然就如同上面所舉的幾點，不一定是人為因素，但我們希望可以加快系統出現異常時的反應速度，將服務停止時間降到最低。</p>
+
+<p>因此，主動通知是比較積極的作法，唯有當下接收到服務開啟或關閉的訊息，才能夠在最接近問題發生的點來釐清問題，另一方面，也是較有效率的作法，誰也不想定期每天去檢查你所安裝的服務今天是否有正常運行。</p>
+
+<p>說這麼多，此篇要介紹的是如何在使用 spring-boot 時，定義 server 開啟或關閉時執行特定的程式，比如發 mail 或是寫 log，當然使用傳統 spring 也可以，參考：<a href="http://www.mkyong.com/spring/spring-postconstruct-and-predestroy-example/">Spring @PostConstruct And @PreDestroy Example</a>。</p>
+
+<p>在實作上，我們可以利用 @Configuration 的特性，在類別中，只要我們打上 @Configuration，該類別就會作為類似 xml 設定檔，在服務啟動時將在類別中定義的方法根據每個方法的 annotation 註冊，下面將分別針對啟動與關閉服務利用 @PostConstruct，以及 @PreDestroy 來達成。</p>
+
+<h2>服務啟動時 @PostConstruct</h2>
+
+<p>@PostConstruct，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PostConstruct.html">Annotation Type PostConstruct</a>，文件中有詳細說明使用時機，其中：</p>
+
+<blockquote><p>The PostConstruct annotation is used on a method that needs to be executed after dependency injection is done to perform any initialization.</p></blockquote>
+
+<p>可以看到執行的時機點在依賴注入後進行初始作業的執行，正是我們想要的。</p>
+
+<h2>服務關閉時 @PreDestroy</h2>
+
+<p>@PreDestroy，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PreDestroy.html">Annotation Type PreDestroy</a></p>
+
+<blockquote><p>The PreDestroy annotation is used on methods as a callback notification to signal that the instance is in the process of being removed by the container.</p></blockquote>
+
+<p>文中說明，當執行實體被容器移除時會執行該動作，若我們將 @PreDestroy 定義在有 @Configuration 標註的類別中，因為 @Configuration 在服務啟動時只會產生一個實體，因此一旦服務被關閉時進行類別 GC 時，就會連帶觸動執行有標註 @PreDestroy 的函式。</p>
+
+<p>透過上述兩個 annotation 就可以做到啟動或關閉時發出 mail 通知，不過這邊要注意關閉的情形，若使用者強制將服務關閉，不等待 server 的後續處理，那標註 @PreDestroy 的函式將無法完全執行完畢，目前個人沒有更好的方式可以避免，若讀者有不錯的作法，務必讓我知道，或者是關於上述應用情境有更好的處理方式，比如該 annotation 有錯用的地方，也請不吝指教。</p>
+
+<p>最後附上開關 server 自動送出 mail 的程式碼給大家參考，以 gmail 為例：</p>
+
+<p>定義 MailSender 以及預設的 SimpleMailMessage</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.context.annotation.Bean;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>import org.springframework.mail.MailSender;
+</span><span class='line'>import org.springframework.mail.SimpleMailMessage;
+</span><span class='line'>import org.springframework.mail.javamail.JavaMailSenderImpl;
+</span><span class='line'>
+</span><span class='line'>import java.util.Properties;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class ApplicationConfig{
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public MailSender mailSender(){
+</span><span class='line'>        JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
+</span><span class='line'>        javaMailSenderImpl.setHost("smtp.gmail.com");
+</span><span class='line'>        javaMailSenderImpl.setPort(587);
+</span><span class='line'>        javaMailSenderImpl.setUsername("user");
+</span><span class='line'>        javaMailSenderImpl.setPassword("password");
+</span><span class='line'>
+</span><span class='line'>        Properties mailProp = new Properties();
+</span><span class='line'>        mailProp.put("mail.smtp.auth", true);
+</span><span class='line'>        mailProp.put("mail.smtp.starttls.enable", true);
+</span><span class='line'>
+</span><span class='line'>        javaMailSenderImpl.setJavaMailProperties(mailProp);
+</span><span class='line'>        return (MailSender) javaMailSenderImpl;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public SimpleMailMessage simpleMailMessage() {
+</span><span class='line'>        SimpleMailMessage msg = new SimpleMailMessage();
+</span><span class='line'>        msg.setTo("to@gmail.com");
+</span><span class='line'>        msg.setFrom("from@gmail.com");
+</span><span class='line'>        msg.setText("內文");
+</span><span class='line'>        return msg;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>定義開關服務處理函式，將定義好的 MailSender 以及 SimpleMailMessage 注入並且使用：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>import org.springframework.mail.MailException;
+</span><span class='line'>import org.springframework.mail.MailSender;
+</span><span class='line'>import org.springframework.mail.SimpleMailMessage;
+</span><span class='line'>
+</span><span class='line'>import javax.annotation.PostConstruct;
+</span><span class='line'>import javax.annotation.PreDestroy;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class ContextListener {
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    MailSender mailSender;
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    SimpleMailMessage simpleMailMessage;
+</span><span class='line'>
+</span><span class='line'>    @PostConstruct
+</span><span class='line'>    public void startupMailNotify(){
+</span><span class='line'>
+</span><span class='line'>        simpleMailMessage.setSubject("服務啟動");
+</span><span class='line'>
+</span><span class='line'>        try{
+</span><span class='line'>            mailSender.send(simpleMailMessage);
+</span><span class='line'>        }
+</span><span class='line'>        catch(MailException ex) {
+</span><span class='line'>            System.err.println(ex.getMessage());
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    @PreDestroy
+</span><span class='line'>    public void shutdownMailNotify(){
+</span><span class='line'>        simpleMailMessage.setSubject("服務關閉");
+</span><span class='line'>        try{
+</span><span class='line'>            mailSender.send(simpleMailMessage);
+</span><span class='line'>        }
+</span><span class='line'>        catch(MailException ex) {
+</span><span class='line'>            System.err.println(ex.getMessage());
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其實可以在精簡，不過也夠簡單了，並且降低耦合，是吧～</p>
+
+<p>在 spring 與 spring-boot 其中之一的差別，就是 spring-boot 可以不需要 xml 定義，寫起來又更方便了點、精簡了點。</p>
+
+  </div>
+
+
+  
+
+
+
+</div>
+      <hr>
+      <footer>
+
+
+        <p class="meta">
+          
+  
+
+<span ><i class="mini-ico-user"></i> By <span>smlsun</span></span>
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-03-31T00:00:00+08:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+
+
+<span ><i class="mini-ico-tags"></i><span class="categories">
+  
+    <a class='category' href='/blog/categories/java-/'>java,</a>, <a class='category' href='/blog/categories/spring/'>spring</a>, <a class='category' href='/blog/categories/spring-boot-/'>spring-boot,</a>
+  
+</span></span>
+
+
+
+          
+
+        </p>
+
+        
+          <section id="social-r">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+        
+        <br>
+        <ul class="pagination">
+          
+            <a class="left" href="/blog/2014/03/31/grails-plugin-cache-head/" title="Previous Post: grails: 靜態資源或網址加入快取機制"><li>&laquo; grails: 靜態資源或網址加入快取機制</li></a>
+          
+          
+        </ul>
+
+        
+
+
+      </footer>
+    </div>
+
+
+    
+
+
+  </div>
+  
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+   	 	</div>
+  	</div>
+ 	
+
+
+
+ 	 
+	<div id="wrapper">	
+		<div class="container">
+	    	<div class="sidebar row">
+				
+			    
+<section class="span3">
+  <h1>Latest Tweets</h1>
+  <ul id="tweets" data-user="smlsun" data-count="4" data-replies="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+    <a href="http://twitter.com/smlsun" class="twitter-follow-button" data-show-count="true">Follow @smlsun</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li>
+        <a href="/blog/2014/03/31/spring-boot-start-shutdown/">spring-boot: server startup or shutdown listener</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/grails-plugin-cache-head/">grails: 靜態資源或網址加入快取機制</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/grails-gorm-discard/">grails: gorm 自動更新與 discard 方法 使用特性與注意事項</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey/">AWS S3: 設定特定網站直接存取雲端圖片(不使用 accessKey ，secretKey)</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/01/20/Moto-Ranger/">服務上線發表-Moto Ranger 線上摩托維修記錄</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section class="span3">
+  <h1>On GitHub</h1>
+  <ul id="gh_repos" data-user="smlsunxie" data-count="5" data-skip="true">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a class="github-follow" href="https://github.com/smlsunxie">Follow @smlsunxie</a>
+  
+</section>
+
+<section class="span3">
+  <h1>Recent Comments</h1>
+  <div id="dsq-recentcomments" class="dsq-widget"><script type="text/javascript" src="http://disqus.com/forums/smlsunxie/recent_comments_widget.js?hide_avatars=1"></script></div>
+</section>
+<section class="span3">
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/smlsun?count=10&amp;sort=date&amp;callback=octopress.renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/smlsun">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+			  <section class="span3">
+				  <h1>QR CODE</h1>
+				  <img src="https://lh6.googleusercontent.com/-SvgqNNgd2uU/UNlvDlraTzI/AAAAAAAALao/qfmOSCFhsoY/s480/qrcode%2520smlsun.com.jpg" />
+				</section><section id="social-r" class="span3">
+  <h1>Sharing</h1>
+  
+    
+      <a href="http://twitter.com/share" title="Tweet this" class="twitter-share-button" data-url="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/" data-via="smlsun" data-counturl="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/" target="_blank" >Tweet</a>
+    
+  
+  
+    
+      <div class="g-plusone" data-size="medium"></div>
+    
+  
+  
+    
+      <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+    
+  
+  
+
+</section>
+
+			  
+
+
+
+	   	 	</div>
+   	 	</div>
+  	</div>
+  	
+
+<!-- 
+<div id="footer">
+		
+
+	<div class="container">
+		
+
+		<div class="row">								
+			
+			
+		</div>
+
+		
+	</div>
+
+
+</div>
+ -->
+
+
+
+<div id="footer-menu" class="hidden-tablet hidden-phone">
+
+		<!-- start: Container -->
+		<div class="container">
+			
+			<!-- start: Row -->
+			<div class="row">
+
+				<!-- start: Footer Menu Logo -->
+				<div class="span2">
+					<div id="footer-menu-logo">
+						<a class="brand" href="#">smlsun.</a>
+					</div>
+				</div>
+				<!-- end: Footer Menu Logo -->
+
+				<!-- start: Footer Menu Links-->
+				<div class="span9">
+					
+					<div id="footer-menu-links">
+
+						<ul id="footer-nav">
+								<li  >
+		<a href="/">Home</a>
+	</li>
+  
+  <li  >
+  	<a href="/blog">Blog</a>
+  </li>
+
+  <li >
+  	<a href="/archives">Archives</a>
+  </li>
+  
+  <li >
+    <a href="/aboutme">AboutMe</a>
+  </li>
+
+  <li >
+  	<a href="/slides">Slides</a>
+  </li>
+
+
+						</ul>
+
+					</div>
+					
+				</div>
+				<!-- end: Footer Menu Links-->
+
+				<!-- start: Footer Menu Back To Top -->
+				<div class="span1">
+						
+					<div id="footer-menu-back-to-top">
+						<a href="#"></a>
+					</div>
+				
+				</div>
+				<!-- end: Footer Menu Back To Top -->
+			
+			</div>
+			<!-- end: Row -->
+			
+		</div>
+		<!-- end: Container  -->	
+
+	</div>
+
+
+
+	
+
+<div id="copyright">
+	
+	<!-- start: Container -->
+	<div class="container">
+	
+		<div class="sixteen columns">
+			<p>
+			  © 2014 - smlsun 
+			  <br>
+			  Powered by <a href="http://octopress.org">Octopress</a>
+			  <br>theme by <a href="https://github.com/smlsunxie/bootstrapDeck.js">smlsun</a><img src="/assets/magnus/img/poland.png" alt="Poland" style="margin-top:-4px">
+			</p>
+		</div>
+
+	</div>
+	<!-- end: Container  -->
+	
+</div>
+
+
+
+
+
+
+
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'smlsunxie';
+			var disqus_developer = '';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+  
+<div id="fb-root"></div>
+<script type="text/javascript">
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0]; 
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/zh_TW/all.js#xfbml=1&appId=391840470897203";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
+
+
+
+
+
+  
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+  
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+
+
+</body>
+</html>

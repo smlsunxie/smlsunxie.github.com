@@ -271,6 +271,1283 @@
     
 <h1 class="entry-title">
 
+<a href="/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/">Spring Security Basic Authentication With Ajax Request 失敗處理</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>當你在製作一個 rest service，提供 API 另外部的程式存取，比如說網頁中的 ajax request，且必須要有基本的安全性防護，在 java base 底下我們可以引入 Spring Security 來幫我們處理安全性的大小事。</p>
+
+<p>關於安全性驗證的方式，可參考官方的文件:<a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/introduction.html">Spring Security doc</a></p>
+
+<p>基於 rest service 的特性，既然是提供給第三方軟體呼叫，我們就不希望還需要 login 頁面來登入 rest service，可以的話當然希望在進行請求時就驗證存取權限，所以我們需要使用的是 <a href="http://docs.spring.io/spring-security/site/docs/3.0.x/reference/basic.html">Basic Authentication</a>。</p>
+
+<p>簡單來說 Basic Authentication 就是將驗證資訊透過 http headers 傳遞，交由 server 驗證之後，返回通過或失敗，範例的 request 呼叫如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>function make_base_auth(user, password) {
+</span><span class='line'>    var tok = user + ':' + password;
+</span><span class='line'>    var hash = $.base64.encode(tok);
+</span><span class='line'>    return "Basic "+hash;
+</span><span class='line'>}
+</span><span class='line'>$.ajax("http://localhost:8080/test/sendMsg", {
+</span><span class='line'>    type: "GET",
+</span><span class='line'>    success: function(){
+</span><span class='line'>        alert("OK");
+</span><span class='line'>    },
+</span><span class='line'>    xhrFields: {
+</span><span class='line'>        withCredentials: true
+</span><span class='line'>    }, 
+</span><span class='line'>    beforeSend: function (xhr) {
+</span><span class='line'>        xhr.setRequestHeader('Authorization', 
+</span><span class='line'>            make_base_auth("user", "password"));
+</span><span class='line'>    }
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中 Authorization 的值必須以 Basic 開頭，接著將 username:password 透過 base64 編碼，上述 <code>make_base_auth("user", "password")</code> 回傳的內容為： <code>Basic dXNlcjpwYXNzd29yZA==</code>，並且需要設定 <code>withCredentials</code>，表示包含驗證資訊。</p>
+
+<p>前端的呼叫程式準備好了以後，我們需要對後端的 http 網路存取權限進行設定，rest server 與呼叫端屬於 cross domain 的呼叫，因此需要設置 CorsFilter，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Component
+</span><span class='line'>public class CorsFilter extends OncePerRequestFilter
+</span><span class='line'>{
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+</span><span class='line'>            throws ServletException, IOException
+</span><span class='line'>    {
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Origin", "http://192.168.0.100:8080");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, OPTIONS");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Headers","Authorization, Content-Type, Origin, Accept");
+</span><span class='line'>        response.addHeader("Access-Control-Max-Age", "1800");
+</span><span class='line'>        response.addHeader("Access-Control-Allow-Credentials", "true");
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        filterChain.doFilter(request, response);
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>rest server 使用 <a href="http://projects.spring.io/spring-boot/">spring-boot</a> 製作，傳統建立 filter 時需要在維護 web.xml，在這裡只要註記為 <code>@Component</code>，且 <code>extends OncePerRequestFilter</code>，服務啟動時 spring 會自動配置 filter，透過設置 Access-Control-* 的相關屬性，我們可以限制對 server 的存取限制。</p>
+
+<p>接著，我們需要定義 Security Config：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@EnableWebSecurity
+</span><span class='line'>@Configuration
+</span><span class='line'>public class SecurityConfig extends WebSecurityConfigurerAdapter {
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void configure(HttpSecurity http) throws Exception {
+</span><span class='line'>        http.authorizeRequests()
+</span><span class='line'>                .antMatchers("/test/sendMsg").hasRole("USER")
+</span><span class='line'>                .anyRequest().authenticated();
+</span><span class='line'>        http.httpBasic();
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+</span><span class='line'>        authManagerBuilder.inMemoryAuthentication()
+</span><span class='line'>                .withUser("user").password("password").roles("USER");
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在 <code>configure(HttpSecurity http)</code> 我們定義了 <code>/test/sendMsg</code> 的存取者必須要有 <code>USER</code> 的權限，且驗證方式使用 <code>Basic</code>；在 <code>configure(AuthenticationManagerBuilder authManagerBuilder)</code> 定義使用者帳號。</p>
+
+<p>如此一來，程式算是準備好，我們可以利用 <code>curl</code> 指令來驗證：</p>
+
+<p><code>curl --url http://localhost:8080/test/sendMsg -H 'Authorization: Basic dXNlcjpwYXNzd29yZA=='</code></p>
+
+<p>可以正常取得 response，但是一旦我們透過 ajax 的方式存取，總會跳出下面的畫面：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-mUoOv_pKbzQ/UsJObr558rI/AAAAAAAAL9s/pni0SJbDEyQ/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%8812.55.37.png" title="螢幕快照 2013-12-31 下午12.55.37.png" alt="enter image description here" /></p>
+
+<p>這是我們不想要的，且與程式邏輯不符，畢竟我們在 CorsFilter 定義了允許 <code>Authorization</code> 的 header 卻沒有通過驗證，並且在 <code>curl</code> 的模式下是可正常存取。</p>
+
+<p>且既然是提供給第三方軟體呼叫，對使用者而言，一定不知道遠端 rest server 的存取密碼，為了跳過這個帳號密碼驗證步驟，查了相關處理程式 <code>BasicAuthenticationEntryPoint</code> 的原始碼說明：</p>
+
+<p><a href="http://git.springsource.org/~rwinch/spring-security/rwinchs-spring-security/blobs/bf9d4a97470c679008ef6ce42681e3d0c1992636/web/src/main/java/org/springframework/security/web/authentication/www/BasicAuthenticationEntryPoint.java">BasicAuthenticationEntryPoint.java</a></p>
+
+<blockquote><p> Once a user agent is authenticated using BASIC authentication, logout requires that the browser be closed or an unauthorized (401) header be sent.</p></blockquote>
+
+<p>也就是說預設的處理方式，一律會回傳 <code>unauthorized (401)</code>，處理的原始碼如下：</p>
+
+<p>&#8220;
+public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)</p>
+
+<pre><code>throws IOException, ServletException {
+response.addHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+</code></pre>
+
+<p>}
+&#8220;</p>
+
+<p>所以無論你怎麼調整 CorsFilter 或是 ajax request 參數，就是沒有辦法通過 http 驗證，總是跳出 dialog 需要驗證帳號與密碼，檢查 request method 雖然設置的是 <code>GET</code> 但總是傳出 <code>OPTIONS</code>。</p>
+
+<p>至於為什麼，可參考下列文章：</p>
+
+<p><a href="http://stackoverflow.com/questions/11199426/jquery-cors-json-without-padding-and-authentication-issues">jQuery, CORS, JSON (without padding) and authentication issues</a></p>
+
+<p>文中提到：</p>
+
+<blockquote><p>Basically, because I need authentication, the GET request is sending an Authorization header. However, this is not a &#8220;simple&#8221; header, and so the browser is sending a pre-flight request (the OPTIONS). This preflight request doesn&#8217;t have any authentication, though, and so the server was rejecting it. The &#8220;solution&#8221; was to set the server to let OPTIONS request not require authentication, and report an HTTP status of 200 to it.</p>
+
+<p>Reference: http://www.kinvey.com/blog/item/61-kinvey-adds-cross-origin-resource-sharing-cors</p></blockquote>
+
+<p>也就是說，瀏覽器檢查有驗證資訊，就不是&#8221;簡單&#8221;的 http request，所以會先送出一個 pre-flight request，也就是 <code>OPTIONS</code>，該 OPTIONS 就不會有驗證資訊，以致於 server 就會拒絕請求，也就呼應為什麼 <code>curl</code> 的情況下可以正常請求，為了解決此問題，就必須要讓 server 能夠接受 OPTIONS 可包含 authentication 的 header 來進行驗證。</p>
+
+<p>上述的說明在一開始看到時還不清楚處理邏輯，真要親身體驗才能了解，花了一天的時間的重覆嘗試，總算讓我找到解法，參考下列文章：</p>
+
+<p><a href="https://github.com/davidtinker/grails-cors/issues/12">Basic Auth filter authenticates OPTIONS requests and breaks CORS</a></p>
+
+<p>從上面關於瀏覽器對於&#8221;不簡單&#8221;的 request 的敘述，瀏覽器的處理流程會是：</p>
+
+<ol>
+<li>先送出一個 OPTIONS 的 request 進行驗證</li>
+<li>如果 OPTIONS 的 request 不是回傳 401 UNAUTHORIZED 會接著送出在 ajax 定義的 http mathod 的 request</li>
+</ol>
+
+
+<p>會這樣處理，是因為瀏覽器預設是一旦檢查第一步驟沒有通過，就會跳出 dialog 請使用者輸入帳號密碼(開啟 withCredentials 的前提下)，一旦通過，就會將驗證資訊存於 cookies，接著進入第二步驟時，會將已存在 cookies 的驗證資訊加入到第二步驟的 header，之後再重覆請求時就會一直有效，直到 cookies 過期。</p>
+
+<p>有這樣的認知後，在看上面連結中程式部分的解法時就比較能夠理解。</p>
+
+<p>透過繼承 <code>BasicAuthenticationEntryPoint</code> 覆寫 <code>commence</code>，判斷如果是 <code>Preflight</code> 依據傳入的 http method 是否為 <code>OPTIONS</code> 來判斷，若是，則回傳 <code>HttpServletResponse.SC_NO_CONTENT</code>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if(isPreflight(request)){
+</span><span class='line'>    response.setStatus(HttpServletResponse.SC_NO_CONTENT);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因為 OPTIONS 只是瀏覽器為了驗證進行的 request，並不是我們主要的 request 所以將其設為 SC_NO_CONTENT(204)，沒有內容，但沒有失敗，一旦瀏覽器接收到沒有失敗的情形，就會進行主要的 request 請求，此時主要的 request 就會包含 Authentication 的資訊，接著看下面一個判斷式。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (isRestRequest(request)) {
+</span><span class='line'>    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再來，這邊限制了如果有 <code>X-Requested-With ,XMLHttpRequest</code> 這樣的 header 就直接回傳 <code>SC_UNAUTHORIZED</code>(401)， 有沒有必要，就看服務的性質與需求，可以針對各種狀況，設定不允許存取的條件，最後其他狀況就走一般的處理模式了，完整的程式碼如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class AjaxAwareLoginUrlAuthenticationEntryPoint extends
+</span><span class='line'>        BasicAuthenticationEntryPoint {
+</span><span class='line'>
+</span><span class='line'>    private static final RequestMatcher requestMatcher = new ELRequestMatcher(
+</span><span class='line'>            "hasHeader('X-Requested-With','XMLHttpRequest')");
+</span><span class='line'>
+</span><span class='line'>    public CustomAuthenticationEntryPoint() {
+</span><span class='line'>        super();
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    public CustomAuthenticationEntryPoint(String realmName) {
+</span><span class='line'>        setRealmName(realmName);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Override
+</span><span class='line'>    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
+</span><span class='line'>
+</span><span class='line'>        if(isPreflight(request)){
+</span><span class='line'>            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+</span><span class='line'>        } else if (isRestRequest(request)) {
+</span><span class='line'>            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+</span><span class='line'>        } else {
+</span><span class='line'>            super.commence(request, response, authException);
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    /**
+</span><span class='line'>     * Checks if this is a X-domain pre-flight request.
+</span><span class='line'>     * @param request
+</span><span class='line'>     * @return
+</span><span class='line'>     */
+</span><span class='line'>    private boolean isPreflight(HttpServletRequest request) {
+</span><span class='line'>        return "OPTIONS".equals(request.getMethod());
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    /**
+</span><span class='line'>     * Checks if it is a rest request
+</span><span class='line'>     * @param request
+</span><span class='line'>     * @return
+</span><span class='line'>     */
+</span><span class='line'>    protected boolean isRestRequest(HttpServletRequest request) {
+</span><span class='line'>        return requestMatcher.matches(request);
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦定義好 AuthenticationEntryPoint 在文章中的使用的方式是用 grails 的語法與定義檔：</p>
+
+<blockquote><p>Open resources.groovy and add the following lines:</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>beans = {
+</span><span class='line'>
+</span><span class='line'>    basicAuthenticationEntryPoint(CustomAuthenticationEntryPoint) { bean -&gt;
+</span><span class='line'>        realmName = 'Your Realm'
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>spring boot 的情形，我們只要修改一開始建立的 SecuityConfig：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Override
+</span><span class='line'>protected void configure(HttpSecurity http) throws Exception {
+</span><span class='line'>
+</span><span class='line'>    AjaxAwareLoginUrlAuthenticationEntryPoint ajaxAwareLoginUrlAuthenticationEntryPoint = new AjaxAwareLoginUrlAuthenticationEntryPoint();
+</span><span class='line'>    ajaxAwareLoginUrlAuthenticationEntryPoint.setRealmName("testAp");
+</span><span class='line'>    http.httpBasic().authenticationEntryPoint(ajaxAwareLoginUrlAuthenticationEntryPoint);
+</span><span class='line'>
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>新增客製的 <code>ajaxAwareLoginUrlAuthenticationEntryPoint</code>，設置 RealmName，並且加入 <code>httpBasic().authenticationEntryPoint</code> 即可，省去繁瑣的 xml 定義，程式更加的精簡。</p>
+
+<p>實際執行，我們可以看到，一次 ajax 呼叫，有兩個 request：</p>
+
+<p><img src="https://lh6.googleusercontent.com/--XnQ7f4ItTQ/UsKALIrzHOI/AAAAAAAAL-E/cbnNgTDJYP4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.53.51.png" title="螢幕快照 2013-12-31 下午3.53.51.png" alt="enter image description here" /></p>
+
+<p>且第一次呼叫的 http method 為 OPTIONS，http code 為 204，第二次才是主要的 ajax request，在看下圖，為 header 資訊：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-JcEBuYSzsSY/UsKAneA8uuI/AAAAAAAAL-Q/s1Tlly239K4/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-12-31+%E4%B8%8B%E5%8D%883.54.38.png" title="螢幕快照 2013-12-31 下午3.54.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 <code>Authorization</code> 已有存在 header，且 request 正常，已有正確執行 rest server 的服務。</p>
+
+<p>這問題著實困擾了我好久，對於不是 IT 背景的我，理解花了好多時間，不過也總算對網路安全，還有驗證的方式，以及瀏覽器對於安全性驗證的處理邏輯有一定的認知，不過畢竟是新鮮的理解，如果有說錯還請不吝指教。</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-19T00:00:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2014/01/19/Spring-Security-Basic-Authentication-with-Ajax-request/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2014/01/19/Spring+boot-memory-useage/">Spring Boot: 監控 Memory Useage & 執行 GC</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>參考下面連結：<a href="http://xantorohara.blogspot.tw/2013/11/spring-boot-memory-usage.html">Spring-boot memory usage</a></p>
+
+<p>因為 spring boot 可使用 jar 檔直接運行，不需要打包成 war，也不需要實體 tomcat，實際上，spring boot 使用的是 embedded tomcat，整個專案打包後的大小非常小，使得記憶體可用空間也能夠更多。</p>
+
+<p>文中利用下面的 controller 來輸出記憶體使用量：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.stereotype.Controller;
+</span><span class='line'>import org.springframework.web.bind.annotation.RequestMapping;
+</span><span class='line'>import org.springframework.web.bind.annotation.RequestMethod;
+</span><span class='line'>import org.springframework.web.bind.annotation.ResponseBody;
+</span><span class='line'>
+</span><span class='line'>@Controller
+</span><span class='line'>public class AdminController {
+</span><span class='line'>
+</span><span class='line'>    @RequestMapping(value = "/admin/mem", method = {RequestMethod.GET}
+</span><span class='line'>            , produces = "text/html;charset=UTF-8")
+</span><span class='line'>    @ResponseBody
+</span><span class='line'>    public String mem() {
+</span><span class='line'>        long max = Runtime.getRuntime().maxMemory();
+</span><span class='line'>        long total = Runtime.getRuntime().totalMemory();
+</span><span class='line'>        long free = Runtime.getRuntime().freeMemory();
+</span><span class='line'>        long used = total - free;
+</span><span class='line'>
+</span><span class='line'>        return String.format("Memory:\n" +
+</span><span class='line'>                "max: %,d bytes\n" +
+</span><span class='line'>                "total: %,d bytes\n" +
+</span><span class='line'>                "free: %,d bytes\n" +
+</span><span class='line'>                "used: %,d bytes\n",
+</span><span class='line'>                max, total, free, used);
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @RequestMapping(value = "/admin/rungc" , method = RequestMethod.GET)
+</span><span class='line'>    @ResponseBody
+</span><span class='line'>    public String rungc() {
+</span><span class='line'>        Runtime.getRuntime().gc();
+</span><span class='line'>        return "Run GC finish";
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己的專案，包含了 spring security、jdbc、rest service、以及 rabbitmq client
+執行的結果如下：</p>
+
+<blockquote><p>剛啟動時記憶體使用量
+(http://localhost:8080/admin/mem):
+max:    1,908,932,608 bytes
+total:    372,768,768 bytes
+free:     274,485,040 bytes
+used:      98,283,728 bytes</p></blockquote>
+
+<hr />
+
+<blockquote><p>執行GC後的使用量
+(http://localhost:8080/admin/rungc):
+max: 1,908,932,608 bytes
+total: 374,865,920 bytes
+free:  346,690,128 bytes
+used:   28,175,792 bytes</p></blockquote>
+
+<p>還不賴！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-19T00:00:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2014/01/19/Spring+boot-memory-useage/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2014/01/19/Spring+boot-memory-useage/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2014/01/19/SQL-state-HY010/">SQL State [HY010]; Error Code [0]; Invalid State, the Connection Object Is Closed 處理筆記</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>之前曾經遇到過，最近又來了&#8230;</p>
+
+<p>果然該還的還是要還，因此這次要詳細記錄處理過程，希望以後再發生可以更快釐清問題。</p>
+
+<p>首先需要先確定發生可能原因，google 了一下目前比較明確的錯誤狀況如下：</p>
+
+<ol>
+<li>到了連線 timeout 時間</li>
+<li>drive 的問題</li>
+<li>或是 database server 被重啟</li>
+</ol>
+
+
+<p>我查了一下預設的 connection pool 的 timeout 時間有 30000 ms，所以第一項先不考慮。</p>
+
+<p>drive 問題目前發生問題的是 jtds 1.3.1，有人說換換看 ms sql 所提供的 drive，在 sql 2008、O.S. 為 64 位元的情況會比較沒問題，well 姑且試試看。</p>
+
+<p>檢視 database 的 log 記錄，似乎有重啟的狀況，如下圖：</p>
+
+<p><img src="https://lh4.googleusercontent.com/-ZQwS21llDr4/Us0VNJxSjwI/AAAAAAAAMA4/BED3lh6m6vo/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-08+%E4%B8%8B%E5%8D%885.05.15.png" title="螢幕快照 2014-01-08 下午5.05.15.png" alt="enter image description here" /></p>
+
+<p>在持續觀察中發現確實隔天早上資料庫被重啟(os 重新啟動)，另外一個可調整的地方就是設置 connection pool 的 setTestOnBorrow：取出 pool 中的連線時進行驗證，若沒有通過則會在取出新的連線，這應該是我們要的參數，經過下列測試步驟：</p>
+
+<h2>未設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，吐出訊息 <code>SQL state [null]; error code [0]; 連接已關閉</code></li>
+</ol>
+
+
+<h2>有設置 testOnBorrow 的情形</h2>
+
+<ol>
+<li>啟動服務，進行資料查詢正常</li>
+<li>暫停 sql server</li>
+<li>暫停中進行資料查詢，吐出訊息 <code>SQLServerException: Broken pipe</code></li>
+<li>啟動 sql server</li>
+<li>再次進行查詢，資料查詢正常</li>
+</ol>
+
+
+<p>這樣一來即使遠端連結的資料庫主機重啟，或是關閉的情形，一旦該主機重新上線，我們的應用程式也不用重開令 pool 重新連線，才不會總是鬼打牆，服務明明好好得但就是會出現連線異常，檢視遠端 db 主機也在線上，殊不知曾經被重啟過。</p>
+
+<p>另外 testOnBorrow 需要搭配 validationQuery 使用，可參考下面連結：<a href="https://wiki.shibboleth.net/confluence/plugins/viewsource/viewpagesrc.action?pageId=4358588">Database Connectors</a>，最下方的 Database Reference Table 有各個不同 databse 的 validationQuery 可以參考。</p>
+
+<p>一件落著！</p>
+
+<p>不過我的測試案例出現的是 <code>SQL state [null];</code> 而不是 <code>SQL state [HY010];</code>，還是要在觀察一下。</p>
+
+<p>若有朋友有關於此問題有處理經驗或建議，也請指教，感謝！</p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-19T00:00:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2014/01/19/SQL-state-HY010/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2014/01/19/SQL-state-HY010/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
+<a href="/blog/2014/01/19/Grails-migrations-database/">Grails Migrations: Database 的版本控管</a>
+
+</h1>
+
+  </div>
+  
+
+  <hr>
+
+
+  <div class="post-description">
+    <p>說到版本控管，就一定跟版本顯示，更新舊有版本有關，在程式碼部分使用版本控管已經習以為常，但通常一個應用程式或是專案從來就不只有程式碼，還有 datbase schema 的維護，偏偏 datbase 的版本升級沒有像程式碼控管那樣的簡單，也沒有類似 SVN 或是 GIT 的版本控管軟體。</p>
+
+<p>不過，筆者最近在開發 grails 時發現了一個套件：<a href="http://grails.org/plugin/database-migration">Grails Database Migration Plugin</a>，其運作方式跟版本控管有異曲同工之妙，簡單但是有效的進行 datbase schema 版控。</p>
+
+<p>下列文章在使用 Grails Migration 非常有參考價值，若有需要可以看看：</p>
+
+<ul>
+<li><a href="http://grails-plugins.github.io/grails-database-migration/docs/manual/guide/introduction.html">Database Migration Plugin - Reference Documentation</a></li>
+<li><a href="http://fbflex.wordpress.com/2011/01/19/working-with-the-grails-database-migration-plugin/">Working with the Grails Database Migration Plugin</a></li>
+<li><a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a></li>
+</ul>
+
+
+<p>在開始說明前需要先進行 dataSource 的調整。</p>
+
+<h2>定義 dataSource</h2>
+
+<p>grails 預設的 domain 管理使用的是 gorm 技術，也就是常見的 orm mapping，因此，一般預設會定義 dbCreate = &#8220;update&#8221;，也就是一旦檢查 domain 物件有調整，會自動檢查並且更新，使用 Migration 我們就不希望 orm mapping 介入因此我們在定義 dataSource 的地方設定 <code>dbCreate = ""</code>，也就是關閉自動更新的機制，設定檔如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>development {
+</span><span class='line'>    dataSource {
+</span><span class='line'>        dbCreate = "" // one of 'create', 'create-drop', 'update', 'validate', ''
+</span><span class='line'>        pooled = true
+</span><span class='line'>        driverClassName = "com.mysql.jdbc.Driver"
+</span><span class='line'>        dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+</span><span class='line'>        username = ""
+</span><span class='line'>        password = ""
+</span><span class='line'>        url = "jdbc:mysql://localhost/test?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull"
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一定有讀者會有疑慮使用 orm 技術就可以幫我們自動更新 schema 為什麼還要使用 migrations ? 幾點如下：</p>
+
+<ol>
+<li>migrations 有版本記錄與控管，orm update 沒有</li>
+<li>migrations 可以偵測到 PK、FK、限制式的調整，orm update 沒辦法</li>
+<li>migrations 可以偵測到欄位的刪除，orm update 沒辦法</li>
+<li>migrations 可以自定更新 sql 語法，並且加入版本控管，orm update 沒辦法</li>
+</ol>
+
+
+<p>如果你的應用程式不會停止更新變動，那 migrations 才有可能涵蓋所有需求。</p>
+
+<p>有了上述了解與設定後，首先要為我們的資料庫建立第一版的版控內容，可以想像成版本控制的初始專案或是 git init。</p>
+
+<h2>初始資料庫版控</h2>
+
+<p>假設我們有個 domain 定義如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Part {
+</span><span class='line'>    String name
+</span><span class='line'>    String title
+</span><span class='line'>    String description
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    static constraints = {
+</span><span class='line'>        name blank: false, unique: true
+</span><span class='line'>        title blank: false
+</span><span class='line'>        description nullable: true, empty: true
+</span><span class='line'>
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦在 grails 建立了 domain 之後，我們可以透過下列語法產生最一開始的資料庫版控記錄檔： <code>changelog.groovy</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-generate-gorm-changelog changelog.groovy </span></code></pre></td></tr></table></div></figure>
+
+
+<p>該指令指的是透過 domain 產生建立資料庫的相關語法 如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389679387050-1") {
+</span><span class='line'>      createTable(tableName: "part") {
+</span><span class='line'>          column(autoIncrement: "true", name: "id", type: "bigint") {
+</span><span class='line'>              constraints(nullable: "false", primaryKey: "true", primaryKeyName: "partPK")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "version", type: "bigint") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "description", type: "varchar(255)")
+</span><span class='line'>
+</span><span class='line'>          column(name: "name", type: "varchar(255)") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>
+</span><span class='line'>          column(name: "title", type: "varchar(255)") {
+</span><span class='line'>              constraints(nullable: "false")
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389679387050-2") {
+</span><span class='line'>      createIndex(indexName: "name_uniq_1389679387009", tableName: "part", unique: "true") {
+</span><span class='line'>          column(name: "name")
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦建立完成，我們可以在我們 DB server 先建立好空的資料庫，透過下面指令產生一個初始的 database 包含上面 changelog.groovy 的變動：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>初始資料庫建好之後，我們可以使用 sql client 軟體來看一下 table 的結構，如下圖:</p>
+
+<p><img src="https://lh6.googleusercontent.com/-LHDhbqc-ikY/UtTWMawYxnI/AAAAAAAAMB0/QzxhMNG5QJI/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.15.25.png" title="螢幕快照 2014-01-14 下午2.15.25.png" alt="enter image description here" /></p>
+
+<p>圖中的 DATABASECHANGELOG table 記錄的就是目前 database 的版本記錄，migrations plugin 就是透過該 table 比對目前 db 執行到 changelog 裡的哪些調整，不存在的才執行，如此一來即使你的應用程式會 deploy 到不同主機且 db 的版本不一致的情形，透過該 table 就可以知道每個 db 目前的版本狀況進而讓  migration plugin 幫你更新到最新的 database 版本。</p>
+
+<p>對於初始 db 以及版本資訊 的建立有了解後，接著要說明調整欄位後，如何將調整結果更新的到 db。</p>
+
+<h2>調整欄位後更新 database</h2>
+
+<p>假設我們將一開始建立的 domain 調整 index，以及去掉以及加入欄位的 nullable 限制式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Part {
+</span><span class='line'>    String name
+</span><span class='line'>    String title
+</span><span class='line'>    String description
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    static constraints = {
+</span><span class='line'>        name blank: false, unique: 'title' // 新增 PK
+</span><span class='line'>        title nullable: true //原本 title blank: false
+</span><span class='line'>        //description nullable: true, empty: true
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦 domain 調整完成後，我們可以進行比對目前 database schema 與 domain 的差異，透過下列語法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-gorm-diff 1.0.1.groovy -add</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因為版本控制的概念是要一直延續，且有每階段的調整，我們將第二次的調整儲存於另外的的檔案叫做 <code>1.0.1.groovy</code>，其產生的結果如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-1") {
+</span><span class='line'>      addNotNullConstraint(columnDataType: "varchar(255)", columnName: "description", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-2") {
+</span><span class='line'>      dropNotNullConstraint(columnDataType: "varchar(255)", columnName: "title", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-3") {
+</span><span class='line'>      dropIndex(indexName: "name_uniq_1389679387009", tableName: "part")
+</span><span class='line'>  }
+</span><span class='line'>
+</span><span class='line'>  changeSet(author: "Spooky (generated)", id: "1389681182984-4") {
+</span><span class='line'>      createIndex(indexName: "unique_name", tableName: "part", unique: "true") {
+</span><span class='line'>          column(name: "title")
+</span><span class='line'>
+</span><span class='line'>          column(name: "name")
+</span><span class='line'>      }
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>而指令中的 <code>-add</code> 指的是將上面檔案 includ 到 changelog.groovy，在該檔案新增一行程式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>include file: '1.0.1.groovy'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此，我們在執行 dbm-update 時，會連著第二次更新一並檢查，再一次執行下述指令：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在查看一次 DATABASECHANGELOG，如下圖：</p>
+
+<p><img src="https://lh5.googleusercontent.com/-glR-DMMN88k/UtTbuyjNQ2I/AAAAAAAAMCI/TwMLXz_CPS8/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-01-14+%E4%B8%8B%E5%8D%882.38.38.png" title="螢幕快照 2014-01-14 下午2.38.38.png" alt="enter image description here" /></p>
+
+<p>可以看到 changelog 又有新的資料，表示資料庫已更新到最新的狀態。</p>
+
+<p>不過實際狀況可能會有執行失敗的情形，怎麼辦？該 plugin 提供了 rollback 的機制。</p>
+
+<h2>取消更新</h2>
+
+<p>我們可以透過下列語法將更新還原</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-rollback-count 1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>後面的數字表示要退回的更新步驟，需要注意的是 rollback 不一定能成功，畢竟實際狀況是複雜的，可以的話竟量測試完善，你也可以客製 rollback 要執行的語法，可參考最後的 [客製資料庫更新語法]。</p>
+
+<p>當然，除了新專案可以使用 migration，我們也希望舊專案也能納入控管，接著說明如何升級舊有的 database</p>
+
+<h2>將既有的 database 升級</h2>
+
+<p>首先設定一組要升級的 database 連線參數，需要放在 dataSource.groovy，不可以放在外部設定檔，如 <code>.grails/appname-config.groovy</code>，筆者一開始測試就是定義在外部設定檔一直無法成功，設定如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dbToUpdate {
+</span><span class='line'>    dataSource {
+</span><span class='line'>        dbCreate = ""
+</span><span class='line'>        driverClassName = "com.mysql.jdbc.Driver"
+</span><span class='line'>        dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+</span><span class='line'>        username = ""
+</span><span class='line'>        password = ""
+</span><span class='line'>        url = "jdbc:mysql://localhost/oldDatabase?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull"
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接著執行</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-diff dbToUpdate newChangelog.groovy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>該指令會以一開始定義的 dev datasource，跟 dbToUpdate datasource 指令的資料庫進行差異比對，並且將差異差異寫入 newChangelog.groovy 檔案。</p>
+
+<p>一旦差異產生好後，接著要將 dbToUpdate 更新到跟 dev datasource 指定的 schema 一樣到最新狀態</p>
+
+<p>在開始執行更新之前，需要先設定 config.groovy 新增下面的參數：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails.plugin.databasemigration.changelogFileName = newChangelog.groovy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>告訴 migration 在執行 dbm-update 時參考 db 跟 db 之間的差異檔 <code>newChangelog.groovy</code></p>
+
+<p>如此一來我們就可以執行下面指令進行舊資料庫升級：</p>
+
+<blockquote><p>注意：執行下面語法時，請先備份舊有資料庫</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails -Dgrails.env=dbToUpdate dbm-update</span></code></pre></td></tr></table></div></figure>
+
+
+<p>順利的話 dbToUpdate 定義之舊的 database schema 將會被更新的跟 dev 一樣，接著我們必須將版本記錄更新到最新，因為剛剛執行 dbm-update 的對象是 newChangelog.groovy 同樣會將更新記錄寫入 DATABASECHANGELOG table，該記錄是為了升級用，並不是正式加入控管的記錄，且一開始就開始進行版控的 db 不會有升級的版本記錄，因此我們需要先清除在產生新的 changelog，步驟如下：</p>
+
+<ol>
+<li>先把剛剛更新 newChangelog.groovy 的版本記錄 DATABASECHANGELOG 刪掉</li>
+<li>將 config.groovy 的 <code>grails.plugin.databasemigration.changelogFileName = newChangelog.groovy</code> 刪除，或是調整回 <code>changelog.groovy</code>，表示回到正式版控內。</li>
+<li>寫入從開始版控到最近變更的版本記錄 grails -Dgrails.env=dbToUpdate dbm-changelog-sync</li>
+</ol>
+
+
+<p>透過上述步驟，就可以讓失去控制的舊有 database 回到正軌，之後就可以透過版本控制隨時保持在最新狀態。</p>
+
+<p>當然，一定還有些狀況沒辦法透過比對自動產生，如果你需要對資料庫進行欄位轉換或是特殊處理，下面接著說明。</p>
+
+<h2>客製資料庫更新語法</h2>
+
+<p>假設你有新增欄位，該欄位需要預設值時，可使用下列語法進行：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>databaseChangeLog = {
+</span><span class='line'>
+</span><span class='line'>    changeSet(author: "wpgreenway", id: "add-date-created-to-post") {
+</span><span class='line'>        addColumn(tableName: "post") {
+</span><span class='line'>            column(name: "date_created", type: "timestamp")
+</span><span class='line'>        }
+</span><span class='line'>
+</span><span class='line'>        grailsChange {
+</span><span class='line'>            change {
+</span><span class='line'>                sql.execute("UPDATE post SET date_created = NOW()")
+</span><span class='line'>            }
+</span><span class='line'>            rollback {
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>
+</span><span class='line'>        addNotNullConstraint(tableName: "post", columnName: "date_created")
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中可以看到 rollback 的 block，你也可以定義如果需要進行 rollback 時要執行的語法，上述是不懂 gorm 可以用一般的 sql 來進行，如果你熟 gorm，可以使用下列語法，不過在一開始的介紹的連結 <a href="http://wpgreenway.com/posts/grails-db-migration-tutorial/">Grails Db Migration Tutorial</a> 有提到這樣的作法是危險的，這邊不多說明，可參考連結中的敘述，這裡只是記錄也可以這樣進行操作。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grailsChange {
+</span><span class='line'>  change {
+</span><span class='line'>    Post.list().each { post -&gt;
+</span><span class='line'>      post.dateCreated = new Date()
+</span><span class='line'>      post.save(failOnError: true, flush: true)
+</span><span class='line'>    }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或許有讀者會覺得，我用 sql 檔案也同樣能夠做到資料庫版本更新，又何必要透過類似 migration 的機制？跟一般 sql 檔案控管還有不同的地方，上述自定的 sql 更新記錄同樣的也會加入到 DATABASECHANGELOG，沒有任何一個變更會被遺漏，只要有正確的版本記錄，migration 都會一一的進行更新。</p>
+
+<p>最後，一但所有更新語法都準備就緒實際應用在 production，總不希望還需要手動下指令，migration 提供下列設定來自動完成資料庫更新的動作。</p>
+
+<h2>應用程式運行時自動進行資料更新</h2>
+
+<p>在 config.groovy 加入下列參數</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails.plugin.databasemigration.updateOnStart = true
+</span><span class='line'>grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦系統運行將會自動比對 cheangelog，你也可以根據不同的 environments 設置不同的比對 chnagelog file，又或者有客製情形可以調整</p>
+
+<p>接著運行 run-app 就會開始比對 changelog 並且更新 database，確認 schema 沒問題時 deploy 到遠端自動執行 schema 調整。</p>
+
+<h2>其他使用注意事項</h2>
+
+<p>有時候，執行 <code>grails dev dbm-update</code> 指令會失敗，可能因為你的專案加了不同的 plugin 改變了產生 doamin 的方式，或是 plugin 中有各自維護的 domain，以筆者的狀況使用了 <a href="http://www.grails.org/plugin/taggable">Taggable Plugin</a> 有自己維護的 table，可以利用 [應用程式運行時自動進行資料更新] 來執行上述指令，筆者在進行舊有資料庫升級時同樣也有上述指令沒有辦法運作的情形，也是透過 [應用程式運行時自動進行資料更新] 完成更新。</p>
+
+<p>另外，如果執行 <code>grails dev dbm-update</code> 時出現下面錯誤</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Message: Validation Failed:
+</span><span class='line'>     1 change sets check sum</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可透過下面語法先清除 MD5SUM</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grails dev dbm-clear-checksums</span></code></pre></td></tr></table></div></figure>
+
+
+<p>再一次執行 <code>grails dev dbm-update</code> 即可</p>
+
+<p>如果你有使用 searchable 套件，你會發現若你變更欄位限制式時，在執行 dbm-gorm-diff 可以正常運作，但若你在有支援 seachable 的 domain 新增欄位時在執行 dbm-gorm-diff 會出現下列錯誤訊息</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[Compass Gps Index [pool-8-thread-3]] ERROR util.JDBCExceptionReporter  - Unknown column 'user0_.has_tour' in 'field list'
+</span><span class='line'>
+</span><span class='line'>[Compass Gps Index [pool-8-thread-3]] ERROR indexer.ScrollableHibernateIndexEntitiesIndexer  - {hibernate}: Failed to index the database
+</span><span class='line'>Message: could not load an entity: [app.User#182]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>只要把 domain 中 static searchable 關鍵字移除舊可以正常運作，在執行 migrations 操作，有未知的異常時，記得先檢查你在 domain 中有沒有特殊的關鍵字，有可以造成誤判或是相互影響</p>
+
+<h2>如果沒有用 grails 開發想使用 migration</h2>
+
+<p>我相信 migration 這樣的機制在每種不同的語言一定有類似的套件提供相同的功能，希望透過這樣的介紹讓讀者知道原來 database 也可以進行版本控制，不需要很複雜也可以做到，有時候就是不知道所以也不知道該怎麼下手。</p>
+
+<p>另外一個方向，如果真的找不到目前專案使用語言有類似 migration 這樣的套件，也可以透過 grails 來中介，將 domain mapping 到既有的 database，在 mapping 時 datasource 定義 <code>dbCreate = "validate"</code>，可以部分 mapping 就開始進行版控，陸續在加入， 一點想法給大家參考。</p>
+
+<p>最後附上本篇文章範例程式位置：</p>
+
+<p><a href="https://github.com/smlsunxie/grailsMigrationsTest">grailsMigrationsTest</a></p>
+
+  </div>
+
+
+  
+
+  <hr>
+  <div class="post-meta">
+    
+    <span>
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<i class="mini-ico-calendar"></i><time datetime="2014-01-19T00:00:00+08:00" pubdate data-updated="true">Jan 19<span>th</span>, 2014</time></span>
+
+    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2014/01/19/Grails-migrations-database/"></a></span>
+    
+
+    
+    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2014/01/19/Grails-migrations-database/#disqus_thread">View comments &raquo;</a></span>
+    
+
+    
+
+  </div>
+
+  
+
+
+
+</div>
+    </div>
+    
+      
+
+
+
+
+
+
+
+
+
+
+    <div class="post " >
+      
+<div class="post-content">
+
+
+  <hr>
+  
+  <div class="post-title">
+    
+<h1 class="entry-title">
+
 <a href="/blog/2013/12/26/stackedit/">Stackedit：寫部落格的新利器</a>
 
 </h1>
@@ -1404,983 +2681,6 @@ form.query('field:nth-child(3n)');
 </div>
     </div>
     
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/08/05/extjs-4-30/">Extjs-4-30 精簡程式碼案例分享</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
-
-<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
-
-<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
-
-<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
-
-<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view. &#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">]</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">btn</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.StdEditorToolbar&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">],</span>
-</span><span class='line'>            <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onStdEditorToolbarRender</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onStdEditorToolbarRender</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">crebtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-08-05T19:54:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/05/extjs-4-30/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/05/extjs-4-30/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/08/05/extjs-3-30/">Extjs-3-30 Mixins(混和) 特性說明</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>extjs4 中的 mixsins 是 extjs4 的新特性，在筆者之前寫過的文章中<a href="http://ithelp.ithome.com.tw/question/10120091">extjs 4 系列 1/5：新特性與基本概念</a> mixins (混合複數classes) 章節，有做過簡單介紹，讀者可以參考相關說明，了解 mixsins 的特性，官方 API 可參考連結：<a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>，在 extjs 中屬於 Ext.Class 的函式，也就等於所有不管 mvc 或是元件，都可以使用 mixins 的特性。</p>
-
-<p>接著，想要知道 mixins 在不同狀況下的處理方式可參考 <a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html#o1.3.3.">Ext JS 4 First Look 中文翻譯</a> mixins 章節，在使用上就必須要注意什麼情況下函式或屬性在捨麼情況下會被保留，什麼會被覆蓋。</p>
-
-<p>舉個例子，假設我們有兩個 controller 分別如下：</p>
-
-<p>共用元件之 controller：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.StdController&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;StdEditorToolbar&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;stdeditortoolbar&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initial</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tbar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">btn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>     <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>另一個別功能之 controller:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.AController&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">StdEditorToolbarCtrl</span><span class="o">:</span> <span class="s1">&#39;foodprint.controller.StdController&#39;</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;BatchEditor&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;batchGrid&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;batchgrid&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">application</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">readBatch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在上述的使用情境中，StdController 中的 refs 將會失效，保留 AController 中的 refs，因此在這樣狀況下，若要在 AController 也要能夠有 StdController 中 refs 定義的元件，勢必要在 AController 再次定義一次 StdController 的 refs。</p>
-
-<p>另一種使用情境：假設被 mixins 的類別跟基礎類別有同名的函式，但是我們希望兩個個別實作同名函式<strong>都可以被執行</strong>可以參考 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>的範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;CanSing&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>         <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m on the highway to hell...&quot;</span><span class="p">)</span>
-</span><span class='line'>     <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Musician&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>     <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>         <span class="nx">canSing</span><span class="o">:</span> <span class="s1">&#39;CanSing&#39;</span>
-</span><span class='line'>     <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>         <span class="c1">// delegate singing operation to mixin</span>
-</span><span class='line'>         <span class="k">this</span><span class="p">.</span><span class="nx">mixins</span><span class="p">.</span><span class="nx">canSing</span><span class="p">.</span><span class="nx">sing</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class='line'>     <span class="p">}</span>
-</span><span class='line'><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-08-05T11:56:00+08:00" pubdate data-updated="true">Aug 5<span>th</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/05/extjs-3-30/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/05/extjs-3-30/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/08/01/extjs-2-30/">Extjs 2/30:使用 Sencha Architect 開發注意事項</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟一般的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
-
-<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於發生問題，但若是多人開發，再加上有使用版本控管，問題就來了；xds 檔所記錄的似乎是在 architect 建立 extjs 元件之間的關聯，因此若是多人開發不同的功能，並且在版本控管的情況下，該檔案很容易有衝突；而在編修衝突時，很多時候會不知道該如何下手，因為代表元件的相關檔案識別皆已編碼，只有 IDE 才看的懂對應的關係，如果 xds 的內容無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
-
-<p>就筆者的經驗，一般 extjs 元件的建立或修改基本上都比較不會有問題，最容易產生異常的通常是在 application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要因為在使用 architect 時，當你新增元件時，IDE 將會自動將你新增的元件載入到 application.js 中，多人開發情形下，Application.js 就會是所有人的交集，不然照理分別開發新功能所新增的元件皆不同不應該會頻繁造成衝突，而因為 application.js 的多人異動，造成再 xds 中對 application.js 的檔案識別常常會有不同的代表造成衝突，一旦 xds 衝突一發生，編修時一不小心讓 IDE 不認得 Application.js，就會造成 Application.js 無法被識別，導致 IDE 認為沒有建立 Application.js，則以最原始的狀態 Application.js 作為預設，也就是沒有任何元件載入，導致於系統運作異常。</p>
-
-<p>知道問題發生的原因，那上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔的，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作需要哪些類別配合，一旦你有定義 require，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中載入所需 js 的麻煩，進一步的減少元件忘記或是載入錯誤。</p>
-
-<p>前面有提到 application.js 是多人開發時的交集，一個方法是減少交集的產生，而我們該如何減少交集呢？可以用到 extjs 自動載入元件的特性，將我們需要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 application.js 異常，我們知道只要將所有 controller 載入即可恢復，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，完善的定義該功能再運行時所需的元件，可以帶來更易於維護的優點，另外在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，如此一來元件所責任的功能也會更加清楚。</p>
-
-<p>上述的解法，是筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人節省一點時間。</p>
-
-<p>最後綜合上述的內容，整理出使用 architect 開發需要注意的重點如下：</p>
-
-<ol>
-<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
-<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
-<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
-<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
-<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
-</ol>
-
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-08-01T22:52:00+08:00" pubdate data-updated="true">Aug 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/01/extjs-2-30/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/01/extjs-2-30/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
-      
-
-
-
-
-
-
-
-
-
-
-    <div class="post " >
-      
-<div class="post-content">
-
-
-  <hr>
-  
-  <div class="post-title">
-    
-<h1 class="entry-title">
-
-<a href="/blog/2013/08/01/extjs-1-30/">Extjs 1/30:form 表單之 Submit 透過 Rest 與後端 Grails 的整合</a>
-
-</h1>
-
-  </div>
-  
-
-  <hr>
-
-
-  <div class="post-description">
-    <p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
-
-<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
-
-<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
-
-<p>而在筆者目前開發的專案中使用 extjs + grails 的組合並且前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，根據文章中建議的 http method 所對應的不同方法來進行資料的增修改查。</p>
-
-<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
-
-<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
-
-<p>節錄裡面的重點：</p>
-
-<blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
-it&#8217;s POST data. I assume that if you use the URL:</p>
-
-<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
-
-<p>then &#8220;userId&#8221; will appear in the &#8220;params&#8221; object. However, Grails
-handles the parsing of XML and JSON requests, so it you were to send
-your parameters as XML, they would probably appear in the &#8220;params&#8221;
-instance.</p></blockquote>
-
-<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，為了要解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
-
-<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
-
-<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
-
-<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
-
-<p>&#8221;/$controller/$action?/$id?&#8221;(<strong>parseRequest: true</strong>) {&#8230;}</p>
-
-<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
-
-<p>此問題與我的夥伴 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">lyhcode</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
-</a></p>
-
-<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
-
-  </div>
-
-
-  
-
-  <hr>
-  <div class="post-meta">
-    
-    <span>
-
-
-
-
-
-
-
-
-  
-
-
-
-
-<i class="mini-ico-calendar"></i><time datetime="2013-08-01T21:49:00+08:00" pubdate data-updated="true">Aug 1<span>st</span>, 2013</time></span>
-
-    <span><i class="mini-ico-bookmark"></i><a rel="bookmark" href="/blog/2013/08/01/extjs-1-30/"></a></span>
-    
-
-    
-    <span><i class="mini-ico-comment"></i><a class="comments-link" href="/blog/2013/08/01/extjs-1-30/#disqus_thread">View comments &raquo;</a></span>
-    
-
-    
-
-  </div>
-
-  
-
-
-
-</div>
-    </div>
-    
 
 
 
@@ -2434,23 +2734,23 @@ instance.</p></blockquote>
   <ul id="recent_posts">
     
       <li>
+        <a href="/blog/2014/03/31/spring-boot-start-shutdown/">spring-boot: server startup or shutdown listener</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/grails-plugin-cache-head/">grails: 靜態資源或網址加入快取機制</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/grails-gorm-discard/">grails: gorm 自動更新與 discard 方法 使用特性與注意事項</a>
+      </li>
+    
+      <li>
+        <a href="/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey/">AWS S3: 設定特定網站直接存取雲端圖片(不使用 accessKey ，secretKey)</a>
+      </li>
+    
+      <li>
         <a href="/blog/2014/01/20/Moto-Ranger/">服務上線發表-Moto Ranger 線上摩托維修記錄</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2014/01/19/ubuntu/">ubuntu 忘記密碼怎麼辦？三個步驟完成修改</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2014/01/19/rabbit-MQ-Spring-boot/">Rabbit Mq Spring Boot</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2014/01/19/rabbit-MQ/">rabbit MQ 使用者建立與權限設定</a>
-      </li>
-    
-      <li>
-        <a href="/blog/2014/01/19/Window/">Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版</a>
       </li>
     
   </ul>

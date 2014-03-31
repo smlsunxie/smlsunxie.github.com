@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T21:44:54+08:00</updated>
+  <updated>2014-03-31T17:57:11+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[grails: gorm 自動更新與 discard 方法 使用特性與注意事項]]></title>
+    <link href="http://smlsun.com/blog/2014/03/31/grails-gorm-discard/"/>
+    <updated>2014-03-31T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/03/31/grails-gorm-discard</id>
+    <content type="html"><![CDATA[<p>在使用 grails domain 時，有時候雖然我們有對 domain 變更值，但我們需要經過一些判斷後，才要正確寫入資料庫，但在 grails 的環境在你還沒有下 save 的指令時，他會因為函式執行的需要進行 auto save，關於 gorm 原理可以參考下列文章</p>
+
+<p><a href="http://spring.io/blog/2010/06/23/gorm-gotchas-part-1/">GORM Gotchas (Part 1)</a></p>
+
+<p>其中有一段如下：</p>
+
+<blockquote><p>   def b = Book.findByAuthor(params.author)
+   b.title = b.title.reverse()</p>
+
+<p>Note that there is no call to save() here. When the request has completed you will find that the book's title has been reversed in the database - the change has been persisted without an explicit save. This is because:</p>
+
+<ol>
+<li>the book is attached to the session (by virtue of being retrieved by a query);</li>
+<li>the title property is persistent (all properties are persistent unless configured as transient); and</li>
+<li>the property value has changed by the time the session closes.</li>
+</ol>
+</blockquote>
+
+<p>上述說明了就算沒有下 save() 的指令，特定的狀況下 domain 還是有可能自動寫入資料庫。</p>
+
+<p>如果我們不想要自動更新怎麼辦？文中也有提到下述狀況將放棄自動更新：</p>
+
+<blockquote><p>if any of the property values fail validation, the changes will not be persisted. Of course, if the values are valid and yet you still don't want to persist them, you can call <code>discard()</code> on your instance. This won't reset the values of the instance's properties, but it will ensure that they aren't saved to the database.</p></blockquote>
+
+<p>當 validation 不通過，或是執行 <code>discard()</code> 將取消更新。</p>
+
+<p>對於 grails domain 自動儲存以及取消自動儲存的特性有所了解後，
+筆者目前遇到的狀況如下：</p>
+
+<p>```
+def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+purchaseSheetDet.properties = params</p>
+
+<p>def batch = Batch.findByName(params["batch.name"])
+purchaseSheetDet.batch = batch</p>
+
+<p>purchaseSheetDet.discard()</p>
+
+<p>```
+上述程式碼就算最後執行了 discard() 自動更新沒有被取消，檢查實際將執行的 sql 開出 log 記錄如下</p>
+
+<p><code>
+Hibernate: update purchase_sheet_det set ...
+Hibernate: select ... from batch this_ where this_.name=?
+</code></p>
+
+<p>可以看到，在執行查詢 batch 之前就先對 update purchase_sheet_det 進行更新，當然之後的 <code>purchaseSheetDet.discard()</code> 就會失效，因為 update 語法已經在之前就已執行了。</p>
+
+<p>筆者推測當你下 find 時 gorm 為了確保查到的資料是正確的，會強制將未 persist 的 domain 進行 save。</p>
+
+<p>知道發生的原因後，我們可以將程式改寫如下：</p>
+
+<p>```
+def batch = Batch.findByName(params["batch.name"])</p>
+
+<p>def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+purchaseSheetDet.properties = params
+purchaseSheetDet.batch = batch</p>
+
+<p>purchaseSheetDet.discard()
+```</p>
+
+<p>一旦我們這樣調整順序以後，在預計要更新的 domain 之前，先把要 find 的 domain 準備好，這樣就不會因為 find 去觸動自動將有變動的 domain 進行更新，造成 <code>discard()</code> 指令失效。</p>
+
+<h2>結論</h2>
+
+<p>透過上面的結果，我們可以整理出幾個規則：</p>
+
+<ol>
+<li>若操作的 domain 的屬性變更有可能因為之後的檢查透過 discard 放棄變更，在檢查的過程中務必不可觸動 find 的執行，避免因為 find 把尚未確定的變更寫入實體資料庫</li>
+<li>若有必要使用到其他 domain 透過 find 取得實體，務必在可能執行 discard 的 domain 實體話之前透過 find 取得</li>
+<li>一旦上述規則都有遵守，但執行 discard 還是無效，可以透過開啟 hibernate 的 sql log 來檢查到底何時執行了更新的語法。開啟 sql log 的方式可參考:<a href="http://stackoverflow.com/questions/2568507/how-to-log-sql-statements-in-grails">How to log sql statements in grails</a></li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Window 設定：開機自動執行程式或 *.bat 不需登入，以啟動 spring-boot 應用程式為例，加映 command line 就能搞定的 geek 版]]></title>
@@ -711,181 +793,6 @@ webFileCachePaths
 <p>這是個想法，目前我們也正在投入這樣的應用，預期可以帶來不一樣的開發方式，軟體開發方式不停的在進步，也許還有很多團隊還在使用老舊的方法，這樣的組合，除了可以敏捷快速的開發，利用 extjs 所提供的方便性，相信可以帶來效率的提升，特別是前端的物件建立與操作，表單式的應用程式非常適合，筆者也曾在企業進行 extjs 的教育訓練，歡迎有興趣的讀者可以互相切磋。</p>
 
 <p>系列文章到此告一段落，期待下次在與大家分享！</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美組合]]></title>
-    <link href="http://smlsun.com/blog/2013/03/01/grails-taggable/"/>
-    <updated>2013-03-01T18:34:00+08:00</updated>
-    <id>http://smlsun.com/blog/2013/03/01/grails-taggable</id>
-    <content type="html"><![CDATA[<p>引言：<a href="http://blog.lyhdev.com/2013/01/grails-22.html">快速瀏覽 Grails 2.2 新功能</a></p>
-
-<blockquote><p>Grails 是受到 Ruby on Rails (RoR) 啟發的 Java EE 開發框架，它利用 Java 世界的 Groovy Scripting 語言實現與 Rails MVC 架構相似的開發工具；因為基於 Java 豐富的企業元件基礎，可以同時獲得敏捷的開發效率，並且和既有的 Java 程式保持相容。</p></blockquote>
-
-<p>最近開始想要幫家裡開發一個資訊發佈平台，因為我本身習慣開發 java，這陣子經由 <a href="http://blog.lyhdev.com/">lyhcode</a> 的介紹開始使用 Grails，發現他真的是一個充滿驚奇的 framework，一開始可能會因為他的 <strong>精簡</strong> 讓你感到困惑，原本可能需要的步驟被省略後反而無法理解… 但一旦深入了解並且了解其習性後，才發現原來開發 java 也可以這麼快速！</p>
-
-<p>一旦使用 Grails 後，你就不想用原始的 java 開發程式，正所謂回不去了… 除了骨子裡是 java，外在的部分基本上已經完全不一樣了，是說變帥了嘛？（誤）</p>
-
-<p>回到正題，在一般 blog 的網站，很常用到的 tag (標籤)在實作上… 說實在的細節實在很多，我也不知道該怎麼實作… 在完全不知道怎麼實作光構思就可能花上一天，在加上開發運氣好的話或許 3 天解決，但今天我所要介紹的，只花你 1 小時，就完成 taggable 的實作！！很難想像嘛？就讓我們繼續看下去。</p>
-
-<p>此範例參考下列網站：<a href="http://blog.armbruster-it.de/2011/04/a-perfect-team-grails-taggable-plugin-and-jquery-tagit/">Grails Taggable plugin and JQuery Tagit</a>，在這個範例中用的 grails 版本：1.4；jquery-tagit 版本：1.5。</p>
-
-<p>而本文章撰寫時所使用的 grails 版本：2.2；jquery-tagit 版本：2.0。雖然版本不一樣但步驟上大致相同，首先我們必須安裝 taggable plugin。</p>
-
-<h1>taggable &amp; jquery-ui plugin install</h1>
-
-<p>在新版 2.2 grails 中已不建議使用 plugin install，根據官方的建議我們只要在 BuildConfig.groovy 新增下列：</p>
-
-<pre><code>compile ':spring-security-ui:latest.release'
-compile ":taggable:1.0.1"
-</code></pre>
-
-<p>一旦進入 grails 運行環境時將會自動安裝 plugin，就是這麼簡單，而 resources plugin 在 2.2 版已內建，所以不需要安裝，接著我們來處理…</p>
-
-<h1>jquery tagit install</h1>
-
-<p>下載 <a href="http://aehlke.github.com/tag-it/">jquery tagit</a></p>
-
-<p>解壓縮後將檔案放置於：</p>
-
-<ul>
-<li>jquery.tagit.css: 'web-app/tagit/css/jquery.tagit.css'</li>
-<li>tagit.ui-zendesk.css: 'web-app/tagit/css/tagit.ui-zendesk.css'</li>
-<li>tag-it.js: 'web-app/tagit/js/tag-it.js'</li>
-</ul>
-
-
-<p>接著需要定義 ApplicationResourses.goovy</p>
-
-<pre><code>tagit {
-    dependsOn 'jquery-ui'
-    resource url: 'tagit/css/jquery.tagit.css'
-    resource url: 'tagit/css/tagit.ui-zendesk.css'
-    resource url: 'tagit/js/tag-it.js'
-}
-</code></pre>
-
-<p> 如此一來，基本環境與需要的套件都已經 ready 了，就讓我們開始實作 taggable 功能，就先從定義…</p>
-
-<h2>domain object</h2>
-
-<p>在 grails 中所謂的 domain object 就是所謂的資料表物件，定義資料結構的地方，假設我們是要開發自己的 blog 平台，那每一篇文章在資料庫中我們就可以定義 table 為 post，相關程式碼如下：</p>
-
-<pre><code>package sample
-
-class Post {
-    String title
-    String content
-}
-</code></pre>
-
-<p>我們所要做的就是將 <code>org.grails.taggable.Taggable</code> import 進去，並且實作 Taggable</p>
-
-<pre><code>package sample
-import org.grails.taggable.Taggable
-
-class Post implements Taggable {
-    String title
-    String content
-}
-</code></pre>
-
-<p>ok～我們的 domain object 準備好的，不需要額外的設定，而且完整的程式碼就是這樣而已，其他勒？沒有了… 詳細 taggable 可以如何操作請參考 grails 官方 <a href="http://www.grails.org/plugin/taggable">taggable plugin api</a>，接著我們需將先將介面也就是 view 的部份完成。</p>
-
-<h2>view</h2>
-
-<p>在 view 的撰寫上，基本上與原文中一樣，這邊對重點的部份進行說明</p>
-
-<p>``` groovy
-  ...
-  &lt;%-- in the head section --%>
-  &lt;%-- 下面會將剛剛在 ApplicationResourses 所定義需要載入的 tagit 相關 js、css 載入 --%>
-  &lt;r:use modules="tagit"/>
-  ...
-  &lt;%-- in the form section --%>
-  <fieldset class="form"></p>
-
-<pre><code>&lt;r:script&gt;
-  $(function() {
-    /*將${g.createLink(action: 'tags')}：產生 postController action 為 tags 的連結
-    * 透過設定 jquery tagit 的 tagSource 的網址，一旦當你輸入 tag name
-    * 將會透過 ajax 的方式比對輸入的資料與資料庫中的 tag 來當做 auto-completion
-    * 的資料來源  
-    */
-    $("ul[name='tags']").tagit({select:true, tagSource: "${g.createLink(action: 'tags')}"});
-  });
-&lt;/r:script&gt;
-
-&lt;h3&gt;Tags&lt;/h3&gt;
-&lt;div class="fieldcontain"&gt;
-  &lt;ul name="tags"&gt;
-     &lt;%-- 透過 ${post.tags} 取得 tags 的資料 --%&gt;
-    &lt;g:each in="${post.tags}"&gt;
-      &lt;li&gt;${it}&lt;/li&gt;
-    &lt;/g:each&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-</code></pre>
-
-<p>  </fieldset>
-```</p>
-
-<p>view 的部分這樣就算完成啦，跟前面比起來稍微複雜一點，但還是挺簡單的，接著我們就需要定義 controller 的部份。</p>
-
-<h2>controller</h2>
-
-<p>首先我們先把 tag 的 auto-completion 實作完成，我們需要先將相關的套件載入</p>
-
-<p>  import org.grails.taggable.Tag
-  import grails.converters.JSON</p>
-
-<p>接著我們就可以新增 controller 中的 action</p>
-
-<p>``` groovy
-  def tags = {</p>
-
-<pre><code>render Tag.findAllByNameIlike("${params.term}%").name as JSON
-</code></pre>
-
-<p>  }
-```</p>
-
-<p>如此就完成了 tag 的 auto-completion 實作，不要懷疑，真的就是這樣！我們來看看這句程式碼代表的意義：</p>
-
-<p>  render ... as JSON</p>
-
-<p>指的是將查出來的結果轉為 JSON，接著看下面：</p>
-
-<p>  Tag.findAllByNameIlike("${params.term}%")</p>
-
-<p>根據 <a href="http://grails.org/doc/latest/guide/GORM.html#domainClasses">grails domainClasses API</a> 的說明，提到：</p>
-
-<blockquote><p>Ilike - Similar to a Like, except case insensitive</p></blockquote>
-
-<p>也就是區別大小寫，找出所有的 Name like "${params.term}%"，其中 params.term 是當你在前端 view 的 tag field keyin 尚未被處理為 tag 時回傳的變數名稱，一旦有定義 tagit 的 tagSource，將透過 get http method 的 url params 回傳；所以一旦你 keyin 就會觸動，http request 查詢相似的 tag 名稱，假設我輸入了 t 就會查出 Tag table 中符合資料的欄位 name 轉換為 json 回傳給前端，如下：</p>
-
-<p>  ["test1","test2"]</p>
-
-<p>如此一來在 web 網頁輸入 tag 名稱時就會帶出候選的 tag 讓使用者選取，執行畫面如下：</p>
-
-<p><img src="https://lh5.googleusercontent.com/-CVYWTvOLJNc/UTClM-RrXQI/AAAAAAAALjg/DKmD2J-EhOU/s743/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2013-03-01+%E4%B8%8B%E5%8D%888.43.34.jpg" alt="img" /></p>
-
-<p>很棒吧！假設 tag 輸入完畢了，我們必須把 tag 的資料寫入資料庫我們定義 action 為 update，相關程式碼如下：</p>
-
-<p>``` groovy
-  def update(Long id) {</p>
-
-<pre><code>def post = Post.get(id)
-post.properties = params
-post.tags = params.tags // 為了儲存 tags 只要新增這行
-post.save(flush: true)
-</code></pre>
-
-<p>  }
-```</p>
-
-<p>就這樣完成 taggable 的開發，包括漂亮的介面、方便的輸入以及資料的更新與讀取，使用 grails 對於開發 java web 應用程式實在是太幸福了！</p>
 ]]></content>
   </entry>
   

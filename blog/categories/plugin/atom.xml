@@ -4,7 +4,7 @@
   <title><![CDATA[Category: plugin | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/plugin/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T21:44:54+08:00</updated>
+  <updated>2014-03-31T17:57:11+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,119 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[grails: 靜態資源或網址加入快取機制]]></title>
+    <link href="http://smlsun.com/blog/2014/03/31/grails-plugin-cache-head/"/>
+    <updated>2014-03-31T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/03/31/grails-plugin-cache-head</id>
+    <content type="html"><![CDATA[<p>關於瀏覽器的 cache 機制可以參考下列文章：</p>
+
+<ul>
+<li><a href="https://blog.othree.net/log/2012/12/22/cache-control-and-etag/">Cache Control 與 ETag</a></li>
+<li><a href="http://blog.toright.com/posts/3414/%E5%88%9D%E6%8E%A2-http-1-1-cache-%E6%A9%9F%E5%88%B6">初探 HTTP 1.1 Cache 機制</a></li>
+</ul>
+
+
+<p>其中 <a href="https://blog.othree.net/log/2012/12/22/cache-control-and-etag/">Cache Control 與 ETag</a> 這編寫的蠻清楚的，可以清楚知道 Cache 的使用還有相關的屬性差別，基本上對於瀏覽器是否使用 cache 可以從時間的判斷，以及  etag(Entity Tag) 的判斷來決定 server 回傳的 http status 是否為 304，若為 304 則瀏覽器就會讀取 cache 而不會對 server 請求 request。</p>
+
+<p>知道瀏覽器判斷使用 cache 的原理後，以 grails 為例，我們可以加入如下的判斷式：</p>
+
+<p>```
+if (isRequestedFileModified(req)) {</p>
+
+<pre><code>//get Program and return the image data
+</code></pre>
+
+<p>} else {</p>
+
+<pre><code>//file is the same
+response.sendStatus(304)
+return
+</code></pre>
+
+<p>}</p>
+
+<p>def isRequestedFileModified(req) {</p>
+
+<pre><code>// check etag and/or compare last modified date/time
+</code></pre>
+
+<p>}
+```</p>
+
+<p>如此，當我們對後端請求取得資源時，先檢查 etag 有沒有存在，若沒有表示為全新請求，若 etag 相同，可在進一步檢查有沒有更新過或是快取距離最後一次更新是否超過 max-age 所定義的時間。</p>
+
+<p>在實際網站的開發，對於需要大量資源進行計算的請求，或是靜態圖片的讀取，就可以使用快取的機制，來減少 server 的負載，畢竟若不是經常更新的資料，我們可以不用每次都向 server 請求重新取得資源。</p>
+
+<p>雖然上述範例是用 grails 為例，但對於其他語言的實作，不外乎就使檢查 etag 以及最後更新時間，另外若你是使用 grails 進行開發，可以直接使用下列 plugin:</p>
+
+<ul>
+<li><a href="http://grails.org/plugin/cache-headers">Caching Headers Plugin</a></li>
+</ul>
+
+
+<p>使用此 plugin 你可以事先定義各種 cache 機制的政策比如 plugin 中的範例：</p>
+
+<p>```
+cache.headers.presets = [</p>
+
+<pre><code>unauthed_page: [shared:true, validFor: 300], // 5 minute refresh window
+authed_page: false, // No caching for logged in user
+content: [shared:true, validFor: 3600], // 1hr on content
+recent_items_feed: [shared: true, validFor: 1800], // 30 minute throttle on RSS updates
+search_results: [validFor: 60, shared: true],
+taxonomy_results: [validFor: 60, shared: true]
+</code></pre>
+
+<p>]
+```</p>
+
+<p>以便根據不同狀況來有效使用 cache，實際在 controller 中定義 cache 所需屬性可以使用其提供的 DSL 來進行，如下：</p>
+
+<p>```</p>
+
+<p>def object = s3Service.getObject("${grailsApplication.config.grails.aws.root}/${params.name}/${file}")</p>
+
+<p>withCacheHeaders {</p>
+
+<pre><code>def image = object
+delegate.lastModified {
+    image.getLastModifiedDate()
+}
+etag {
+    image.getKey()  
+ }
+generate {
+    response.contentType = "image/jpeg"
+    response.outputStream &lt;&lt; image.dataInputStream
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>其中：</p>
+
+<ol>
+<li><code>delegate.lastModified</code> closure 定義比對時間的資料來源。</li>
+<li><code>etag</code> closure 定義資源識別的方式。</li>
+<li><code>generate</code> closure 會在判斷該請求需要重新取得進行呼叫，若不需要重新取的則會回傳 status 304，使用瀏覽器快取。</li>
+</ol>
+
+
+<blockquote><p>補充：若要了解上述 closure 的使用原理可參考下述連結，範例簡單清楚：</p>
+
+<ul>
+<li><a href="http://www.codedata.com.tw/java/groovy-tutorial-03-closure/">Groovy Tutorial（3）淺談 Closure 程式設計</a></li>
+</ul>
+
+
+<p>可以幫助更進一步理解運作原理。</p></blockquote>
+
+<p>如此，若要自己撰寫快取機制，或是使用既有的 plugin 都可以在關鍵時刻讓你的網站能夠有更快的效能。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[grails taggable plugin 搭配 jquery tagit 的完美組合]]></title>

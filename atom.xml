@@ -3,7 +3,7 @@
   <title><![CDATA[蹤影]]></title>
   <link href="http://smlsun.com/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T21:44:54+08:00</updated>
+  <updated>2014-03-31T17:57:11+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -11,6 +11,595 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[spring-boot: server startup or shutdown listener]]></title>
+<link href="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/"/>
+<updated>2014-03-31T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown</id>
+
+      <content type="html"><![CDATA[<p>在之前的專案中遇到一種狀況，使用者說他們的服務沒有反應？通常會有幾種情形：</p>
+
+<ol>
+<li>服務被人為關閉</li>
+<li>作業系統被關閉</li>
+<li>記憶體不足造成服務終止</li>
+</ol>
+
+
+<p>第三點的原因有很多，這邊先不談，關於 1、2 點可能是人為，或者管理者在做系統維護時，不知道需要在重新啟動服務，或是錯誤關閉，不管哪一種，都會造成服務無法運作，接著你就會接到電話或信件，系統不 work 了。</p>
+
+<p>通常，也只能問有沒有人去操作主機，或是有沒有人去關閉服務？常常問不出所以然，當然就如同上面所舉的幾點，不一定是人為因素，但我們希望可以加快系統出現異常時的反應速度，將服務停止時間降到最低。</p>
+
+<p>因此，主動通知是比較積極的作法，唯有當下接收到服務開啟或關閉的訊息，才能夠在最接近問題發生的點來釐清問題，另一方面，也是較有效率的作法，誰也不想定期每天去檢查你所安裝的服務今天是否有正常運行。</p>
+
+<p>說這麼多，此篇要介紹的是如何在使用 spring-boot 時，定義 server 開啟或關閉時執行特定的程式，比如發 mail 或是寫 log，當然使用傳統 spring 也可以，參考：<a href="http://www.mkyong.com/spring/spring-postconstruct-and-predestroy-example/">Spring @PostConstruct And @PreDestroy Example</a>。</p>
+
+<p>在實作上，我們可以利用 @Configuration 的特性，在類別中，只要我們打上 @Configuration，該類別就會作為類似 xml 設定檔，在服務啟動時將在類別中定義的方法根據每個方法的 annotation 註冊，下面將分別針對啟動與關閉服務利用 @PostConstruct，以及 @PreDestroy 來達成。</p>
+
+<h2>服務啟動時 @PostConstruct</h2>
+
+<p>@PostConstruct，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PostConstruct.html">Annotation Type PostConstruct</a>，文件中有詳細說明使用時機，其中：</p>
+
+<blockquote><p>The PostConstruct annotation is used on a method that needs to be executed after dependency injection is done to perform any initialization.</p></blockquote>
+
+<p>可以看到執行的時機點在依賴注入後進行初始作業的執行，正是我們想要的。</p>
+
+<h2>服務關閉時 @PreDestroy</h2>
+
+<p>@PreDestroy，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PreDestroy.html">Annotation Type PreDestroy</a></p>
+
+<blockquote><p>The PreDestroy annotation is used on methods as a callback notification to signal that the instance is in the process of being removed by the container.</p></blockquote>
+
+<p>文中說明，當執行實體被容器移除時會執行該動作，若我們將 @PreDestroy 定義在有 @Configuration 標註的類別中，因為 @Configuration 在服務啟動時只會產生一個實體，因此一旦服務被關閉時進行類別 GC 時，就會連帶觸動執行有標註 @PreDestroy 的函式。</p>
+
+<p>透過上述兩個 annotation 就可以做到啟動或關閉時發出 mail 通知，不過這邊要注意關閉的情形，若使用者強制將服務關閉，不等待 server 的後續處理，那標註 @PreDestroy 的函式將無法完全執行完畢，目前個人沒有更好的方式可以避免，若讀者有不錯的作法，務必讓我知道，或者是關於上述應用情境有更好的處理方式，比如該 annotation 有錯用的地方，也請不吝指教。</p>
+
+<p>最後附上開關 server 自動送出 mail 的程式碼給大家參考，以 gmail 為例：</p>
+
+<p>定義 MailSender 以及預設的 SimpleMailMessage</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.context.annotation.Bean;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>import org.springframework.mail.MailSender;
+</span><span class='line'>import org.springframework.mail.SimpleMailMessage;
+</span><span class='line'>import org.springframework.mail.javamail.JavaMailSenderImpl;
+</span><span class='line'>
+</span><span class='line'>import java.util.Properties;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class ApplicationConfig{
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public MailSender mailSender(){
+</span><span class='line'>        JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
+</span><span class='line'>        javaMailSenderImpl.setHost("smtp.gmail.com");
+</span><span class='line'>        javaMailSenderImpl.setPort(587);
+</span><span class='line'>        javaMailSenderImpl.setUsername("user");
+</span><span class='line'>        javaMailSenderImpl.setPassword("password");
+</span><span class='line'>
+</span><span class='line'>        Properties mailProp = new Properties();
+</span><span class='line'>        mailProp.put("mail.smtp.auth", true);
+</span><span class='line'>        mailProp.put("mail.smtp.starttls.enable", true);
+</span><span class='line'>
+</span><span class='line'>        javaMailSenderImpl.setJavaMailProperties(mailProp);
+</span><span class='line'>        return (MailSender) javaMailSenderImpl;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    @Bean
+</span><span class='line'>    public SimpleMailMessage simpleMailMessage() {
+</span><span class='line'>        SimpleMailMessage msg = new SimpleMailMessage();
+</span><span class='line'>        msg.setTo("to@gmail.com");
+</span><span class='line'>        msg.setFrom("from@gmail.com");
+</span><span class='line'>        msg.setText("內文");
+</span><span class='line'>        return msg;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>定義開關服務處理函式，將定義好的 MailSender 以及 SimpleMailMessage 注入並且使用：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import org.springframework.beans.factory.annotation.Autowired;
+</span><span class='line'>import org.springframework.context.annotation.Configuration;
+</span><span class='line'>import org.springframework.mail.MailException;
+</span><span class='line'>import org.springframework.mail.MailSender;
+</span><span class='line'>import org.springframework.mail.SimpleMailMessage;
+</span><span class='line'>
+</span><span class='line'>import javax.annotation.PostConstruct;
+</span><span class='line'>import javax.annotation.PreDestroy;
+</span><span class='line'>
+</span><span class='line'>@Configuration
+</span><span class='line'>public class ContextListener {
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    MailSender mailSender;
+</span><span class='line'>
+</span><span class='line'>    @Autowired
+</span><span class='line'>    SimpleMailMessage simpleMailMessage;
+</span><span class='line'>
+</span><span class='line'>    @PostConstruct
+</span><span class='line'>    public void startupMailNotify(){
+</span><span class='line'>
+</span><span class='line'>        simpleMailMessage.setSubject("服務啟動");
+</span><span class='line'>
+</span><span class='line'>        try{
+</span><span class='line'>            mailSender.send(simpleMailMessage);
+</span><span class='line'>        }
+</span><span class='line'>        catch(MailException ex) {
+</span><span class='line'>            System.err.println(ex.getMessage());
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    @PreDestroy
+</span><span class='line'>    public void shutdownMailNotify(){
+</span><span class='line'>        simpleMailMessage.setSubject("服務關閉");
+</span><span class='line'>        try{
+</span><span class='line'>            mailSender.send(simpleMailMessage);
+</span><span class='line'>        }
+</span><span class='line'>        catch(MailException ex) {
+</span><span class='line'>            System.err.println(ex.getMessage());
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其實可以在精簡，不過也夠簡單了，並且降低耦合，是吧～</p>
+
+<p>在 spring 與 spring-boot 其中之一的差別，就是 spring-boot 可以不需要 xml 定義，寫起來又更方便了點、精簡了點。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[grails: 靜態資源或網址加入快取機制]]></title>
+<link href="http://smlsun.com/blog/2014/03/31/grails-plugin-cache-head/"/>
+<updated>2014-03-31T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/03/31/grails-plugin-cache-head</id>
+
+      <content type="html"><![CDATA[<p>關於瀏覽器的 cache 機制可以參考下列文章：</p>
+
+<ul>
+<li><a href="https://blog.othree.net/log/2012/12/22/cache-control-and-etag/">Cache Control 與 ETag</a></li>
+<li><a href="http://blog.toright.com/posts/3414/%E5%88%9D%E6%8E%A2-http-1-1-cache-%E6%A9%9F%E5%88%B6">初探 HTTP 1.1 Cache 機制</a></li>
+</ul>
+
+
+<p>其中 <a href="https://blog.othree.net/log/2012/12/22/cache-control-and-etag/">Cache Control 與 ETag</a> 這編寫的蠻清楚的，可以清楚知道 Cache 的使用還有相關的屬性差別，基本上對於瀏覽器是否使用 cache 可以從時間的判斷，以及  etag(Entity Tag) 的判斷來決定 server 回傳的 http status 是否為 304，若為 304 則瀏覽器就會讀取 cache 而不會對 server 請求 request。</p>
+
+<p>知道瀏覽器判斷使用 cache 的原理後，以 grails 為例，我們可以加入如下的判斷式：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (isRequestedFileModified(req)) {
+</span><span class='line'>  //get Program and return the image data
+</span><span class='line'>} else {
+</span><span class='line'>  //file is the same
+</span><span class='line'>  response.sendStatus(304)
+</span><span class='line'>  return
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>def isRequestedFileModified(req) {
+</span><span class='line'>  // check etag and/or compare last modified date/time
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此，當我們對後端請求取得資源時，先檢查 etag 有沒有存在，若沒有表示為全新請求，若 etag 相同，可在進一步檢查有沒有更新過或是快取距離最後一次更新是否超過 max-age 所定義的時間。</p>
+
+<p>在實際網站的開發，對於需要大量資源進行計算的請求，或是靜態圖片的讀取，就可以使用快取的機制，來減少 server 的負載，畢竟若不是經常更新的資料，我們可以不用每次都向 server 請求重新取得資源。</p>
+
+<p>雖然上述範例是用 grails 為例，但對於其他語言的實作，不外乎就使檢查 etag 以及最後更新時間，另外若你是使用 grails 進行開發，可以直接使用下列 plugin:</p>
+
+<ul>
+<li><a href="http://grails.org/plugin/cache-headers">Caching Headers Plugin</a></li>
+</ul>
+
+
+<p>使用此 plugin 你可以事先定義各種 cache 機制的政策比如 plugin 中的範例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cache.headers.presets = [
+</span><span class='line'>    unauthed_page: [shared:true, validFor: 300], // 5 minute refresh window
+</span><span class='line'>    authed_page: false, // No caching for logged in user
+</span><span class='line'>    content: [shared:true, validFor: 3600], // 1hr on content
+</span><span class='line'>    recent_items_feed: [shared: true, validFor: 1800], // 30 minute throttle on RSS updates
+</span><span class='line'>    search_results: [validFor: 60, shared: true],
+</span><span class='line'>    taxonomy_results: [validFor: 60, shared: true]
+</span><span class='line'>]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以便根據不同狀況來有效使用 cache，實際在 controller 中定義 cache 所需屬性可以使用其提供的 DSL 來進行，如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>def object = s3Service.getObject("${grailsApplication.config.grails.aws.root}/${params.name}/${file}")
+</span><span class='line'>
+</span><span class='line'>withCacheHeaders {
+</span><span class='line'>    def image = object
+</span><span class='line'>    delegate.lastModified {
+</span><span class='line'>        image.getLastModifiedDate()
+</span><span class='line'>    }
+</span><span class='line'>    etag {
+</span><span class='line'>        image.getKey()  
+</span><span class='line'>     }
+</span><span class='line'>    generate {
+</span><span class='line'>        response.contentType = "image/jpeg"
+</span><span class='line'>        response.outputStream &lt;&lt; image.dataInputStream
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中：</p>
+
+<ol>
+<li><code>delegate.lastModified</code> closure 定義比對時間的資料來源。</li>
+<li><code>etag</code> closure 定義資源識別的方式。</li>
+<li><code>generate</code> closure 會在判斷該請求需要重新取得進行呼叫，若不需要重新取的則會回傳 status 304，使用瀏覽器快取。</li>
+</ol>
+
+
+<blockquote><p>補充：若要了解上述 closure 的使用原理可參考下述連結，範例簡單清楚：</p>
+
+<ul>
+<li><a href="http://www.codedata.com.tw/java/groovy-tutorial-03-closure/">Groovy Tutorial（3）淺談 Closure 程式設計</a></li>
+</ul>
+
+
+<p>可以幫助更進一步理解運作原理。</p></blockquote>
+
+<p>如此，若要自己撰寫快取機制，或是使用既有的 plugin 都可以在關鍵時刻讓你的網站能夠有更快的效能。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/03/31/grails-plugin-cache-head/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[grails: gorm 自動更新與 discard 方法 使用特性與注意事項]]></title>
+<link href="http://smlsun.com/blog/2014/03/31/grails-gorm-discard/"/>
+<updated>2014-03-31T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/03/31/grails-gorm-discard</id>
+
+      <content type="html"><![CDATA[<p>在使用 grails domain 時，有時候雖然我們有對 domain 變更值，但我們需要經過一些判斷後，才要正確寫入資料庫，但在 grails 的環境在你還沒有下 save 的指令時，他會因為函式執行的需要進行 auto save，關於 gorm 原理可以參考下列文章</p>
+
+<p><a href="http://spring.io/blog/2010/06/23/gorm-gotchas-part-1/">GORM Gotchas (Part 1)</a></p>
+
+<p>其中有一段如下：</p>
+
+<blockquote><p>   def b = Book.findByAuthor(params.author)
+   b.title = b.title.reverse()</p>
+
+<p>Note that there is no call to save() here. When the request has completed you will find that the book&#8217;s title has been reversed in the database - the change has been persisted without an explicit save. This is because:</p>
+
+<ol>
+<li>the book is attached to the session (by virtue of being retrieved by a query);</li>
+<li>the title property is persistent (all properties are persistent unless configured as transient); and</li>
+<li>the property value has changed by the time the session closes.</li>
+</ol>
+</blockquote>
+
+<p>上述說明了就算沒有下 save() 的指令，特定的狀況下 domain 還是有可能自動寫入資料庫。</p>
+
+<p>如果我們不想要自動更新怎麼辦？文中也有提到下述狀況將放棄自動更新：</p>
+
+<blockquote><p>if any of the property values fail validation, the changes will not be persisted. Of course, if the values are valid and yet you still don&#8217;t want to persist them, you can call <code>discard()</code> on your instance. This won&#8217;t reset the values of the instance&#8217;s properties, but it will ensure that they aren&#8217;t saved to the database.</p></blockquote>
+
+<p>當 validation 不通過，或是執行 <code>discard()</code> 將取消更新。</p>
+
+<p>對於 grails domain 自動儲存以及取消自動儲存的特性有所了解後，
+筆者目前遇到的狀況如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+</span><span class='line'>purchaseSheetDet.properties = params
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>def batch = Batch.findByName(params["batch.name"])
+</span><span class='line'>purchaseSheetDet.batch = batch
+</span><span class='line'>
+</span><span class='line'>purchaseSheetDet.discard()
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述程式碼就算最後執行了 discard() 自動更新沒有被取消，檢查實際將執行的 sql 開出 log 記錄如下</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Hibernate: update purchase_sheet_det set ...
+</span><span class='line'>Hibernate: select ... from batch this_ where this_.name=?</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，在執行查詢 batch 之前就先對 update purchase_sheet_det 進行更新，當然之後的 <code>purchaseSheetDet.discard()</code> 就會失效，因為 update 語法已經在之前就已執行了。</p>
+
+<p>筆者推測當你下 find 時 gorm 為了確保查到的資料是正確的，會強制將未 persist 的 domain 進行 save。</p>
+
+<p>知道發生的原因後，我們可以將程式改寫如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def batch = Batch.findByName(params["batch.name"])
+</span><span class='line'>
+</span><span class='line'>def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+</span><span class='line'>purchaseSheetDet.properties = params
+</span><span class='line'>purchaseSheetDet.batch = batch
+</span><span class='line'>
+</span><span class='line'>purchaseSheetDet.discard()</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦我們這樣調整順序以後，在預計要更新的 domain 之前，先把要 find 的 domain 準備好，這樣就不會因為 find 去觸動自動將有變動的 domain 進行更新，造成 <code>discard()</code> 指令失效。</p>
+
+<h2>結論</h2>
+
+<p>透過上面的結果，我們可以整理出幾個規則：</p>
+
+<ol>
+<li>若操作的 domain 的屬性變更有可能因為之後的檢查透過 discard 放棄變更，在檢查的過程中務必不可觸動 find 的執行，避免因為 find 把尚未確定的變更寫入實體資料庫</li>
+<li>若有必要使用到其他 domain 透過 find 取得實體，務必在可能執行 discard 的 domain 實體話之前透過 find 取得</li>
+<li>一旦上述規則都有遵守，但執行 discard 還是無效，可以透過開啟 hibernate 的 sql log 來檢查到底何時執行了更新的語法。開啟 sql log 的方式可參考:<a href="http://stackoverflow.com/questions/2568507/how-to-log-sql-statements-in-grails">How to log sql statements in grails</a></li>
+</ol>
+
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/03/31/grails-gorm-discard/"></a></p>]]></content>
+    </entry>
+  
+    <entry>
+      
+
+
+
+
+<title type="html"><![CDATA[AWS S3: 設定特定網站直接存取雲端圖片(不使用 accessKey ，secretKey)]]></title>
+<link href="http://smlsun.com/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey/"/>
+<updated>2014-03-31T00:00:00+08:00</updated>
+<id>http://smlsun.com/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey</id>
+
+      <content type="html"><![CDATA[<p>關於 Amazon S3 的申請，可參考下列文章：</p>
+
+<ul>
+<li><a href="http://s3131212.com/amazon-simple-storage-service/">Amazon Simple Storage Service (Amazon S3) </a>: 介紹如何註冊使用 S3 服務</li>
+</ul>
+
+
+<p>一旦申請完成，我們可以透過 Make Public 來使資源可以透過 url 直接存取，一旦設定完成可以使用下列範例網址直接存取而不需要 accessKey 以及 secretKey:</p>
+
+<p><code>https://s3.amazonaws.com/upload.sample.net/attachment/XXXXXX/111111.jpg</code></p>
+
+<p>這樣做有什麼好處？既然使用 S3 作為圖片或是檔案的來源，當然希望可以利用 S3 的服務分散網站運作所需資源，特別是圖檔呈現部分，其中包括圖檔 cache 的機制，也將由 S3 進行判斷。</p>
+
+<p>不過若將 S3 存放的檔案設為 public 看來是最快的方式，卻令資源暴露在網際網路之中，有沒有更折衷的方式，只允許目標網站可以以不透過 accessKey 以及 secretKey 進行存取，單純透過 url？答案是可以的，首先點選 <code>Edit bucket polocy</code>，如下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-upmGYOEmyR8/UzkIupOGWtI/AAAAAAAAOSg/-bn11ssJVsA/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-03-31+%E4%B8%8B%E5%8D%882.12.49.png" title="螢幕快照 2014-03-31 下午2.12.49.png" alt="enter image description here" /></p>
+
+<p>點選之後會跳出定義 bucket polocy 視窗，我們可以填入下列 json 格式:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  "Version": "2012-10-17",
+</span><span class='line'>  "Id": "S3PolicyId1",
+</span><span class='line'>  "Statement": [
+</span><span class='line'>      {
+</span><span class='line'>          "Sid": "IPAllow",
+</span><span class='line'>          "Effect": "Allow",
+</span><span class='line'>          "Principal": {
+</span><span class='line'>              "AWS": "*"
+</span><span class='line'>          },
+</span><span class='line'>          "Action": "s3:*",
+</span><span class='line'>          "Resource": "arn:aws:s3:::upload.net/*",
+</span><span class='line'>          "Condition": {
+</span><span class='line'>              "IpAddress": {
+</span><span class='line'>                  "aws:SourceIp": "192.168.0. 1/24"
+</span><span class='line'>              }
+</span><span class='line'>          }
+</span><span class='line'>      },
+</span><span class='line'>      {
+</span><span class='line'>          "Sid": "Allow get requests originated from sample.net",
+</span><span class='line'>          "Effect": "Allow",
+</span><span class='line'>          "Principal": "*",
+</span><span class='line'>          "Action": "s3:GetObject",
+</span><span class='line'>          "Resource": "arn:aws:s3:::upload.sample.net/*",
+</span><span class='line'>          "Condition": {
+</span><span class='line'>              "StringLike": {
+</span><span class='line'>                  "aws:Referer": [
+</span><span class='line'>                      "http://sample.net/*",
+</span><span class='line'>                      "http://dev.sample.net:8080/*",
+</span><span class='line'>                      "http://www.sample.net/*"
+</span><span class='line'>                  ]
+</span><span class='line'>              }
+</span><span class='line'>          }
+</span><span class='line'>      }
+</span><span class='line'>  ]
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上述設定檔中，定義 <code>aws:SourceIp</code> 可以讓我們在主機上操作 S3 而不需要 accessKey 以及 secretKey，舉例來說可以透過如同 <code>wget  https://s3.amazonaws.com/upload.sample.net/attachment/XXXXXX/111111.jpg</code> 來取得資源。</p>
+
+<p>定義 <code>aws:Referer</code> 的話，則可以指定特定的 domain 才可以進行資源的存取，也就是說一旦使用者瀏覽 <code>www.sample.net</code> 這個網站時，則該瀏覽器在讀取圖檔時傳送目前所屬網址資訊(refer 屬性)，則圖檔就可以直接透過 url 向 S3 取得檔案資源。</p>
+
+<p>當然這些 polocy 變化百百種我們可以參考 aws 提供的範例進行修改：<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/AccessPolicyLanguage_UseCases_s3_a.html">Example Cases for Amazon S3 Bucket Policies</a></p>
+
+<h1>結論</h1>
+
+<p>透過上述的設定，可以帶來的好處：</p>
+
+<ol>
+<li>S3 分散了資源載入所需系統效能，還有頻寬</li>
+<li>判斷是否重新取得(http starus 200) 或是沒有變動使用快取(http starus 304) 交由 S3 判斷，自行開發的服務不需實作。</li>
+<li>安全性與方便度兼具，可以直接透過 url 存取，又不致於暴露在網際網路之中，透過定義 polocy 指定特定的 domain 可以直接存取支援</li>
+</ol>
+
+
+<p>經由這次對 S3 操作上的了解，若想要製作網站靜態資源的快取機制，也就不是難事，下一篇在說明如何自行開發快取機制。</p>
+<p><a rel="bookmark" href="http://smlsun.com/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey/"></a></p>]]></content>
+    </entry>
   
     <entry>
       
@@ -2663,735 +3252,6 @@ form.query('field:nth-child(3n)');
 </ol>
 
 <p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-5-30/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs-4-30 精簡程式碼案例分享]]></title>
-<link href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"/>
-<updated>2013-08-05T19:54:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/08/05/extjs-4-30</id>
-
-      <content type="html"><![CDATA[<p>程式的寫法百百種，要能夠完成一個特定功能沒有標準答案，但要寫的精簡需要經驗的累積，甚至需要對語言特性要有一定的了解，剛好筆者最近 review 了一段 extjs 程式碼，可以與大家分享。</p>
-
-<p>在開始之前，必須先提到一個觀念，extjs 雖然是 RIA，並且有自己的類別化系統，不過他的類別或物件脫離不了 javascript，因此 javascript 中的<a href="http://www.josephjiang.com/presentation/OOJS/object-basic.html">物件</a>、<a href="http://blog.joomla.org.tw/javascript/54-general/81-javascript-functon-basic.html">函數</a>、<a href="http://smlsun.com/blog/2013/01/31/javascript-what-is-this/">this</a> 的特性他也都有。</p>
-
-<p>接著我們來看一段 extjs 類別的程式碼，如下：</p>
-
-<p>這樣的結構可以參考 extjs 官方對於 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext-method-define">Ext.define</a> 的說明，其中函數所包含的參數 <code>define( className, data, createdFn )</code> data 的形態就是 Object，所以在下列程式第二個參數所傳入的就是標準的 javascript Object，只是裡面所定義的屬性 extjs 有自己的特定的命名以便辨別作為處理，但不代表你不可以把它當作一般的 Object 來操做，在使用 extjs 時很容易讓使用的人誤解認為他是個特別的存在，其實他也只是 javascript。</p>
-
-<p>有了這樣的認知，我們看看下面的程式碼，裡面有很多段重覆的程式碼，參考註解。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view. &#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">]</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">btn</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//重覆</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">crebtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">delbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">savbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">updbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">;</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">redbtn</span><span class="o">=</span><span class="nx">button</span><span class="p">.</span><span class="nx">ownerCt</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的每一個函式都重覆宣告了 5 個 btn，這樣在維護上是沒有效率的，假設我們需要在加一個按鈕，我們就必須每個函式在加一個宣告，其實還有更好的方式，假設你了解了物件、函式、還有 this 的特性，我們可以將這五個按鈕的參照存在第二個參數 data 下，透過例如：<code>this.updateBtn=component.down('button[itemId=createBtn]');</code> 如下面程式碼中 <code>onStdEditorToolbarRender</code>，用到的事件 binding 是 extjs Component <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Component-event-render">render 事件</a> 元件實體化後觸動該事件進行處理，只要找到一個這樣只執行一次的進入點，將需要用到的元件存入 this 這個物件，之後我們就不需要重覆 query 物件的參照，也更加快處理速度，雖然這樣的調整可能效果不明顯，但累積起還是很可觀的，特別當你感覺到慢的時候，可能已經遍佈程式碼中，<strong>好習慣要從日常養成</strong>。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.view.StdEditorToolbar&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.toolbar.Toolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">alias</span><span class="o">:</span> <span class="s1">&#39;widget.stdeditortoolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">requires</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.CreateBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.DeleteBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.SaveBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.ReadBtn&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="s1">&#39;foodprint.view.UpdateBtn&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">itemId</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initComponent</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">me</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">Ext</span><span class="p">.</span><span class="nx">applyIf</span><span class="p">(</span><span class="nx">me</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;createbtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onCreateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;deletebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onDeleteBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;savebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onSaveBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;readbtn&#39;</span>
-</span><span class='line'>                <span class="p">},</span>
-</span><span class='line'>                <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">xtype</span><span class="o">:</span> <span class="s1">&#39;updatebtn&#39;</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">disabled</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                        <span class="nx">click</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                            <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onUpdateBtnClick</span><span class="p">,</span>
-</span><span class='line'>                            <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                        <span class="p">}</span>
-</span><span class='line'>                    <span class="p">}</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">],</span>
-</span><span class='line'>            <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                <span class="nx">render</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>                    <span class="nx">fn</span><span class="o">:</span> <span class="nx">me</span><span class="p">.</span><span class="nx">onStdEditorToolbarRender</span><span class="p">,</span>
-</span><span class='line'>                    <span class="nx">scope</span><span class="o">:</span> <span class="nx">me</span>
-</span><span class='line'>                <span class="p">}</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="nx">me</span><span class="p">.</span><span class="nx">callParent</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onDeleteBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onSaveBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onUpdateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">button</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="p">.</span><span class="nx">setDisabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onStdEditorToolbarRender</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">component</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">crebtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=createBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">delbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=deleteBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">savbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=saveBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">updbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=updateBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">redbtn</span><span class="o">=</span><span class="nx">component</span><span class="p">.</span><span class="nx">down</span><span class="p">(</span><span class="s1">&#39;button[itemId=readBtn]&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>優化過的程式碼，可以看到物件的 query 只有一次，之後都可以透過 this 來存取，每個函式所執行的都是關鍵的程式碼，沒有多餘的宣告，雖然是很簡單的觀念與應用，如果知道將會受用無窮，不只在 extjs 在一般的 javascript 開發也可以應用。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-4-30/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs-3-30 mixins(混和) 特性說明]]></title>
-<link href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"/>
-<updated>2013-08-05T11:56:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/08/05/extjs-3-30</id>
-
-      <content type="html"><![CDATA[<p>extjs4 中的 mixsins 是 extjs4 的新特性，在筆者之前寫過的文章中<a href="http://ithelp.ithome.com.tw/question/10120091">extjs 4 系列 1/5：新特性與基本概念</a> mixins (混合複數classes) 章節，有做過簡單介紹，讀者可以參考相關說明，了解 mixsins 的特性，官方 API 可參考連結：<a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>，在 extjs 中屬於 Ext.Class 的函式，也就等於所有不管 mvc 或是元件，都可以使用 mixins 的特性。</p>
-
-<p>接著，想要知道 mixins 在不同狀況下的處理方式可參考 <a href="http://www.cnblogs.com/fsjohnhuang/archive/2013/01/29/2880705.html#o1.3.3.">Ext JS 4 First Look 中文翻譯</a> mixins 章節，在使用上就必須要注意什麼情況下函式或屬性在捨麼情況下會被保留，什麼會被覆蓋。</p>
-
-<p>舉個例子，假設我們有兩個 controller 分別如下：</p>
-
-<p>共用元件之 controller：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.StdController&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;StdEditorToolbar&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;stdEditorToolbar&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;stdeditortoolbar&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">initial</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tbar</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">onCreateBtnClick</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">btn</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>     <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>另一個別功能之 controller:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;foodprint.controller.AController&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">extend</span><span class="o">:</span> <span class="s1">&#39;Ext.app.Controller&#39;</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">StdEditorToolbarCtrl</span><span class="o">:</span> <span class="s1">&#39;foodprint.controller.StdController&#39;</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">views</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s1">&#39;BatchEditor&#39;</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">refs</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">ref</span><span class="o">:</span> <span class="s1">&#39;batchGrid&#39;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;batchgrid&#39;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">],</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">application</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">readBatch</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">item</span><span class="p">,</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">eOpts</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">...</span>
-</span><span class='line'>    <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在上述的使用情境中，StdController 中的 refs 將會失效，保留 AController 中的 refs，因此在這樣狀況下，若要在 AController 也要能夠有 StdController 中 refs 定義的元件，勢必要在 AController 再次定義一次 StdController 的 refs。</p>
-
-<p>另一種使用情境：假設被 mixins 的類別跟基礎類別有同名的函式，但是我們希望兩個個別實作同名函式<strong>都可以被執行</strong>可以參考 <a href="http://docs-origin.sencha.com/extjs/4.2.1/#!/api/Ext.Class-cfg-mixins">mixins API</a>的範例：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;CanSing&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>         <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;I&#39;m on the highway to hell...&quot;</span><span class="p">)</span>
-</span><span class='line'>     <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">Ext</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;Musician&#39;</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>     <span class="nx">mixins</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>         <span class="nx">canSing</span><span class="o">:</span> <span class="s1">&#39;CanSing&#39;</span>
-</span><span class='line'>     <span class="p">},</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="nx">sing</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>         <span class="c1">// delegate singing operation to mixin</span>
-</span><span class='line'>         <span class="k">this</span><span class="p">.</span><span class="nx">mixins</span><span class="p">.</span><span class="nx">canSing</span><span class="p">.</span><span class="nx">sing</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-</span><span class='line'>     <span class="p">}</span>
-</span><span class='line'><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>希望透過本篇可以讓讀者了解 mixins 的特性，進而有效的重覆利用函式，減少不必要的重覆程式碼。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/05/extjs-3-30/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs 2/30:使用 sencha architect 開發注意事項]]></title>
-<link href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"/>
-<updated>2013-08-01T22:52:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/08/01/extjs-2-30</id>
-
-      <content type="html"><![CDATA[<p>在使用 sencha architect 開發時，我們很難對 js 檔進行檔案修改，基本上所有的檔案調整，都是透過 architect 存檔時一並寫入對應的原始檔案，其中關於每個 js 的原始檔放於 <code>EXTJS_HOME/metadata</code>，但一旦你進入該資料夾檢視相關的檔案，可以發現他跟一般的 js 有出入，所以你也不要想再裡面進行編輯，有可能會造成整個專案運作異常。</p>
-
-<p>除此之外在專案裡面，有兩個設定檔為 architect 所產生分別是 <code>.architect</code> 以及 <code>projectName.xds</code>，其中 <code>.architect</code> 會自動產生，但 xds 就不好搞了，如果你是一個人開發，還不致於發生問題，但若是多人開發，再加上有使用版本控管，問題就來了；xds 檔所記錄的似乎是在 architect 建立 extjs 元件之間的關聯，因此若是多人開發不同的功能，並且在版本控管的情況下，該檔案很容易有衝突；而在編修衝突時，很多時候會不知道該如何下手，因為代表元件的相關檔案識別皆已編碼，只有 IDE 才看的懂對應的關係，如果 xds 的內容無關緊要或是會重新產生那就算了，偏偏 xds 檔在 architect 是主要專案的進入點，因此如果處理的不好，很容易造成專案運作異常。</p>
-
-<p>就筆者的經驗，一般 extjs 元件的建立或修改基本上都比較不會有問題，最容易產生異常的通常是在 application.js 這個檔案，在 extjs 的世界裡，該檔案定義了一個應用程式在運行時，需要載入 extjs 中 mvc 各個物件，為什麼他很容易出現問題呢？主要因為在使用 architect 時，當你新增元件時，IDE 將會自動將你新增的元件載入到 application.js 中，多人開發情形下，Application.js 就會是所有人的交集，不然照理分別開發新功能所新增的元件皆不同不應該會頻繁造成衝突，而因為 application.js 的多人異動，造成再 xds 中對 application.js 的檔案識別常常會有不同的代表造成衝突，一旦 xds 衝突一發生，編修時一不小心讓 IDE 不認得 Application.js，就會造成 Application.js 無法被識別，導致 IDE 認為沒有建立 Application.js，則以最原始的狀態 Application.js 作為預設，也就是沒有任何元件載入，導致於系統運作異常。</p>
-
-<p>知道問題發生的原因，那上述問題怎麼解？其實只要改變我們建立物件的習慣即可，在說明作法前，需要先讓大家了解一下 extjs 如何載入相關 js 檔的，在 extjs 中，不管你是宣告 mvc 其中的任一類型的元件，或是繼承 extjs 原生的類別，很多時候我們會使用 require 這個宣告，來告訴 extjs 該元件要運作需要哪些類別配合，一旦你有定義 require，當元件運行時，extjs 就會自動將相關 require 的類別進行載入，這是個很方便的特性，幫助我們省去在 html 中載入所需 js 的麻煩，進一步的減少元件忘記或是載入錯誤。</p>
-
-<p>前面有提到 application.js 是多人開發時的交集，一個方法是減少交集的產生，而我們該如何減少交集呢？可以用到 extjs 自動載入元件的特性，將我們需要用到的元件皆定義在 controller 底下，而在 application.js 只載入 controller 相關元件，如此就可以減少 application.js 變動，即使真的不幸還是造成 application.js 異常，我們知道只要將所有 controller 載入即可恢復，除了避免多人開發時造成程式碼衝突，將需要的物件定義在 controller 裡面也才是較正確的方式，完善的定義該功能再運行時所需的元件，可以帶來更易於維護的優點，另外在使用 architect 時，一旦你將相關物件加入 controller 時，IDE 也會問你要不要將設定在 application 載入的元件移除，如此一來元件所責任的功能也會更加清楚。</p>
-
-<p>上述的解法，是筆者根據經驗認為比較優的解法，如果讀者有更好的想法也歡迎分享，希望可以讓有同樣困擾的人節省一點時間。</p>
-
-<p>最後綜合上述的內容，整理出使用 architect 開發需要注意的重點如下：</p>
-
-<ol>
-<li>.sencha 檔案可以不用加入版本控管，一旦你使用 architect 進行存檔時，該檔案都會重新產生，衝突情形也可以直接覆蓋最新版本</li>
-<li>xds 檔，很多時候都會有衝突，更新程式碼有衝突時，編修完成後記得開啟 architect 確認 application.js 中掛載的元件是否還好好的在那邊。</li>
-<li>因為 architect 在編輯過程中不會動態載入你的元件，因此一旦你在 IDE 開啟中的狀態要進行程式碼更新，建議先對專案進行存檔，並且程式碼一旦更新為最新的，記得將 IDE 重啟以便重新載入所有更新過程式碼。</li>
-<li>建立 extjs 元件時，不要懶惰讓 IDE 自行將元件加入到 application.js 可以的話建立該功能所需要的 controller 將其歸屬進去，整個功能架構也會更加清楚。</li>
-<li>在 application 中，原則上只管理需要載入的 controller 即可，一旦編修衝突不順利，可以很快的進行復原。</li>
-</ol>
-
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/01/extjs-2-30/"></a></p>]]></content>
-    </entry>
-  
-    <entry>
-      
-
-
-
-
-<title type="html"><![CDATA[extjs 1/30:form 表單之 submit 透過 rest 與後端 grails 的整合]]></title>
-<link href="http://smlsun.com/blog/2013/08/01/extjs-1-30/"/>
-<updated>2013-08-01T21:49:00+08:00</updated>
-<id>http://smlsun.com/blog/2013/08/01/extjs-1-30</id>
-
-      <content type="html"><![CDATA[<p>在 web appication 的開發中，常常會使用到的 form 表單的送出，在 extjs 中我們可以很輕易的使用 <code>Ext.form.Panel</code>，來完成表單的建立。</p>
-
-<p>可參考 <a href="http://try.sencha.com/extjs/4.1.1/community/extjs4-mvc-ajax-xml-form/viewer.html">extjs form sample</a>所提供的範例，來了解程式的運作。</p>
-
-<p>為了簡化表單送出的開發，盡量使用 extjs 所提供的 <code>submit()</code> 來進行表單的送出，他的好處是不需把 form 的欄位收集起來成為 json 往後傳，透過該函式 extjs 會自動將表單所屬元件所定義的 id 作為 request 中的 form data 往後傳，如此一來，一旦表單的內容有所改變，我們也不需調整。</p>
-
-<p>而在筆者目前開發的專案中使用 extjs + grails 的組合並且前後端整合使用 rest 的方式來做為前後端的溝通協定。如下面網址的說明：<a href="http://grails.org/doc/latest/guide/webServices.html#13.1%20REST">grails rest</a>，根據文章中建議的 http method 所對應的不同方法來進行資料的增修改查。</p>
-
-<p>不料在過程中，當要進行 PUT 對應的 UPDATE 時，發生 grails 無法解析表單資料的情形，拜一下 google 找到下面資料：</p>
-
-<p><a href="http://grails.1312388.n4.nabble.com/HTTP-request-params-in-a-PUT-never-reach-the-controller-td1353329.html">HTTP request params in a PUT never reach the controller</a></p>
-
-<p>節錄裡面的重點：</p>
-
-<blockquote><p>It&#8217;s possible that the servlet container will not parse PUT data as if
-it&#8217;s POST data. I assume that if you use the URL:</p>
-
-<p><code>http://localhost:8080/app/api/users?userId=5</code></p>
-
-<p>then &#8220;userId&#8221; will appear in the &#8220;params&#8221; object. However, Grails
-handles the parsing of XML and JSON requests, so it you were to send
-your parameters as XML, they would probably appear in the &#8220;params&#8221;
-instance.</p></blockquote>
-
-<p>也就是說，在 http method 使用 put 要可以在 grails 中的 params 存取相關的標單資料，必須使用網址方式來傳遞，但若這麼做，就失去我們使用 extjs form 所提供 submit() 的好處，還有資料內容將會輕易的被讀取，更重要的誰也不希望多寫幾行程式，為了要解決此問題，在開始說明解法前我們必須必須了解 http method 中 POST 與 GET 的差異。</p>
-
-<p>一般而言，POST 是用於將表單內的資料送出，PUT 透過 JSON 或是 XML 來將表單送出，也因此後端 server 在接到 request 的 http request method 為 PUT 時，就算有參數包在 request body(form data) grails 也不會進行解析。</p>
-
-<p>了解了表單送出的概念以及在 PUT 的情形下正確的表單資料送出的方式，我們就必須讓 extjs form 在表單送出時，將表單內容轉換為 json，在搜尋 extjs 的 api 總算讓我找到解法，<a href="http://docs.sencha.com/extjs/4.2.1/#!/api/Ext.form.Basic-cfg-jsonSubmit">Ext.form.Basic cfg jsonSubmit</a> 就有此參數，一旦設定為 true，當 from 透過函式 submit() 將表單內容送出就會轉換為 json 格式，並且 content-type 變為 application/json。</p>
-
-<p>最後我們只要在 grails 中的 urlMapping.groovy 中，針對你要送出的 route 加上，<code>parseRequest: true</code>，如下</p>
-
-<p>&#8221;/$controller/$action?/$id?&#8221;(<strong>parseRequest: true</strong>) {&#8230;}</p>
-
-<p>如此就可以解決在 form submit 並且 http method 為 PUT 時，grails 無法將 form 送出的表單資料進行存取的問題。</p>
-
-<p>此問題與我的夥伴 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">lyhcode</a>共同發現並解決，也可以參考由他所撰寫詳盡的說明 <a href="http://blog.lyhdev.com/2013/07/ext-js-grails-restful-web-services-put.html">Ext JS + Grails RESTful Web Services 實作問題之 PUT 表單資料
-</a></p>
-
-<p>Ext JS 教學內容由思創軟體提供，共同作者 <a href="http://blog.lyhdev.com/p/by-lyhcode.html">@lyhcode</a> 與 <a href="http://smlsun.com/aboutme/">@smlsun</a> 目前在校園及企業從事 JavaScript（含 Node.js, Ext JS）與 Java（含 Groovy, Grails, Gradle） 教育訓練及顧問工作。</p>
-<p><a rel="bookmark" href="http://smlsun.com/blog/2013/08/01/extjs-1-30/"></a></p>]]></content>
     </entry>
   
 </feed>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: gorm, | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/gorm-/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-03-31T17:57:11+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[grails: gorm 自動更新與 discard 方法 使用特性與注意事項]]></title>
+    <link href="http://smlsun.com/blog/2014/03/31/grails-gorm-discard/"/>
+    <updated>2014-03-31T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/03/31/grails-gorm-discard</id>
+    <content type="html"><![CDATA[<p>在使用 grails domain 時，有時候雖然我們有對 domain 變更值，但我們需要經過一些判斷後，才要正確寫入資料庫，但在 grails 的環境在你還沒有下 save 的指令時，他會因為函式執行的需要進行 auto save，關於 gorm 原理可以參考下列文章</p>
+
+<p><a href="http://spring.io/blog/2010/06/23/gorm-gotchas-part-1/">GORM Gotchas (Part 1)</a></p>
+
+<p>其中有一段如下：</p>
+
+<blockquote><p>   def b = Book.findByAuthor(params.author)
+   b.title = b.title.reverse()</p>
+
+<p>Note that there is no call to save() here. When the request has completed you will find that the book's title has been reversed in the database - the change has been persisted without an explicit save. This is because:</p>
+
+<ol>
+<li>the book is attached to the session (by virtue of being retrieved by a query);</li>
+<li>the title property is persistent (all properties are persistent unless configured as transient); and</li>
+<li>the property value has changed by the time the session closes.</li>
+</ol>
+</blockquote>
+
+<p>上述說明了就算沒有下 save() 的指令，特定的狀況下 domain 還是有可能自動寫入資料庫。</p>
+
+<p>如果我們不想要自動更新怎麼辦？文中也有提到下述狀況將放棄自動更新：</p>
+
+<blockquote><p>if any of the property values fail validation, the changes will not be persisted. Of course, if the values are valid and yet you still don't want to persist them, you can call <code>discard()</code> on your instance. This won't reset the values of the instance's properties, but it will ensure that they aren't saved to the database.</p></blockquote>
+
+<p>當 validation 不通過，或是執行 <code>discard()</code> 將取消更新。</p>
+
+<p>對於 grails domain 自動儲存以及取消自動儲存的特性有所了解後，
+筆者目前遇到的狀況如下：</p>
+
+<p>```
+def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+purchaseSheetDet.properties = params</p>
+
+<p>def batch = Batch.findByName(params["batch.name"])
+purchaseSheetDet.batch = batch</p>
+
+<p>purchaseSheetDet.discard()</p>
+
+<p>```
+上述程式碼就算最後執行了 discard() 自動更新沒有被取消，檢查實際將執行的 sql 開出 log 記錄如下</p>
+
+<p><code>
+Hibernate: update purchase_sheet_det set ...
+Hibernate: select ... from batch this_ where this_.name=?
+</code></p>
+
+<p>可以看到，在執行查詢 batch 之前就先對 update purchase_sheet_det 進行更新，當然之後的 <code>purchaseSheetDet.discard()</code> 就會失效，因為 update 語法已經在之前就已執行了。</p>
+
+<p>筆者推測當你下 find 時 gorm 為了確保查到的資料是正確的，會強制將未 persist 的 domain 進行 save。</p>
+
+<p>知道發生的原因後，我們可以將程式改寫如下：</p>
+
+<p>```
+def batch = Batch.findByName(params["batch.name"])</p>
+
+<p>def purchaseSheetDet = PurchaseSheetDet.get(params.id)
+purchaseSheetDet.properties = params
+purchaseSheetDet.batch = batch</p>
+
+<p>purchaseSheetDet.discard()
+```</p>
+
+<p>一旦我們這樣調整順序以後，在預計要更新的 domain 之前，先把要 find 的 domain 準備好，這樣就不會因為 find 去觸動自動將有變動的 domain 進行更新，造成 <code>discard()</code> 指令失效。</p>
+
+<h2>結論</h2>
+
+<p>透過上面的結果，我們可以整理出幾個規則：</p>
+
+<ol>
+<li>若操作的 domain 的屬性變更有可能因為之後的檢查透過 discard 放棄變更，在檢查的過程中務必不可觸動 find 的執行，避免因為 find 把尚未確定的變更寫入實體資料庫</li>
+<li>若有必要使用到其他 domain 透過 find 取得實體，務必在可能執行 discard 的 domain 實體話之前透過 find 取得</li>
+<li>一旦上述規則都有遵守，但執行 discard 還是無效，可以透過開啟 hibernate 的 sql log 來檢查到底何時執行了更新的語法。開啟 sql log 的方式可參考:<a href="http://stackoverflow.com/questions/2568507/how-to-log-sql-statements-in-grails">How to log sql statements in grails</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

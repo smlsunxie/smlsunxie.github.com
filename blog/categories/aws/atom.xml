@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: AWS | 蹤影]]></title>
+  <link href="http://smlsun.com/blog/categories/aws/atom.xml" rel="self"/>
+  <link href="http://smlsun.com/"/>
+  <updated>2014-03-31T17:57:11+08:00</updated>
+  <id>http://smlsun.com/</id>
+  <author>
+    <name><![CDATA[smlsun]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[AWS S3: 設定特定網站直接存取雲端圖片(不使用 accessKey ，secretKey)]]></title>
+    <link href="http://smlsun.com/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey/"/>
+    <updated>2014-03-31T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/03/31/AWS-S3-noaccessKey-nosecretKey</id>
+    <content type="html"><![CDATA[<p>關於 Amazon S3 的申請，可參考下列文章：</p>
+
+<ul>
+<li><a href="http://s3131212.com/amazon-simple-storage-service/">Amazon Simple Storage Service (Amazon S3) </a>: 介紹如何註冊使用 S3 服務</li>
+</ul>
+
+
+<p>一旦申請完成，我們可以透過 Make Public 來使資源可以透過 url 直接存取，一旦設定完成可以使用下列範例網址直接存取而不需要 accessKey 以及 secretKey:</p>
+
+<p><code>https://s3.amazonaws.com/upload.sample.net/attachment/XXXXXX/111111.jpg</code></p>
+
+<p>這樣做有什麼好處？既然使用 S3 作為圖片或是檔案的來源，當然希望可以利用 S3 的服務分散網站運作所需資源，特別是圖檔呈現部分，其中包括圖檔 cache 的機制，也將由 S3 進行判斷。</p>
+
+<p>不過若將 S3 存放的檔案設為 public 看來是最快的方式，卻令資源暴露在網際網路之中，有沒有更折衷的方式，只允許目標網站可以以不透過 accessKey 以及 secretKey 進行存取，單純透過 url？答案是可以的，首先點選 <code>Edit bucket polocy</code>，如下圖：</p>
+
+<p><img src="https://lh6.googleusercontent.com/-upmGYOEmyR8/UzkIupOGWtI/AAAAAAAAOSg/-bn11ssJVsA/s0/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2014-03-31+%E4%B8%8B%E5%8D%882.12.49.png" title="螢幕快照 2014-03-31 下午2.12.49.png" alt="enter image description here" /></p>
+
+<p>點選之後會跳出定義 bucket polocy 視窗，我們可以填入下列 json 格式:</p>
+
+<p>```
+{</p>
+
+<pre><code>"Version": "2012-10-17",
+"Id": "S3PolicyId1",
+"Statement": [
+    {
+        "Sid": "IPAllow",
+        "Effect": "Allow",
+        "Principal": {
+            "AWS": "*"
+        },
+        "Action": "s3:*",
+        "Resource": "arn:aws:s3:::upload.net/*",
+        "Condition": {
+            "IpAddress": {
+                "aws:SourceIp": "192.168.0. 1/24"
+            }
+        }
+    },
+    {
+        "Sid": "Allow get requests originated from sample.net",
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::upload.sample.net/*",
+        "Condition": {
+            "StringLike": {
+                "aws:Referer": [
+                    "http://sample.net/*",
+                    "http://dev.sample.net:8080/*",
+                    "http://www.sample.net/*"
+                ]
+            }
+        }
+    }
+]
+</code></pre>
+
+<p>}
+```</p>
+
+<p>上述設定檔中，定義 <code>aws:SourceIp</code> 可以讓我們在主機上操作 S3 而不需要 accessKey 以及 secretKey，舉例來說可以透過如同 <code>wget  https://s3.amazonaws.com/upload.sample.net/attachment/XXXXXX/111111.jpg</code> 來取得資源。</p>
+
+<p>定義 <code>aws:Referer</code> 的話，則可以指定特定的 domain 才可以進行資源的存取，也就是說一旦使用者瀏覽 <code>www.sample.net</code> 這個網站時，則該瀏覽器在讀取圖檔時傳送目前所屬網址資訊(refer 屬性)，則圖檔就可以直接透過 url 向 S3 取得檔案資源。</p>
+
+<p>當然這些 polocy 變化百百種我們可以參考 aws 提供的範例進行修改：<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/AccessPolicyLanguage_UseCases_s3_a.html">Example Cases for Amazon S3 Bucket Policies</a></p>
+
+<h1>結論</h1>
+
+<p>透過上述的設定，可以帶來的好處：</p>
+
+<ol>
+<li>S3 分散了資源載入所需系統效能，還有頻寬</li>
+<li>判斷是否重新取得(http starus 200) 或是沒有變動使用快取(http starus 304) 交由 S3 判斷，自行開發的服務不需實作。</li>
+<li>安全性與方便度兼具，可以直接透過 url 存取，又不致於暴露在網際網路之中，透過定義 polocy 指定特定的 domain 可以直接存取支援</li>
+</ol>
+
+
+<p>經由這次對 S3 操作上的了解，若想要製作網站靜態資源的快取機制，也就不是難事，下一篇在說明如何自行開發快取機制。</p>
+]]></content>
+  </entry>
+  
+</feed>

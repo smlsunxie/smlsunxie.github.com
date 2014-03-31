@@ -4,7 +4,7 @@
   <title><![CDATA[Category: java, | 蹤影]]></title>
   <link href="http://smlsun.com/blog/categories/java-/atom.xml" rel="self"/>
   <link href="http://smlsun.com/"/>
-  <updated>2014-01-20T21:44:54+08:00</updated>
+  <updated>2014-03-31T17:57:11+08:00</updated>
   <id>http://smlsun.com/</id>
   <author>
     <name><![CDATA[smlsun]]></name>
@@ -12,6 +12,148 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[spring-boot: server startup or shutdown listener]]></title>
+    <link href="http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown/"/>
+    <updated>2014-03-31T00:00:00+08:00</updated>
+    <id>http://smlsun.com/blog/2014/03/31/spring-boot-start-shutdown</id>
+    <content type="html"><![CDATA[<p>在之前的專案中遇到一種狀況，使用者說他們的服務沒有反應？通常會有幾種情形：</p>
+
+<ol>
+<li>服務被人為關閉</li>
+<li>作業系統被關閉</li>
+<li>記憶體不足造成服務終止</li>
+</ol>
+
+
+<p>第三點的原因有很多，這邊先不談，關於 1、2 點可能是人為，或者管理者在做系統維護時，不知道需要在重新啟動服務，或是錯誤關閉，不管哪一種，都會造成服務無法運作，接著你就會接到電話或信件，系統不 work 了。</p>
+
+<p>通常，也只能問有沒有人去操作主機，或是有沒有人去關閉服務？常常問不出所以然，當然就如同上面所舉的幾點，不一定是人為因素，但我們希望可以加快系統出現異常時的反應速度，將服務停止時間降到最低。</p>
+
+<p>因此，主動通知是比較積極的作法，唯有當下接收到服務開啟或關閉的訊息，才能夠在最接近問題發生的點來釐清問題，另一方面，也是較有效率的作法，誰也不想定期每天去檢查你所安裝的服務今天是否有正常運行。</p>
+
+<p>說這麼多，此篇要介紹的是如何在使用 spring-boot 時，定義 server 開啟或關閉時執行特定的程式，比如發 mail 或是寫 log，當然使用傳統 spring 也可以，參考：<a href="http://www.mkyong.com/spring/spring-postconstruct-and-predestroy-example/">Spring @PostConstruct And @PreDestroy Example</a>。</p>
+
+<p>在實作上，我們可以利用 @Configuration 的特性，在類別中，只要我們打上 @Configuration，該類別就會作為類似 xml 設定檔，在服務啟動時將在類別中定義的方法根據每個方法的 annotation 註冊，下面將分別針對啟動與關閉服務利用 @PostConstruct，以及 @PreDestroy 來達成。</p>
+
+<h2>服務啟動時 @PostConstruct</h2>
+
+<p>@PostConstruct，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PostConstruct.html">Annotation Type PostConstruct</a>，文件中有詳細說明使用時機，其中：</p>
+
+<blockquote><p>The PostConstruct annotation is used on a method that needs to be executed after dependency injection is done to perform any initialization.</p></blockquote>
+
+<p>可以看到執行的時機點在依賴注入後進行初始作業的執行，正是我們想要的。</p>
+
+<h2>服務關閉時 @PreDestroy</h2>
+
+<p>@PreDestroy，官方 api 參考下面連結 <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/PreDestroy.html">Annotation Type PreDestroy</a></p>
+
+<blockquote><p>The PreDestroy annotation is used on methods as a callback notification to signal that the instance is in the process of being removed by the container.</p></blockquote>
+
+<p>文中說明，當執行實體被容器移除時會執行該動作，若我們將 @PreDestroy 定義在有 @Configuration 標註的類別中，因為 @Configuration 在服務啟動時只會產生一個實體，因此一旦服務被關閉時進行類別 GC 時，就會連帶觸動執行有標註 @PreDestroy 的函式。</p>
+
+<p>透過上述兩個 annotation 就可以做到啟動或關閉時發出 mail 通知，不過這邊要注意關閉的情形，若使用者強制將服務關閉，不等待 server 的後續處理，那標註 @PreDestroy 的函式將無法完全執行完畢，目前個人沒有更好的方式可以避免，若讀者有不錯的作法，務必讓我知道，或者是關於上述應用情境有更好的處理方式，比如該 annotation 有錯用的地方，也請不吝指教。</p>
+
+<p>最後附上開關 server 自動送出 mail 的程式碼給大家參考，以 gmail 為例：</p>
+
+<p>定義 MailSender 以及預設的 SimpleMailMessage
+```
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;</p>
+
+<p>import java.util.Properties;</p>
+
+<p>@Configuration
+public class ApplicationConfig{</p>
+
+<pre><code>@Bean
+public MailSender mailSender(){
+    JavaMailSenderImpl javaMailSenderImpl = new JavaMailSenderImpl();
+    javaMailSenderImpl.setHost("smtp.gmail.com");
+    javaMailSenderImpl.setPort(587);
+    javaMailSenderImpl.setUsername("user");
+    javaMailSenderImpl.setPassword("password");
+
+    Properties mailProp = new Properties();
+    mailProp.put("mail.smtp.auth", true);
+    mailProp.put("mail.smtp.starttls.enable", true);
+
+    javaMailSenderImpl.setJavaMailProperties(mailProp);
+    return (MailSender) javaMailSenderImpl;
+}
+
+@Bean
+public SimpleMailMessage simpleMailMessage() {
+    SimpleMailMessage msg = new SimpleMailMessage();
+    msg.setTo("to@gmail.com");
+    msg.setFrom("from@gmail.com");
+    msg.setText("內文");
+    return msg;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>定義開關服務處理函式，將定義好的 MailSender 以及 SimpleMailMessage 注入並且使用：</p>
+
+<p>```
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;</p>
+
+<p>import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;</p>
+
+<p>@Configuration
+public class ContextListener {</p>
+
+<pre><code>@Autowired
+MailSender mailSender;
+
+@Autowired
+SimpleMailMessage simpleMailMessage;
+
+@PostConstruct
+public void startupMailNotify(){
+
+    simpleMailMessage.setSubject("服務啟動");
+
+    try{
+        mailSender.send(simpleMailMessage);
+    }
+    catch(MailException ex) {
+        System.err.println(ex.getMessage());
+    }
+}
+@PreDestroy
+public void shutdownMailNotify(){
+    simpleMailMessage.setSubject("服務關閉");
+    try{
+        mailSender.send(simpleMailMessage);
+    }
+    catch(MailException ex) {
+        System.err.println(ex.getMessage());
+    }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>```</p>
+
+<p>其實可以在精簡，不過也夠簡單了，並且降低耦合，是吧～</p>
+
+<p>在 spring 與 spring-boot 其中之一的差別，就是 spring-boot 可以不需要 xml 定義，寫起來又更方便了點、精簡了點。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[rabbit MQ 使用者建立與權限設定]]></title>
